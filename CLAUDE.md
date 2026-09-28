@@ -71,6 +71,7 @@ Change these only with James's explicit say-so, and log the change in the handof
 | `daily/manual/` | Hand-found issues per day (`manual_issues_<date>.py`) |
 | `daily/cfg/` | Read Me notes per day (`cfg_<date>.json`) |
 | `calc/` | Tech's `SExx Formulation.xls` → `Formulation Master.xlsx` (`parse_fcal.py` → `export_calc_products.py` → `build_formulation_master.py`); `auger_rules.py` |
+| `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. Flow in `docs/DATABASE.md` (§7.19) |
 | `product_master/` | `prepare.py`: Product Master → `Product Master - Prepared <date>.xlsx` (code-derived columns, Issues, Verify First, Colour Codes, Import Map; §7.18). A working file, not published |
 | `scan_reader/` | `ext_scan_reader.py` (EXT scan reader, R1/R2 hardcoded, `glyph_bank.npz`); `render_pages.py` (page PNGs + quarter tiles for reading) |
 | `data/packets/` | Transcribed daily packets `packet_YYYY-MM-DD.json` (`packet_date`, `source_scan`, `ext`, `cnv`, `frm`) |

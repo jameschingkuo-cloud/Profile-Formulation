@@ -1069,6 +1069,28 @@ verified*), completeness and activity · Issues sheet · Verify First (run in th
 - `RBPP0EB1/2`: code `P0` decodes to 25 mm by the letter rule, data says 20 mm. **Does the letter rule hold past `D`?**
 - 31 colour codes in product codes; only 7 are on the EXT list (R7). The other 24 (EA, JG, GS, YF, BD, …) need names (Q2).
 
+## 7.19 Database structure and flow (28 Sep 2026)
+
+James: *"lets build the data base structure and flow first, then we design the interface"*. The final goal (James):
+*"create an artifact where people can upload production schedule and download formation"*.
+
+**Built (structure only, no data):** `db/schema.py` describes every workbook of the database (folder, kind, sheets,
+columns, keys, allowed values, references). From it: blank templates (`python db/schema.py templates`), a checker for
+any workbook (`check`), and the column reference `docs/DATABASE_TABLES.md` (`doc`). The structure and the daily flow are
+written up in `docs/DATABASE.md`.
+
+- Folders: James's `General\Engineering Pipeline\Production Formulation` subfolders (Product Master, Formulation Data
+  Base, Daily Formulation Report, Extrusion Schedule, Converting Schedule).
+- Kinds: **master** (changes only through its Change Log, with an approver; rows Draft → Approved), **record**
+  (append-only), **daily** (kept as issued), **evidence** (rebuilt from Tech's calcs, never edited).
+- New workbooks: Formulation Master (Lines, Materials, Formulas, Recipe = weight %, Line Settings, Product to Formula,
+  Standing Notes, Change Log), Auger Calibration (Hoppers, Calibration, Verification Log, Change Log), FRM Draft
+  <date> (Draft + Exceptions), Formulation Report Record, Extrusion Production Record.
+- The templates carry only settled reference data: Lines (DOSING) and Hoppers (auger_rules.RULES, still James's draft).
+- Nothing was published. Decisions for James are in `docs/DATABASE.md` §6 (rename the calc-derived workbook to
+  `Formulation Calc Library.xlsx`; who approves; Material ID = IWPFT062 item no.; the variant list; moving the
+  published files to the new folders).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1176,6 +1198,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.6 | 2026-09-28 | Claude (cloud session with James Kuo) | **Database structure and flow (§7.19).** James: *"lets build the data base structure and flow first, then we design the interface"*. `db/schema.py` describes every workbook (masters with Change Logs, append-only records, daily files, calc evidence) in James's new folders; templates, a checker and `docs/DATABASE_TABLES.md` come from it; flow in `docs/DATABASE.md`. Starter code committed to GitHub (§7.18). No data built or published. |
 | 1.5 | 2026-09-28 | Claude (cloud session with James Kuo) | **Product Master prepared as the base table (§7.18).** Excel only; Product Master first. James confirmed: in-between thicknesses (3.3 mm) are not in the code, the spec decides; the 4 letter-O codes are A0. `product_master/prepare.py` adds code-derived columns, completeness, an Issues sheet, Verify First, Colour Codes and an Import Map for the full data pull. Run on the 1,608 rows the SharePoint connector returns. This copy is in the GitHub repo; mirror to SharePoint. |
 | 1.4 | 2026-09-28 | Claude (session with James Kuo) | **Code moved to a Claude Code repo (§7.17).** James: *"with such major project. Should this be done by claude code instead?"* then *"yes lets do it"*. Delivered `formulation-pipeline starter 2026-09-28.zip`: all pipeline code, packets and reference data, a `CLAUDE.md` built from this document's rules, a README for setup on Windows, `config.py` (paths), `publish.py` (the hard rule enforced: it refuses to overwrite a published file that changed since it was read or last published, and verifies by content after copying), and regression tests. Rebuilt every output from the starter: data identical to the published files (differences only where Rev 1.3 intended, plus Read Me text); the scan reader gives the same result with pip-only PyMuPDF. Standing instructions updated: the repo is the master for code; this document stays here and is edited in place. |
 | 1.3 | 2026-09-26 | Claude (session with James Kuo) | **Dosing type per line (§7.16).** James: *"line 7,12,13, and 16 use more modern weight based dosing. The rest of the lines use old Auger dosing… It is simply speed setting 0 to 100."* Hardcoded as `DOSING` (load.py, auger_rules.py). This settles why auger lines don't add to 100, why one code has different settings by line (weight % is the recipe; settings are derived), and why SE42 has no calc; IWPFM031 covers exactly the auger lines. New: the slopes are one shared set copied to every line (SE32 alone differs); check A7 (slope × gear ratio fits the hardware) flags 192 rows, chiefly SE22 H4 colour on a 1:70 slope under a 1:100 header (+43%), and it confirms 232.17, not 219.15, for reclaim on a 1:14 auger; 16% of auger settings are below 10; the auger total above output points to on-demand blenders. Daily checks now depend on dosing type (Σ = 100 with `Auto` balance on weight lines; 0–100 range on auger lines); the 23/24 Sep issue lists are unchanged. Q18–Q21 added. |
