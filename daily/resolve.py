@@ -41,7 +41,7 @@ VARIANT_RULES = [  # note text on the FRM row -> variant (db/schema.py VARIANTS)
     (re.compile(r"corn\s*box", re.I), "Corn box"),
     (re.compile(r"roll", re.I), "Roll"),
 ]
-RUN_WITH = re.compile(r"RUN WITH\s+([A-Z]{3}[0-9A-Z]{2}[A-Z]{2}\d+)", re.I)
+RUN_WITH = re.compile(r"RUN\s+WI(?:TH|HT)\s+([A-Z]{3}[0-9A-Z]{2}[A-Z]{2}\d+)", re.I)   # "RUN WIHT" printed 28 Sep
 
 
 def variant(note, first):

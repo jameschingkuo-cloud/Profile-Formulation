@@ -74,7 +74,8 @@ MATERIALS = ["PPP", "BBB"]
 GRADES = ["P", "A"]
 
 # R7: colour codes.  A colour is decoded as a whole two-letter word from this list, never letter by
-#   letter.  A colour that doesn't look like any of these gets flagged.
+#   letter.  A colour that doesn't look like any of these gets flagged: each colour is also read letter by
+#   letter and any difference is flagged (colour_word; added 28 Sep 2026 after BD was read as BL unflagged).
 COLORS = ["WB", "KS", "BL", "WM", "GT", "EB", "NS"]
 
 # R8: thickness in the product code must equal the Thk column.  "30" = 3.0 mm, "A0" = 10 mm,
@@ -397,6 +398,17 @@ class Decoder:
         return sc[0][0], (sc[1][1] - sc[0][1]) if len(sc) > 1 else 1.0
 
 
+def colour_word(dec, cells, flags, where):
+    """R7: read a colour as a whole word from COLORS, and also letter by letter. A colour outside the list
+    (BD, OF on 28 Sep 2026) otherwise snaps silently to its nearest listed word (BD -> BL): when the two
+    readings differ, flag it, never pass the list word on silently."""
+    col, m = dec.word(cells, COLORS)
+    free, _ = dec.classes(cells, [LETTERS, LETTERS])
+    if free != col:
+        flags.append(f"R7: {where} colour reads {free} letter by letter but {col} from the colour list - check (new colour?)")
+    return col, m
+
+
 def _fit(s, tpl):
     """Coerce OCR text to an L/D template using the usual confusions; None if impossible."""
     TO_D = {"O": "0", "Q": "0", "D": "0", "I": "1", "L": "1", "T": "1", "Z": "2", "S": "5", "B": "8", "G": "6", "A": "4"}
@@ -488,7 +500,7 @@ def decode_row(dec, row):
                 flags.append(f"R8: product thickness read {read_thk}, Thk column says {tk2} - check")
         else:
             tk2 = read_thk
-        col, m3 = dec.word(pc[5:7], COLORS)                                    # R7
+        col, m3 = colour_word(dec, pc[5:7], flags, "product-code")             # R7
         tail, m4 = dec.classes(pc[7:], [DIGITS] * len(pc[7:]))
         out["prod"] = t3 + tk2 + col + tail; low("prod", min(m1, m3, m4))
         if not PROD_RE.match(out["prod"]):
@@ -522,7 +534,7 @@ def decode_row(dec, row):
         pair = get(B, ob, [i, i + 1])
         if len(pair) != 2:
             cols = None; flags.append("colour unreadable"); break
-        c, m = dec.word(pair, COLORS); cols.append(c); low("colour", m)
+        c, m = colour_word(dec, pair, flags, f"layer {len(cols) + 1}"); cols.append(c); low("colour", m)
     out["colors"] = " ".join(cols) if cols else None
     return out, flags
 

@@ -1,9 +1,9 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.8 (28 Sep 2026).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.9 (28 Sep 2026).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
-Formulation\<kind>`, this folder is Claude's workspace (§7.21). Three packets processed (23, 24, 25 Sep; §7.20 adds a
-three-way accuracy check). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
+Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
+three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
 confirmed (§7.16). Not built yet: the Formulation Master, Auger Calibration and the three records, and the FRM renderer. The daily packet has been read end to end
 (§2–§5). The proposed pipeline is in §7. §6 lists what the paper shows but I can't confirm yet;
 James needs to answer §10 before anything is built. **The input stays a scan of the printed
@@ -1145,6 +1145,25 @@ base related file C:\...\General\Claude MD, PY Pipeline File\Engineering Pipelin
 - The 25 Sep scan sits in `Extrusion Schedule\` (James put it there). Scans are source files, not database; they could
   have their own `Scans` folder.
 
+## 7.22 Daily run, 28 Sep 2026 packet, and the first FRM Draft
+
+Scan `doc05253620260928134035.pdf` (25 pages, 9.8 MB) **arrived through the chat upload** (the 14.5 MB 25 Sep scan did
+not). EXT pages 1-14 (Run Date 9/28/26 13:56:14; report page 8, SE23's total, missing) and CNV pages 15-25. **No FRM pages.**
+
+- **Three-way check:** transcription (5 parallel readers) vs glyph reader vs printout arithmetic. 68 of 75 orders identical;
+  every printed line total ties, and the Final Total (6,277,751 PCs / 22,103,174 LBs) equals all 75 orders.
+- **First silent error of the glyph reader:** RP26925-1's new colour **BD** was read as **BL with no flag**. R7 decoded a
+  colour as the nearest word of its 7-colour list, so a colour outside the list snapped silently. The crosscheck caught
+  it. **Fixed:** `colour_word()` also reads every colour letter by letter and flags any difference (the comment in the
+  R7 block already promised this). 28 Sep: BD, OF, NS rows now flagged; 25 Sep scan: identical values, same flag count.
+- New colours **OF** (RPA40OF37) and **BD** (RPA40BD59) are not on the R7 list: what are they (Q2)?
+- **FRM Draft (`daily/resolve.py`, new):** each scheduled order gets the formulation last issued for the same order on the
+  same line; everything else goes to Exceptions with a suggestion that is never used automatically. Backtest on 25 Sep:
+  **68 of 69 orders identical to Tech's issued FRM**; the one difference is the formula Tech changed that day (RP26923-1);
+  the 2 new orders went to Exceptions. **28 Sep: 59 of 75 proposed, 16 exceptions** (new orders, 2 orders moved line:
+  H68A127-1 SE25 → SE23, H68A080-1 SE42 → SE43, 5 new SE61 BA253 orders). Draft only; Tech signs.
+- `build_xlsx.py` now skips the FRM workbook when a packet has no FRM pages.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1261,6 +1280,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.9 | 2026-09-28 | Claude (cloud session with James Kuo) | **28 Sep packet and the first FRM Draft (§7.22).** Scan arrived via chat. 68/75 identical; totals tie. The glyph reader's first silent error (new colour BD read as BL) caught by the crosscheck and fixed (colours also read letter by letter). `daily/resolve.py` drafts the day's formulation from the last issued FRM: backtest 68/69 identical on 25 Sep; 28 Sep 59/75 proposed, 16 to an engineer. |
 | 1.8 | 2026-09-28 | Claude (cloud session with James Kuo) | **Two folders (§7.21).** Database workbooks in `Engineering Pipeline\Production Formulation\<kind>` (`PUBLISH_DIR`); handoff, `.md`, `.py` in the old folder, now Claude's workspace (`DOCS_DIR`). Product Master and the 23–24 Sep daily workbooks copied to the database folders; `publish.py` routes by `db/schema.py`; manifest moved. |
 | 1.7 | 2026-09-28 | Claude (cloud session with James Kuo) | **25 Sep packet processed (§7.20)**; `scan_reader/crosscheck.py` added (transcription vs glyph reader vs printed totals). 67/71 identical, 4 reader misreads all flagged, every total ties. Converting Production Record added to the database (§7.19). |
 | 1.6 | 2026-09-28 | Claude (cloud session with James Kuo) | **Database structure and flow (§7.19).** James: *"lets build the data base structure and flow first, then we design the interface"*. `db/schema.py` describes every workbook (masters with Change Logs, append-only records, daily files, calc evidence) in James's new folders; templates, a checker and `docs/DATABASE_TABLES.md` come from it; flow in `docs/DATABASE.md`. Starter code committed to GitHub (§7.18). No data built or published. |

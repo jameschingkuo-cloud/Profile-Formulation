@@ -1,0 +1,7 @@
+{
+ "ext_crosscheck": "Key fields were also read independently by the glyph reader and compared by scan_reader/crosscheck.py: 68 of 75 orders identical. The rest were settled by eye on the page, in favour of the transcription: 3 rows under handwriting or with a misread order number (H68A080-1, H68A020-1, RP26826-1), die PA204 on H69A206-1, and three new colours (NS on RP26825-1, OF on RP26918-1, BD on RP26925-1). The reader read BD as BL WITHOUT a flag (its colour list snapped the new colour to the nearest known one); the reader now also reads every colour letter by letter and flags any difference.",
+ "no_total_note": "No printed total: SE23 continues on report page 8, which is missing from the scan. Handwritten 3,939,487# on page 7 = sum of its weights; the Final Total matches all rows exactly, so page 8 held no orders.",
+ "final_note": ". Rows = 6,277,751 PCs / 22,103,174 LBs: matches exactly.",
+ "weight_note": ".",
+ "ext_pages_note": "Scan pages 1-14 are report pages 1-7, 9, 11, 12, 10, 13, 14, 15: report page 8 (SE23 continuation with its line total) is missing; the Final Total still equals all 75 orders. No formulation (FRM) pages in this packet: see FRM Draft 2026-09-28."
+}

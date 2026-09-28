@@ -189,6 +189,9 @@ readme(wb, f"PP Profile Production Instructions - Converting ({', '.join(_sheets
 wb.save(config.OUTPUT_DIR / f'CNV Converting Schedule {PKT}.xlsx')
 
 # ================================================================== 3. FORMULATIONS
+if not FRM:   # a packet without Tech's FRM pages (28 Sep 2026): no FRM Formulation Report; daily/resolve.py drafts one
+    print(f'No FRM pages in the {PKT} packet: FRM Formulation Report not built (run daily/resolve.py for the FRM Draft)')
+    raise SystemExit(0)
 wb = Workbook()
 long = []
 for f in frm_rows:
