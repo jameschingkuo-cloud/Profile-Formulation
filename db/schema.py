@@ -124,6 +124,9 @@ BOOKS: list[Book] = [
           Sheet("Materials", "One row per material, keyed on the plant's material code list (IWPFT062)", [
              Col("Material ID", key=True, required=True, note="IWPFT062 item no., e.g. 50-1560-050"),
              Col("Material Code", note="e.g. PC416"), Col("Name", required=True, note="e.g. Formosa F6502A"),
+             Col("Supplier"),
+             Col("IWPFT062 Status", "enum", required=True, values=("Active", "In-active", "Withdrawn", "Not listed"),
+                 note="as on the qualified list; 'Not listed' = plant-internal (INT-) or not on the list (NL-)"),
              Col("Role", "enum", required=True, values=ROLES),
              Col("FRM Text", note="how the FRM page writes it, e.g. 'PP Virgin-silo 3 (6502A)'"),
              Col("Other Spellings", note="every spelling seen in calcs/FRM, ' | ' separated"),

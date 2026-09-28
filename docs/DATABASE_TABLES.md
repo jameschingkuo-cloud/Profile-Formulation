@@ -64,6 +64,8 @@ One row per material, keyed on the plant's material code list (IWPFT062).
 | Material ID | text | ● | ● |  | IWPFT062 item no., e.g. 50-1560-050 |
 | Material Code | text |  |  |  | e.g. PC416 |
 | Name | text |  | ● |  | e.g. Formosa F6502A |
+| Supplier | text |  |  |  |  |
+| IWPFT062 Status | enum |  | ● | Active, In-active, Withdrawn, Not listed | as on the qualified list; 'Not listed' = plant-internal (INT-) or not on the list (NL-) |
 | Role | enum |  | ● | VIRGIN, HOMO, RECLAIM, TALC, CACO3, COLOUR, MODIFIER, ADDITIVE, HDPE, SKIN, FOAM, OTHER |  |
 | FRM Text | text |  |  |  | how the FRM page writes it, e.g. 'PP Virgin-silo 3 (6502A)' |
 | Other Spellings | text |  |  |  | every spelling seen in calcs/FRM, ' | ' separated |

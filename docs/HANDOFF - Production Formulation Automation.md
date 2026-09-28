@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.16 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.17 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1260,6 +1260,33 @@ packets. build them"*. New `daily/record.py <date> ...` writes them from `data/p
 - `resolve.py`: the `PKT_DATE` check moved into `main()` so `record.py` can reuse `variant()` / `split_feeder()`.
 - Daily run (CLAUDE.md step 7): after publishing the day, `python daily/record.py <date>` and publish the three records.
 
+## 7.27 Decisions, the Draft Formulation Master and change control (28 Sep 2026, local)
+
+James asked how to maintain the formulation long term: *"is it through direct excel update in share point? or i should
+update it through claude?"*. Answer agreed (*"Yes to all. lets build it this way"*): **the master is Excel in
+SharePoint; Tech/James edit it there; every edit gets an approved Change Log row; the pipeline checks every run and
+stops on any change without one. Claude is for heavy changes** (new line, new slopes, bulk calc updates, reports).
+DATABASE.md §6 (decisions) and §7 (maintenance) record it.
+
+- **Decisions:** calc workbook renamed `Formulation Calc Library.xlsx` (published to `Formulation Data Base\`, same
+  content as the old file); approval = Tech for formulas/slopes, James for rules; Material ID = IWPFT062 Material No.;
+  variants as listed. RP26923-1: no action (history is in the Formulation Report Record). Old workspace copies
+  (`Product Master.xlsx`, `Daily6\`, old `Formulation Master.xlsx`) verified identical to the published or
+  superseded files; **deleting them was blocked by Claude Code's permission check, so James deletes them.**
+- **IWPFT062 is at Rev 17.0** (14 Sep 2026; Rev 16.0 = Kevin Sung's vendor revision of 9 Sep, see
+  `ISO and Process Management\IWPFT062 Rev 16 - vendor list revision.md`). Read only.
+- **`Formulation Master.xlsx` seeded as Draft and published** (`db/seed_master.py`, one time): 73 Materials (every
+  IWPFT062 row + Q1203K withdrawn + `INT-` plant reclaims/premix + `NL-` not-listed), 46 Formulas, 275 Line Settings
+  (as printed), 107 Product to Formula, 72 Recipe rows (weight lines only; auger recipes need Tech's slopes),
+  Standing Notes. Drop-down lists on every coded column; workbook structure locked (no password).
+- **What IWPFT062 settles / raises** (master Issues sheet):
+  - FXA020WB4's WB-W40020M = CR480WB Blue white, **approved** (closes that question); PE-W22151 = CR415WB.
+  - **High:** Q1203K withdrawn at Rev 16.0 but printed on SE42 every packet; F1102K (PH401) In-active but in
+    FUA151WB3 (SE43, 28 Sep); PP Yungsox 5050S (SE61) and Heritage HM-10HP (SE24/SE25) not on the list.
+  - FU0151KS3 has different weight % on SE42 (25 Sep) and SE43 (28 Sep): the recipe may be per line, not per code.
+- **Change control:** `db/preflight.py check|accept` compares the published master with the accepted version in
+  `data/snapshots/` (git). Baseline accepted after publishing. Test `test_master_change_control`. Daily run step 0.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1368,6 +1395,8 @@ This document is not listed (it can't carry its own hash). Update this table whe
 | `Daily Formulation Report/FRM Formulation Report 2026-09-28.xlsx` | 47,828 | `23d87a1ba57ee8b3` | cells sha256 `5e10b38ea19a1a2f` |
 | `Daily Formulation Report/Formulation Report Record.xlsx` (§7.26) | 126,316 | `221b55efede0f730` | cells sha256 `de1655012b9a5193` (1,656 rows) |
 | `Extrusion Schedule/Extrusion Production Record.xlsx` (§7.26) | 30,140 | `68c3d4bdcddca9c1` | cells sha256 `7755a7328ec270e2` (308 rows) |
+| `Formulation Data Base/Formulation Calc Library.xlsx` (§7.27, renamed) | 3,667,095 | `4e5781f776f7b4ce` | cells sha256 `e0197d136359737a` |
+| `Formulation Data Base/Formulation Master.xlsx` (§7.27, Draft seed) | 53,882 | `3da9441e7aa9fe91` | cells sha256 `ff4482f76f86e6a3` |
 | `Converting Schedule/Converting Production Record.xlsx` (§7.26) | 35,507 | `5f08605a883247ba` | cells sha256 `a6992f47668109d7` (270 rows) |
 | `Daily/2026/CNV Converting Schedule 2026-09-23.xlsx` | 46,840 | `05fd6755e1cf7463` | cells sha256 `6a9604c5d6643749` (170 rows) |
 | `Daily/2026/CNV Converting Schedule 2026-09-24.xlsx` | 47,886 | `27c12183b4abe094` | cells sha256 `9a45c01c77e130a6` (174 rows) |
@@ -1386,6 +1415,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.17 | 2026-09-28 | Claude Code (local, with James Kuo) | **Masters maintained in Excel with change control (§7.27).** James: *"Yes to all. lets build it this way"*. Calc workbook renamed Formulation Calc Library; Draft Formulation Master seeded from IWPFT062 Rev 17.0 + the four FRMs and published; `db/preflight.py` stops on unlogged edits. IWPFT062 raises 4 High material issues (Q1203K, F1102K, Yungsox, HM-10HP). |
 | 1.16 | 2026-09-28 | Claude Code (local, with James Kuo) | **The three history records built (§7.26).** James: *"build them"*. `daily/record.py` (append-only, enforced and tested); Formulation Report Record 1,656 rows, Extrusion Production Record 308, Converting Production Record 270, from the 23–28 Sep packets. Schema: `Formula Row` key, `Note`, `Source Scan`, `Handwritten`. Published (James: *"yes"*); §11 updated. |
 | 1.15 | 2026-09-28 | Claude Code (local, with James Kuo) | **25 and 28 Sep published; Product Master merged (§7.25).** James: *"yes"*. Six daily workbooks and the Product Master (2,087 products) published and verified; §11 updated. Fixed a double-escaped quote in six 25 Sep CNV notes before publishing; `build_master.py` keeps prior `calc …` Check notes when run without calc data. Branch pushed to GitHub. |
 | 1.14 | 2026-09-28 | Claude Code (local, with James Kuo) | **28 Sep FRM pages transcribed (§7.24)** from a separate scan James sent. The packet gains `frm` and `frm_source_scan`; the 74 missing-FRM Highs are gone; FRM Formulation Report 2026-09-28 is built. The FRM Draft matched Tech's issue on all 59 drafted orders. Nothing published. |

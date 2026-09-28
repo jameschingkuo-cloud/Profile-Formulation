@@ -112,3 +112,45 @@ def test_records_append_only(tmp_path):
     r = rec('2026-09-23')
     assert r.returncode == 1 and 'STOP' in r.stdout
     assert (out / ext).read_bytes() == before                           # nothing written
+
+
+def test_master_change_control(tmp_path):
+    """db/preflight.py (28 Sep 2026): an edit to the master without an approved Change Log row stops the run."""
+    import shutil
+    from openpyxl import load_workbook
+    pub, out = tmp_path / 'pub', tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
+               SNAP_DIR=str(tmp_path / 'snap'))
+    py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
+    r = py(str(ROOT / 'db' / 'seed_master.py'))
+    if r.returncode and 'IWPFT062' in (r.stdout + r.stderr):
+        pytest.skip('IWPFT062 not on this PC')
+    assert r.returncode == 0, r.stdout + r.stderr
+    name = 'Formulation Master.xlsx'
+    (pub / 'Formulation Data Base').mkdir(parents=True)
+    master = pub / 'Formulation Data Base' / name
+    shutil.copy(out / name, master)
+    pf = lambda *a: py(str(ROOT / 'db' / 'preflight.py'), *a, name)
+    assert pf('check').returncode == 2                          # no accepted version yet
+    assert pf('accept', '--baseline').returncode == 0
+    assert pf('check').returncode == 0                          # unchanged
+    wb = load_workbook(master)                                  # Tech edits a setting, no log
+    ws = wb['Line Settings']
+    h = [c.value for c in ws[1]]
+    ws.cell(2, h.index('Set') + 1).value = '99'
+    key = '|'.join(str(ws.cell(2, h.index(k) + 1).value or '') for k in ('Line Code', 'Formula Code', 'Variant', 'Extruder', 'Feeder'))
+    wb.save(master)
+    r = pf('check')
+    assert r.returncode == 1 and 'UNLOGGED' in r.stdout and 'STOP' in r.stdout
+    wb = load_workbook(master)                                  # ... then logs it, with an approver
+    wb['Change Log'].append([1, datetime_today(), 'Line Settings', key, 'Set', None, '99', 'test', 'Tech', 'Tech'])
+    wb.save(master)
+    r = pf('check')
+    assert r.returncode == 0 and 'approved by Tech' in r.stdout, r.stdout
+    assert pf('accept').returncode == 0 and pf('check').returncode == 0
+
+
+def datetime_today():
+    import datetime
+    return datetime.date.today()

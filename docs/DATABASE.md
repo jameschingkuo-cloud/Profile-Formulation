@@ -106,14 +106,32 @@ Nothing reaches a master without a Change Log row that names an approver. That i
    *Records built 28 Sep 2026 from the 23, 24, 25 and 28 Sep packets (`daily/record.py`, HANDOFF §7.26).*
 6. **Interface**: the page where people upload the schedule and download the formulation, on top of steps 4–5.
 
-## 6. Decisions for James
+## 6. Decisions (James Kuo, 28 Sep 2026: "Yes to all")
 
-1. **Rename** today's calc-derived `Formulation Master.xlsx` to `Formulation Calc Library.xlsx`, so the approved
-   master can use the name `Formulation Master.xlsx`?
-2. **Approval:** who may approve a formula or slope (Tech only, or Tech and James)? Their names go in the Change Log.
-3. **Material ID:** use the IWPFT062 item number (`50-1560-050`) as the key? It needs the current IWPFT062 (Rev 16).
-4. **Variants:** is the list complete (Primary, Reclaim run-out, VOIDFORM, Sign blank, Corn box, Roll)?
-5. ~~Move the published files to the new folders?~~ **Done 28 Sep 2026.** Product Master and the 23–24 Sep daily
-   workbooks were copied (by SharePoint, same bytes) into their folders, and `publish.py` now routes every file.
-   James: the old folder is *"where you will put all the MD, PY etc etc that is not data base related file"* —
-   *"its basically your work space"*. `Formulation Master.xlsx` stays there until decision 1 (the rename) is made.
+1. **Renamed:** the calc-derived workbook is `Formulation Data Base\Formulation Calc Library.xlsx` (published 28 Sep,
+   same content); `calc/build_formulation_master.py` now writes that name. `Formulation Master.xlsx` is the approved master.
+2. **Approval:** formulas and slopes by Tech; rules (dosing, R1/R2, hopper roles) by James. Names go in Approved By.
+3. **Material ID** = the IWPFT062 Material No. (e.g. `50-1560-050`), from IWPFT062 Rev 17.0. Plant materials with no
+   number get `INT-` IDs (reclaims, premix); materials used on the FRM but not on IWPFT062 get `NL-` IDs and a High issue.
+4. **Variants:** Primary, Reclaim run-out, VOIDFORM, Sign blank, Corn box, Roll, Other.
+5. **Folders:** the published files live in their database folders (done 28 Sep). The stale copies in the workspace
+   folder (`Product Master.xlsx`, `Daily6\`, the old `Formulation Master.xlsx`) were checked identical to the
+   published or superseded files; James deletes them (SharePoint recycle bin keeps them 93 days).
+
+## 7. Maintaining the masters (James, 28 Sep 2026: "lets build it this way")
+
+```
+ Tech / James edit the master in Excel (SharePoint)  ->  add a Change Log row (Why, Requested By, Approved By)
+        |                                                  drop-down lists stop typos; sheets can't be renamed/deleted
+        v
+ Every pipeline run:  python db/preflight.py check "Formulation Master.xlsx"
+        |  compares with the last accepted version (data/snapshots/, in git)
+        |-- every change has an approved Change Log row -> accept -> run continues
+        '-- any change without one -> STOP, listed for James; nothing is built
+```
+
+- The pipeline **never rewrites a master**. `db/seed_master.py` seeded the Draft once (28 Sep 2026); later data from
+  Tech's calcs or new packets is *proposed* (Issues / a proposals sheet) and applied by people through the Change Log.
+- `publish.py` also refuses to overwrite a master that changed since the pipeline read it.
+- Claude is for the heavy changes: a new line, new slopes after a catch test, bulk updates from the calc workbooks,
+  and "what changed" reports.

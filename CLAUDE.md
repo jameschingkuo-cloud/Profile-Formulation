@@ -68,7 +68,11 @@ Change these only with James's explicit say-so, and log the change in the handof
   workbooks stay as issued. `publish.py` refuses an earlier day's workbook; use `--reissue` only if James asks.
 - Write a guessed identifier (order, product, formula code, material) as fact. Flag it instead.
 - Pick spreadsheet columns by position. Always select by header name.
-- Build the six target files (§7.13) before James says go.
+- Build the six target files (§7.13) before James says go. (Go given 28 Sep 2026 for the three records and the
+  Formulation Master; the Auger Calibration master waits for Tech's calc workbooks.)
+- Rewrite a master (`Formulation Master.xlsx`, later `Auger Calibration.xlsx`). People edit it in Excel and log each
+  change in its Change Log; `db/preflight.py` checks. The pipeline only proposes changes (Issues), never applies them.
+  `db/seed_master.py` was the one-time Draft seed (28 Sep 2026): do not run it against a published master.
 
 ## Layout
 
@@ -79,8 +83,8 @@ Change these only with James's explicit say-so, and log the change in the handof
 | `daily/` | Packet JSON → EXT / CNV / FRM workbooks (`build_xlsx.py`, `checks.py`) and Product Master merge (`build_master.py`) |
 | `daily/manual/` | Hand-found issues per day (`manual_issues_<date>.py`) |
 | `daily/cfg/` | Read Me notes per day (`cfg_<date>.json`) |
-| `calc/` | Tech's `SExx Formulation.xls` → `Formulation Master.xlsx` (`parse_fcal.py` → `export_calc_products.py` → `build_formulation_master.py`); `auger_rules.py` |
-| `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. Flow in `docs/DATABASE.md` (§7.19) |
+| `calc/` | Tech's `SExx Formulation.xls` → `Formulation Calc Library.xlsx` (`parse_fcal.py` → `export_calc_products.py` → `build_formulation_master.py`); `auger_rules.py` |
+| `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. `preflight.py`: master change control (`check` / `accept`; accepted versions in `data/snapshots/`). `seed_master.py`: one-time Draft seed. Flow and maintenance in `docs/DATABASE.md` (§3, §7) |
 | `product_master/` | `prepare.py`: Product Master → `Product Master - Prepared <date>.xlsx` (code-derived columns, Issues, Verify First, Colour Codes, Import Map; §7.18). A working file, not published |
 | `scan_reader/` | `ext_scan_reader.py` (EXT scan reader, R1/R2 hardcoded, `glyph_bank.npz`); `render_pages.py` (page PNGs + quarter tiles for reading) |
 | `data/packets/` | Transcribed daily packets `packet_YYYY-MM-DD.json` (`packet_date`, `source_scan`, `ext`, `cnv`, `frm`) |
@@ -94,6 +98,9 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 **Use the repo's virtual environment:** on Windows, `python` below means `.venv/Scripts/python`
 (e.g. `.venv/Scripts/python -m pytest -q`).
 
+0. **Pre-flight the masters:** `python db/preflight.py check "Formulation Master.xlsx"`. Exit 1 = someone changed the
+   master without an approved Change Log row: **stop**, list the changes for James, build nothing. When every change
+   is logged and approved, `python db/preflight.py accept "Formulation Master.xlsx"` and commit `data/snapshots/`.
 1. Put the scan in `SCAN_DIR`, then run `python scan_reader/render_pages.py <scan.pdf>`.
    - Read every page image (use the quarter tiles for small print).
    - Transcribe EXT, CNV and FRM into `data/packets/packet_YYYY-MM-DD.json`, using the previous day's file as the

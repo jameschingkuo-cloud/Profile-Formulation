@@ -1,4 +1,4 @@
-"""Formulation Master: built from Tech's per-line formulation calculation workbooks (SExx Formulation.xls).
+"""Formulation Calc Library (was 'Formulation Master' until 28 Sep 2026): built from Tech's per-line formulation calculation workbooks (SExx Formulation.xls).
 Each calc block = one order's formulation: hoppers (gear ratio, screw), material, auger calibration slope
 (g/min per setting unit), formula setting, g/min, and formulation %.
 Usage: python calc/build_formulation_master.py   (reads work/parsed.pkl from parse_fcal.py, the daily packet JSON
@@ -12,7 +12,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 from common import split_codes, FORMULA_RE, mat_key, display_name, superseded_copies
 
 import os
-OUT = config.OUTPUT_DIR / 'Formulation Master.xlsx'
+OUT = config.OUTPUT_DIR / 'Formulation Calc Library.xlsx'   # renamed 28 Sep 2026 (DATABASE.md §6.1): the approved master takes 'Formulation Master.xlsx'
 PACKET = os.environ.get('PKT_JSON') or (str(config.packet_path(os.environ['PKT_DATE'])) if os.environ.get('PKT_DATE') else str(config.latest_packet()))
 config.record_read(PACKET, 'daily packet (FRM vs Calc)')
 _items = sorted(p for p in config.CALC_DIR.glob('*Formula*Item*.xls') if not p.name.startswith('~$'))
@@ -330,7 +330,7 @@ sheet('Calc History', H_H, hist, {'Orders': 26, 'Product(s)': 26, 'Material': 22
 # Read Me with live counts
 rm = wb.create_sheet('Read Me', 0)
 dmin = min(b['date'] for b in B if b['date'] and b['date'].year > 2008); dmax = max(b['date'] for b in B if b['date'])
-lines = ['Formulation Master - built from Tech\'s formulation calculation workbooks',
+lines = ['Formulation Calc Library - built from Tech\'s formulation calculation workbooks',
          '',
          f'Source: {len(SRC)} calc workbooks read from {config.CALC_DIR} on {datetime.date.today():%d %b %Y} (' + ', '.join(sorted(SRC)) + ').'
          + (f' Left out as older copies of a line that has a newer workbook: {", ".join(sorted(display_name(f) for f in DROPPED))}.' if DROPPED else '')

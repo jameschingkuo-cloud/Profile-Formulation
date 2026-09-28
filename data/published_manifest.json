@@ -110,6 +110,20 @@
   "published_at": "2026-09-28T16:26:39",
   "sha256": "68c3d4bdcddca9c116165cf8da6550a5dea140f942a60fd16aad40ffa327bb53"
  },
+ "Formulation Data Base/Formulation Calc Library.xlsx": {
+  "bytes": 3667095,
+  "content": "e0197d136359737adbf5062475214092d210907033c6bf91088dd01ce965b945",
+  "from": "Formulation Calc Library.xlsx",
+  "published_at": "2026-09-28T16:48:10",
+  "sha256": "4e5781f776f7b4ce1d178c3170a71dc1414592d7a49b1ccba1650270da1005df"
+ },
+ "Formulation Data Base/Formulation Master.xlsx": {
+  "bytes": 53882,
+  "content": "ff4482f76f86e6a314ae8df0d881d001ec33df3dbcab514084287184106f1d75",
+  "from": "Formulation Master.xlsx",
+  "published_at": "2026-09-28T16:51:52",
+  "sha256": "3da9441e7aa9fe91f2cd1b7920ffe8d27e6f57530e1be502a0dac1d89cafb68b"
+ },
  "Product Master/Product Master.xlsx": {
   "bytes": 270362,
   "content": "9c1561018e82f9341c929704385ceaa2ee0cd85657add718a6b79412fa0e9e32",
