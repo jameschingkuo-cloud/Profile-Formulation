@@ -55,8 +55,10 @@ KNOWN_LINES = ["SE11", "SE12", "SE13", "SE21", "SE22", "SE23", "SE24", "SE25", "
 #   Exceptions seen only on SE61 (23 Sep 2026): RD and RM (letter + letter), e.g. RDRDRD, RMR6R6.
 #   They are accepted only from this list and are always flagged for a person to confirm.
 #   CONFIRMED by James Kuo, 24 Sep 2026 (rule and exception handling, as written above).
+#   OP added by James Kuo, 28 Sep 2026: H68A153-1 (SE31, 25 Sep) prints OPOPOP, "WHITE OPAQUE".
+#   Same handling as RD/RM: accepted from this list, always flagged.
 SPEC_SECOND_CHAR = DIGITS
-SPEC_EXCEPTIONS = ["D", "M"]
+SPEC_EXCEPTIONS = ["D", "M", "P"]
 
 # R3: Mfg# (order) is 7 characters in one of these shapes; Ord# after the hyphen is digits.
 #   H68A007 (LDDLDDD), RP26811 (LLDDDDD), RP24C18 (LLDDLDD)

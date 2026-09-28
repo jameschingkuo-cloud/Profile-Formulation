@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.12 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.13 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -353,7 +353,7 @@ its test results). The checks below still apply on top:
    A line whose rows don't add up to its printed totals has been misread or has a missing row.
    Re-read it; never pass it on.
 2. **Field patterns.** Order `[HR][A-Z0-9]{6} - \d+` (e.g. `H68A007`, `RP24C18`); product code
-   `[DRSCB][A-Z]{2}[0-9A-Z]{2}[A-Z]{2}\d+`; the material field `(PPP|BBB) [PA] (R\d|S\d|RD|RM|R6){3} …`;
+   `[DRSCB][A-Z]{2}[0-9A-Z]{2}[A-Z]{2}\d+`; the material field `(PPP|BBB) [PA] (R\d|S\d|RD|RM|R6|OP){3} …`;
    Thk in the product code (chars 4–5) must equal the `Thk` column.
 3. **Report page numbers** 1…N with none missing (the 23 Sep scan was missing p.11).
 4. **Line list** matches the lines on yesterday's FRM, give or take lines starting or stopping.
@@ -375,7 +375,7 @@ together, and log the change in the revision history.
 |---|---|---|---|
 | **R1** | **Extrusion line code is always 2 letters + 2 digits** (`SE11`, `SE61`) | **James** | Positions 1–2 can only be letters and 3–4 only digits. Three readings must agree: the header word, the `LINE NO. xxxx Total` word, and the glyph read |
 | R1b | Known lines: SE11 SE12 SE13 SE21 SE22 SE23 SE24 SE25 SE31 SE32 SE42 SE43 SE61 | FRM 23 Sep | A code that fits R1 but isn't listed is flagged as a possible new line |
-| **R2** | **Material spec is a letter + a number**, three layers (`R1R1R1`, `R4R4R4`, `S1S1S1`) | **James** (rule and exception handling **confirmed 24 Sep 2026**) | Odd positions can only be letters, even positions only digits. **Exceptions:** `RD`, `RM` (seen on SE61 only: `RDRDRD`, `RMR6R6`) are accepted from that list and **always flagged** for confirmation |
+| **R2** | **Material spec is a letter + a number**, three layers (`R1R1R1`, `R4R4R4`, `S1S1S1`) | **James** (rule and exception handling **confirmed 24 Sep 2026**) | Odd positions can only be letters, even positions only digits. **Exceptions:** `RD`, `RM` (seen on SE61 only: `RDRDRD`, `RMR6R6`) and `OP` (**added by James 28 Sep 2026**: H68A153-1 on SE31, `OPOPOP`, "WHITE OPAQUE") are accepted from that list and **always flagged** for confirmation |
 | R3 | Mfg# is 7 characters, shaped `LDDLDDD` (H68A007), `LLDDDDD` (RP26811) or `LLDDLDD` (RP24C18); Ord# is digits | Data | Each position read as letter or digit only |
 | R4 | Product code = 3 letters + thickness (2 digits, or letter + 0) + 2-letter colour + digits | Data | Same |
 | R5 | Die = letter, letter, digit, letter-or-digit, digit (`PB204`, `PA3B5`) | Data | Same |
@@ -1187,7 +1187,7 @@ is on GitHub, branch `claude/new-session-6wgvkd` (not yet merged into `main`). *
 5. **Scans:** 25 Sep is in `Production Formulation\Extrusion Schedule\`; 28 Sep is `doc05253620260928134035.pdf` in
    James's Downloads. Put both in `inputs\scans` to re-run the reader.
 6. **Decisions waiting for James:** `docs/DATABASE.md` §6 (rename the calc-derived workbook, who approves, Material ID,
-   variants); H68A153-1 spec `OPOPOP` (R2); FXA020WB4's WB-W40020M; RP26923-1's formula change; delete the old copies
+   variants); ~~H68A153-1 spec `OPOPOP` (R2)~~ accepted by James 28 Sep 2026 (Rev 1.13); FXA020WB4's WB-W40020M; RP26923-1's formula change; delete the old copies
    of the database workbooks from the workspace folder.
 7. **Next build:** the three records (Formulation Report, Extrusion and Converting Production Records) from the 23, 24,
    25 and 28 Sep packets; then the Formulation Master (needs Tech's calc workbooks in `CALC_DIR`).
@@ -1311,6 +1311,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.13 | 2026-09-28 | Claude Code (local, with James Kuo) | **R2 exception `OP` added.** H68A153-1 (SE31, 25 Sep) prints `OPOPOP`, "WHITE OPAQUE"; asked whether to accept it, James: *"yes"*. `SPEC_EXCEPTIONS` in `ext_scan_reader.py` is now D, M, P; same handling as RD/RM (accepted, always flagged); §7.6 R2 row and the field pattern updated; test `test_r2_exceptions` added. **OF/BD re-confirmed** (James: *"yes"*, already in R7 since Rev 1.10). The 25 Sep OPOPOP and 28 Sep colour-code manual issues go from High to Info with the decision recorded. Local setup done: Python 3.11.9 + `.venv`, handoff Rev 1.12 copied to the workspace folder (it matched Rev 1.8 byte for byte before), scans in `inputs\scans`; tests 23 passed, 1 skipped (no calc workbooks). Nothing published. |
 | 1.12 | 2026-09-28 | Claude (cloud session with James Kuo) | **Back to James's PC (§7.23).** James: *"please change it to local"*. Open items listed for the local Claude Code session. |
 | 1.11 | 2026-09-28 | Claude (cloud session with James Kuo) | **Glyph bank grown** with the verified 25 and 28 Sep rows (James: *"yes"*): 3,894 → 10,844 glyphs. Blind test on 28 Sep with 25 Sep added: 0 silent errors, 6 fewer flagged rows (§7.7). |
 | 1.10 | 2026-09-28 | Claude (cloud session with James Kuo) | James: *"OF Fade-resistant orange"*, *"BD Dark blue"*. Both added to R7 (reader) and the Product Master colour list; meanings kept in `data/colour_codes.csv` (with WB = blue white). |

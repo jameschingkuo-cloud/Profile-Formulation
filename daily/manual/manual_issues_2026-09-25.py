@@ -4,7 +4,7 @@
 MANUAL = [
  # (Severity, Document, Line, Order, Check, Detail, Source)
  # ---- new today
- ('High','EXT','SE31','H68A153-1','Material spec OPOPOP (breaks R2)','Printed "PPP A OPOPOP" (letter O + letter P, checked at zoom against the 0 in "4.0"). Not letter+digit, and not on the RD/RM exception list. New order; special instructions say "WHITE OPAQUE", so OP may mean opaque. James to confirm before R2 accepts it','scan p11'),
+ ('Info','EXT','SE31','H68A153-1','Material spec OPOPOP (R2 exception)','Printed "PPP A OPOPOP" (letter O + letter P, checked at zoom against the 0 in "4.0"). Not letter+digit. New order; special instructions say "WHITE OPAQUE". James Kuo, 28 Sep 2026: accepted; OP added to the R2 exception list (RD, RM, OP), flagged every time like RD/RM','scan p11'),
  ('High','FRM','SE31','H68A153-1','New formula code FXA020WB4 with a different WB colour','FXA020WB4: V4 is "WB-W40020M" (every other WB formula uses WB-W26038A) and V5 prints "NPC NPC PE-W22151" (NPC twice). Tech to confirm the colour masterbatch','FRM p36'),
  ('Medium','FRM','SE25','RP26923-1','Formula changed since 24 Sep','24 Sep: FU0021WB4 (virgin 40, WB reclaim 60, WB colour 16, talc 16). 25 Sep: RU0001WB4 (PP WB Reclaim 99 only). The order moved from the H69A097-1 group to its own reclaim-only row. Needs a Change Log entry once the Formulation Master exists','FRM p38'),
  ('Medium','EXT vs FRM','SE21','H69A139-1','Order on the formulation page but not on the schedule','H69A139-1 (FU0041KS4) is still on the Line 4 FRM page; it is no longer on the EXT schedule (it was on 24 Sep)','FRM p32, EXT p5-6'),

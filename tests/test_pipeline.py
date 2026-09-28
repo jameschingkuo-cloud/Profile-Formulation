@@ -40,6 +40,12 @@ def test_scan_reader_rules_block_present():
     assert 'DO NOT REMOVE' in s and 'R1' in s and 'R2' in s
 
 
+def test_r2_exceptions():
+    """James: RD, RM (24 Sep 2026) and OP (28 Sep 2026) are the only letter+letter spec tokens."""
+    s = (ROOT / 'scan_reader' / 'ext_scan_reader.py').read_text(encoding='utf-8')
+    assert 'SPEC_EXCEPTIONS = ["D", "M", "P"]' in s
+
+
 def test_rev_index():
     import auger_rules as a
     assert round(a.rev_index(219.1497, '1:14')) == 3068       # virgin PP, 69x69, 1:14
