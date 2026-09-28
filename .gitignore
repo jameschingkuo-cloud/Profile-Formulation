@@ -1,2 +1,13 @@
+# machine-specific
+local_settings.json
+.claude/settings.local.json
+.venv/
+# generated
+work/
 out/
 __pycache__/
+*.pyc
+# inputs stay where they live (Tech's workbooks, scans) - never commit them
+inputs/
+# Excel lock files
+~$*

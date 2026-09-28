@@ -1,0 +1,8 @@
+{
+  "_comment": "Copy to local_settings.json and edit. Forward slashes work on Windows. Leave a key out to use the default inside the repo.",
+  "PUBLISH_DIR": "C:/Users/JamesKuo/Inteplast-WPJK/Profile Production Data Control - Documents/General/Claude MD, PY Pipeline File/Engineering Pipeline/Production Formulation Automation",
+  "HANDOFF": "C:/Users/JamesKuo/Inteplast-WPJK/Profile Production Data Control - Documents/General/Claude MD, PY Pipeline File/Engineering Pipeline/Production Formulation Automation/HANDOFF - Production Formulation Automation.md",
+  "CALC_DIR": "C:/Users/JamesKuo/dev/formulation-pipeline/inputs/calc",
+  "SCAN_DIR": "C:/Users/JamesKuo/dev/formulation-pipeline/inputs/scans",
+  "TESSERACT_CMD": "C:/Program Files/Tesseract-OCR/tesseract.exe"
+}

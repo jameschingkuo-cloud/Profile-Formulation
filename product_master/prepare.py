@@ -9,7 +9,7 @@ What it adds:
     marked "from code - not verified". The packet/calc columns are untouched.
   * Completeness per product (which core fields are still blank) and activity
     (from Formula Last Run), so Tech can verify the products that run first.
-  * Fix List: code pattern errors, thickness conflicts, code vs data conflicts.
+  * Issues: code pattern errors, thickness conflicts, code vs data conflicts.
   * Colour Codes seen in product codes, for James/Tech to name (HANDOFF Q2).
   * Import Map: every column with its fill count and a blank "source field", ready
     for the full data pull.
@@ -17,11 +17,14 @@ What it adds:
 Thickness rule (James Kuo, 28 Sep 2026): "we have product that is in between such
 as 3.3mm. Unfortunately our product code doesnt capture that and one will have to
 look at the spec." So the thickness in the code is nominal only. A difference under
-1 mm is not an error; it goes on the Fix List as "confirm from spec". Neither value
+1 mm is not an error; it goes on the Issues sheet as "confirm from spec". Neither value
 is ever corrected automatically.
 
 Usage:
-    python product_master/prepare.py "<path>/Product Master.xlsx" --out out/ [--asof 2026-09-28]
+    python product_master/prepare.py "<PUBLISH_DIR>/Product Master.xlsx" [--asof 2026-09-28]
+
+Writes to OUTPUT_DIR (config.py; out/ by default). It is a working file for James and
+Tech, not one of the six target files (HANDOFF §7.13), so publish.py is not used.
 """
 
 from __future__ import annotations
@@ -29,14 +32,17 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import hashlib
-import os
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import config  # noqa: E402
 
 SHEET = "Product Master"
 KEY = "Product Code"
@@ -70,8 +76,12 @@ THK_CONFLICT_MM = 1.0
 ACTIVE_DAYS = 365
 RECENT_DAYS = 3 * 365
 
-DERIVED_FILL = PatternFill("solid", fgColor="D9D9D9")
-HEADER_FONT = Font(bold=True)
+# House style (CLAUDE.md): Arial 10; header fill 1F3864 with white bold text.
+# Code-derived columns get a grey header so they can't be mistaken for data.
+BODY_FONT = Font(name="Arial", size=10)
+HEADER_FONT = Font(name="Arial", size=10, bold=True, color="FFFFFF")
+HEADER_FILL = PatternFill("solid", fgColor="1F3864")
+DERIVED_FILL = PatternFill("solid", fgColor="7F7F7F")
 SEVERITY_FILL = {"High": PatternFill("solid", fgColor="F4B084"),
                  "Medium": PatternFill("solid", fgColor="FFE699"),
                  "Low": PatternFill("solid", fgColor="E2EFDA")}
@@ -276,10 +286,12 @@ def write_sheet(ws, header, rows, widths=None):
     ws.append(header)
     for c in ws[1]:
         c.font = HEADER_FONT
+        c.fill = HEADER_FILL
     for row in rows:
         ws.append(row)
     for row in ws.iter_rows(min_row=2):
         for c in row:
+            c.font = BODY_FONT
             if isinstance(c.value, (dt.date, dt.datetime)):
                 c.number_format = "yyyy-mm-dd"
     ws.freeze_panes = "B2"
@@ -290,6 +302,7 @@ def write_sheet(ws, header, rows, widths=None):
 
 def build(master: Path, out_dir: Path, asof: dt.date) -> Path:
     facts = file_facts(master)
+    config.record_read(master, "Product Master")
     header, records = read_master(master)
     dupes = [c for c, n in Counter(r[KEY] for r in records).items() if n > 1]
     res = analyse(records, asof)
@@ -308,9 +321,13 @@ def build(master: Path, out_dir: Path, asof: dt.date) -> Path:
     order = {"High": 0, "Medium": 1, "Low": 2}
     act = {"Active": 0, "Recent": 1, "Dormant": 2, "Unknown": 3}
     fixes = sorted(res["fixes"], key=lambda f: (order[f["Severity"]], act[f["Activity"]], f["Category"], f["Product Code"]))
-    fh = ["Severity", "Product Code", "Category", "Detail", "Action", "Activity", "Formula Last Run"]
-    ws = wb.create_sheet("Fix List")
-    write_sheet(ws, fh, [[f[h] for h in fh] for f in fixes], {"Detail": 60, "Action": 60, "Category": 26})
+    # House Issues columns, with Product Code in place of Line / Order (a product has neither).
+    fh = ["Severity", "Document", "Product Code", "Check", "Detail", "Action", "Activity",
+          "Formula Last Run", "Source", "James / Tech response"]
+    ws = wb.create_sheet("Issues")
+    write_sheet(ws, fh, [[f["Severity"], "Product Master", f["Product Code"], f["Category"], f["Detail"],
+                          f["Action"], f["Activity"], f["Formula Last Run"], master.name, None] for f in fixes],
+                {"Detail": 60, "Action": 60, "Check": 26, "James / Tech response": 40})
     for row in ws.iter_rows(min_row=2, max_col=1):
         row[0].fill = SEVERITY_FILL[row[0].value]
 
@@ -360,14 +377,17 @@ def build(master: Path, out_dir: Path, asof: dt.date) -> Path:
     lines += [[f"Activity: {k}", acts[k]] for k in ("Active", "Recent", "Dormant", "Unknown")]
     lines += [[f"Code agrees with data: {k}", f"{ag[k, True]} of {ag[k, True] + ag[k, False]}"]
               for k in ("material", "grade", "colour", "thickness")]
-    lines += [[f"Fix List: {k}", sev[k]] for k in ("High", "Medium", "Low")]
+    lines += [[f"Issues: {k}", sev[k]] for k in ("High", "Medium", "Low")]
     lines += [[f"  {k}", n] for k, n in cat.most_common()]
     lines += [[None, None],
-              ["Sheets", "Product Master (+ grey derived columns) · Fix List · Verify First (products run in the last 12 months, newest first) · Colour Codes · Import Map (fill the source field for the full data pull)"]]
+              ["Sheets", "Product Master (+ grey derived columns) · Issues · Verify First (products run in the last 12 months, newest first) · Colour Codes · Import Map (fill the source field for the full data pull)"]]
     for ln in lines:
         ws.append(ln)
     ws["B11"].number_format = "yyyy-mm-dd"
-    ws["A1"].font = Font(bold=True, size=14)
+    for row in ws.iter_rows():
+        for c in row:
+            c.font = BODY_FONT
+    ws["A1"].font = Font(name="Arial", bold=True, size=14)
     ws.column_dimensions["A"].width = 34
     ws.column_dimensions["B"].width = 90
 
@@ -380,7 +400,7 @@ def build(master: Path, out_dir: Path, asof: dt.date) -> Path:
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("master", type=Path, help="Product Master.xlsx")
-    ap.add_argument("--out", type=Path, default=Path(os.environ.get("OUT_DIR", "out")))
+    ap.add_argument("--out", type=Path, default=config.OUTPUT_DIR)
     ap.add_argument("--asof", type=dt.date.fromisoformat, default=dt.date.today())
     a = ap.parse_args(argv)
     print(build(a.master, a.out, a.asof))
