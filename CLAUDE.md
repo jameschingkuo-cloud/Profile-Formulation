@@ -114,6 +114,10 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
    master and records what it read.
 6. Read the Issues sheets. Tell James about anything **High** before publishing.
 7. Publish: `python publish.py "EXT Extrusion Schedule <date>.xlsx" "CNV Converting Schedule <date>.xlsx" "FRM Formulation Report <date>.xlsx" "Product Master.xlsx"`.
+   Then append the day to the three records and publish them:
+   `python daily/record.py <date>` and
+   `python publish.py "Formulation Report Record.xlsx" "Extrusion Production Record.xlsx" "Converting Production Record.xlsx"`.
+   The records are append-only: a date already recorded is skipped if identical; if it differs the script stops.
 8. Run `python -m pytest -q`, then commit the packet JSON, the manual issues and `data/published_manifest.json`.
 9. Handoff: add the day's notes (as in §7.10) and a revision-history row.
 

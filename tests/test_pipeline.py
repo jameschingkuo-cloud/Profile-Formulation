@@ -84,3 +84,31 @@ def test_daily_workbooks_build(tmp_path):
 def test_calc_parse(tmp_path):
     run('calc/parse_fcal.py', {}, tmp_path)
     assert (tmp_path / 'work' / 'parsed.pkl').exists()
+
+
+def test_records_append_only(tmp_path):
+    """daily/record.py (28 Sep 2026): a date already recorded is skipped if identical, and STOPs if it differs."""
+    import shutil
+    from openpyxl import load_workbook
+    pub, out = tmp_path / 'pub', tmp_path / 'out'
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub))
+    rec = lambda *d: subprocess.run([sys.executable, str(ROOT / 'daily' / 'record.py'), *d], env=env,
+                                    capture_output=True, text=True, cwd=ROOT)
+    out.mkdir()
+    r = rec('2026-09-23')
+    assert r.returncode == 0, r.stdout + r.stderr
+    ext = 'Extrusion Production Record.xlsx'
+    (pub / 'Extrusion Schedule').mkdir(parents=True)
+    shutil.copy(out / ext, pub / 'Extrusion Schedule' / ext)          # as if published
+    r = rec('2026-09-23', '2026-09-24')
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert 'already recorded, identical' in r.stdout and '2026-09-24: 80 rows appended' in r.stdout
+    rows = list(load_workbook(out / ext, read_only=True)['Orders by Day'].iter_rows(values_only=True))
+    assert len(rows) == 1 + 82 + 80
+    wb = load_workbook(pub / 'Extrusion Schedule' / ext)                 # someone edits a past row
+    wb['Orders by Day']['F2'] = 1
+    wb.save(pub / 'Extrusion Schedule' / ext)
+    before = (out / ext).read_bytes()
+    r = rec('2026-09-23')
+    assert r.returncode == 1 and 'STOP' in r.stdout
+    assert (out / ext).read_bytes() == before                           # nothing written

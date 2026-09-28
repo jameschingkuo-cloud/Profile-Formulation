@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.15 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.16 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1231,6 +1231,35 @@ James: *"yes"* (publish both days, merge the Product Master, push). §7.23 items
   `calc GSM 1003` RPP40KS2136) would have been dropped; the merge now keeps the prior master's `calc …` notes when
   no calc data is loaded.
 
+## 7.26 The three history records built (28 Sep 2026, local)
+
+James: *"the three history records (Formulation Report, Extrusion and Converting Production Records) from the four
+packets. build them"*. New `daily/record.py <date> ...` writes them from `data/packets/`, columns taken by name from
+`db/schema.py`. Built for 23, 24, 25 and 28 Sep; in `out/`, **not yet published**.
+
+| Record | Rows | Per day | One row per |
+|---|---|---|---|
+| Formulation Report Record (`Daily Formulation Report\`) | 1,656 | 429 / 415 / 376 / 436 | issue date × line × order × formula row × feeder |
+| Extrusion Production Record (`Extrusion Schedule\`) | 308 | 82 / 80 / 71 / 75 | schedule date × line × order |
+| Converting Production Record (`Converting Schedule\`) | 270 | 70 / 69 / 69 / 62 | schedule date × converting line × order × row |
+
+- **Append-only, enforced:** each run starts from the published record (read and recorded). A date already in it is
+  skipped if the rows are identical and **stops the run** (nothing written) if they differ. Test
+  `test_records_append_only`.
+- **Schema additions** (`db/schema.py`, `docs/DATABASE_TABLES.md` regenerated): `Formula Row` in the Formulation
+  Report Record key (FUA060WBA is printed twice for the same orders with different sets), plus `Note` and
+  `Source Scan`; `Handwritten` and `Source Scan` on the EXT and CNV records.
+- **Values as printed.** `Plts Ordered` keeps the printed 999 (the field caps there; about 16 orders a day) with any
+  hand correction in `Handwritten`. CNV overflow totals stay `######`. `Plts Done (EXT)` is read from "NNN PLTS DONE".
+  CNV `X OF Y` parsed on all 270 rows.
+- **Weight %** only on weight lines (SE24, SE42, SE43, SE61): Set, and the balance to 100 for `Auto`; all 190
+  extruder groups add to 100. Blank on auger lines. `Variant` uses the FRM Draft's rules (`resolve.variant`).
+- **H69A139-1 (25 Sep):** on the FRM page but not on that day's EXT, so its product code is taken from the 24 Sep EXT
+  (DPP40KS303) and the row's `Source Scan` says so.
+- `Material ID` blank until the Materials table exists; `Signed By/At` blank (these are Tech's pages as transcribed).
+- `resolve.py`: the `PKT_DATE` check moved into `main()` so `record.py` can reuse `variant()` / `split_feeder()`.
+- Daily run (CLAUDE.md step 7): after publishing the day, `python daily/record.py <date>` and publish the three records.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1354,6 +1383,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.16 | 2026-09-28 | Claude Code (local, with James Kuo) | **The three history records built (§7.26).** James: *"build them"*. `daily/record.py` (append-only, enforced and tested); Formulation Report Record 1,656 rows, Extrusion Production Record 308, Converting Production Record 270, from the 23–28 Sep packets. Schema: `Formula Row` key, `Note`, `Source Scan`, `Handwritten`. Not published yet. |
 | 1.15 | 2026-09-28 | Claude Code (local, with James Kuo) | **25 and 28 Sep published; Product Master merged (§7.25).** James: *"yes"*. Six daily workbooks and the Product Master (2,087 products) published and verified; §11 updated. Fixed a double-escaped quote in six 25 Sep CNV notes before publishing; `build_master.py` keeps prior `calc …` Check notes when run without calc data. Branch pushed to GitHub. |
 | 1.14 | 2026-09-28 | Claude Code (local, with James Kuo) | **28 Sep FRM pages transcribed (§7.24)** from a separate scan James sent. The packet gains `frm` and `frm_source_scan`; the 74 missing-FRM Highs are gone; FRM Formulation Report 2026-09-28 is built. The FRM Draft matched Tech's issue on all 59 drafted orders. Nothing published. |
 | 1.13 | 2026-09-28 | Claude Code (local, with James Kuo) | **R2 exception `OP` added.** H68A153-1 (SE31, 25 Sep) prints `OPOPOP`, "WHITE OPAQUE"; asked whether to accept it, James: *"yes"*. `SPEC_EXCEPTIONS` in `ext_scan_reader.py` is now D, M, P; same handling as RD/RM (accepted, always flagged); §7.6 R2 row and the field pattern updated; test `test_r2_exceptions` added. **OF/BD re-confirmed** (James: *"yes"*, already in R7 since Rev 1.10). The 25 Sep OPOPOP and 28 Sep colour-code manual issues go from High to Info with the decision recorded. Local setup done: Python 3.11.9 + `.venv`, handoff Rev 1.12 copied to the workspace folder (it matched Rev 1.8 byte for byte before), scans in `inputs\scans`; tests 23 passed, 1 skipped (no calc workbooks). Nothing published. |

@@ -77,8 +77,8 @@ Product Master ── Product Code ──> Product to Formula <── Line Code 
     for that line → Line Settings.  Anything not matched exactly → Exceptions.                  [to build]
       = FRM Draft <date>.xlsx
  7  Tech reviews the draft + Exceptions, decides each exception, signs.
- 8  Issue: render the FRM pages from the signed draft; append to Formulation Report Record;
-    append the day's orders to Extrusion and Converting Production Records.                                     [to build]
+ 8  Issue: render the FRM pages from the signed draft [to build]; append to Formulation Report Record;
+    append the day's orders to Extrusion and Converting Production Records (daily/record.py).   [records exist]
  9  publish.py → each file to its subfolder, verified by content; commit the manifest.         [exists; routing to add]
 ```
 
@@ -103,6 +103,7 @@ Nothing reaches a master without a Change Log row that names an approver. That i
 3. **Tech approves** the formulas that run most (the ones on the daily packets first).
 4. **Resolve step + FRM Draft**, run beside Tech's FRM.
 5. **Records** (Formulation Report Record, Extrusion and Converting Production Records) and `publish.py` routing to the subfolders.
+   *Records built 28 Sep 2026 from the 23, 24, 25 and 28 Sep packets (`daily/record.py`, HANDOFF §7.26).*
 6. **Interface**: the page where people upload the schedule and download the formulation, on top of steps 4–5.
 
 ## 6. Decisions for James

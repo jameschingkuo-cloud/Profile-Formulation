@@ -287,27 +287,31 @@ Everything read from Tech's SExx Formulation.xls calc workbooks (today's 'Formul
 
 What the pipeline proposes for the day: every EXT order resolved to a formula and settings, plus Exceptions. Nothing guessed: an order without an exact match goes to Exceptions for an engineer.
 
-- Written by: daily/resolve.py (to build, phase 3)
+- Written by: daily/resolve.py
 - Read by: Tech (review and sign), FRM renderer
 
 ### Draft
 
-One row per order x feeder.
+One row per order x formula x feeder, as last issued for that order on that line.
 
 | Column | Type | Key | Req. | Allowed / refers to | Note |
 |---|---|---|---|---|---|
 | Line Code | text | ● | ● |  |  |
 | Order | text | ● | ● |  |  |
 | Product Code | text |  | ● |  |  |
-| Formula Code | text | ● |  |  |  |
-| Variant | text | ● |  |  |  |
+| Formula Code | text | ● | ● |  |  |
+| Variant | enum | ● | ● | Primary, Reclaim run-out, VOIDFORM, Sign blank, Corn box, Roll, Other |  |
 | Extruder | text | ● |  |  |  |
-| Feeder | text | ● |  |  |  |
-| Material ID | text |  |  |  |  |
-| Set | text |  |  |  |  |
+| Feeder | text | ● | ● |  |  |
+| Material ID | text |  |  |  | blank until the Materials table exists |
+| Material (as issued) | text |  |  |  |  |
+| Set | text |  | ● |  |  |
 | Weight % | number |  |  |  |  |
-| How Resolved | enum |  |  | Product to Formula, RUN WITH partner, Engineer |  |
-| Same as Yesterday | enum |  |  | Yes, No, New order |  |
+| How Resolved | enum |  | ● | Last issued (same order, same line), Product to Formula, Engineer |  |
+| Last Issued | date |  |  |  |  |
+| Source | text |  |  |  |  |
+| Formula Row | int | ● |  |  |  |
+| Note | text |  |  |  |  |
 
 ### Exceptions
 
@@ -319,6 +323,7 @@ Orders the pipeline would not resolve (HANDOFF §7.4).
 | Order | text |  | ● |  |  |
 | Product Code | text |  |  |  |  |
 | Reason | text |  | ● |  |  |
+| Suggestion (not used) | text |  |  |  |  |
 | Engineer Decision | text |  |  |  |  |
 | Decided By | text |  |  |  |  |
 
@@ -369,11 +374,14 @@ One row per issue date x order x feeder.
 | Variant | text | ● | ● |  |  |
 | Extruder | text | ● |  |  |  |
 | Feeder | text | ● | ● |  |  |
+| Formula Row | int | ● | ● |  | 1 = first formula listed for the order; one code can be printed twice with different sets |
 | Material ID | text |  |  |  |  |
 | Material (as printed) | text |  |  |  |  |
 | Set | text |  | ● |  |  |
-| Weight % | number |  |  |  |  |
+| Weight % | number |  |  |  | weight lines only: Set, or the balance to 100 for 'Auto'; blank on auger lines |
+| Note | text |  |  |  | the FRM row's note, as printed |
 | Source | enum |  | ● | Tech FRM, Pipeline draft, Engineer |  |
+| Source Scan | text |  |  |  | scan file + page |
 | Signed By | text |  |  |  |  |
 | Signed At | datetime |  |  |  |  |
 
@@ -407,9 +415,11 @@ One row per schedule date x order.
 | Product Code | text |  | ● |  |  |
 | Total Sheets | int |  |  |  |  |
 | Weight (LBs) | number |  |  |  |  |
-| Plts Done (EXT) | int |  |  |  |  |
-| Plts Ordered | int |  |  |  |  |
+| Plts Done (EXT) | int |  |  |  | 'NNN PLTS DONE' in the special instructions |
+| Plts Ordered | int |  |  |  | # Plt as printed; the field caps at 999 |
 | Special Instructions | text |  |  |  |  |
+| Handwritten | text |  |  |  | handwriting on the print (e.g. a corrected pallet count); never read as data |
+| Source Scan | text |  |  |  | scan file + page |
 
 ## CNV Converting Schedule <date>.xlsx
 
@@ -454,4 +464,6 @@ One row per schedule date x converting line x order row, as printed.
 | Pc/Plt | int |  |  |  |  |
 | Req. Date | text |  |  |  |  |
 | Done Note | text |  |  |  |  |
+| Handwritten | text |  |  |  | handwriting on the sheet; never read as data |
+| Source Scan | text |  |  |  | scan file + page |
 

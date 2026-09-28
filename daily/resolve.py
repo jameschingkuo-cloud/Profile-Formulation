@@ -29,9 +29,7 @@ from openpyxl import Workbook  # noqa: E402
 from openpyxl.styles import Font, PatternFill  # noqa: E402
 from openpyxl.utils import get_column_letter  # noqa: E402
 
-PKT = os.environ.get("PKT_DATE")
-if not PKT:
-    raise SystemExit("Set PKT_DATE=YYYY-MM-DD")
+PKT = os.environ.get("PKT_DATE")   # checked in main(), so daily/record.py can import variant() and split_feeder()
 RUN_DATE = os.environ.get("RUN_DATE") or datetime.date.today().isoformat()
 
 VARIANT_RULES = [  # note text on the FRM row -> variant (db/schema.py VARIANTS)
@@ -98,6 +96,8 @@ def draft_rows(line, order, product, rec):
 
 
 def main():
+    if not PKT:
+        raise SystemExit("Set PKT_DATE=YYYY-MM-DD")
     packets = load_packets()
     if PKT not in packets:
         raise SystemExit(f"No packet for {PKT} in {config.PACKETS_DIR}")
