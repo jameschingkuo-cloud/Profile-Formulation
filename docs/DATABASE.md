@@ -26,9 +26,11 @@ Production Formulation\
     Extrusion Production Record.xlsx .... RECORD   each order's progress by day                      [NEW]
   Converting Schedule\
     CNV Converting Schedule <date>.xlsx . DAILY    the day's converting sheets (exists)
+    Converting Production Record.xlsx ... RECORD   each converting order's progress by day           [NEW]
 ```
 
-These are the six files agreed on 25 Sep (HANDOFF §7.13), plus the daily draft and the calc evidence.
+These are the six files agreed on 25 Sep (HANDOFF §7.13), plus the daily draft, the calc evidence and a converting
+history (James, 28 Sep 2026). Converting has its own record instead of living inside the extrusion one.
 
 | Kind | Rule |
 |---|---|
@@ -76,7 +78,7 @@ Product Master ── Product Code ──> Product to Formula <── Line Code 
       = FRM Draft <date>.xlsx
  7  Tech reviews the draft + Exceptions, decides each exception, signs.
  8  Issue: render the FRM pages from the signed draft; append to Formulation Report Record;
-    append the day's orders to Extrusion Production Record.                                     [to build]
+    append the day's orders to Extrusion and Converting Production Records.                                     [to build]
  9  publish.py → each file to its subfolder, verified by content; commit the manifest.         [exists; routing to add]
 ```
 
@@ -100,7 +102,7 @@ Nothing reaches a master without a Change Log row that names an approver. That i
    Library, Product to Formula from the calcs and the two packets. Every seeded row is Draft.
 3. **Tech approves** the formulas that run most (the ones on the daily packets first).
 4. **Resolve step + FRM Draft**, run beside Tech's FRM.
-5. **Records** (Formulation Report Record, Extrusion Production Record) and `publish.py` routing to the subfolders.
+5. **Records** (Formulation Report Record, Extrusion and Converting Production Records) and `publish.py` routing to the subfolders.
 6. **Interface**: the page where people upload the schedule and download the formulation, on top of steps 4–5.
 
 ## 6. Decisions for James

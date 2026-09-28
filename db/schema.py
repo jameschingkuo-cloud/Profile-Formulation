@@ -259,13 +259,29 @@ BOOKS: list[Book] = [
              Col("Line Code", key=True, required=True), Col("Order", key=True, required=True),
              Col("Product Code", required=True), Col("Total Sheets", "int"), Col("Weight (LBs)", "number"),
              Col("Plts Done (EXT)", "int"), Col("Plts Ordered", "int"),
-             Col("CNV Status (X of Y)"), Col("Special Instructions")], append_only=True),
+             Col("Special Instructions")], append_only=True),
           README]),
 
     Book("CNV Converting Schedule <date>.xlsx", "Converting Schedule", "daily",
          "The day's converting schedule as printed", "daily/build_xlsx.py", "Extrusion Production Record",
          [Sheet("Orders", "as built today", [Col("Order"), Col("Product Code")]), ISSUES, README],
          status="existing"),
+
+    Book("Converting Production Record.xlsx", "Converting Schedule", "record",
+         "Each converting order's progress by day, from the CNV sheets (James, 28 Sep 2026: a history file for "
+         "converting as well)", "daily/record.py (to build)", "planning, reporting, the X OF Y check against EXT",
+         [Sheet("Orders by Day", "One row per schedule date x converting line x order row, as printed", [
+             Col("Schedule Date", "date", key=True, required=True),
+             Col("Converting Line", key=True, required=True, note="e.g. SD31, SD11/SD12, SC31"),
+             Col("Order", key=True, required=True),
+             Col("Row", "int", key=True, required=True, note="an order can be listed twice on one sheet"),
+             Col("Product Code", required=True),
+             Col("Extrusion Status (printed)", note="X OF Y as typed on the sheet"),
+             Col("Plts Extruded", "int"), Col("Plts Ordered", "int"),
+             Col("Semi Size"), Col("Die #"), Col("Die Status"), Col("Plate Status"), Col("Ink Color"),
+             Col("Total Sheets", "int"), Col("Pack Code"), Col("# of Plts", "int"), Col("Pc/Plt", "int"),
+             Col("Req. Date"), Col("Done Note")], append_only=True),
+          README]),
 ]
 
 BY_NAME = {b.name: b for b in BOOKS}

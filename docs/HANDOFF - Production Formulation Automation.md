@@ -1085,7 +1085,10 @@ written up in `docs/DATABASE.md`.
   (append-only), **daily** (kept as issued), **evidence** (rebuilt from Tech's calcs, never edited).
 - New workbooks: Formulation Master (Lines, Materials, Formulas, Recipe = weight %, Line Settings, Product to Formula,
   Standing Notes, Change Log), Auger Calibration (Hoppers, Calibration, Verification Log, Change Log), FRM Draft
-  <date> (Draft + Exceptions), Formulation Report Record, Extrusion Production Record.
+  <date> (Draft + Exceptions), Formulation Report Record, Extrusion Production Record, Converting Production Record.
+- James (28 Sep 2026): *"add a history file for converting as well. may be useful in the future"*. So converting has
+  its own append-only record (one row per date × converting line × order row), and is no longer kept inside the
+  Extrusion Production Record as §7.13 file 5 had it.
 - The templates carry only settled reference data: Lines (DOSING) and Hoppers (auger_rules.RULES, still James's draft).
 - Nothing was published. Decisions for James are in `docs/DATABASE.md` §6 (rename the calc-derived workbook to
   `Formulation Calc Library.xlsx`; who approves; Material ID = IWPFT062 item no.; the variant list; moving the

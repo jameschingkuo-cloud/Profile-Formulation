@@ -409,7 +409,6 @@ One row per schedule date x order.
 | Weight (LBs) | number |  |  |  |  |
 | Plts Done (EXT) | int |  |  |  |  |
 | Plts Ordered | int |  |  |  |  |
-| CNV Status (X of Y) | text |  |  |  |  |
 | Special Instructions | text |  |  |  |  |
 
 ## CNV Converting Schedule <date>.xlsx
@@ -420,4 +419,39 @@ The day's converting schedule as printed.
 
 - Written by: daily/build_xlsx.py
 - Read by: Extrusion Production Record
+
+## Converting Production Record.xlsx
+
+*record* · folder `Converting Schedule` · new
+
+Each converting order's progress by day, from the CNV sheets (James, 28 Sep 2026: a history file for converting as well).
+
+- Written by: daily/record.py (to build)
+- Read by: planning, reporting, the X OF Y check against EXT
+
+### Orders by Day (append-only)
+
+One row per schedule date x converting line x order row, as printed.
+
+| Column | Type | Key | Req. | Allowed / refers to | Note |
+|---|---|---|---|---|---|
+| Schedule Date | date | ● | ● |  |  |
+| Converting Line | text | ● | ● |  | e.g. SD31, SD11/SD12, SC31 |
+| Order | text | ● | ● |  |  |
+| Row | int | ● | ● |  | an order can be listed twice on one sheet |
+| Product Code | text |  | ● |  |  |
+| Extrusion Status (printed) | text |  |  |  | X OF Y as typed on the sheet |
+| Plts Extruded | int |  |  |  |  |
+| Plts Ordered | int |  |  |  |  |
+| Semi Size | text |  |  |  |  |
+| Die # | text |  |  |  |  |
+| Die Status | text |  |  |  |  |
+| Plate Status | text |  |  |  |  |
+| Ink Color | text |  |  |  |  |
+| Total Sheets | int |  |  |  |  |
+| Pack Code | text |  |  |  |  |
+| # of Plts | int |  |  |  |  |
+| Pc/Plt | int |  |  |  |  |
+| Req. Date | text |  |  |  |  |
+| Done Note | text |  |  |  |  |
 
