@@ -1,6 +1,10 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.4. The code has moved to a Claude Code repo on James's PC (§7.17); this document stays the spec. Two daily packets processed (23 and 24 Sep); Tech's formulation calc workbooks read into `Formulation Master.xlsx` (§7.12); target file set and disconnects reviewed (§7.13); auger preference rules drafted for James to confirm (§7.14); dosing type per line confirmed by James (§7.16: Lines 7, 12, 13, 16 weigh; the rest are auger lines with a 0–100 speed setting). The EXT scan reader is built and tested (`ext_scan_reader.py`, §7.5–§7.7); the formulation master and FRM renderer are not started.** The daily packet has been read end to end
+**Status: Rev 1.8 (28 Sep 2026).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
+Formulation\<kind>`, this folder is Claude's workspace (§7.21). Three packets processed (23, 24, 25 Sep; §7.20 adds a
+three-way accuracy check). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
+confirmed (§7.16). Not built yet: the Formulation Master, Auger Calibration and the three records, and the FRM renderer. The daily packet has been read end to end
 (§2–§5). The proposed pipeline is in §7. §6 lists what the paper shows but I can't confirm yet;
 James needs to answer §10 before anything is built. **The input stays a scan of the printed
 report (§7.5):** the AS400 can't produce the report as text (James, 23 Sep 2026).
@@ -1156,17 +1160,23 @@ base related file C:\...\General\Claude MD, PY Pipeline File\Engineering Pipelin
 
 ---
 
-## 9. Output location (proposed)
+## 9. Where files live (James, 28 Sep 2026; §7.21)
 
 ```
-Production Formulation Automation\                  (SharePoint-synced; outputs only arrive via publish.py)
-  HANDOFF - Production Formulation Automation.md   (this document: the spec, edited in place)
-  Formulation Master.xlsx · Product Master.xlsx
-  Daily\YYYY\EXT Extrusion Schedule / CNV Converting Schedule / FRM Formulation Report YYYY-MM-DD.xlsx
-  formulation-pipeline starter 2026-09-28.zip      (the repo as handed over, §7.17)
-  auger_rules.py · ext_scan_reader.py · ext_truth_2026-09-23.csv   (Rev 1.1–1.3 copies; the repo now holds the live ones)
+General\Engineering Pipeline\Production Formulation\         THE DATABASE (PUBLISH_DIR; only publish.py writes here)
+  Product Master\            Product Master.xlsx
+  Formulation Data Base\     Formulation Master.xlsx · Auger Calibration.xlsx · Formulation Calc Library.xlsx
+  Daily Formulation Report\  FRM Draft / FRM Formulation Report YYYY-MM-DD.xlsx · Formulation Report Record.xlsx
+  Extrusion Schedule\        EXT Extrusion Schedule YYYY-MM-DD.xlsx · Extrusion Production Record.xlsx
+  Converting Schedule\       CNV Converting Schedule YYYY-MM-DD.xlsx · Converting Production Record.xlsx
 
-C:\Users\JamesKuo\dev\formulation-pipeline\       (local, NOT synced; git)  the code, the transcribed packets
+General\Claude MD, PY Pipeline File\Engineering Pipeline\Production Formulation Automation\   CLAUDE'S WORKSPACE (DOCS_DIR)
+  HANDOFF - Production Formulation Automation.md   (this document: the spec, edited in place)
+  docs (.md), code copies (.py), formulation-pipeline starter 2026-09-28.zip
+  Formulation Master.xlsx (calc-derived, until renamed) and the old copies of the database files (to delete)
+
+github.com/jameschingkuo-cloud/Profile-Formulation (private)   the code with history (backup)
+C:\Users\JamesKuo\dev\formulation-pipeline\                  the working copy of the code (local, NOT synced; git)
 ```
 
 This folder also holds `HANDOFF - Monthly Complaint CA Summary.md` **Rev 0.2**, a stale copy of a
@@ -1220,9 +1230,12 @@ different pipeline. The current version is Rev 0.3 in the Claude Project. It bel
 
 ---
 
-## 11. Checksum manifest (25 Sep 2026)
+## 11. Checksum manifest (25 Sep 2026; locations updated 28 Sep 2026)
 
-The files in this folder, as staged back from the device after upload. `.xlsx` files are checked by a hash of
+The files as published on 25 Sep. On 28 Sep, Product Master and the six daily workbooks were copied by SharePoint
+(server-side, same bytes; sizes re-checked) into the database folders (§9, §7.21): `Product Master\`, `Extrusion
+Schedule\`, `Converting Schedule\`, `Daily Formulation Report\` instead of the root and `Daily/2026/`. The live
+record is `data/published_manifest.json` in the repo. As first staged back from the device after upload: `.xlsx` files are checked by a hash of
 every sheet's cell values: SharePoint adds `customXml` / metadata parts on upload, so the file hash differs from the
 built file even when every cell matches. On 25 Sep 2026 all eight workbooks matched their build copies cell for cell.
 This document is not listed (it can't carry its own hash). Update this table whenever a file here changes.
