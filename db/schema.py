@@ -213,17 +213,20 @@ BOOKS: list[Book] = [
     Book("FRM Draft <date>.xlsx", "Daily Formulation Report", "daily",
          "What the pipeline proposes for the day: every EXT order resolved to a formula and settings, plus Exceptions. "
          "Nothing guessed: an order without an exact match goes to Exceptions for an engineer",
-         "daily/resolve.py (to build, phase 3)", "Tech (review and sign), FRM renderer",
-         [Sheet("Draft", "One row per order x feeder", [
+         "daily/resolve.py", "Tech (review and sign), FRM renderer",
+         [Sheet("Draft", "One row per order x formula x feeder, as last issued for that order on that line", [
              Col("Line Code", key=True, required=True), Col("Order", key=True, required=True),
-             Col("Product Code", required=True), Col("Formula Code", key=True), Col("Variant", key=True),
-             Col("Extruder", key=True), Col("Feeder", key=True), Col("Material ID"), Col("Set"),
-             Col("Weight %", "number"),
-             Col("How Resolved", "enum", values=("Product to Formula", "RUN WITH partner", "Engineer")),
-             Col("Same as Yesterday", "enum", values=("Yes", "No", "New order"))]),
+             Col("Product Code", required=True), Col("Formula Code", key=True, required=True),
+             Col("Variant", "enum", key=True, required=True, values=VARIANTS),
+             Col("Extruder", key=True), Col("Feeder", key=True, required=True),
+             Col("Material ID", note="blank until the Materials table exists"), Col("Material (as issued)"),
+             Col("Set", required=True), Col("Weight %", "number"),
+             Col("How Resolved", "enum", required=True,
+                 values=("Last issued (same order, same line)", "Product to Formula", "Engineer")),
+             Col("Last Issued", "date"), Col("Source"), Col("Formula Row", "int", key=True), Col("Note")]),
           Sheet("Exceptions", "Orders the pipeline would not resolve (HANDOFF §7.4)", [
              Col("Line Code", required=True), Col("Order", required=True), Col("Product Code"),
-             Col("Reason", required=True), Col("Engineer Decision"), Col("Decided By")]),
+             Col("Reason", required=True), Col("Suggestion (not used)"), Col("Engineer Decision"), Col("Decided By")]),
           ISSUES, README]),
 
     Book("FRM Formulation Report <date>.xlsx", "Daily Formulation Report", "daily",
