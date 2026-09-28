@@ -67,7 +67,7 @@ MATERIAL_BY_LETTER = {"P": "PPP", "B": "BBB"}
 GRADE_BY_LETTER = {"P": "P", "A": "A"}
 
 # Colours confirmed on the extrusion schedule (HANDOFF §7.6 R7).
-KNOWN_COLOURS = {"WB", "KS", "BL", "WM", "GT", "EB", "NS"}
+KNOWN_COLOURS = {"WB", "KS", "BL", "WM", "GT", "EB", "NS", "OF", "BD"}   # same list as the reader's R7
 
 # Thickness in the code vs the data: under this gap it is an in-between thickness
 # the code can't show (confirm from spec); at or above it, the two disagree.
@@ -340,9 +340,14 @@ def build(master: Path, out_dir: Path, asof: dt.date) -> Path:
                   derived[r[KEY]]["Core Fields Filled"], derived[r[KEY]]["Missing"], r.get("Status"), None, None]
                  for r in active], {"Formula Code(s)": 40, "Missing": 50})
 
+    meanings = {}
+    cc = config.DATA_DIR / "colour_codes.csv"
+    if cc.exists():
+        import csv
+        meanings = {r["code"]: r["meaning"] for r in csv.DictReader(open(cc, encoding="utf-8"))}
     ws = wb.create_sheet("Colour Codes")
     write_sheet(ws, ["Colour Code", "Products", "On EXT list (R7)", "Meaning (James/Tech)"],
-                [[c, n, "Yes" if c in KNOWN_COLOURS else "No", None] for c, n in res["colours"].most_common()],
+                [[c, n, "Yes" if c in KNOWN_COLOURS else "No", meanings.get(c)] for c, n in res["colours"].most_common()],
                 {"Meaning (James/Tech)": 40})
 
     ws = wb.create_sheet("Import Map")

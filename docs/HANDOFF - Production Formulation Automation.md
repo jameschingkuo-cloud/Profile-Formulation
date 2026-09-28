@@ -380,7 +380,7 @@ together, and log the change in the revision history.
 | R4 | Product code = 3 letters + thickness (2 digits, or letter + 0) + 2-letter colour + digits | Data | Same |
 | R5 | Die = letter, letter, digit, letter-or-digit, digit (`PB204`, `PA3B5`) | Data | Same |
 | R6 | Material ∈ {PPP, BBB}; grade ∈ {P, A} | Data | Read as a whole word from the list |
-| R7 | Colour ∈ {WB, KS, BL, WM, GT, EB, NS} | Data | Read as a whole two-letter word from the list, never letter by letter |
+| R7 | Colour ∈ {WB, KS, BL, WM, GT, EB, NS, OF, BD} (OF = fade-resistant orange, BD = dark blue; James 28 Sep 2026) | Data | Read as a whole two-letter word from the list **and** letter by letter; any difference is flagged (a colour outside the list, e.g. BD, never snaps silently; §7.22). Meanings in `data/colour_codes.csv` |
 | R8 | Thickness in the product code = the Thk column (`30` = 3.0, `A0` = 10, `D0` = 13) | Data + Void Form rule | Mismatch is flagged |
 | R9 | Line totals: PCs = Σ Total Sheets, LBs = Σ Weight | Printout | Checksum (§7.5 check 1). Not yet in the glyph reader, see §7.7 |
 | R10 | Fixed character columns of WPPPOPRC (span A: Mfg# 0–6, `-` 8, Ord# ends 12, Prod from 16, Die 30–34; span B: material 0–2, grade 4, spec 6–11, colours 13/16/19, Thk ends 26, GSM ends 32) | Measured on 82 rows | Each field is read from its own columns, so stray marks can't shift it |
@@ -1156,7 +1156,8 @@ not). EXT pages 1-14 (Run Date 9/28/26 13:56:14; report page 8, SE23's total, mi
   colour as the nearest word of its 7-colour list, so a colour outside the list snapped silently. The crosscheck caught
   it. **Fixed:** `colour_word()` also reads every colour letter by letter and flags any difference (the comment in the
   R7 block already promised this). 28 Sep: BD, OF, NS rows now flagged; 25 Sep scan: identical values, same flag count.
-- New colours **OF** (RPA40OF37) and **BD** (RPA40BD59) are not on the R7 list: what are they (Q2)?
+- New colours: **OF = fade-resistant orange** (James, 28 Sep 2026: *"OF Fade-resistant orange"*), and **BD = dark blue**
+  (*"BD Dark blue"*), both added to R7 and to `data/colour_codes.csv`.
 - **FRM Draft (`daily/resolve.py`, new):** each scheduled order gets the formulation last issued for the same order on the
   same line; everything else goes to Exceptions with a suggestion that is never used automatically. Backtest on 25 Sep:
   **68 of 69 orders identical to Tech's issued FRM**; the one difference is the formula Tech changed that day (RP26923-1);
@@ -1280,6 +1281,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.10 | 2026-09-28 | Claude (cloud session with James Kuo) | James: *"OF Fade-resistant orange"*, *"BD Dark blue"*. Both added to R7 (reader) and the Product Master colour list; meanings kept in `data/colour_codes.csv` (with WB = blue white). |
 | 1.9 | 2026-09-28 | Claude (cloud session with James Kuo) | **28 Sep packet and the first FRM Draft (§7.22).** Scan arrived via chat. 68/75 identical; totals tie. The glyph reader's first silent error (new colour BD read as BL) caught by the crosscheck and fixed (colours also read letter by letter). `daily/resolve.py` drafts the day's formulation from the last issued FRM: backtest 68/69 identical on 25 Sep; 28 Sep 59/75 proposed, 16 to an engineer. |
 | 1.8 | 2026-09-28 | Claude (cloud session with James Kuo) | **Two folders (§7.21).** Database workbooks in `Engineering Pipeline\Production Formulation\<kind>` (`PUBLISH_DIR`); handoff, `.md`, `.py` in the old folder, now Claude's workspace (`DOCS_DIR`). Product Master and the 23–24 Sep daily workbooks copied to the database folders; `publish.py` routes by `db/schema.py`; manifest moved. |
 | 1.7 | 2026-09-28 | Claude (cloud session with James Kuo) | **25 Sep packet processed (§7.20)**; `scan_reader/crosscheck.py` added (transcription vs glyph reader vs printed totals). 67/71 identical, 4 reader misreads all flagged, every total ties. Converting Production Record added to the database (§7.19). |
