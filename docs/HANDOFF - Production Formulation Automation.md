@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.14 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.15 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1214,6 +1214,23 @@ packet was used afterwards just to pick cells to re-check at zoom (all new rows 
   longer on the pages, so the WB-W40020M question is moot for now.
 - 25 Sep FRM issues still visible on today's pages were carried into `manual_issues_2026-09-28.py`.
 
+## 7.25 25 and 28 Sep published; Product Master merged (28 Sep 2026, local)
+
+James: *"yes"* (publish both days, merge the Product Master, push). §7.23 items 3 and 4 are done.
+
+- **Published** (`publish.py`, verified by content, `data/published_manifest.json`; §11): EXT, CNV, FRM Formulation
+  Report for 25 Sep and 28 Sep. The FRM Draft 2026-09-28 was not published: Tech's FRM replaces it.
+- **Product Master:** merged 25 Sep (51 products changed: 50 Formula Last Run, DPP40WB1670 and SPA40WB953 filled
+  from the packet, the latter with spec `OPOPOP`), published, then 28 Sep merged into that (1 new product
+  RBP30EB22; 8 filled, including RPA40BD59; 50 Formula Last Run), published. 2,087 products.
+- **Transcription fix before publishing:** six 25 Sep CNV rows (SD22, scan p22) had `\"` in `row_notes` (`12\" 9 Slot`),
+  a quote escaped twice during transcription; not on the paper. It made Marking show twice on 5 products. Fixed in
+  `packet_2026-09-25.json` (the 24 and 28 Sep packets print the same notes without it). 25 Sep was not yet published.
+- **Code fix:** `build_master.py` rebuilds the Check column every run, and `calc …` notes only come from
+  `CALC_JSON`. Without Tech's calc workbooks on this PC the two calc notes (`calc Thk 4.3` RPA40WB3142,
+  `calc GSM 1003` RPP40KS2136) would have been dropped; the merge now keeps the prior master's `calc …` notes when
+  no calc data is loaded.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1312,7 +1329,14 @@ This document is not listed (it can't carry its own hash). Update this table whe
 | File | Bytes (device) | SHA-256 of file (first 16) | Content check |
 |---|---|---|---|
 | `Formulation Master.xlsx` | 3,667,095 | `4e5781f776f7b4ce` | cells sha256 `e0197d136359737a` (35916 rows) |
-| `Product Master.xlsx` | 277,049 | `15800f5bc34cf73e` | cells sha256 `085b7ead92283aaf` (2107 rows) |
+| `Product Master.xlsx` (25 Sep; superseded 28 Sep, below) | 277,049 | `15800f5bc34cf73e` | cells sha256 `085b7ead92283aaf` (2107 rows) |
+| `Product Master/Product Master.xlsx` (28 Sep, local publish, §7.25) | 270,362 | `851941c70ef423bc` | cells sha256 `9c1561018e82f934` |
+| `Extrusion Schedule/EXT Extrusion Schedule 2026-09-25.xlsx` | 42,725 | `8cd1512ae913193f` | cells sha256 `1b8a6275de498965` |
+| `Converting Schedule/CNV Converting Schedule 2026-09-25.xlsx` | 38,370 | `a6ff640b7e7e5b7b` | cells sha256 `ce5d1f74d2841776` |
+| `Daily Formulation Report/FRM Formulation Report 2026-09-25.xlsx` | 45,642 | `d24bd9ba19b47c3f` | cells sha256 `7e0ed8f0f7fdbb39` |
+| `Extrusion Schedule/EXT Extrusion Schedule 2026-09-28.xlsx` | 44,813 | `a58645b7f2209c5e` | cells sha256 `b6ccf01509ce771a` |
+| `Converting Schedule/CNV Converting Schedule 2026-09-28.xlsx` | 36,161 | `be6bc95130fc5d66` | cells sha256 `9aa7f50425b498ea` |
+| `Daily Formulation Report/FRM Formulation Report 2026-09-28.xlsx` | 47,828 | `23d87a1ba57ee8b3` | cells sha256 `5e10b38ea19a1a2f` |
 | `Daily/2026/CNV Converting Schedule 2026-09-23.xlsx` | 46,840 | `05fd6755e1cf7463` | cells sha256 `6a9604c5d6643749` (170 rows) |
 | `Daily/2026/CNV Converting Schedule 2026-09-24.xlsx` | 47,886 | `27c12183b4abe094` | cells sha256 `9a45c01c77e130a6` (174 rows) |
 | `Daily/2026/EXT Extrusion Schedule 2026-09-23.xlsx` | 60,575 | `ebbd6648d699391c` | cells sha256 `385699de5f812b1c` (304 rows) |
@@ -1330,6 +1354,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.15 | 2026-09-28 | Claude Code (local, with James Kuo) | **25 and 28 Sep published; Product Master merged (§7.25).** James: *"yes"*. Six daily workbooks and the Product Master (2,087 products) published and verified; §11 updated. Fixed a double-escaped quote in six 25 Sep CNV notes before publishing; `build_master.py` keeps prior `calc …` Check notes when run without calc data. Branch pushed to GitHub. |
 | 1.14 | 2026-09-28 | Claude Code (local, with James Kuo) | **28 Sep FRM pages transcribed (§7.24)** from a separate scan James sent. The packet gains `frm` and `frm_source_scan`; the 74 missing-FRM Highs are gone; FRM Formulation Report 2026-09-28 is built. The FRM Draft matched Tech's issue on all 59 drafted orders. Nothing published. |
 | 1.13 | 2026-09-28 | Claude Code (local, with James Kuo) | **R2 exception `OP` added.** H68A153-1 (SE31, 25 Sep) prints `OPOPOP`, "WHITE OPAQUE"; asked whether to accept it, James: *"yes"*. `SPEC_EXCEPTIONS` in `ext_scan_reader.py` is now D, M, P; same handling as RD/RM (accepted, always flagged); §7.6 R2 row and the field pattern updated; test `test_r2_exceptions` added. **OF/BD re-confirmed** (James: *"yes"*, already in R7 since Rev 1.10). The 25 Sep OPOPOP and 28 Sep colour-code manual issues go from High to Info with the decision recorded. Local setup done: Python 3.11.9 + `.venv`, handoff Rev 1.12 copied to the workspace folder (it matched Rev 1.8 byte for byte before), scans in `inputs\scans`; tests 23 passed, 1 skipped (no calc workbooks). Nothing published. |
 | 1.12 | 2026-09-28 | Claude (cloud session with James Kuo) | **Back to James's PC (§7.23).** James: *"please change it to local"*. Open items listed for the local Claude Code session. |

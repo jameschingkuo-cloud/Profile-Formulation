@@ -157,7 +157,8 @@ if PRIOR and os.path.exists(PRIOR):
             else: rec[k] = [v.date() if isinstance(v, datetime.datetime) else v]
         old[row[0]] = rec
         lu = row[ph.index('Last Updated')]
-        old_meta[row[0]] = {'status': row[ph.index('Status')] or 'Draft', 'last': lu.date() if hasattr(lu, 'date') else lu}
+        old_meta[row[0]] = {'status': row[ph.index('Status')] or 'Draft', 'last': lu.date() if hasattr(lu, 'date') else lu,
+                            'check': str(row[ph.index('Check')] or '') if 'Check' in ph else ''}
 
 def fnum_(v):
     return f"{v:g}" if isinstance(v, float) else str(v)
@@ -187,6 +188,8 @@ for pc in sorted(set(P) | set(old) | set(CALC)):
     if o is not None and not o.get('source'):          # masters built before the Source column came only from packets
         M['source'] = ['Packet'] + [x for x in M.get('source', []) if x != 'Packet']
     # ---- Tech's formulation calc workbooks: fill what is empty, note what disagrees
+    if not CALC and pc in old_meta:   # no calc data this run: keep the calc notes the prior master had (28 Sep 2026)
+        chk += [x for x in old_meta[pc]['check'].split('; ') if x.startswith('calc ')]
     C = CALC.get(pc)
     if C:
         def fill(k, v, label, conflict=True):
