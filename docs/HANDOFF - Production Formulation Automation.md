@@ -1047,6 +1047,15 @@ now, I am working on pulling full data."* The full data pull (AS400 item master 
 - **Letter O for zero:** `DPPAOKS27`, `RBPAOKS14`, `RBPAOKS37`, `RBPAOKS40` are `…A0…` (10 mm), typed wrong in the calc
   sheets. *Confirmed.* Three of the corrected codes (`RBPA0KS14/37/40`) are already in the master, so those rows merge.
 
+**Repo on GitHub (28 Sep 2026):** the starter zip (1,123,527 bytes, SHA-256 `7f2972634fc7e62b`, matches §11) is committed
+to `jameschingkuo-cloud/Profile-Formulation`, without `local_settings.json` and `.claude/settings.local.json` (machine
+paths). In the cloud session: `pytest` 7 passed + 1 skipped (no calc workbooks), as in §7.17; the 24 Sep EXT and CNV
+rebuilt with `RUN_DATE=2026-09-24` are identical by content to the published files, and FRM differs only by the Rev 1.3
+dosing columns. GitHub is the code's backup with history; the code's working copy stays outside the synced folder.
+James's new output folder, `General\Engineering Pipeline\Production Formulation` (subfolders Product Master, Formulation
+Data Base, Daily Formulation Report, Extrusion Schedule, Converting Schedule), is to become `PUBLISH_DIR` once
+`publish.py` routes each file to its subfolder. Not moved yet.
+
 **Built:** `product_master/prepare.py` (repo) → `Product Master - Prepared <date>.xlsx`. The Product Master itself is not
 changed. Sheets: Product Master with grey code-derived columns (material, grade, nominal thickness, colour; *not
 verified*), completeness and activity · Issues sheet · Verify First (run in the last 12 months) · Colour Codes · Import Map

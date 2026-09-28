@@ -1,0 +1,7225 @@
+{
+ "packet_date": "2026-09-24",
+ "source_scan": "doc05237220260924134843.pdf",
+ "ext": [
+  {
+   "scan_page": 1,
+   "report_page": "1",
+   "line": "SE11",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A039-1",
+     "prod_code": "DPP30WB1023",
+     "die": "PB204",
+     "order_width": "31 5/8",
+     "order_length": "34 1/4",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "3.0",
+     "gsm": "631",
+     "cut_rows": [
+      {
+       "width": "31 5/8",
+       "length": "34 7/8",
+       "total_sheets": "34,675"
+      },
+      {
+       "width": "31 5/8",
+       "length": "34 7/8",
+       "total_sheets": "34,675"
+      }
+     ],
+     "pack_code": "30X42",
+     "num_plt": "190",
+     "pcs_per_stack": "365",
+     "stk_per_plt": "1",
+     "weight_lbs": "67,270",
+     "instr_date": "16-Oct",
+     "web_width": "63 1/4",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT (RANGE IS 582 - 600 GSM)",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H68A088-1",
+     "prod_code": "DPP30WB1021",
+     "die": "PB204",
+     "order_width": "31 5/8",
+     "order_length": "26 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "3.0",
+     "gsm": "514",
+     "cut_rows": [
+      {
+       "width": "31 5/8",
+       "length": "27 1/8",
+       "total_sheets": "18,460"
+      },
+      {
+       "width": "31 5/8",
+       "length": "27 1/8",
+       "total_sheets": "18,460"
+      }
+     ],
+     "pack_code": "30X42",
+     "num_plt": "104",
+     "pcs_per_stack": "355",
+     "stk_per_plt": "1",
+     "weight_lbs": "22,558",
+     "instr_date": "13-Oct",
+     "web_width": "63 1/4",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT (RANGE IS 473 - 488GSM)",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H63A200-1",
+     "prod_code": "DPP30WB1025",
+     "die": "PB204",
+     "order_width": "31 1/8",
+     "order_length": "50 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "3.0",
+     "gsm": "631",
+     "cut_rows": [
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "1,080"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "1,080"
+      }
+     ],
+     "pack_code": "30X54",
+     "num_plt": "6",
+     "pcs_per_stack": "360",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,041",
+     "instr_date": "04-Nov",
+     "web_width": "62 1/4",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM)",
+     "handwritten": "MAKE UP FOR SCRAP PALLETS.",
+     "unclear": "Printed 2nd instruction line has its lower half clipped/obscured where the handwriting overlaps; the punctuation after 'VOIDFORM' is not visible (given as '.' per the same line's convention elsewhere). Handwritten word 'SCRAP' is loosely formed (reads like 'suap'); 'SCRAP' is the best reading. No 'PLTS DONE' note printed on this record today."
+    },
+    {
+     "T": "Y",
+     "order": "RP26811-1",
+     "prod_code": "RPA20WB28",
+     "die": "PB204",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "2.0",
+     "gsm": "504",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "4,000"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "16",
+     "pcs_per_stack": "250",
+     "stk_per_plt": "1",
+     "weight_lbs": "13,160",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A180-1",
+     "prod_code": "RPP30KS1143",
+     "die": "PB204",
+     "order_width": "48",
+     "order_length": "95",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "3.0",
+     "gsm": "612",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "95 3/4",
+       "total_sheets": "1,750"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "5",
+     "pcs_per_stack": "350",
+     "stk_per_plt": "1",
+     "weight_lbs": "6,913",
+     "instr_date": "02-Oct",
+     "web_width": "48",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A180-2",
+     "prod_code": "RPP30KS1109",
+     "die": "PB204",
+     "order_width": "55",
+     "order_length": "95",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "3.0",
+     "gsm": "612",
+     "cut_rows": [
+      {
+       "width": "55",
+       "length": "95 3/4",
+       "total_sheets": "700"
+      }
+     ],
+     "pack_code": "60X96",
+     "num_plt": "2",
+     "pcs_per_stack": "350",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,171",
+     "instr_date": "02-Oct",
+     "web_width": "55",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A206-1",
+     "prod_code": "RPP30BL654",
+     "die": "PA204",
+     "order_width": "17 9/16",
+     "order_length": "24 7/16",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "BL BL BL",
+     "thk": "3.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "17 9/16",
+       "length": "25 1/16",
+       "total_sheets": "1,750"
+      },
+      {
+       "width": "17 9/16",
+       "length": "25 1/16",
+       "total_sheets": "1,750"
+      },
+      {
+       "width": "17 9/16",
+       "length": "25 1/16",
+       "total_sheets": "1,750"
+      },
+      {
+       "width": "17 9/16",
+       "length": "25 1/16",
+       "total_sheets": "1,750"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "5",
+     "pcs_per_stack": "350",
+     "stk_per_plt": "4",
+     "weight_lbs": "2,520",
+     "instr_date": "12-Oct",
+     "web_width": "70 1/4",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "121,880",
+   "line_total_lbs": "118,633",
+   "page_notes": "Handwriting: 'MAKE UP FOR SCRAP PALLETS.' written across the H63A200-1 special-instructions box (recorded in that row's handwritten field). H68A007-1 (on yesterday's page 1) is no longer listed. No left-margin bullets. Faint '(' scan artifact bottom-left. Checksum OK: 121,880 PCs / 118,633 LBs."
+  },
+  {
+   "scan_page": 2,
+   "report_page": "2",
+   "line": "SE12",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A242-3",
+     "prod_code": "RPP40WB1689",
+     "die": "PA3B5",
+     "order_width": "60",
+     "order_length": "60",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "60",
+       "length": "60 3/4",
+       "total_sheets": "825"
+      }
+     ],
+     "pack_code": "60X60",
+     "num_plt": "3",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "2,739",
+     "instr_date": "29-Sep",
+     "web_width": "60",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26821-1",
+     "prod_code": "RPA40WB3142",
+     "die": "PA3B5",
+     "order_width": "60",
+     "order_length": "120",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "60",
+       "length": "120 3/4",
+       "total_sheets": "274,725"
+      }
+     ],
+     "pack_code": "60X120",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,826,921",
+     "instr_date": "Stock",
+     "web_width": "60",
+     "special_instructions": "29 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26511-1",
+     "prod_code": "SPA40WB772",
+     "die": "PA3B5",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      },
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "400",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "2",
+     "weight_lbs": "189,246",
+     "instr_date": "Stock",
+     "web_width": "50",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet. 325 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "497,150",
+   "line_total_lbs": "2,018,906",
+   "page_notes": "Left-margin dot/bullet beside record H69A242-3 (first record; new today, H69A099-1 from yesterday no longer listed). Faint '(' scan artifact bottom-left. No handwriting. Checksum OK: 497,150 PCs / 2,018,906 LBs."
+  },
+  {
+   "scan_page": 3,
+   "report_page": "3",
+   "line": "SE13",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A237-1",
+     "prod_code": "RPP40WB1856",
+     "die": "PA406",
+     "order_width": "42",
+     "order_length": "30",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "42",
+       "length": "30 5/8",
+       "total_sheets": "62,640"
+      }
+     ],
+     "pack_code": "30X42",
+     "num_plt": "216",
+     "pcs_per_stack": "290",
+     "stk_per_plt": "1",
+     "weight_lbs": "72,662",
+     "instr_date": "05-Oct",
+     "web_width": "42",
+     "special_instructions": "RUN WITH NEXT 20 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26618-3",
+     "prod_code": "SPA40WB772",
+     "die": "PA406",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "100,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "200",
+     "pcs_per_stack": "252",
+     "stk_per_plt": "2",
+     "weight_lbs": "86,083",
+     "instr_date": "Stock",
+     "web_width": "25",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet. RUN WITH ABOVE / 202 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26506-5",
+     "prod_code": "SPA40WB934",
+     "die": "PA406",
+     "order_width": "49",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "400",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "1",
+     "weight_lbs": "185,590",
+     "instr_date": "Stock",
+     "web_width": "49",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet. RUN WITH NEXT / 200 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP25522-4",
+     "prod_code": "SPA40WB772",
+     "die": "PA406",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "200",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "2",
+     "weight_lbs": "94,623",
+     "instr_date": "Stock",
+     "web_width": "25",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet. RUN WITH ABOVE / 106 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A158-1",
+     "prod_code": "RPA40WB3715",
+     "die": "PA406",
+     "order_width": "32 1/2",
+     "order_length": "25 3/4",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "32 1/2",
+       "length": "26 3/8",
+       "total_sheets": "1,350"
+      },
+      {
+       "width": "32 1/2",
+       "length": "26 3/8",
+       "total_sheets": "1,350"
+      }
+     ],
+     "pack_code": "35X54",
+     "num_plt": "5",
+     "pcs_per_stack": "270",
+     "stk_per_plt": "2",
+     "weight_lbs": "2,079",
+     "instr_date": "30-Sep",
+     "web_width": "65",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A105-3",
+     "prod_code": "RPA40WB3342",
+     "die": "PA406",
+     "order_width": "36",
+     "order_length": "60",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "36",
+       "length": "60 3/4",
+       "total_sheets": "413"
+      },
+      {
+       "width": "36",
+       "length": "60 3/4",
+       "total_sheets": "413"
+      }
+     ],
+     "pack_code": "35X62",
+     "num_plt": "3",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,644",
+     "instr_date": "08-Oct",
+     "web_width": "72",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26618-2",
+     "prod_code": "SPA40WB937",
+     "die": "PA406",
+     "order_width": "49",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "100,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "400",
+     "pcs_per_stack": "252",
+     "stk_per_plt": "1",
+     "weight_lbs": "168,840",
+     "instr_date": "Stock",
+     "web_width": "49",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet. RUN WITH NEXT / 372 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26717-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PA406",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "274,725"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,581",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "page_notes": "Line SE13 continues on next page: no total printed; last record RP26717-1 has no closing border and its Special Instructions carry over to page 4. H69A237-1 note printed on one line with wide gap: 'RUN WITH NEXT' ... '20 PLTS DONE'. No left-margin bullets today. Faint '(' scan artifact bottom-left. No handwriting."
+  },
+  {
+   "scan_page": 4,
+   "report_page": "4",
+   "line": "SE13",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "RUN WITH NEXT 78 PLTS DONE",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26327-1",
+     "prod_code": "SPA40WB772",
+     "die": "PA406",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "55,400"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "100",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "2",
+     "weight_lbs": "47,312",
+     "instr_date": "Stock",
+     "web_width": "25",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet. RUN WITH ABOVE / 419 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP24C18-4",
+     "prod_code": "RPA40WB3142",
+     "die": "PA406",
+     "order_width": "60",
+     "order_length": "120",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "60",
+       "length": "120 3/4",
+       "total_sheets": "274,725"
+      }
+     ],
+     "pack_code": "60X120",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,826,921",
+     "instr_date": "Stock",
+     "web_width": "60",
+     "special_instructions": "355 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "1,094,216",
+   "line_total_lbs": "3,653,335",
+   "page_notes": "carryover_top belongs to RP26717-1 (last record on page 3); printed on one line with wide gap: 'RUN WITH NEXT' ... '78 PLTS DONE'. SE13 total spans pages 3-4. No margin bullets. Faint '(' scan artifact bottom-left. No handwriting."
+  },
+  {
+   "scan_page": 5,
+   "report_page": "5",
+   "line": "SE21",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A090-2",
+     "prod_code": "RPP40KS2362",
+     "die": "PB405",
+     "order_width": "41 1/4",
+     "order_length": "41 1/4",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "41 1/4",
+       "length": "41 7/8",
+       "total_sheets": "3,375"
+      },
+      {
+       "width": "41 1/4",
+       "length": "41 7/8",
+       "total_sheets": "3,375"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "25",
+     "pcs_per_stack": "270",
+     "stk_per_plt": "1",
+     "weight_lbs": "10,598",
+     "instr_date": "29-Sep",
+     "web_width": "82 1/2",
+     "special_instructions": "16 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A238-1",
+     "prod_code": "RPP40KS2138",
+     "die": "PB405",
+     "order_width": "50",
+     "order_length": "40",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "40 5/8",
+       "total_sheets": "2,200"
+      }
+     ],
+     "pack_code": "40X55",
+     "num_plt": "8",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "4,048",
+     "instr_date": "13-Oct",
+     "web_width": "50",
+     "special_instructions": "RUN WITH ABOVE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A238-3",
+     "prod_code": "RPP40KS2126",
+     "die": "PB405",
+     "order_width": "50",
+     "order_length": "47 3/4",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "48 3/8",
+       "total_sheets": "2,500"
+      }
+     ],
+     "pack_code": "48X54",
+     "num_plt": "10",
+     "pcs_per_stack": "250",
+     "stk_per_plt": "1",
+     "weight_lbs": "5,500",
+     "instr_date": "13-Oct",
+     "web_width": "50",
+     "special_instructions": "RUN WITH H69A090-2",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A238-5",
+     "prod_code": "RPP40KS2136",
+     "die": "PB405",
+     "order_width": "93 1/2",
+     "order_length": "30 3/4",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "93 1/2",
+       "length": "31 3/8",
+       "total_sheets": "2,500"
+      }
+     ],
+     "pack_code": "31X94",
+     "num_plt": "10",
+     "pcs_per_stack": "250",
+     "stk_per_plt": "1",
+     "weight_lbs": "6,625",
+     "instr_date": "13-Oct",
+     "web_width": "93 1/2",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A238-2",
+     "prod_code": "RPP40KS1906",
+     "die": "PB405",
+     "order_width": "96",
+     "order_length": "47",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "47 5/8",
+       "total_sheets": "1,000"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "4",
+     "pcs_per_stack": "250",
+     "stk_per_plt": "1",
+     "weight_lbs": "4,160",
+     "instr_date": "13-Oct",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A238-4",
+     "prod_code": "RPP40KS2135",
+     "die": "PB405",
+     "order_width": "96 1/2",
+     "order_length": "30 3/4",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "96 1/2",
+       "length": "31 3/8",
+       "total_sheets": "1,500"
+      }
+     ],
+     "pack_code": "31X96",
+     "num_plt": "6",
+     "pcs_per_stack": "250",
+     "stk_per_plt": "1",
+     "weight_lbs": "4,110",
+     "instr_date": "13-Oct",
+     "web_width": "96 1/2",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A206-2",
+     "prod_code": "RPP40KS2012",
+     "die": "PB405",
+     "order_width": "35 3/16",
+     "order_length": "50 1/4",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "35 3/16",
+       "length": "51",
+       "total_sheets": "1,520"
+      },
+      {
+       "width": "35 3/16",
+       "length": "51",
+       "total_sheets": "1,520"
+      },
+      {
+       "width": "35 3/16",
+       "length": "51",
+       "total_sheets": "1,520"
+      }
+     ],
+     "pack_code": "35X54",
+     "num_plt": "16",
+     "pcs_per_stack": "285",
+     "stk_per_plt": "1",
+     "weight_lbs": "7,433",
+     "instr_date": "12-Oct",
+     "web_width": "105 9/16",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A139-1",
+     "prod_code": "DPP40KS303",
+     "die": "PB405",
+     "order_width": "52 1/4",
+     "order_length": "37 3/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "52 1/4",
+       "length": "38",
+       "total_sheets": "2,550"
+      },
+      {
+       "width": "52 1/4",
+       "length": "38",
+       "total_sheets": "2,550"
+      }
+     ],
+     "pack_code": "48X255",
+     "num_plt": "20",
+     "pcs_per_stack": "255",
+     "stk_per_plt": "1",
+     "weight_lbs": "9,195",
+     "instr_date": "10-Oct",
+     "web_width": "104 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / 15 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A255-1",
+     "prod_code": "RPA40KS824",
+     "die": "PB405",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "275"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "1",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,268",
+     "instr_date": "07-Oct",
+     "web_width": "50",
+     "special_instructions": "RUN WITH NEXT",
+     "handwritten": "Solid round dot in left margin beside this record (level with the dashed line under the main row).",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26810-1",
+     "prod_code": "RPA40KS744",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "9,625"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "9,625"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "70",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "81,813",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "page_notes": "No line total on this page; line SE21 continues on page 6 (RP26810-1 box left open at page bottom, no special instructions printed). One solid round dot in left margin beside H69A255-1 (new record today, 'RUN WITH NEXT'); yesterday's six margin dots are not present today. Faint curved mark bottom-left (scanner artifact, on all pages). No handwriting."
+  },
+  {
+   "scan_page": 6,
+   "report_page": "6",
+   "line": "SE21",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26424-2",
+     "prod_code": "RPA40WB3073",
+     "die": "PB405",
+     "order_width": "96",
+     "order_length": "48",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "48 5/8",
+       "total_sheets": "19,250"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "70",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "81,813",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "46 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26527-1",
+     "prod_code": "RPA40WB3143",
+     "die": "PB405",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      },
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "150",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "190,575",
+     "instr_date": "Stock",
+     "web_width": "100",
+     "special_instructions": "78 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP25818-2",
+     "prod_code": "RPA40WB3051",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "485 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26512-1",
+     "prod_code": "DPP40WB1235",
+     "die": "PB405",
+     "order_width": "47 1/4",
+     "order_length": "45 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      },
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "999",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "672,387",
+     "instr_date": "Stock",
+     "web_width": "94 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / 525 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "672,569",
+   "line_total_lbs": "2,247,111",
+   "page_notes": "Page starts with an empty box band (closing of RP26810-1 box from page 5) - no carryover text. Checksum OK for SE21 across pages 5-6: PCs 45,635 (p5) + 626,934 (p6) = 672,569; LBs 134,750 (p5) + 2,112,361 (p6) = 2,247,111. Scattered specks (not data). No handwriting."
+  },
+  {
+   "scan_page": 7,
+   "report_page": "7",
+   "line": "SE22",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26311-1",
+     "prod_code": "RPAA0WB318",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "10.0",
+     "gsm": "1,704",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "54,945"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "54,945"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "110",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,224,175",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "957 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H68A053-1",
+     "prod_code": "RPPD0WB176",
+     "die": "PB130",
+     "order_width": "96",
+     "order_length": "24",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "13.0",
+     "gsm": "2,691",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "24 3/8",
+       "total_sheets": "170"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "1",
+     "pcs_per_stack": "85",
+     "stk_per_plt": "2",
+     "weight_lbs": "1,496",
+     "instr_date": "10-Sep",
+     "web_width": "96",
+     "special_instructions": "VOIDFORM, PLEASE WATCH WEIGHT / MAKE UP FOR MISSING PLT",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "110,060",
+   "line_total_lbs": "1,225,671",
+   "page_notes": "Checksum OK: 54,945x2+170 = 110,060 PCs; 1,224,175+1,496 = 1,225,671 LBs. No handwriting. Small specks (scanner artifacts)."
+  },
+  {
+   "scan_page": 8,
+   "report_page": "8",
+   "line": "SE23",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A166-1",
+     "prod_code": "RPP40WB1847",
+     "die": "PB456",
+     "order_width": "31 1/8",
+     "order_length": "49 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "793",
+     "cut_rows": [
+      {
+       "width": "31 1/8",
+       "length": "50 1/4",
+       "total_sheets": "30,160"
+      },
+      {
+       "width": "31 1/8",
+       "length": "50 1/4",
+       "total_sheets": "30,160"
+      },
+      {
+       "width": "31 1/8",
+       "length": "50 1/4",
+       "total_sheets": "30,160"
+      }
+     ],
+     "pack_code": "35X54",
+     "num_plt": "312",
+     "pcs_per_stack": "290",
+     "stk_per_plt": "1",
+     "weight_lbs": "156,530",
+     "instr_date": "06-Oct",
+     "web_width": "93 3/8",
+     "special_instructions": "VOIDFORM, PLEASE WATCH WEIGHT (RANGE IS 729 - 751 ) / COOL SEAL 71 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H68A091-1",
+     "prod_code": "DPP40WB1669",
+     "die": "PB456",
+     "order_width": "31 1/8",
+     "order_length": "50 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "793",
+     "cut_rows": [
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "184,867"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "184,867"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "184,867"
+      }
+     ],
+     "pack_code": "30X54",
+     "num_plt": "999",
+     "pcs_per_stack": "295",
+     "stk_per_plt": "1",
+     "weight_lbs": "980,535",
+     "instr_date": "13-Oct",
+     "web_width": "93 3/8",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, WATCH WEIGHT (RANGE IS 729 - 751 GSM) / 786 PLTS DONE",
+     "handwritten": "Hand pen: printed # Plt '999' struck through with a diagonal line rising left-to-right (starts left of the # Plt column, ends in an arrow-like tip above '295' in the PCs/Stack column; '295' itself is NOT struck); handwritten '1880' below it (between # Plt and PCs/Stack columns, over the dashed line). Middle two digits drawn as large loop over small loop, read as 8s; consistent with 3 x 184,867 / 295 = 1,880 pallets (999 = field cap). Same mark as on 23 Sep.",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26821-2",
+     "prod_code": "RPA40WB3051",
+     "die": "PB456",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26731-2",
+     "prod_code": "DPP40WB1235",
+     "die": "PB456",
+     "order_width": "47 1/4",
+     "order_length": "45 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      },
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "999",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "672,387",
+     "instr_date": "Stock",
+     "web_width": "94 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / CORN BOX 934 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26902-1",
+     "prod_code": "DPP40WB1235",
+     "die": "PB456",
+     "order_width": "47 1/4",
+     "order_length": "45 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      },
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "999",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "672,387",
+     "instr_date": "Stock",
+     "web_width": "94 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / CORN BOX",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26202-1",
+     "prod_code": "RPA40WB3143",
+     "die": "PB456",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "27,500"
+      },
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "27,500"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "200",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "254,100",
+     "instr_date": "Stock",
+     "web_width": "100",
+     "special_instructions": "91 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "1,558,223",
+   "line_total_lbs": "3,903,525",
+   "page_notes": "Handwriting on H68A091-1: '999' # Plt struck through, '1880' written below (see row). In H69A166-1 and RP26731-2 the second special-instruction line has text at left (COOL SEAL / CORN BOX) and 'NN PLTS DONE' printed far right on the same line. Checksum OK: 30,160x3+184,867x3+137,363x2+145,854x4+27,500x2 = 1,558,223 PCs; 156,530+980,535+1,167,586+672,387x2+254,100 = 3,903,525 LBs."
+  },
+  {
+   "scan_page": 9,
+   "report_page": "9",
+   "line": "SE24",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A237-3",
+     "prod_code": "RPP40WB1858",
+     "die": "PC607",
+     "order_width": "31",
+     "order_length": "18",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "31",
+       "length": "18 3/8",
+       "total_sheets": "4,680"
+      }
+     ],
+     "pack_code": "35X38",
+     "num_plt": "9",
+     "pcs_per_stack": "260",
+     "stk_per_plt": "2",
+     "weight_lbs": "2,387",
+     "instr_date": "05-Oct",
+     "web_width": "31",
+     "special_instructions": "RUN WITH RPA40WB3051  8 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A237-2",
+     "prod_code": "RPP40WB1857",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "18",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "18 3/8",
+       "total_sheets": "3,120"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "6",
+     "pcs_per_stack": "260",
+     "stk_per_plt": "2",
+     "weight_lbs": "2,465",
+     "instr_date": "05-Oct",
+     "web_width": "48",
+     "special_instructions": "RUN WITH RPA40WB3051  5 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26901-1",
+     "prod_code": "RPA40WB3630",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "9,600"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "48",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "40,800",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "RUN WITH RPA40WB3051  10 PLTS DONE / MUST BE BOX AT 10 PCS PER BOX  PUT BETWEEN LINE 7 AND 8 / 9 COMPELTELY DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26803-2",
+     "prod_code": "RPA40WB3051",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "616 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26514-1",
+     "prod_code": "RPA40WB1795",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A S1S1S1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "5,500"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "5,500"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "40",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "54,120",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "ULTRA SMOOTH",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP25710-1",
+     "prod_code": "RPP40WB1625",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,500"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "500",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "540,375",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "DO NOT RUN",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "440,626",
+   "line_total_lbs": "1,807,733",
+   "page_notes": "Checksum OK: 440,626 PCs; 1,807,733 LBs. Changes vs 23 Sep: H69A237-3 and H69A237-2 now carry '8 PLTS DONE' / '5 PLTS DONE'; RP26901-1 third line now '9 COMPELTELY DONE' (was 8); RP26803-2 '616 PLTS DONE' (was 605). 'COMPELTELY' is a typo in the printed text, kept as printed. No margin dots beside records today (only the usual tiny speck left of the 'BPN9PFR' header). Faint arc-shaped scan artifact at bottom-left. No handwriting."
+  },
+  {
+   "scan_page": 10,
+   "report_page": "12",
+   "line": "SE31",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A100-13",
+     "prod_code": "RPA40WB3466",
+     "die": "PC405",
+     "order_width": "48",
+     "order_length": "144",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "144 3/4",
+       "total_sheets": "138"
+      },
+      {
+       "width": "48",
+       "length": "144 3/4",
+       "total_sheets": "138"
+      }
+     ],
+     "pack_code": "48X144",
+     "num_plt": "1",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,761",
+     "instr_date": "26-Sep",
+     "web_width": "96",
+     "special_instructions": "RUN WITH RPA40WB3051",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A066-2",
+     "prod_code": "SPA40WM8",
+     "die": "PC405",
+     "order_width": "51",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WM WM WM",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "51",
+       "length": "100 3/4",
+       "total_sheets": "280"
+      },
+      {
+       "width": "51",
+       "length": "100 3/4",
+       "total_sheets": "280"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "2",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "2,638",
+     "instr_date": "30-Sep",
+     "web_width": "102",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.  MAKE UP FOR SCRAP PLTS / MUST PRINT TICKETS ON LINE 4",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A066-1",
+     "prod_code": "SPA40WM14",
+     "die": "PC405",
+     "order_width": "51",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WM WM WM",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "51",
+       "length": "100 3/4",
+       "total_sheets": "280"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "1",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,527",
+     "instr_date": "30-Sep",
+     "web_width": "51",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.  MAKE UP FOR SCRAP / MUST PRINT TICKET ON LINE 4",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A062-4",
+     "prod_code": "SPA40WM9",
+     "die": "PC405",
+     "order_width": "51",
+     "order_length": "96 1/2",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WM WM WM",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "51",
+       "length": "97 1/4",
+       "total_sheets": "560"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "2",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "2,545",
+     "instr_date": "26-Sep",
+     "web_width": "51",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.  MAKE UP FOR SCRAP PLTS / MUST PRINT TICKETS ON LINE 4  RUN WITH ABOVE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A066-5",
+     "prod_code": "SPA40WM9",
+     "die": "PC405",
+     "order_width": "51",
+     "order_length": "96 1/2",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WM WM WM",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "51",
+       "length": "97 1/4",
+       "total_sheets": "280"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "1",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,273",
+     "instr_date": "30-Sep",
+     "web_width": "51",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.  MAKE UP FOR SCRAP PLT / PRINT TICKET ON LINE 4  RUN WITH ABOVE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A066-3",
+     "prod_code": "SPA40WM13",
+     "die": "PC405",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WM WM WM",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "140"
+      },
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "140"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "1",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,216",
+     "instr_date": "30-Sep",
+     "web_width": "96",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.  make up for scrap plt / PRINT TICKET ON LINE 4",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "page_notes": "No line total on this page; SE31 continues on report page 13 (scan 11). Last record (H69A066-3) box is open at the bottom; its box closes at the top of the next page with an empty strip (no continued text - its special instructions are complete on this page). Compared with 23 Sep, H69A105-4 and H69A197-1 no longer appear on this line; H69A066-5's instructions now fit entirely on this page and H69A066-3 moved here from report page 13. 'make up for scrap plt' printed in lowercase on H69A066-3. No margin dots beside records today. Faint arc-shaped scan artifact at bottom-left. No handwriting. Report pages 10 and 11 are not in this scan batch (scan jumps from report page 9 to 12)."
+  },
+  {
+   "scan_page": 11,
+   "report_page": "13",
+   "line": "SE31",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A225-1",
+     "prod_code": "RPA40WB3633",
+     "die": "PC405",
+     "order_width": "44",
+     "order_length": "74",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "44",
+       "length": "74 3/4",
+       "total_sheets": "1,160"
+      }
+     ],
+     "pack_code": "48X74",
+     "num_plt": "4",
+     "pcs_per_stack": "290",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,480",
+     "instr_date": "06-Oct",
+     "web_width": "44",
+     "special_instructions": "RUN WITH RPA40WB3051",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26413-1",
+     "prod_code": "SPA40WB765",
+     "die": "PC405",
+     "order_width": "49",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "20,775"
+      },
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "20,775"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "150",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "1",
+     "weight_lbs": "69,596",
+     "instr_date": "Stock",
+     "web_width": "98",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26120-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PC405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "800 PLTS DONE  RUN WITH NEXT",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "319,672",
+   "line_total_lbs": "1,251,622",
+   "page_notes": "Top of page has an empty box strip closing H69A066-3 (last record on report page 12 / scan 10); no carried-over text, so carryover_top is empty. Checksum OK over both SE31 pages (scan 10 + 11): PCs 2,236 + 317,436 = 319,672; LBs 10,960 + 1,240,662 = 1,251,622. No margin dots beside records today. Faint arc-shaped scan artifact at bottom-left. No handwriting."
+  },
+  {
+   "scan_page": 12,
+   "report_page": "14",
+   "line": "SE32",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26731-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PC406",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "263 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26525-3",
+     "prod_code": "SPA40WB755",
+     "die": "PC406",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "69,500"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "250",
+     "pcs_per_stack": "278",
+     "stk_per_plt": "1",
+     "weight_lbs": "302,117",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.  71 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "344,226",
+   "line_total_lbs": "1,469,703",
+   "page_notes": "Checksum OK: 344,226 PCs; 1,469,703 LBs. RP26731-1 now '263 PLTS DONE' (was 257). No margin dots. Faint arc-shaped scan artifact at bottom-left. No handwriting."
+  },
+  {
+   "scan_page": 13,
+   "report_page": "10",
+   "line": "SE25",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H68A111-4",
+     "prod_code": "RPP40WB890",
+     "die": "PB406",
+     "order_width": "102",
+     "order_length": "300",
+     "mat_spec": "PPP P R2R2R2",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "783",
+     "cut_rows": [
+      {
+       "width": "102",
+       "length": "303",
+       "total_sheets": "648"
+      }
+     ],
+     "pack_code": "84X96",
+     "num_plt": "18",
+     "pcs_per_stack": "36",
+     "stk_per_plt": "1",
+     "weight_lbs": "22,032",
+     "instr_date": "26-Sep",
+     "web_width": "102",
+     "special_instructions": "Rolls. Rolled material. Each roll counts has 12 pcs. Please / put 1 plt tickets on the side of the 2 outside rolls. Put 4 / bands together through the cores.NO telescoping. End must be / straight. Rolls must be tight. No loose sloppy rolls. / Watch weights.                    8 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H68A111-5",
+     "prod_code": "RPP40WB890",
+     "die": "PB406",
+     "order_width": "102",
+     "order_length": "300",
+     "mat_spec": "PPP P R2R2R2",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "783",
+     "cut_rows": [
+      {
+       "width": "102",
+       "length": "303",
+       "total_sheets": "648"
+      }
+     ],
+     "pack_code": "84X96",
+     "num_plt": "18",
+     "pcs_per_stack": "36",
+     "stk_per_plt": "1",
+     "weight_lbs": "22,032",
+     "instr_date": "26-Sep",
+     "web_width": "102",
+     "special_instructions": "SAME AS ABOVE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26923-1",
+     "prod_code": "RPP40WB1186",
+     "die": "PB406",
+     "order_width": "108",
+     "order_length": "45",
+     "mat_spec": "PPP P R2R2R2",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "108",
+       "length": "45 5/8",
+       "total_sheets": "1,800"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "6",
+     "pcs_per_stack": "300",
+     "stk_per_plt": "1",
+     "weight_lbs": "9,342",
+     "instr_date": "Stock",
+     "web_width": "108",
+     "special_instructions": "1 Ticket per pallet & move to repacking area.  LTL MATERIAL / COLOR DOES NOT MATTER",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A097-1",
+     "prod_code": "RPP40WB1852",
+     "die": "PB406",
+     "order_width": "52",
+     "order_length": "92 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "52",
+       "length": "93 1/4",
+       "total_sheets": "2,240"
+      },
+      {
+       "width": "52",
+       "length": "93 1/4",
+       "total_sheets": "2,240"
+      }
+     ],
+     "pack_code": "51X93",
+     "num_plt": "16",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "19,891",
+     "instr_date": "21-Sep",
+     "web_width": "104",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H68A127-1",
+     "prod_code": "DPP40WB1700",
+     "die": "PB406",
+     "order_width": "52 3/4",
+     "order_length": "49 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB GT WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "52 3/4",
+       "length": "50 3/8",
+       "total_sheets": "6,424"
+      },
+      {
+       "width": "52 3/4",
+       "length": "50 3/8",
+       "total_sheets": "6,424"
+      }
+     ],
+     "pack_code": "48X54",
+     "num_plt": "44",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "35,962",
+     "instr_date": "20-Oct",
+     "web_width": "105 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H66A116-1",
+     "prod_code": "DPP50WB308",
+     "die": "PB406",
+     "order_width": "31 1/8",
+     "order_length": "50 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "5.0",
+     "gsm": "1,052",
+     "cut_rows": [
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "460"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "460"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "460"
+      }
+     ],
+     "pack_code": "30X54",
+     "num_plt": "6",
+     "pcs_per_stack": "230",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,237",
+     "instr_date": "29-Sep",
+     "web_width": "93 3/8",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT  (RANGE IS 970 - 1000 GSM) / MAKE UP FOR SCRAP PLTS",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26717-2",
+     "prod_code": "RPP40WB1625",
+     "die": "PB406",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "6,600"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "6,600"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "48",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "51,876",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "62 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H64A244-1",
+     "prod_code": "DPP50WB305",
+     "die": "PB406",
+     "order_width": "31 5/8",
+     "order_length": "38 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "5.0",
+     "gsm": "1,052",
+     "cut_rows": [
+      {
+       "width": "31 5/8",
+       "length": "39 1/16",
+       "total_sheets": "80,040"
+      }
+     ],
+     "pack_code": "30X42",
+     "num_plt": "999",
+     "pcs_per_stack": "230",
+     "stk_per_plt": "1",
+     "weight_lbs": "436,298",
+     "instr_date": "15-Sep",
+     "web_width": "94 7/8",
+     "special_instructions": "",
+     "handwritten": "Printed # Plt '999' struck through by hand and '1044' handwritten below it.",
+     "unclear": "Only the first cut row (31 5/8 x 39 1/16, 80,040) is printed on this page; the record's remaining cut rows and its Special Instructions are not on this page (presumably continue on report page 11, not in this scan).",
+     "truncated": true
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "final_total": "",
+   "page_notes": "8 records. No 'LINE NO. SE25 Total' on this page; SE25 continues onto report page 11, which is not in the scan. Last record H64A244-1 is cut off at the page bottom: only 1 cut row printed here, no Special Instructions. Handwritten '600,670#' at lower right below the last record; it equals the sum of the 8 printed weights on this page (22,032+22,032+9,342+19,891+35,962+3,237+51,876+436,298 = 600,670). Page sheet sum = 115,044 PCs (printed cut rows on this page). Handwritten '1044' replaces struck '999' in # Plt of H64A244-1. New record vs 23 Sep: RP26923-1. Small circled mark in left margin beside RP26923-1 and faint curved mark lower-left (scan/punch artifacts)."
+  },
+  {
+   "scan_page": 14,
+   "report_page": "15",
+   "line": "SE42",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H68A080-1",
+     "prod_code": "CPP30KS215",
+     "die": "PA205",
+     "order_width": "89 5/16",
+     "order_length": "37 5/16",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "3.0",
+     "gsm": "660",
+     "cut_rows": [
+      {
+       "width": "89 5/16",
+       "length": "37 15/16",
+       "total_sheets": "1,280"
+      }
+     ],
+     "pack_code": "36X96",
+     "num_plt": "4",
+     "pcs_per_stack": "320",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,999",
+     "instr_date": "03-Oct",
+     "web_width": "89 5/16",
+     "special_instructions": "Send to printing. Mark lead edge & make sure of pc count. / MAKE UP FOR SCRAP PALLETS",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26410-1",
+     "prod_code": "DPP40WB1235",
+     "die": "PC405",
+     "order_width": "47 1/4",
+     "order_length": "45 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      },
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "999",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "672,387",
+     "instr_date": "Stock",
+     "web_width": "94 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / CORN BOX                             262 PLTS DONE",
+     "handwritten": "'-PC405' handwritten in the gap just above/left of this row (above the T/Mfg# columns, not over the die field). The PRINTED die is already 'PC405', legible and unaltered.",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "292,988",
+   "line_total_lbs": "676,386",
+   "final_total": "",
+   "page_notes": "Handwritten '-PC405' in left margin/gap above RP26410-1 (printed die is also PC405). Checksum OK: 1,280+145,854+145,854 = 292,988 PCs; 3,999+672,387 = 676,386 LBs. Faint curved mark lower-left (artifact)."
+  },
+  {
+   "scan_page": 15,
+   "report_page": "16",
+   "line": "SE43",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26915-1",
+     "prod_code": "RPA40WB3143",
+     "die": "PB405",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      },
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "150",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "190,575",
+     "instr_date": "Stock",
+     "web_width": "100",
+     "special_instructions": "88 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26415-1",
+     "prod_code": "RPA40WB3073",
+     "die": "PB405",
+     "order_width": "96",
+     "order_length": "48",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "48 5/8",
+       "total_sheets": "41,250"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "150",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "175,313",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "20 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26218-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "729 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26526-2",
+     "prod_code": "RPA40WB3126",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "120",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "120 3/4",
+       "total_sheets": "5,500"
+      },
+      {
+       "width": "48",
+       "length": "120 3/4",
+       "total_sheets": "5,500"
+      }
+     ],
+     "pack_code": "48X120",
+     "num_plt": "40",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "58,520",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "19 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "368,226",
+   "line_total_lbs": "1,591,994",
+   "final_total": "",
+   "page_notes": "No handwriting. Checksum OK: 41,250+41,250+274,726+11,000 = 368,226 PCs; 190,575+175,313+1,167,586+58,520 = 1,591,994 LBs. Faint curved mark lower-left (artifact)."
+  },
+  {
+   "scan_page": 16,
+   "report_page": "17",
+   "line": "SE61",
+   "run_date": "9/24/26",
+   "run_time": "13:32:32",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H68A020-1",
+     "prod_code": "RBPA0KS70",
+     "die": "BB510",
+     "order_width": "63",
+     "order_length": "54",
+     "mat_spec": "PPP P RDRDRD",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "2,006",
+     "cut_rows": [
+      {
+       "width": "63",
+       "length": "54 3/4",
+       "total_sheets": "2,000"
+      }
+     ],
+     "pack_code": "54X63",
+     "num_plt": "40",
+     "pcs_per_stack": "50",
+     "stk_per_plt": "1",
+     "weight_lbs": "19,360",
+     "instr_date": "01-Oct",
+     "web_width": "63",
+     "special_instructions": "GENESIS, TARGET THICKNESS 10 (RANGE IS 9.50-10.50) / 38 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H64A178-1",
+     "prod_code": "RBP50EB52",
+     "die": "BB510",
+     "order_width": "75",
+     "order_length": "61",
+     "mat_spec": "BBB P RMR6R6",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,502",
+     "cut_rows": [
+      {
+       "width": "75 1/8",
+       "length": "61 1/4",
+       "total_sheets": "600"
+      }
+     ],
+     "pack_code": "61X75",
+     "num_plt": "3",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "5,850",
+     "instr_date": "24-Sep",
+     "web_width": "75 1/8",
+     "special_instructions": "Bradford, treat both sides minimum 42 dynes. Thickness range / 3.3-3.8mm.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H64A289-1",
+     "prod_code": "RBP50EB52",
+     "die": "BB510",
+     "order_width": "75",
+     "order_length": "61",
+     "mat_spec": "BBB P RMR6R6",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,502",
+     "cut_rows": [
+      {
+       "width": "75 1/8",
+       "length": "61 1/4",
+       "total_sheets": "800"
+      }
+     ],
+     "pack_code": "61X75",
+     "num_plt": "4",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "7,800",
+     "instr_date": "24-Sep",
+     "web_width": "75 1/8",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H64A289-2",
+     "prod_code": "RBP50EB45",
+     "die": "BB510",
+     "order_width": "85",
+     "order_length": "94",
+     "mat_spec": "BBB P RMR6R6",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,502",
+     "cut_rows": [
+      {
+       "width": "85 1/8",
+       "length": "94 1/4",
+       "total_sheets": "800"
+      }
+     ],
+     "pack_code": "84X96",
+     "num_plt": "4",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "13,624",
+     "instr_date": "24-Sep",
+     "web_width": "85 1/8",
+     "special_instructions": "2 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H64A289-3",
+     "prod_code": "RBP50EB53",
+     "die": "BB510",
+     "order_width": "85",
+     "order_length": "118",
+     "mat_spec": "BBB P RMR6R6",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,502",
+     "cut_rows": [
+      {
+       "width": "85 1/8",
+       "length": "118 1/4",
+       "total_sheets": "800"
+      }
+     ],
+     "pack_code": "85X118",
+     "num_plt": "8",
+     "pcs_per_stack": "100",
+     "stk_per_plt": "1",
+     "weight_lbs": "17,104",
+     "instr_date": "24-Sep",
+     "web_width": "85 1/8",
+     "special_instructions": "1 PLT DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H64A289-4",
+     "prod_code": "RBP50EB54",
+     "die": "BB510",
+     "order_width": "85",
+     "order_length": "137",
+     "mat_spec": "BBB P RMR6R6",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,502",
+     "cut_rows": [
+      {
+       "width": "85 1/8",
+       "length": "137 1/4",
+       "total_sheets": "800"
+      }
+     ],
+     "pack_code": "85X137",
+     "num_plt": "8",
+     "pcs_per_stack": "100",
+     "stk_per_plt": "1",
+     "weight_lbs": "19,856",
+     "instr_date": "24-Sep",
+     "web_width": "85 1/8",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26826-1",
+     "prod_code": "RBP50EB10",
+     "die": "BB510",
+     "order_width": "84",
+     "order_length": "48",
+     "mat_spec": "BBB P RDRDRD",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,503",
+     "cut_rows": [
+      {
+       "width": "84 1/8",
+       "length": "48 1/4",
+       "total_sheets": "12,000"
+      }
+     ],
+     "pack_code": "48X84",
+     "num_plt": "60",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "103,200",
+     "instr_date": "Stock",
+     "web_width": "84 1/8",
+     "special_instructions": "35 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "17,800",
+   "line_total_lbs": "186,794",
+   "final_total": "6,112,760 PCs / 20,752,083 LBs",
+   "page_notes": "Ends with 'Final Total: 6,112,760 PCs 20,752,083 LBs' and '** END OF REPORT **'. No handwriting. Checksum OK: 2,000+600+800+800+800+800+12,000 = 17,800 PCs; 19,360+5,850+7,800+13,624+17,104+19,856+103,200 = 186,794 LBs. RP26910-1 (on 23 Sep) no longer listed. H64A289-2 pack code 84X96 does not match its 85x94 order size - printed as such. Faint curved mark lower-left (artifact)."
+  }
+ ],
+ "cnv": [
+  {
+   "scan_page": 17,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - BOBST DIE CUTTER",
+   "line_no": "SD31 BOBST",
+   "line_code": "SD31",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 2",
+   "rows": [
+    {
+     "order": "H5BA121-1",
+     "product_code": "DPP30WB1047",
+     "extrusion_status": "53 OF 52",
+     "semi_pc_plt": "383",
+     "semi_size": "49 12/16 X 44 12/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "B0979",
+     "die_description": "Broccoli Box / New Lock Push",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "19,760",
+     "pack_code": "48x48",
+     "num_plts": "52",
+     "pc_per_plt": "380",
+     "req_date": "23-Feb",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H5BA122-1",
+     "product_code": "DPP30WB1047",
+     "extrusion_status": "52 OF 52",
+     "semi_pc_plt": "383",
+     "semi_size": "49 12/16 X 44 12/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "B0979",
+     "die_description": "Broccoli Box / New Lock Push",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "19,760",
+     "pack_code": "48x48",
+     "num_plts": "52",
+     "pc_per_plt": "380",
+     "req_date": "2-Mar",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H5BA123-1",
+     "product_code": "DPP30WB1047",
+     "extrusion_status": "52 OF 52",
+     "semi_pc_plt": "383",
+     "semi_size": "49 12/16 X 44 12/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "B0979",
+     "die_description": "Broccoli Box",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "19,760",
+     "pack_code": "48x48",
+     "num_plts": "52",
+     "pc_per_plt": "380",
+     "req_date": "2-Mar",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A032-1",
+     "product_code": "DPP30WB675",
+     "extrusion_status": "6 OF 17",
+     "semi_pc_plt": "360",
+     "semi_size": "29x44 3/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "B0737",
+     "die_description": "Apac Paper D/C Pad",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "6,000",
+     "pack_code": "48x54",
+     "num_plts": "10",
+     "pc_per_plt": "600",
+     "req_date": "15-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A025-1",
+     "product_code": "DPP30WB1026",
+     "extrusion_status": "0 OF 68",
+     "semi_pc_plt": "388",
+     "semi_size": "35 6/16 X 35",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "B0963",
+     "die_description": "1/2 BUSHEL / PRODUCE BOX",
+     "die_status": "IN",
+     "plate_status": "",
+     "ink_color": "RA821-7458 BLU / A-2746 BLUE",
+     "total_sheets": "25,840",
+     "pack_code": "35x38",
+     "num_plts": "68",
+     "pc_per_plt": "380",
+     "req_date": "18-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "Ink text 'RA821-7458 BLU' is printed across the Plate Status and Ink Color cells (a border line falls between 'RA821' and '-7458'); recorded as ink color with plate_status blank. 'BLU' is cut off at the right cell border (may be 'BLUE' in the source)."
+    },
+    {
+     "order": "H68A023-1",
+     "product_code": "DPP30WB1026",
+     "extrusion_status": "0 OF 68",
+     "semi_pc_plt": "388",
+     "semi_size": "35 6/16 X 35",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "B0963",
+     "die_description": "1/2 BUSHEL / PRODUCE BOX",
+     "die_status": "IN",
+     "plate_status": "",
+     "ink_color": "RA821-7458 BLU / A-2746 BLUE",
+     "total_sheets": "25,840",
+     "pack_code": "35x38",
+     "num_plts": "68",
+     "pc_per_plt": "380",
+     "req_date": "18-Sep",
+     "done_note": "5 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "Same as H68A025-1: 'RA821' is in the Plate Status column position and 'BLU' is cut off at the right cell border."
+    },
+    {
+     "order": "H68A160-1",
+     "product_code": "DPP40WB882",
+     "extrusion_status": "12 OF 12",
+     "semi_pc_plt": "260",
+     "semi_size": "53 7/8x42 3/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0411",
+     "die_description": "Lid",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "3,000",
+     "pack_code": "48x54",
+     "num_plts": "12",
+     "pc_per_plt": "250",
+     "req_date": "14-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A169-1",
+     "product_code": "DPP40WB1164",
+     "extrusion_status": "14 OF 14",
+     "semi_pc_plt": "255",
+     "semi_size": "38x37 3/4",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0773",
+     "die_description": "Orora Group D/C Pad",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "14,000",
+     "pack_code": "40x40",
+     "num_plts": "14",
+     "pc_per_plt": "1000",
+     "req_date": "8-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A245-1",
+     "product_code": "DPP50KS186",
+     "extrusion_status": "0 OF 20",
+     "semi_pc_plt": "215",
+     "semi_size": "67 8/16 X 34 8/16",
+     "color": "KS",
+     "apl": "P",
+     "mm": "5",
+     "flute": "P",
+     "die_no": "B1004",
+     "die_description": "33''' FLANGE / 900041004. ARD",
+     "die_status": "NA",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "8500",
+     "pack_code": "35X66",
+     "num_plts": "20",
+     "pc_per_plt": "425",
+     "req_date": "13-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "Die Description shows three tick marks after 33 (printed as ''' — may be a single plus a double quote); also 'ARD' is preceded by a space after the period ('900041004. ARD'), unlike the next row."
+    },
+    {
+     "order": "H68A244-1",
+     "product_code": "DPP50KS185",
+     "extrusion_status": "20 OF 20",
+     "semi_pc_plt": "215",
+     "semi_size": "67 8/16 X 34 8/16",
+     "color": "KS",
+     "apl": "P",
+     "mm": "5",
+     "flute": "P",
+     "die_no": "B1005",
+     "die_description": "33''' FLANGE / 900041005.ARD",
+     "die_status": "NA",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "8500",
+     "pack_code": "35X66",
+     "num_plts": "20",
+     "pc_per_plt": "425",
+     "req_date": "12-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "Three tick marks after 33 (''' — may be a single plus a double quote)."
+    },
+    {
+     "order": "H69A067-1",
+     "product_code": "DPP40KS202",
+     "extrusion_status": "8 OF 8",
+     "semi_pc_plt": "255",
+     "semi_size": "62 1/4x38 3/4",
+     "color": "KS",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0807",
+     "die_description": "CDR Coil Shipping Cover",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "2,000",
+     "pack_code": "42x62",
+     "num_plts": "8",
+     "pc_per_plt": "250",
+     "req_date": "30-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A170-1",
+     "product_code": "DPP40KS303",
+     "extrusion_status": "20 OF 20",
+     "semi_pc_plt": "255",
+     "semi_size": "52 4/16 X 37 6/16",
+     "color": "KS",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0940",
+     "die_description": "Cope Plastics Insulation / Stop",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "5,000",
+     "pack_code": "35x54",
+     "num_plts": "20",
+     "pc_per_plt": "250",
+     "req_date": "1-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A133-1",
+     "product_code": "DPP30KS105",
+     "extrusion_status": "8 of 8",
+     "semi_pc_plt": "320",
+     "semi_size": "27 1/2x34 3/4",
+     "color": "KS",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "B0831",
+     "die_description": "Flexcon Drop Front Tray",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "5000",
+     "pack_code": "35x54",
+     "num_plts": "4",
+     "pc_per_plt": "1250",
+     "req_date": "13-Oct",
+     "done_note": "",
+     "row_notes": "Line directly below this row (inside the same table block): \"Exact qty only. No over or short.\"",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A139-1",
+     "product_code": "DPP40KS303",
+     "extrusion_status": "15 OF 20",
+     "semi_pc_plt": "260",
+     "semi_size": "52 4/16 X 37 6/16",
+     "color": "KS",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0940",
+     "die_description": "Cope Plastics Insulation / Stop",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "5,000",
+     "pack_code": "35x54",
+     "num_plts": "20",
+     "pc_per_plt": "250",
+     "req_date": "5-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A107-1",
+     "product_code": "CPP40NS362",
+     "extrusion_status": "10 OF 10",
+     "semi_pc_plt": "215",
+     "semi_size": "75 3/4x49 3/8",
+     "color": "NS",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0604",
+     "die_description": "Recycle Bin / No print",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "2,150",
+     "pack_code": "48x36",
+     "num_plts": "10",
+     "pc_per_plt": "215",
+     "req_date": "9-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A127-1",
+     "product_code": "DPP40WB1700",
+     "extrusion_status": "0 OF 44",
+     "semi_pc_plt": "292",
+     "semi_size": "52 12/16 X 49 10/16",
+     "color": "B GT V",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0976",
+     "die_description": "REV. 40976 CAB BOX",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "12,760",
+     "pack_code": "48X54",
+     "num_plts": "44",
+     "pc_per_plt": "290",
+     "req_date": "30-Sep",
+     "done_note": "",
+     "row_notes": "The Die Description appears to continue at the top of the next scan page (18) as 'EXT TAB & PANEL'.",
+     "handwritten": "",
+     "unclear": "The Color cell text is cut off on both sides by the cell borders. Only 'B GT V' is visible: the leading 'B' is partly cut (could be '3' or 'B'), the trailing 'V' is cut (could be V or W), and the full value is unknown. The Semi-Size text '52 12/16 X 49 10/16' runs right up to the border."
+    }
+   ],
+   "banner_notes": [],
+   "page_notes": "No handwriting (only small scanner specks at the top left). The 'Exact qty only. No over or short.' line is inside the table under H69A133-1, so it is kept in that row's row_notes. There is a blank spacer row between H5BA123-1 and H68A032-1, and a break in the table between H69A133-1 and H69A139-1. The '5 DONE' note is typed in bold on the second line of H68A023-1 (PRODUCE BOX / A-2746 BLUE line) under Pack Code/# of Plts."
+  },
+  {
+   "scan_page": 18,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - BOBST DIE CUTTER",
+   "line_no": "SD31 BOBST",
+   "line_code": "SD31",
+   "issue_date": "9/24/2026",
+   "page_of": "2 of 2",
+   "rows": [
+    {
+     "order": "H5CA066-1",
+     "product_code": "DPP40WB1235",
+     "extrusion_status": "0 OF 56",
+     "semi_pc_plt": "292",
+     "semi_size": "47 1/4x45 5/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B759A",
+     "die_description": "Sustainer 8.5 Corn Box / (Rev 8.5\")",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "16,240",
+     "pack_code": "44x44",
+     "num_plts": "56",
+     "pc_per_plt": "290",
+     "req_date": "1-Sep",
+     "done_note": "43 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H5CA090-1",
+     "product_code": "DPP40WB1235",
+     "extrusion_status": "0 OF 56",
+     "semi_pc_plt": "292",
+     "semi_size": "47 1/4x45 5/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B759A",
+     "die_description": "Sustainer 8.5 Corn Box / (Rev 8.5\")",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "16,240",
+     "pack_code": "44x44",
+     "num_plts": "56",
+     "pc_per_plt": "290",
+     "req_date": "1-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H5CA202-1",
+     "product_code": "DPP40WB1235",
+     "extrusion_status": "24 OF 190",
+     "semi_pc_plt": "292",
+     "semi_size": "47 1/4x45 5/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B759A",
+     "die_description": "Sustainer 8.5 Corn Box / (Rev 8.5\")",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "16,240",
+     "pack_code": "44x44",
+     "num_plts": "56",
+     "pc_per_plt": "290",
+     "req_date": "1-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H5CA203-1",
+     "product_code": "DPP40WB1235",
+     "extrusion_status": "0 OF 56",
+     "semi_pc_plt": "292",
+     "semi_size": "47 1/4x45 5/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B759A",
+     "die_description": "Sustainer 8.5 Corn Box / (Rev 8.5\")",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "16,240",
+     "pack_code": "44x44",
+     "num_plts": "56",
+     "pc_per_plt": "290",
+     "req_date": "1-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H5CA205-1",
+     "product_code": "DPP40WB1235",
+     "extrusion_status": "36 OF 84",
+     "semi_pc_plt": "292",
+     "semi_size": "47 1/4x45 5/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B759A",
+     "die_description": "Sustainer 8.5 Corn Box / (Rev 8.5\")",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "16,240",
+     "pack_code": "44x44",
+     "num_plts": "56",
+     "pc_per_plt": "290",
+     "req_date": "1-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "RP26731-2",
+     "product_code": "DPP40WB1235",
+     "extrusion_status": "934 OF 999",
+     "semi_pc_plt": "292",
+     "semi_size": "47 1/4x45 5/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B759A",
+     "die_description": "Sustainer 8.5 Corn Box / (Rev 8.5\")",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "",
+     "pack_code": "",
+     "num_plts": "",
+     "pc_per_plt": "",
+     "req_date": "",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "RP26731-2",
+     "product_code": "DPP40WB1235",
+     "extrusion_status": "0 OF 999",
+     "semi_pc_plt": "292",
+     "semi_size": "47 1/4x45 5/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B759A",
+     "die_description": "Sustainer 8.5 Corn Box / (Rev 8.5\")",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "",
+     "pack_code": "",
+     "num_plts": "",
+     "pc_per_plt": "",
+     "req_date": "",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [
+    {
+     "position": "before order H5CA066-1 (top of table, Die Description column)",
+     "text": "EXT TAB & PANEL",
+     "note": "Looks like the second line of the Die Description for H68A127-1, the last row on scan page 17 ('REV. 40976 CAB BOX')."
+    },
+    {
+     "position": "before order H5CA066-1",
+     "text": "For Corn Boxes below: Please stack on pallets with the flutes facing the open end of the pallet. Please keep this consistant. They need to be stacked the same direction on ALL pallets.     USE BOARD USED FROM OTHER ORDER RP26731-2 & RP26731-2"
+    },
+    {
+     "position": "before order H5CA066-1",
+     "text": "****MUST BE AT 290 & ONLY USE 44X44 REGULAR PALLETS****"
+    }
+   ],
+   "page_notes": "No handwriting (only small scanner specks at the top left). 'consistant' is misspelled on the printed sheet. RP26731-2 is listed twice with the same values except Extrusion Status (934 OF 999 and 0 OF 999). Both RP26731-2 rows have blank Total Sheets, Pack Code, # of Plts, Pc./Plt. and Req. Date. The banner also names 'RP26731-2 & RP26731-2' (the same order twice). '43 DONE' is typed in bold on the second line of H5CA066-1 (the '(Rev 8.5\")' line) under # of Plts."
+  },
+  {
+   "scan_page": 19,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - DIE CUTTER",
+   "line_no": "SD11/SD12 ROTARY/ PRINTING",
+   "line_code": "SD11/SD12",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 1",
+   "rows": [
+    {
+     "order": "H68A080-1",
+     "product_code": "CPP30KS215",
+     "extrusion_status": "0 OF 4",
+     "semi_pc_plt": "320",
+     "semi_size": "89 5/16 X 37 5/16",
+     "color": "KS",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "D0343",
+     "die_description": "NORDSTROM / FOL/TT",
+     "die_status": "IN",
+     "plate_status": "RA835",
+     "ink_color": "WHITE",
+     "total_sheets": "1,200",
+     "pack_code": "39X87",
+     "num_plts": "4",
+     "pc_per_plt": "300",
+     "req_date": "30-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A252-1",
+     "product_code": "DPP40WB1453",
+     "extrusion_status": "6 OF 6",
+     "semi_pc_plt": "255",
+     "semi_size": "87 8/16X37 8/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "D0309",
+     "die_description": "HMC WATSONTOWN / BRICK 1/2 SURROUND",
+     "die_status": "IN",
+     "plate_status": "RA766",
+     "ink_color": "Black / 187 RED",
+     "total_sheets": "1470",
+     "pack_code": "35X86",
+     "num_plts": "6",
+     "pc_per_plt": "245",
+     "req_date": "26-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A252-2",
+     "product_code": "DPP40WB1454",
+     "extrusion_status": "7 OF 7",
+     "semi_pc_plt": "260",
+     "semi_size": "51 10/16X51 14/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "D0310",
+     "die_description": "HMC WATSONTOWN / BRICK SURROUND LID",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "1785",
+     "pack_code": "52X54",
+     "num_plts": "7",
+     "pc_per_plt": "255",
+     "req_date": "26-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A142-1",
+     "product_code": "CPP40WB320",
+     "extrusion_status": "29 of 29",
+     "semi_pc_plt": "300",
+     "semi_size": "88 15/16x37 1/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "D0263",
+     "die_description": "Flexcon/Nemera / Large 1-2-3 Box",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "8700",
+     "pack_code": "48x40",
+     "num_plts": "29",
+     "pc_per_plt": "300",
+     "req_date": "16-Oct",
+     "done_note": "",
+     "row_notes": "Line directly above (first line of this table block): \"For next use pallet tickets without Inteplast Logo. Must be packed well to prevent boxes from getting dirty during shipment.\" Lines directly below: \"48x40 pallet 120pcs laid flat. Alternate direction of boxes so they lay flat. Place 2 bndl vertical on the 48\" side at 5 pcs per bundle & 2 on the 40\" side for a total of 140 pcs.\" | \"Should not be over 49\" tall.\" | \"*Must use specially purchased \"new\" heat treated pallets for this order. These pallets must be stored indoors.\" | \"Must use plastic slip and cover sheets. Use paper board corner protectors.\"",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [
+    {
+     "position": "before order H68A080-1",
+     "text": "***Cover sheets must be put on all pallets produced before being sent to Packers."
+    },
+    {
+     "position": "before order H68A080-1",
+     "text": "***Please put pallet tickets on all 4 sides, not all 4 together on 1 side. Packers will not do this for you."
+    }
+   ],
+   "page_notes": "No handwriting. The header prints 'Issue Date:9/24/2026' and 'Page:1 of 1' with no space after the colon. The LINE NO text is 'SD11/SD12  ROTARY/ PRINTING' (space after the slash), and the right header cell reads 'SD11/SD12'. H68A142-1 is in a separate table block below the first three rows."
+  },
+  {
+   "scan_page": 20,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - FLAT-BED",
+   "line_no": "SD21 FLAT-BED",
+   "line_code": "SD21",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 1",
+   "rows": [
+    {
+     "order": "H68A170-2",
+     "product_code": "DPP40KS409",
+     "extrusion_status": "10 OF 10",
+     "semi_pc_plt": "255",
+     "semi_size": "51 4/16 X 73 12/16",
+     "color": "KS",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "F0324",
+     "die_description": "INSULATION STOP / PANE",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "2,500",
+     "pack_code": "52X74",
+     "num_plts": "10",
+     "pc_per_plt": "250",
+     "req_date": "1-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "Semi-Size text overflows its cell on both sides: the first digit of '51' is cut by the left border (only the right half of the digit shows; looks like a 5, could be 3 or 6) and the final '6' of '12/16' is cut by the right border. Die Description second line reads 'PANE' as printed (cell has room, so not visibly truncated; may be meant as 'PANEL')."
+    },
+    {
+     "order": "H69A074-1",
+     "product_code": "DPP40WB1552",
+     "extrusion_status": "20 OF 20",
+     "semi_pc_plt": "255",
+     "semi_size": "56 X 56",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "F0309",
+     "die_description": "DRC IND. 55\"ODX24\"ID / DONUT",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "5,000",
+     "pack_code": "55X55",
+     "num_plts": "20",
+     "pc_per_plt": "250",
+     "req_date": "13-Oct",
+     "done_note": "",
+     "row_notes": "Line directly below (Order/Product Code columns): \"MUST BE AT 250\"",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [
+    {
+     "position": "before order H68A170-2",
+     "text": "***Cover sheets must be put on all pallets produced before being sent to Packers."
+    },
+    {
+     "position": "before order H68A170-2",
+     "text": "***Please put pallet tickets on all 4 sides, not all 4 together on 1 side. Packers will not do this for you."
+    }
+   ],
+   "page_notes": "No handwriting (only small scanner specks). New line not in the 23 Sep packet. Header prints 'Issue Date:9/24/2026' and 'Page:1 of 1' with no space after the colon; LINE NO text is 'SD21  FLAT-BED' and the right header cell reads 'SD21'. The two *** banner lines sit inside the header table block; the two order rows are in a separate table block below."
+  },
+  {
+   "scan_page": 21,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - BOBST DIE CUTTER",
+   "line_no": "SD22 BAYSEK",
+   "line_code": "SD22",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 2",
+   "rows": [
+    {
+     "order": "H64A244-1",
+     "product_code": "DPP50WB305",
+     "extrusion_status": "823 OF 1044",
+     "semi_pc_plt": "230",
+     "semi_size": "60 4/16 X 36 4/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "5",
+     "flute": "P",
+     "die_no": "Y0002",
+     "die_description": "6x29.625 Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "1,431,000",
+     "pack_code": "35X62",
+     "num_plts": "560",
+     "pc_per_plt": "2700",
+     "req_date": "4-Jun",
+     "done_note": "229 DONE",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.2358. Acceptable range is 0.2240 - 0.2476\" | \"Mark 5mm 6\" 9 slot 205#. No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\" (The Req. Date '4-Jun' is printed outside the table's right border for this block.)",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H61A218-1",
+     "product_code": "DPP40WB1673",
+     "extrusion_status": "6 OF 6",
+     "semi_pc_plt": "292",
+     "semi_size": "31 10/16X42 4/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "Y0005",
+     "die_description": "10x29.625 Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "6960",
+     "pack_code": "42X62",
+     "num_plts": "3",
+     "pc_per_plt": "2320",
+     "req_date": "20-Jun",
+     "done_note": "",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.2988. Acceptable range is 0.2779 - 0.3197\" | \"Mark with 4mm 10\" 9 slot 154#.  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\" | \"MAKE UP FOR SCRAP PALLETS\"",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H63A200-1",
+     "product_code": "DPP30WB1025",
+     "extrusion_status": "368 OF 374",
+     "semi_pc_plt": "360",
+     "semi_size": "31 2/16 X 50 8/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "Y0004",
+     "die_description": "New 12x29.63  9 Slot Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "526,400",
+     "pack_code": "48X62",
+     "num_plts": "188",
+     "pc_per_plt": "2800",
+     "req_date": "30-Jun",
+     "done_note": "56 DONE",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. Exact qty only. No over runs. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.2891. Acceptable range is 0.2746 - 0.3035\" | \"Mark with 12\" 9 Slot 3mm 123#.  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\"",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H63A199-1",
+     "product_code": "DPP40WB1673",
+     "extrusion_status": "432 OF 432",
+     "semi_pc_plt": "292",
+     "semi_size": "31 10/16X42 4/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "Y0005",
+     "die_description": "10x29.625 Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "501,120",
+     "pack_code": "42X62",
+     "num_plts": "216",
+     "pc_per_plt": "2320",
+     "req_date": "29-Jun",
+     "done_note": "151 DONE",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.2988. Acceptable range is 0.2839 - 0.3137\" | \"Mark with 4mm 10\" 9 slot 154#.  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\"",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H65A163-1",
+     "product_code": "DPP30WB1025",
+     "extrusion_status": "145 OF 141",
+     "semi_pc_plt": "360",
+     "semi_size": "31 2/16 X 50 8/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "Y0004",
+     "die_description": "New 12x29.63  9 Slot Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "201.6",
+     "pack_code": "48X62",
+     "num_plts": "72",
+     "pc_per_plt": "2800",
+     "req_date": "22-Jul",
+     "done_note": "17 DONE",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. Exact qty only. No over runs. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.2891. Acceptable range is 0.2746 - 0.3035\" | \"Mark with 12\" 9 Slot 3mm 123#.  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\"",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H66A005-1",
+     "product_code": "DPP50WB307",
+     "extrusion_status": "28 OF 28",
+     "semi_pc_plt": "230",
+     "semi_size": "31 10/16 X 42 4/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "5",
+     "flute": "P",
+     "die_no": "Y0005",
+     "die_description": "10\" 9-SLOT Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "25,200",
+     "pack_code": "42X62",
+     "num_plts": "14",
+     "pc_per_plt": "1800",
+     "req_date": "20-Aug",
+     "done_note": "",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.3978. Acceptable range is 0.3779 - 0.4176\" | \"Mark 5mm 6\" 9 slot 205#. No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\"",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [
+    {
+     "position": "after order H66A005-1 (last line on page; no row follows)",
+     "text": "**For next please make full pallets only. Exact qty only. No over runs. No partial pallets or pallets with overages.",
+     "note": "Probably belongs to the first row on the next page, but scan page 22 (SD22 page 2 of 2) starts directly with H68A091-1 and has no 'For next' line above it."
+    }
+   ],
+   "page_notes": "No handwriting (only small scanner specks at the top left). The '**For next ...' lines are underlined from 'No partial pallets' to the end. The 'NN DONE' notes are typed in bold in the # of Plts / Pc./Plt. area of the Watch-weights line. 'New 12x29.63  9 Slot Partition' has two spaces before '9' as printed."
+  },
+  {
+   "scan_page": 22,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - BOBST DIE CUTTER",
+   "line_no": "SD22 BAYSEK",
+   "line_code": "SD22",
+   "issue_date": "9/24/2026",
+   "page_of": "2 of 2",
+   "rows": [
+    {
+     "order": "H68A091-1",
+     "product_code": "DPP40WB1669",
+     "extrusion_status": "786 OF 1880",
+     "semi_pc_plt": "295",
+     "semi_size": "31 2/16 X 50 8/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "Y0004",
+     "die_description": "12x29.63  9 Slot Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "2,204,000",
+     "pack_code": "48X62",
+     "num_plts": "950",
+     "pc_per_plt": "2320",
+     "req_date": "8-Oct",
+     "done_note": "256 DONE / 234 DONE IN COOLSEAL / 490  TOTAL DONE",
+     "row_notes": "Lines directly below: \"Watch weights. Target wt is 0.3619. Acceptable range is 0.3438- 0.3800\" | \"Mark with 12\" 9 Slot 4mm 154#.  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\" (No '**For next' line above this row; it is the first row on the page.)",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A039-1",
+     "product_code": "DPP30WB1023",
+     "extrusion_status": "0 OF 190",
+     "semi_pc_plt": "365",
+     "semi_size": "31 10/16 X 34 4/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "Y0003",
+     "die_description": "8x29.63  9 Slot Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "274,400",
+     "pack_code": "35X62",
+     "num_plts": "98",
+     "pc_per_plt": "2800",
+     "req_date": "1-Oct",
+     "done_note": "",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.1903. Acceptable range is 0.1808- 0.1998\" | \"Mark with 3mm 8\" 9 slot.123#  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\"",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A007-1",
+     "product_code": "DPP30WB1066",
+     "extrusion_status": "84 OF 84",
+     "semi_pc_plt": "305",
+     "semi_size": "39 4/16 X 32",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "Y0015",
+     "die_description": "VERITIV 3MM / 900020015",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "504,000",
+     "pack_code": "30X35",
+     "num_plts": "84",
+     "pc_per_plt": "6000",
+     "req_date": "28-Sep",
+     "done_note": "",
+     "row_notes": "Line directly below (Order/Product Code columns): \"MUST BE AT 6,000\" (The Req. Date '28-Sep' is printed outside the table's right border.)",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A088-1",
+     "product_code": "DPP30WB1021",
+     "extrusion_status": "0 OF 104",
+     "semi_pc_plt": "355",
+     "semi_size": "31 10/16 X 26 8/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "Y0006",
+     "die_description": "4\" 9-SLOT PARTITION",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "218,400",
+     "pack_code": "30x48",
+     "num_plts": "52",
+     "pc_per_plt": "4200",
+     "req_date": "8-Oct",
+     "done_note": "",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.0758. Acceptable range is 0.0720 - 0.0796\" | \"Mark 3mm 4\" 9 slot 100#. No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\" (The standalone banner 'BOARD USE FROM OTHER ORDER H67A119-1' is just above this block; see banner_notes.)",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A041-1",
+     "product_code": "DPP40WB1672",
+     "extrusion_status": "181 OF 181",
+     "semi_pc_plt": "294",
+     "semi_size": "31 10/16 x32 14/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "Y0003",
+     "die_description": "8x29.63  9 Slot Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "211,120",
+     "pack_code": "35X62",
+     "num_plts": "91",
+     "pc_per_plt": "2320",
+     "req_date": "5-Oct",
+     "done_note": "8 DONE",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.2382. Acceptable range is 0.2263 - 0.2501\" | \"Mark with 4mm 8\" 9 slot.154#  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\"",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H66A116-1",
+     "product_code": "DPP50WB308",
+     "extrusion_status": "0 OF 6",
+     "semi_pc_plt": "230",
+     "semi_size": "31 2/16 X 50 8/16",
+     "color": "WB",
+     "apl": "P",
+     "mm": "5",
+     "flute": "P",
+     "die_no": "Y0004",
+     "die_description": "12x29.63  9 Slot Partition",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "5,400",
+     "pack_code": "48X62",
+     "num_plts": "3",
+     "pc_per_plt": "1800",
+     "req_date": "30-Sep",
+     "done_note": "",
+     "row_notes": "Line directly above: \"**For next please make full pallets only. Exact qty only. No over runs. No partial pallets or pallets with overages.\" Lines directly below: \"Watch weights. Target wt is 0.4818. Acceptable range is 0.4577 - 0.5058\" | \"Mark with 12\" 9 Slot 5mm 205#.  No pinched edges.  Please use pallet sizes shown as agreed to by VoidForm. Need PALLET TICKETS ON ALL 4 SIDES.\"",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [
+    {
+     "position": "before order H68A088-1 (outside the table, between the H68A007-1 block and the H68A088-1 block)",
+     "text": "BOARD USE FROM OTHER ORDER H67A119-1",
+     "note": "Probably applies to H68A088-1, the next row."
+    },
+    {
+     "position": "after order H68A088-1 (followed by an empty row)",
+     "text": "**For next please make full pallets only. No partial pallets or pallets with overages.",
+     "note": "An orphan 'For next' line with no row after it. H69A041-1 has its own 'For next' line."
+    }
+   ],
+   "page_notes": "No handwriting (only small scanner specks at the top left and a few specks inside the table). The done notes for H68A091-1 are on three typed lines under # of Plts: '256 DONE', '234 DONE IN COOLSEAL', '490  TOTAL DONE' (256+234=490). Die descriptions have two spaces before '9 Slot' as printed."
+  },
+  {
+   "scan_page": 23,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - GUILLOTINE",
+   "line_no": "SD41 & 42 GUILLOTINE",
+   "line_code": "SD41/SD42",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 2",
+   "rows": [
+    {
+     "order": "RP26422-6",
+     "product_code": "SPA40WB937",
+     "extrusion_status": "200 OF 200",
+     "semi_pc_plt": "252",
+     "semi_start": "",
+     "semi_size": "49X37",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0001",
+     "die_description": "24X18 SQ. CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "300,000",
+     "pack_code": "48X36",
+     "num_plts": "150",
+     "pc_per_plt": "2000",
+     "req_date": "23-May",
+     "done_note": "152 DONE",
+     "row_notes": "(above row) BOARD USE FROM OTHER ORDER RP26423-1   96 OF 100 | (below row) Please package 100pcs. Per box | (below row, under Die Status/Total Sheets/Pack Code) 20 boxes per pallet",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "RP25A08-6",
+     "product_code": "SPA40YF117",
+     "extrusion_status": "40 OF 40",
+     "semi_pc_plt": "277",
+     "semi_start": "",
+     "semi_size": "49x37",
+     "color": "YF",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0001",
+     "die_description": "24x18 Sq. cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "44,000",
+     "pack_code": "48x36",
+     "num_plts": "40",
+     "pc_per_plt": "1100",
+     "req_date": "",
+     "done_note": "16 DONE",
+     "row_notes": "(above row) BOARD USE FROM OTHER ORDER RP26416-1   19 OF 20",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "RP26618-2",
+     "product_code": "SPA40WB937",
+     "extrusion_status": "372 OF 400",
+     "semi_pc_plt": "252",
+     "semi_start": "",
+     "semi_size": "49X37",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0001",
+     "die_description": "24X18 SQ. CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "600,000",
+     "pack_code": "48X36",
+     "num_plts": "300",
+     "pc_per_plt": "2000",
+     "req_date": "22-Jul",
+     "done_note": "235 DONE",
+     "row_notes": "(above row) BOARD USE FROM OTHER ORDER RP26618-3   202 OF 200 | (below row) Please package 100pcs. Per box | (below row, under Die Status/Total Sheets/Pack Code) 20 boxes per pallet",
+     "handwritten": "",
+     "unclear": "Board-use line prints \"202 OF 200\" (more than 200) - recorded as printed; yesterday it read 186 OF 200."
+    },
+    {
+     "order": "RP26506-4",
+     "product_code": "SPA40WB762",
+     "extrusion_status": "120 OF 120",
+     "semi_pc_plt": "277",
+     "semi_start": "",
+     "semi_size": "37x49",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0007",
+     "die_description": "36x24 Sq. cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "66,000",
+     "pack_code": "48x36",
+     "num_plts": "120",
+     "pc_per_plt": "550",
+     "req_date": "22-Aug",
+     "done_note": "134 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "RP26604-2",
+     "product_code": "SPA40WB935",
+     "extrusion_status": "120 OF 120",
+     "semi_pc_plt": "277",
+     "semi_start": "",
+     "semi_size": "37x49",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0002",
+     "die_description": "18x24 Sq. cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "132,000",
+     "pack_code": "48x36",
+     "num_plts": "120",
+     "pc_per_plt": "1100",
+     "req_date": "24-Sep",
+     "done_note": "71 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "RP26413-1",
+     "product_code": "SPA40WB765",
+     "extrusion_status": "0 OF 150",
+     "semi_pc_plt": "277",
+     "semi_start": "",
+     "semi_size": "49x37",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0010",
+     "die_description": "48x36 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "41,250",
+     "pack_code": "48x36",
+     "num_plts": "150",
+     "pc_per_plt": "275",
+     "req_date": "27-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A223-1",
+     "product_code": "SPA40WB810",
+     "extrusion_status": "4 OF 4",
+     "semi_pc_plt": "255",
+     "semi_start": "",
+     "semi_size": "48 X 49",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0335",
+     "die_description": "47 X 48 SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,000",
+     "pack_code": "48X48",
+     "num_plts": "4",
+     "pc_per_plt": "250",
+     "req_date": "16-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "RP26506-5",
+     "product_code": "SPA40WB934",
+     "extrusion_status": "200 OF 400",
+     "semi_pc_plt": "277",
+     "semi_start": "",
+     "semi_size": "49x37",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0001",
+     "die_description": "24x18 Sq. cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "550,000",
+     "pack_code": "48x36",
+     "num_plts": "500",
+     "pc_per_plt": "1100",
+     "req_date": "2-Nov",
+     "done_note": "220 DONE",
+     "row_notes": "(above row) BOARD USE FROM OTHER ORDER RP25522-4   106 OF 200",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A062-1",
+     "product_code": "SPA40WM7",
+     "extrusion_status": "7 OF 7",
+     "semi_pc_plt": "245",
+     "semi_start": "",
+     "semi_size": "49x49",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0214",
+     "die_description": "24x16 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "10,010",
+     "pack_code": "48x48",
+     "num_plts": "7",
+     "pc_per_plt": "1430",
+     "req_date": "21-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A062-5",
+     "product_code": "SPA40WM11",
+     "extrusion_status": "7 OF 7",
+     "semi_pc_plt": "280",
+     "semi_start": "",
+     "semi_size": "37x49",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0002",
+     "die_description": "18x24 Sq. cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "7700",
+     "pack_code": "48x36",
+     "num_plts": "7",
+     "pc_per_plt": "1100",
+     "req_date": "21-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [
+    "before order RP26422-6: ***Use the LEAD EDGE of the semi-finished sheets to square up. Put lead edge against back fence first so the trail edge is cut off first.",
+    "before order RP26422-6: ***Please put pallet tickets on all 4 sides, not all 4 together on 1 side. Packers will not do this for you.",
+    "before order RP26422-6: PUT SEMI-FINISHED PALLET TICKET BEHIND THE FINISHED GOODS TICKET. NOT ANYWHERE ELSE! (\"BEHIND\" underlined)",
+    "before order RP26422-6: All stock sign blank orders should have Order number & Product code at the bottom of the extrusion pallet ticket. Don't mix ordes unless instructed. (whole line underlined; \"ordes\" is a printed typo)"
+   ],
+   "page_notes": "No handwriting. A faint small curved mark ('(' shape) at the top-left corner, as on every page of this batch - scanner/paper artifact, not handwriting. H69A062-5 row printed below the main table, separated by a gap. No Semi Start column on this sheet. Changes vs 23 Sep: board-use RP26618-3 now 202 OF 200 (over 100%), RP26506-5 extrusion 200 OF 400, board-use RP25522-4 106 OF 200; everything else unchanged."
+  },
+  {
+   "scan_page": 24,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - GUILLOTINE",
+   "line_no": "SD41 & 42 GUILLOTINE",
+   "line_code": "SD41/SD42",
+   "issue_date": "9/24/2026",
+   "page_of": "2 of 2",
+   "rows": [
+    {
+     "order": "H69A062-6",
+     "product_code": "SPA40WM10",
+     "extrusion_status": "3 OF 3",
+     "semi_pc_plt": "285",
+     "semi_start": "",
+     "semi_size": "49 X 37",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0001",
+     "die_description": "24 X 18 SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "3300",
+     "pack_code": "48x36",
+     "num_plts": "3",
+     "pc_per_plt": "1100",
+     "req_date": "21-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A066-4",
+     "product_code": "SPA40WM15",
+     "extrusion_status": "4 OF 4",
+     "semi_pc_plt": "280",
+     "semi_start": "",
+     "semi_size": "49x37",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0005",
+     "die_description": "24x36 Sq. cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "2,200",
+     "pack_code": "48x36",
+     "num_plts": "4",
+     "pc_per_plt": "550",
+     "req_date": "25-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A066-6",
+     "product_code": "SPA40WM10",
+     "extrusion_status": "12 OF 12",
+     "semi_pc_plt": "285",
+     "semi_start": "",
+     "semi_size": "49 X 37",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0001",
+     "die_description": "24 X 18 SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "13,200",
+     "pack_code": "48x36",
+     "num_plts": "12",
+     "pc_per_plt": "1100",
+     "req_date": "25-Sep",
+     "done_note": "1 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A031-3",
+     "product_code": "SPA60WM1",
+     "extrusion_status": "26 OF 26",
+     "semi_pc_plt": "155",
+     "semi_start": "",
+     "semi_size": "49x49",
+     "color": "WM",
+     "apl": "A",
+     "mm": "6",
+     "flute": "P",
+     "die_no": "G0057",
+     "die_description": "48x48 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "3,900",
+     "pack_code": "48x48",
+     "num_plts": "26",
+     "pc_per_plt": "150",
+     "req_date": "21-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A071-1",
+     "product_code": "SPA60KS24",
+     "extrusion_status": "6 OF 6",
+     "semi_pc_plt": "175",
+     "semi_start": "",
+     "semi_size": "35 X 37 8/16",
+     "color": "KS",
+     "apl": "A",
+     "mm": "6",
+     "flute": "P",
+     "die_no": "G0351",
+     "die_description": "34\" X 36.5\" SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,020",
+     "pack_code": "35X38",
+     "num_plts": "6",
+     "pc_per_plt": "170",
+     "req_date": "7-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H69A004-1",
+     "product_code": "SPA40KS155",
+     "extrusion_status": "6 OF 6",
+     "semi_pc_plt": "255",
+     "semi_start": "",
+     "semi_size": "37x49",
+     "color": "KS",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "G0002",
+     "die_description": "18x24 Sq. cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "6,000",
+     "pack_code": "48x36",
+     "num_plts": "6",
+     "pc_per_plt": "1000",
+     "req_date": "16-Sep",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [],
+   "page_notes": "No handwriting. A faint small curved mark ('(' shape) at the top-left corner, as on every page of this batch - scanner/paper artifact, not handwriting. No banner/instruction lines on this page. No Semi Start column. \"1 DONE\" printed on the line below H69A066-6 (under # of Plts./Pc./Plt.). Values identical to 23 Sep."
+  },
+  {
+   "scan_page": 25,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - SLITTER",
+   "line_no": "SD51 SLITTER",
+   "line_code": "SD51",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 2",
+   "rows": [
+    {
+     "order": "RP26525-3",
+     "product_code": "SPA40WB755",
+     "extrusion_status": "71 OF 250",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "48x98",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "DUM61",
+     "die_description": "48x96 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "#####",
+     "pack_code": "48x96",
+     "num_plts": "250",
+     "pc_per_plt": "275",
+     "req_date": "20-Sep",
+     "done_note": "59 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\"; total_sheets printed as \"######\" (6 hashes) - Excel overflow, recorded as \"#####\" (250 x 275 = 68,750 expected)"
+    },
+    {
+     "order": "H69A066-2",
+     "product_code": "SPA40WM8",
+     "extrusion_status": "4 OF 6",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "51 X 100",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL297",
+     "die_description": "51\" X 98\" SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "100X51",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "21-Sep",
+     "done_note": "NEW | 2 DONE",
+     "row_notes": "(above row) BOARD USE FROM OTHER ORDER H69A062-2 | (below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16),Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    },
+    {
+     "order": "H69A062-4",
+     "product_code": "SPA40WM9",
+     "extrusion_status": "6 OF 8",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "51 X96 8/16",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL330",
+     "die_description": "51 X 94.5 SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,650",
+     "pack_code": "51X96",
+     "num_plts": "6",
+     "pc_per_plt": "275",
+     "req_date": "21-Sep",
+     "done_note": "NEW | 4 DONE",
+     "row_notes": "(below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16), Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    },
+    {
+     "order": "H69A066-1",
+     "product_code": "SPA40WM14",
+     "extrusion_status": "4 OF 5",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "51 X 100",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL297",
+     "die_description": "51\" X 98\" SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "100X51",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "25-Sep",
+     "done_note": "NEW | 3 DONE",
+     "row_notes": "(below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16),Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    },
+    {
+     "order": "H69A066-3",
+     "product_code": "SPA40WM13",
+     "extrusion_status": "4 OF 5",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "48x98",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "DUM61",
+     "die_description": "48x96 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "48x96",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "25-Sep",
+     "done_note": "3 DONE",
+     "row_notes": "(below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16), Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    }
+   ],
+   "banner_notes": [
+    "before order RP26525-3: ***Cover sheets must be put on all pallets produced before being sent to Packers.",
+    "before order RP26525-3: ***Please have operators wear gloves when operating Slitter to protect dyne level & keep sheets clean.",
+    "before order RP26525-3: *** For ALL Slitter orders. Please cut length on everything to maximum tolerance useless noted otherwise. (underlined; \"useless\" is a printed typo for \"unless\")",
+    "before order RP26525-3: ***Please put pallet tickets on all 4 sides, not all 4 together on 1 side. Packers will not do this for you. (underlined)",
+    "before order RP26525-3: PUT SEMI-FINISHED PALLET TICKET BEHIND THE FINISHED GOODS TICKET. NOT ANYWHERE ELSE! (\"BEHIND\" underlined)"
+   ],
+   "page_notes": "No handwriting. A faint small curved mark ('(' shape) at the top-left corner, as on every page of this batch - scanner/paper artifact, not handwriting. Semi Start column header printed truncated as \"xtrusio / Start\" (Extrusion Start). Flute 'P' prints in a smaller font on SL-die rows. Issue Date/Page printed without space after colon (\"Issue Date:9/24/2026\", \"Page:1 of 2\"). Values identical to 23 Sep. Scan page 26 is a second copy of this same sheet (also printed \"Page:1 of 2\")."
+  },
+  {
+   "scan_page": 26,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - SLITTER",
+   "line_no": "SD51 SLITTER",
+   "line_code": "SD51",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 2",
+   "rows": [
+    {
+     "order": "RP26525-3",
+     "product_code": "SPA40WB755",
+     "extrusion_status": "71 OF 250",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "48x98",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "DUM61",
+     "die_description": "48x96 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "#####",
+     "pack_code": "48x96",
+     "num_plts": "250",
+     "pc_per_plt": "275",
+     "req_date": "20-Sep",
+     "done_note": "59 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\"; total_sheets printed as \"######\" (6 hashes) - Excel overflow, recorded as \"#####\" (250 x 275 = 68,750 expected)"
+    },
+    {
+     "order": "H69A066-2",
+     "product_code": "SPA40WM8",
+     "extrusion_status": "4 OF 6",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "51 X 100",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL297",
+     "die_description": "51\" X 98\" SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "100X51",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "21-Sep",
+     "done_note": "NEW | 2 DONE",
+     "row_notes": "(above row) BOARD USE FROM OTHER ORDER H69A062-2 | (below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16),Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    },
+    {
+     "order": "H69A062-4",
+     "product_code": "SPA40WM9",
+     "extrusion_status": "6 OF 8",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "51 X96 8/16",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL330",
+     "die_description": "51 X 94.5 SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,650",
+     "pack_code": "51X96",
+     "num_plts": "6",
+     "pc_per_plt": "275",
+     "req_date": "21-Sep",
+     "done_note": "NEW | 4 DONE",
+     "row_notes": "(below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16), Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    },
+    {
+     "order": "H69A066-1",
+     "product_code": "SPA40WM14",
+     "extrusion_status": "4 OF 5",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "51 X 100",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL297",
+     "die_description": "51\" X 98\" SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "100X51",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "25-Sep",
+     "done_note": "NEW | 3 DONE",
+     "row_notes": "(below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16),Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    },
+    {
+     "order": "H69A066-3",
+     "product_code": "SPA40WM13",
+     "extrusion_status": "4 OF 5",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "48x98",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "DUM61",
+     "die_description": "48x96 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "48x96",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "25-Sep",
+     "done_note": "3 DONE",
+     "row_notes": "(below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16), Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    }
+   ],
+   "banner_notes": [
+    "before order RP26525-3: ***Cover sheets must be put on all pallets produced before being sent to Packers.",
+    "before order RP26525-3: ***Please have operators wear gloves when operating Slitter to protect dyne level & keep sheets clean.",
+    "before order RP26525-3: *** For ALL Slitter orders. Please cut length on everything to maximum tolerance useless noted otherwise. (underlined; \"useless\" is a printed typo for \"unless\")",
+    "before order RP26525-3: ***Please put pallet tickets on all 4 sides, not all 4 together on 1 side. Packers will not do this for you. (underlined)",
+    "before order RP26525-3: PUT SEMI-FINISHED PALLET TICKET BEHIND THE FINISHED GOODS TICKET. NOT ANYWHERE ELSE! (\"BEHIND\" underlined)"
+   ],
+   "page_notes": "DUPLICATE: this is a second copy/reprint of scan page 25 - also printed \"Page:1 of 2\", same issue date 9/24/2026, same 5 orders and every value identical on a field-by-field read (it is a separate scan, not a byte copy of p25: slightly different position/skew). Transcribed in full from this image anyway; downstream should de-duplicate these rows against p25. No handwriting. A faint small curved mark ('(' shape) at the top-left corner, as on every page of this batch - scanner/paper artifact, not handwriting. Semi Start header truncated \"xtrusio / Start\". Flute 'P' smaller font on SL-die rows."
+  },
+  {
+   "scan_page": 27,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - SLITTER",
+   "line_no": "SD51 SLITTER",
+   "line_code": "SD51",
+   "issue_date": "9/24/2026",
+   "page_of": "2 of 2",
+   "rows": [
+    {
+     "order": "H69A066-5",
+     "product_code": "SPA40WM9",
+     "extrusion_status": "4 OF 5",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "51 X96 8/16",
+     "color": "WM",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL330",
+     "die_description": "51 X 94.5 SQ CUT",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "51X96",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "25-Sep",
+     "done_note": "NEW | 3 DONE",
+     "row_notes": "(below row) Please allow sufficient cure time for these. Up to 10 days if possible. | Width -0,+1/8, Length -0,+1/8(try to keep +1/16), Curl & Hump/Warpage <1/4\" | Must be on a heat treated pallet.",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    },
+    {
+     "order": "H68A153-1",
+     "product_code": "SPA40WB953",
+     "extrusion_status": "24 OF 24",
+     "semi_pc_plt": "277",
+     "semi_start": "#####",
+     "semi_size": "48 4/16 X 92 8/16",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "SL351",
+     "die_description": "48.25 X 91",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "6,600",
+     "pack_code": "48X96",
+     "num_plts": "24",
+     "pc_per_plt": "275",
+     "req_date": "19-Oct",
+     "done_note": "6 DONE",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\"; semi_size overflows its cell: leading '4' partly clipped by the left border and final '6' clipped by the right border (printed '48 4/16 X 92 8/1' + half glyph) - completed as 8/16; \"6 DONE\" is printed in the spanning line between H68A153-1 and H69A105-4 (under Die Status..Req Date) - assigned to H68A153-1 (the row above), as done notes sit below their row elsewhere"
+    },
+    {
+     "order": "H69A105-4",
+     "product_code": "SPA40WB776",
+     "extrusion_status": "4 OF 4",
+     "semi_pc_plt": "278",
+     "semi_start": "#####",
+     "semi_size": "96x50",
+     "color": "WB",
+     "apl": "A",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "DUM54",
+     "die_description": "96x48 Sq cut",
+     "die_status": "NA",
+     "plate_status": "",
+     "ink_color": "",
+     "total_sheets": "1,100",
+     "pack_code": "48x96",
+     "num_plts": "4",
+     "pc_per_plt": "275",
+     "req_date": "8-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": "semi_start printed as a run of hash marks (\"####\", glyphs fused; yesterday counted 4) - Excel overflow, recorded as \"#####\""
+    }
+   ],
+   "banner_notes": [],
+   "page_notes": "No handwriting. A faint small curved mark ('(' shape) at the top-left corner, as on every page of this batch - scanner/paper artifact, not handwriting. No banner lines. Semi Start header truncated \"xtrusio / Start\". Changes vs 23 Sep: H68A150-1, H68A151-1 and H68A057-2 are no longer listed (3 rows vs 6 yesterday); H68A153-1 now shows 6 DONE; H69A105-4 extrusion now 4 OF 4 (was 3 OF 4)."
+  },
+  {
+   "scan_page": 28,
+   "title": "PP PROFILE PRODUCTION INSTRUCTIONS - FOLDER GLUER",
+   "line_no": "SC31",
+   "line_code": "SC31",
+   "issue_date": "9/24/2026",
+   "page_of": "1 of 1",
+   "rows": [
+    {
+     "order": "H68A080-1",
+     "product_code": "CPP30KS215",
+     "extrusion_status": "0 OF 4",
+     "semi_pc_plt": "320",
+     "semi_start": "",
+     "semi_size": "89 5/16 X 37 5/16",
+     "color": "KS",
+     "apl": "P",
+     "mm": "3",
+     "flute": "P",
+     "die_no": "D0343",
+     "die_description": "NORDSTROM / FOL/TT",
+     "die_status": "IN",
+     "plate_status": "RA835",
+     "ink_color": "WHITE",
+     "total_sheets": "1,200",
+     "pack_code": "39X87",
+     "num_plts": "8",
+     "pc_per_plt": "150",
+     "req_date": "30-Sep",
+     "done_note": "",
+     "row_notes": "(below row) NEW ORDER PLEASE LET ME KNOW WHAT WILL WORK BETTER",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H67A063-1",
+     "product_code": "CPP40WB320",
+     "extrusion_status": "29 of 29",
+     "semi_pc_plt": "300",
+     "semi_start": "",
+     "semi_size": "88 15/16x37 1/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "D0263",
+     "die_description": "Flexcon/Nemera / Large 1-2-3 Box",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "8400",
+     "pack_code": "48x40",
+     "num_plts": "60",
+     "pc_per_plt": "140",
+     "req_date": "30-Sep",
+     "done_note": "",
+     "row_notes": "(above row) For next use pallet tickets without Inteplast Logo. Must be packed well to prevent boxes from getting dirty during shipment. | (below row) 48x40 pallet 120pcs laid flat. Alternate direction of boxes so they lay flat. Place 2 bndl vertical on the 48\" side at 5 pcs per bundle & 2 on the 40\" side for a total of 140 pcs. | Should not be over 49\" tall. | *Must use specially purchased \"new\" heat treated pallets for this order. These pallets must be stored indoors. | Must use plastic slip and cover sheets. Use paper board corner protectors.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A142-1",
+     "product_code": "CPP40WB320",
+     "extrusion_status": "29 of 29",
+     "semi_pc_plt": "300",
+     "semi_start": "",
+     "semi_size": "88 15/16x37 1/8",
+     "color": "WB",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "D0263",
+     "die_description": "Flexcon/Nemera / Large 1-2-3 Box",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "8400",
+     "pack_code": "48x40",
+     "num_plts": "60",
+     "pc_per_plt": "140",
+     "req_date": "16-Oct",
+     "done_note": "",
+     "row_notes": "(above row) For next use pallet tickets without Inteplast Logo. Must be packed well to prevent boxes from getting dirty during shipment. | (below row) 48x40 pallet 120pcs laid flat. Alternate direction of boxes so they lay flat. Place 2 bndl vertical on the 48\" side at 5 pcs per bundle & 2 on the 40\" side for a total of 140 pcs. | Should not be over 49\" tall. | *Must use specially purchased \"new\" heat treated pallets for this order. These pallets must be stored indoors. | Must use plastic slip and cover sheets. Use paper board corner protectors.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "order": "H68A107-1",
+     "product_code": "CPP40NS362",
+     "extrusion_status": "10 OF 10",
+     "semi_pc_plt": "215",
+     "semi_start": "",
+     "semi_size": "75 3/4x49 3/8",
+     "color": "NS",
+     "apl": "P",
+     "mm": "4",
+     "flute": "P",
+     "die_no": "B0604",
+     "die_description": "Recycle Bin / No print",
+     "die_status": "IN",
+     "plate_status": "NA",
+     "ink_color": "NA",
+     "total_sheets": "2,000",
+     "pack_code": "48x36",
+     "num_plts": "20",
+     "pc_per_plt": "100",
+     "req_date": "9-Oct",
+     "done_note": "",
+     "row_notes": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "banner_notes": [
+    "before order H68A080-1: ***Cover sheets must be put on all pallets produced before being sent to Packers.",
+    "before order H68A080-1: ***Please put pallet tickets on all 4 sides, not all 4 together on 1 side. Packers will not do this for you."
+   ],
+   "page_notes": "No handwriting. A faint small curved mark ('(' shape) at the top-left corner, as on every page of this batch - scanner/paper artifact, not handwriting. Folder gluer sheet has Plate Status and Ink Color columns, no Semi Start. Extrusion status printed lowercase \"of\" on H67A063-1 and H68A142-1. H68A080-1 semi-size text \"89 5/16 X 37 5/16\" fills its cell to the border. Values identical to 23 Sep."
+  }
+ ],
+ "frm": [
+  {
+   "scan_page": 29,
+   "title": "Line 1 (SE11) Formulations",
+   "line_no": "1",
+   "line_code": "SE11",
+   "date": "9/24/26",
+   "header_note": "AC = 1",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H69A039-1",
+      "H68A088-1",
+      "H63A200-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0022WB3",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "15"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "45"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 –Heritage HM-10MAX",
+         "set": "6"
+        }
+       },
+       "note": "(For VOIDFORM order only)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26811-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA151WB2",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "60"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "21"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "21"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "35"
+        },
+        "Hopper 5": {
+         "material": "Exxon - Vistamaxx 6102FL",
+         "set": "34"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A180-1",
+      "H69A180-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "RU0000KS3",
+       "feeders": {
+        "Hopper 1": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 3": {
+         "material": "PP Mix Reclaim",
+         "set": "95"
+        },
+        "Hopper 4": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A206-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0151BL3",
+       "feeders": {
+        "Hopper 1": {
+         "material": "BL-B26003A (OR NPC-B60387)",
+         "set": "43"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "15"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "12"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "58"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "11"
+        }
+       },
+       "note": "Match color and opacity with QC sample"
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: For KS orders, increase Hopper 1 setting if the board looks too gray, because the PP Mix Reclaim from the boxes/silo 8 might be too much WB (or others) colored.",
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "06/06/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 30,
+   "title": "Line 2 (SE12) Formulations",
+   "line_no": "2",
+   "line_code": "SE12",
+   "date": "9/24/26",
+   "header_note": "AC = 90",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H69A242-3"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0041WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "33"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "17"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "41"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "44"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FU0151WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "17"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "7"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "74"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "13"
+        }
+       },
+       "note": "(Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26821-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "27"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "14"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "71"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26511-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "41"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "20"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "71"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "(For sign blank orders only)"
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "06/06/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 31,
+   "title": "Line 3 (SE13) Formulations",
+   "line_no": "3",
+   "line_code": "SE13",
+   "date": "9/24/26",
+   "header_note": "AC = 90",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H69A237-1",
+      "RP26618-3",
+      "RP26506-5",
+      "RP25522-4",
+      "RP26618-2",
+      "RP26717-1",
+      "RP26327-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "33"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 5": {
+         "material": "WB-W26038A",
+         "set": "16"
+        }
+       },
+       "note": "(For sign blank orders only)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A158-1",
+      "H69A105-3",
+      "RP24C18-4"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "48"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "25"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "48"
+        },
+        "Hopper 5": {
+         "material": "WB-W26038A",
+         "set": "15"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "06/06/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 32,
+   "title": "Line 4 (SE21) Formulations",
+   "line_no": "4",
+   "line_code": "SE21",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H69A090-2",
+      "H69A238-1",
+      "H69A238-3",
+      "H69A238-5",
+      "H69A238-2",
+      "H69A238-4",
+      "H69A206-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "RU0000KS4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 2": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 3": {
+         "material": "PP Mix Reclaim",
+         "set": "99"
+        },
+        "Hopper 4": {
+         "material": "KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F",
+         "set": "10"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A139-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0041KS4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "32"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "6"
+        },
+        "Hopper 3": {
+         "material": "PP Mix Reclaim",
+         "set": "70"
+        },
+        "Hopper 4": {
+         "material": "KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)",
+         "set": "35"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 –Heritage HM-10MAX",
+         "set": "28"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A255-1",
+      "RP26810-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152KS4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "53"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "6"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "13"
+        },
+        "Hopper 4": {
+         "material": "KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)",
+         "set": "24"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 –Heritage HM-10MAX",
+         "set": "24"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26424-2",
+      "RP26527-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F-6502A)",
+         "set": "47"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "25"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "21"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP25818-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F-6502A)",
+         "set": "47"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "25"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "21"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26512-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0041WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "30"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "18"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FU0031WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "80"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "32"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "36"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FU0011WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "48"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "24"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "22"
+        }
+       },
+       "note": "(Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: For KS orders, increase Hopper 4 setting if the board looks too gray, because the PP Mix Reclaim from the boxes/silo 8 might be too much WB (or others) colored.",
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 33,
+   "title": "Line 5 (SE22) Formulations",
+   "line_no": "5",
+   "line_code": "SE22",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "RP26311-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA060WBA",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "20"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "90"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "7"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FUA060WBA",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "30"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "75"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "7"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FUA010WBA",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "70"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "6"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "15"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "5"
+        }
+       },
+       "note": "(Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H68A053-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0001WBD",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "64"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "4"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "13"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": "For VOIDFORM order only"
+      },
+      {
+       "formula_code": "FU0061WBD",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "22"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "4"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "99"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "6"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 –Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 34,
+   "title": "Line 6 (SE23) Formulations",
+   "line_no": "6",
+   "line_code": "SE23",
+   "date": "9/24/26",
+   "header_note": "AC = 1",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H69A166-1",
+      "H68A091-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "85"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "12"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "28"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "24"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "For VOIDFORM order only"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26821-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "18"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "54"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "43"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26731-2",
+      "RP26902-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "20"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "(CORN BOX FORMULA)"
+      },
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "14"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "32"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "28"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "(CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26202-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "18"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "54"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "43"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 35,
+   "title": "Line 7 (SE24) Formulations",
+   "line_no": "7",
+   "line_code": "SE24",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "Extruder A V1",
+    "Extruder A V2",
+    "Extruder A V3",
+    "Extruder A V4",
+    "Extruder A V5",
+    "Extruder B V1",
+    "Extruder B V2",
+    "Extruder B V3",
+    "Extruder B V4",
+    "Extruder C V1",
+    "Extruder C V2",
+    "Extruder C V3",
+    "Extruder C V4"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H69A237-3",
+      "H69A237-2",
+      "RP26901-1",
+      "RP26803-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Extruder A V1": {
+         "material": "WB-W26038A",
+         "set": "2.7"
+        },
+        "Extruder A V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "9"
+        },
+        "Extruder A V4": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "73.3"
+        },
+        "Extruder A V5": {
+         "material": "F1203K",
+         "set": "15"
+        },
+        "Extruder B V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V4": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26514-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FSA200WB4",
+       "feeders": {
+        "Extruder A V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V2": {
+         "material": "FOAM – Bergen XO-256",
+         "set": "1.0"
+        },
+        "Extruder A V3": {
+         "material": "CaCO3 -Heritage HM-10HP",
+         "set": "10"
+        },
+        "Extruder A V4": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "89"
+        },
+        "Extruder A V5": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V1": {
+         "material": "WB-W26038A",
+         "set": "6"
+        },
+        "Extruder B V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "30"
+        },
+        "Extruder B V4": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "64"
+        },
+        "Extruder C V1": {
+         "material": "WB-W26038A",
+         "set": "6"
+        },
+        "Extruder C V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "30"
+        },
+        "Extruder C V4": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "64"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP25710-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "RU0000WB4",
+       "feeders": {
+        "Extruder A V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V4": {
+         "material": "PP WB Reclaim",
+         "set": "100"
+        },
+        "Extruder A V5": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V4": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 36,
+   "title": "Line 8 (SE31) Formulations",
+   "line_no": "8",
+   "line_code": "SE31",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "A V1",
+    "A V2",
+    "A V3",
+    "A V4",
+    "A V5",
+    "B V1",
+    "B V2",
+    "B V3",
+    "B V4",
+    "C V1",
+    "C V2",
+    "C V3",
+    "C V4"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H69A100-13",
+      "RP26120-1",
+      "H69A225-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "48"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "20"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A066-2",
+      "H69A066-1",
+      "H69A062-4",
+      "H69A066-5",
+      "H69A066-3"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA151WM4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "50"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "A V4": {
+         "material": "WM-W26329M",
+         "set": "20"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "Match color and opacity with QC sample"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26413-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "45"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "33"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "11"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "18"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "New formulation for sign blank"
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 37,
+   "title": "Line 9 (SE32) Formulations",
+   "line_no": "9",
+   "line_code": "SE32",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "A V1",
+    "A V2",
+    "A V3",
+    "A V4",
+    "A V5",
+    "B V1",
+    "B V2",
+    "B V3",
+    "B V4",
+    "C V1",
+    "C V2",
+    "C V3",
+    "C V4"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "RP26731-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "48"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "9"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "18"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26525-3"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "40"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "18"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "17"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "SIGN BLANK"
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 38,
+   "title": "Line 10 (SE25) Formulations",
+   "line_no": "10",
+   "line_code": "SE25",
+   "date": "9/24/26",
+   "header_note": "AC = 1",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H68A111-4",
+      "H68A111-5"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "20"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "15"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "28"
+        }
+       },
+       "note": "(For roll material only) Check weight"
+      },
+      {
+       "formula_code": "FU0001WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "22"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "17"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "17"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "28"
+        }
+       },
+       "note": "(For roll material only) (Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26923-1",
+      "H69A097-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "16"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "16"
+        }
+       },
+       "note": "(Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H68A127-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU001GTW4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "15"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "3"
+        },
+        "Hopper 4": {
+         "material": "WB GT Premix",
+         "set": "14"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "35"
+        }
+       },
+       "note": "WB : EA = 9 :1 WB – W26038A, GT – D26002M"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H66A116-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10HP",
+         "set": "3"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "10"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        }
+       },
+       "note": "(Foe VOIDFORM orders only)"
+      },
+      {
+       "formula_code": "FUA011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "52"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "32"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26717-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "RU0001WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP WB Reclaim",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H64A244-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10HP",
+         "set": "3"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "10"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        }
+       },
+       "note": "(Foe VOIDFORM orders only)"
+      },
+      {
+       "formula_code": "FUA011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "52"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "32"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 39,
+   "title": "Line 12 (SE42) Formulations",
+   "line_no": "12",
+   "line_code": "SE42",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H68A080-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0151KS3",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "",
+         "set": ""
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "78"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "F1102K",
+         "set": "15"
+        },
+        "V8": {
+         "material": "KS-MDI PE-500 (or Spartech B60009)",
+         "set": "2"
+        },
+        "V9": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26410-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "Q1203K",
+         "set": "10"
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "49"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "White Reclaim",
+         "set": "30"
+        },
+        "V8": {
+         "material": "WB-W26038A",
+         "set": "3"
+        },
+        "V9": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 40,
+   "title": "Line 13 (SE43) Formulations",
+   "line_no": "13",
+   "line_code": "SE43",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "RP26915-1",
+      "RP26415-1",
+      "RP26218-1",
+      "RP26526-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA151WB4",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "",
+         "set": ""
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "74.0"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "F1203K",
+         "set": "15"
+        },
+        "V8": {
+         "material": "WB-W26038A",
+         "set": "3.0"
+        },
+        "V9": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": ""
+  },
+  {
+   "scan_page": 41,
+   "title": "Line 16 (SE61) Formulations",
+   "line_no": "16",
+   "line_code": "SE61",
+   "date": "9/24/26",
+   "header_note": "",
+   "feeder_columns": [
+    "A 1",
+    "A 2",
+    "A 3",
+    "A 4",
+    "A 5",
+    "A 6",
+    "B 1",
+    "C 1",
+    "C 2",
+    "C 3",
+    "C 4",
+    "C 5",
+    "C 6",
+    "D 1"
+   ],
+   "groups": [
+    {
+     "orders": [
+      "H68A020-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "BF0000KSA",
+       "feeders": {
+        "A 1": {
+         "material": "PP Mix Reclaim",
+         "set": "50"
+        },
+        "A 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "A 3": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "1.0"
+        },
+        "A 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "A 5": {
+         "material": "",
+         "set": ""
+        },
+        "A 6": {
+         "material": "",
+         "set": ""
+        },
+        "B 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        },
+        "C 1": {
+         "material": "",
+         "set": ""
+        },
+        "C 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "C 3": {
+         "material": "",
+         "set": ""
+        },
+        "C 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "C 5": {
+         "material": "",
+         "set": ""
+        },
+        "C 6": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "2.0"
+        },
+        "D 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H64A178-1",
+      "H64A289-1",
+      "H64A289-2",
+      "H64A289-3",
+      "H64A289-4",
+      "RP26826-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "BF0000EB5",
+       "feeders": {
+        "A 1": {
+         "material": "PP Mix Reclaim",
+         "set": "50"
+        },
+        "A 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "A 3": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "2.0"
+        },
+        "A 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "A 5": {
+         "material": "",
+         "set": ""
+        },
+        "A 6": {
+         "material": "",
+         "set": ""
+        },
+        "B 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        },
+        "C 1": {
+         "material": "",
+         "set": ""
+        },
+        "C 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "C 3": {
+         "material": "OG-D26074A",
+         "set": "3.0"
+        },
+        "C 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "C 5": {
+         "material": "",
+         "set": ""
+        },
+        "C 6": {
+         "material": "",
+         "set": ""
+        },
+        "D 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ],
+   "footnotes": [],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": ""
+  }
+ ]
+}

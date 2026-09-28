@@ -1,0 +1,12 @@
+{
+  "env": {
+    "PYTHONUTF8": "1"
+  },
+  "permissions": {
+    "deny": [
+      "Read(**/*Password*)",
+      "Read(**/*password*)",
+      "Edit(inputs/**)"
+    ]
+  }
+}

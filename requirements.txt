@@ -1,0 +1,8 @@
+# Python 3.11+ (tested on 3.11.15). Install into a virtual environment:  py -m venv .venv ; .venv\Scripts\activate ; pip install -r requirements.txt
+openpyxl==3.1.5            # write/read .xlsx
+xlrd==2.0.2                # read Tech's .xls calc workbooks (xlrd 2.x reads .xls only)
+numpy==2.4.4
+opencv-python-headless==4.13.0.92   # scan reader: deskew, glyph cells
+pytesseract==0.3.13        # scan reader: title/header words. Needs Tesseract itself (see README)
+pymupdf==1.28.2            # scan reader: renders PDF pages (used when poppler's pdftoppm is not installed)
+pytest                     # tests/

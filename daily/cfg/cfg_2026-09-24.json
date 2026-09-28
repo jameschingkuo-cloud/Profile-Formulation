@@ -1,0 +1,7 @@
+{
+ "ext_crosscheck": "Key fields (line, product code, die, material, grade, spec, colours, Thk, GSM) were also read independently by the glyph reader ext_scan_reader.py: 76 of 80 orders identical, the other 4 flagged by the reader for review, none silently different.",
+ "no_total_note": "No printed total: SE25 continues on report page 11, which is missing from the scan. LBs match the Final Total; the PCs gap (160,080) is the two H64A244-1 cut rows on the missing page. Handwritten 600,670# on the page = sum of weights.",
+ "final_note": ". PCs differ by 160,080 = 2 x 80,040 (H64A244-1 cut rows on missing report page 11); LBs match.",
+ "weight_note": "; every order is between 0.97 and 1.00 except H64A244-1, whose record is cut off (only 1 of its 3 cut rows is on the scan).",
+ "ext_pages_note": "The scan is missing report page 11 (SE25 continuation). It holds the rest of H64A244-1 (2 more cut rows of 80,040 and its special instructions): the Final Total matches all 80 rows on pounds and is 160,080 PCs higher. Scan pages 10-11 are report pages 12-13 (SE31); scan page 13 is report page 10 (SE25)."
+}

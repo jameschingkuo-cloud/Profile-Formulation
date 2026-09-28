@@ -1,0 +1,28 @@
+# Issues found while transcribing that the automated checks don't cover.  Each was seen on the page image.
+MANUAL = [
+ # (Severity, Document, Line, Order, Check, Detail, Source)
+ ('Medium','CNV','SD22','H61A218-1 / H63A199-1','Same product, different weight tolerance','Both DPP40WB1673, target wt 0.2988: H61A218-1 range 0.2779-0.3197 (about +/-7%), H63A199-1 range 0.2839-0.3137 (+/-5%, like every other row)','scan p20'),
+ ('Medium','CNV','SD22','H66A005-1','Mark instruction vs die','Row says "Mark 5mm 6in 9 slot 205#" but the die is a 10" 9-SLOT Partition with a 10" semi size','scan p20'),
+ ('Low','CNV','SC31','H68A142-1','Packing note vs pieces per pallet','Note says 120 pcs laid flat / a total of 140 pcs, but Pc./Plt. is 300','scan p19'),
+ ('Low','CNV','SD31','H5CA066-1','Done note vs status','"43 DONE" written beside extrusion status "0 OF 56"','scan p18'),
+ ('Low','CNV','SD31','H69A139-1 / H68A170-1','Same product and die, different semi pc/plt','DPP40KS303 on die B0940: semi pc/plt 260 vs 255','scan p17'),
+ ('Info','CNV','SD31','H68A127-1','Colour cell cut off','Only "B GT V" visible in the Color cell (EXT says WB GT WB)','scan p17'),
+ ('Info','CNV','SD51','(all rows)','Excel overflow','Every Semi Start cell on both slitter pages prints ####','scan p24-25'),
+ ('Low','CNV','SD51','H69A062-4 / H69A066-5','Die description vs size','Die SL330 described as 51 X 94.5 SQ CUT while semi size and pack code are 51 x 96 1/2','scan p24-25'),
+ ('Info','CNV','SD51','RP26422-6','Complete order still listed','Status 200 OF 200 and also "BOARD USE FROM OTHER ORDER RP26423-1 96 OF 100"','scan p24'),
+ ('Info','CNV','SD31','RP26731-2','Banner names the same order twice','"USE BOARD USED FROM OTHER ORDER RP26731-2 & RP26731-2"','scan p18'),
+ ('Medium','EXT','SE11 / SE12 / SE13 / SE21 / SE23 / SE31 / SE32 / SE43','RP26821-1, RP24C18-4, RP26803-2, RP26120-1, RP26731-1 …','999 pallets on very large stock orders','Several stock orders print exactly 999 pallets. Most divide out to 999.0, but H64A244-1 and H68A091-1 show the field is capped at 999, so any order over 999 pallets is understated on the printout','scan p1-16'),
+ ('Low','EXT','SE21','H69A139-1','Odd pack code','Pack code printed "48X255" (same as its PCs/Stack of 255)','scan p5'),
+ ('Low','EXT','SE61','H64A289-2','Pack code vs order size','Pack code 84X96 for an 85 x 94 order (the other SE61 rows follow their order size)','scan p16'),
+ ('Info','EXT','SE11 / SE13 / SE21 / SE24 / SE31','(several)','Margin dots','Pen dots in the left margin beside some records (e.g. H69A206-1, H69A237-1/-2/-3, H69A238-x, H69A066-x). Meaning unknown - ask what they mark','scan p1,3,5,9-11'),
+ ('Medium','FRM','SE31 / SE32','(all rows)','Line 8/9 settings do not add to 100','Line 7 (SE24, same A/B/C V-layout) adds to exactly 100 per extruder, but Line 8 adds to 107/102/104/107 and Line 9 to 91/85. Are V settings percentages?','FRM p34-35'),
+ ('Medium','FRM','SE42','RP26410-1','Resin grade printed Q1203K','"Q1203K" in V3; every other page uses F1203K. Typo?','FRM p37'),
+ ('Medium','FRM','SE25','H69A097-1','Backup formula has the same code','Both the main and the "in case PP WB Reclaim is run out" rows are FU0021WB4 with different recipes; for H68A111 the backup has its own code (FU0001WB4)','FRM p36'),
+ ('Info','FRM','SE21','RP26512-1','Formula exactly double another','FU0031WB4 settings are exactly 2x FU0041WB4 (80/10/60/32/36 vs 40/5/30/16/18)','FRM p30'),
+ ('Low','FRM','(all)','','Same resin written 4 ways','"(6502A)", "(F6502A)", "(F-6502A)" and bare "F6502A"; also silo 3 vs silo 4 vs plain "PP Virgin". A master table needs one name per material','FRM p27-39'),
+ ('Info','FRM','SE24 / SE25','','Different CaCO3 grade','HM-10HP on Line 7 and in FU0011WB5 (Line 10); HM-10MAX everywhere else','FRM p33,36'),
+ ('Low','FRM','SE25','H68A127-1','Premix note wording','Note says "WB : EA = 9 : 1" but the material is "WB GT Premix" (GT - D26002M)','FRM p36'),
+ ('Info','EXT vs FRM','(all)','','Every scheduled order has a formula','82 of 82 EXT orders appear on the same line’s formulation page, and every FRM order is on the EXT schedule','p1-16 vs p27-39'),
+ ('Info','EXT','(all but SE25)','','Line totals check','Every printed line total (12 lines) equals the sum of its rows (sheets and pounds). SE25’s total is on the missing report page 11, but the printed Final Total (6,141,058 PCs / 20,802,359 LBs) equals the sum of all 82 rows, so nothing is missing','p1-16'),
+ ('Medium','EXT vs CNV','','H63A200-1 and others','EXT pallet count: remaining or full order?','EXT # Plt is sometimes the remaining pallets (H63A200-1: 6 = 374 - 368 on CNV; H69A066-x likewise) and sometimes the full order (H64A244-1: 1044; H68A091-1: 1880). The "NNN PLTS DONE" notes on EXT lag the CNV status (H63A200-1: 343 vs 368)','scan p1,13,20-21,24'),
+]
