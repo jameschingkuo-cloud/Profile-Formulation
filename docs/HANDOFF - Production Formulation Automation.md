@@ -1094,6 +1094,29 @@ written up in `docs/DATABASE.md`.
   `Formulation Calc Library.xlsx`; who approves; Material ID = IWPFT062 item no.; the variant list; moving the
   published files to the new folders).
 
+## 7.20 Daily run, 25 Sep 2026 packet (processed 28 Sep 2026)
+
+James: *"this is what a production schedule look like. add these data to your data base and find a way to get this data off
+the print sheet accurately always. future upload will look like this"*. Scan `doc05252320260928124922.pdf` (41 pages,
+14,551,491 bytes, scanned 28 Sep): the **25 Sep** packet (Run Date 9/25/26 14:32:43). The chat upload failed twice and the
+SharePoint connector returns no content for an image-only PDF; it came in through a GitHub upload and was moved out of the
+tree into `work/scans`.
+
+**Getting it off the print accurately, every day (three independent checks):**
+1. Transcription from the page images (7 parallel readers, every value read at zoom).
+2. The glyph reader (`ext_scan_reader.py`), which flags what it is unsure of.
+3. The printout's own arithmetic: every line total and the Final Total must equal the rows (R9).
+`scan_reader/crosscheck.py` (new) compares 1 and 2 field by field and checks 3; every difference is settled by eye, never
+automatically. Result: 67 of 71 orders identical; the glyph reader misread 4 fields and **flagged all 4** (0 silent); all
+13 line totals and the Final Total (6,131,179 PCs / 20,771,336 LBs) tie exactly.
+
+**Results:** EXT 71 orders on 13 lines, CNV 69 rows on 11 sheets, FRM 50 formula rows on 13 pages. All 17 report pages are
+on the scan for the first time (report pages 11-12 hold the end of H64A244-1). Every EXT order has a formula on its line.
+New: **H68A153-1 spec `OPOPOP`** (breaks R2; "WHITE OPAQUE"), its new formula FXA020WB4 with WB-W40020M; **RP26923-1
+formula changed** FU0021WB4 → RU0001WB4; H69A139-1 on FRM but no longer on EXT. Full list in
+`daily/manual/manual_issues_2026-09-25.py` and the workbooks' Issues sheets. Workbooks built in `out/`, not published.
+**Product Master not merged yet:** the merge reads the published master, which this cloud session can't open in full.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1201,6 +1224,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.7 | 2026-09-28 | Claude (cloud session with James Kuo) | **25 Sep packet processed (§7.20)**; `scan_reader/crosscheck.py` added (transcription vs glyph reader vs printed totals). 67/71 identical, 4 reader misreads all flagged, every total ties. Converting Production Record added to the database (§7.19). |
 | 1.6 | 2026-09-28 | Claude (cloud session with James Kuo) | **Database structure and flow (§7.19).** James: *"lets build the data base structure and flow first, then we design the interface"*. `db/schema.py` describes every workbook (masters with Change Logs, append-only records, daily files, calc evidence) in James's new folders; templates, a checker and `docs/DATABASE_TABLES.md` come from it; flow in `docs/DATABASE.md`. Starter code committed to GitHub (§7.18). No data built or published. |
 | 1.5 | 2026-09-28 | Claude (cloud session with James Kuo) | **Product Master prepared as the base table (§7.18).** Excel only; Product Master first. James confirmed: in-between thicknesses (3.3 mm) are not in the code, the spec decides; the 4 letter-O codes are A0. `product_master/prepare.py` adds code-derived columns, completeness, an Issues sheet, Verify First, Colour Codes and an Import Map for the full data pull. Run on the 1,608 rows the SharePoint connector returns. This copy is in the GitHub repo; mirror to SharePoint. |
 | 1.4 | 2026-09-28 | Claude (session with James Kuo) | **Code moved to a Claude Code repo (§7.17).** James: *"with such major project. Should this be done by claude code instead?"* then *"yes lets do it"*. Delivered `formulation-pipeline starter 2026-09-28.zip`: all pipeline code, packets and reference data, a `CLAUDE.md` built from this document's rules, a README for setup on Windows, `config.py` (paths), `publish.py` (the hard rule enforced: it refuses to overwrite a published file that changed since it was read or last published, and verifies by content after copying), and regression tests. Rebuilt every output from the starter: data identical to the published files (differences only where Rev 1.3 intended, plus Read Me text); the scan reader gives the same result with pip-only PyMuPDF. Standing instructions updated: the repo is the master for code; this document stays here and is edited in place. |

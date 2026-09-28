@@ -1,0 +1,72 @@
+scan_page,report_page,line,thk,gsm,order,prod,die,mat,grade,spec,colors,special,flags
+1,1,SE11,3.0,68,H69A039-1,DPP30WB1023,PB204,PPP,P,R1R1R1,WB WB WB,SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT.,"unfamiliar glyph (span B, col 17) - check by eye; unfamiliar glyph (span B, col 20) - check by eye; unfamiliar glyph (span B, col 21) - check by eye; unfamiliar glyph (span B, col 32) - check by eye"
+1,1,SE11,3.0,514,H68A088-1,DPP30WB1021,PB204,PPP,P,R1R1R1,WB WB WB,"SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. eee | VOIDFORM, PLEASE WATCH WEIGHT (RANGE IS 473 - 488GSM)","unfamiliar glyph (span A, col 4) - check by eye; unfamiliar glyph (span A, col 7) - check by eye; unfamiliar glyph (span B, col 15) - check by eye; unfamiliar glyph (span B, col 20) - check by eye; unfamiliar glyph (span B, col 21) - check by eye"
+1,1,SE11,3.0,631,H63A200-1,DPP30WB1025,PB204,PPP,P,R1R1R1,WB WB WB,"SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. a | VOIDFORM, WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM) | 343 PLTS DONE","unfamiliar glyph (span B, col 17) - check by eye; unfamiliar glyph (span B, col 20) - check by eye; unfamiliar glyph (span B, col 21) - check by eye; unfamiliar glyph (span B, col 26) - check by eye"
+1,1,SE11,2.0,504,RP26811-1,RPA20WB28,PB204,PPP,A,R1R1R1,WB WB WB,,"unfamiliar glyph (span B, col 17) - check by eye; unfamiliar glyph (span B, col 20) - check by eye; unfamiliar glyph (span B, col 21) - check by eye"
+1,1,SE11,3.0,612,H69A180-1,RPP30KS1143,PB204,PPP,P,R4R4R4,KS KS KS,,"unfamiliar glyph (span B, col 20) - check by eye"
+1,1,SE11,3.0,612,H69A180-2,RPP30KS1109,PB204,PPP,P,R4R4R4,KS KS KS,,"unfamiliar glyph (span B, col 22) - check by eye"
+1,1,SE11,3.0,602,H69A206-1,RPP30BL654,PA204,PPP,P,R1R1R1,BL BL BL,,"unfamiliar glyph (span A, col 4) - check by eye"
+2,2,SE12,4.0,651,RP26821-1,RPA40WB3142,PA3B5,PPP,A,R1R1R1,WB WB WB,30 PLTS DONE,
+2,2,SE12,4.0,651,RP26511-1,SPA40WB772,PA3B5,PPP,A,R1R1R1,WB WB WB,Send to Guillotine. Mark lead edge & make sure of pc count. | Sheets must be flat. No curl or leaning pallets. Use PVC | slip sheets on top of each pallet. 325 PLTS DONE,
+3,3,SE13,4.0,651,H69A237-1,RPP40WB1856,PA406,PPP,P,R1R1R1,WB WB WB,RUN WITH NEXT 45 PLTS DONE,
+3,3,SE13,4.0,651,RP26618-3,SPA40WB772,PA406,PPP,A,R1R1R1,WB WB WB,Send to Guillotine. Mark lead edge & make sure of pc count. | Sheets must be flat. No curl or leaning pallets. Use PVC | slip sheets on top of each pallet. RUN WITH ABOVE | 208 PLTS DONE,
+3,3,SE13,4.0,651,RP26506-5,SPA40WB934,PA406,PPP,A,R1R1R1,WB WB WB,Send to Guillotine. Mark lead edge & make sure of pc count. | Sheets must be flat. No curl or leaning pallets. Use PVC | slip sheets on top of each pallet. RUN WITH NEXT,
+3,3,SE13,4.0,651,RP25522-4,SPA40WB772,PA406,PPP,A,R1R1R1,WB WB WB,Send to Guillotine. Mark lead edge & make sure of pc count. | Sheets must be flat. No curl or leaning pallets. Use PVC | slip sheets on top of each pallet. RUN WITH ABOVE | 112 PLTS DONE,
+3,3,SE13,4.0,651,H69A158-1,RPA40WB3715,PA406,PPP,A,R1R1R1,WB WB WB,,
+3,3,SE13,4.0,651,H69A105-3,RPA40WB3342,PA406,PPP,A,R1R1R1,WB WB WB,,
+3,3,SE13,4.0,651,RP26618-2,SPA40WB937,PA406,PPP,A,R1R1R1,WB WB WB,Send to Guillotine. Mark lead edge & make sure of pc count. | Sheets must be flat. No curl or leaning pallets. Use PVC | slip sheets on top of each pallet. RUN WITH NEXT | 372 PLTS DONE,
+3,3,SE13,4.0,651,RP26717-1,RPA40WB3051,PA406,PPP,A,R1R1R1,WB WB WB,,
+4,4,SE13,4.0,651,RP26327-1,SPA40WB772,PA406,PPP,A,R1R1R1,WB WB WB,Send to Guillotine. Mark lead edge & make sure of pc count. | Sheets must be flat. No curl or leaning pallets. Use PVC | slip sheets on top of each pallet. RUN WITH ABOVE | 419 PLTS DONE,
+4,4,SE13,4.0,651,RP24C18-4,RPA40WB3142,PA406,PPP,A,R1R1R1,WB WB WB,355 PLTS DONE,
+5,5,SE21,4.0,651,H69A238-3,RPP40KS2126,PB405,PPP,P,R4R4R4,KS KS KS,8 PLTS DONE,
+5,5,SE21,4.0,651,H69A238-5,RPP40KS2136,PB405,PPP,P,R4R4R4,KS KS KS,,
+5,5,SE21,4.0,651,H69A238-2,RPP40KS1906,PB405,PPP,P,R4R4R4,KS KS KS,,
+5,5,SE21,4.0,651,H69A238-4,RPP40KS2135,PB405,PPP,P,R4R4R4,KS KS KS,,"unfamiliar glyph (span B, col 26) - check by eye"
+5,5,SE21,4.0,651,H69A206-2,RPP40KS2012,PB405,PPP,P,R4R4R4,KS KS KS,,
+5,5,SE21,4.0,651,H69A255-1,RPA40KS824,PB405,PPP,A,R1R1R1,KS KS KS,RUN WITH NEXT,"unfamiliar glyph (span A, col 1) - check by eye"
+5,5,SE21,4.0,651,RP26810-1,RPA40KS744,PB405,PPP,A,R1R1R1,KS KS KS,,"unfamiliar glyph (span A, col 1) - check by eye"
+5,5,SE21,4.0,651,RP26424-2,RPA40WB3073,PB405,PPP,A,R1R1R1,WB WB WB,46 PLTSDONE RR,"unfamiliar glyph (span A, col 1) - check by eye; unfamiliar glyph (span A, col 2) - check by eye"
+5,5,SE21,4.0,651,RP26527-1,RPA40WB3143,PB405,PPP,A,R1R1R1,WB WB WB,78 PLTS DONE,"unfamiliar glyph (span A, col 6) - check by eye"
+5,5,SE21,4.0,651,RP25818-2,RPA40WB3051,PB405,PPP,A,R1R1R1,WB WB WB,485 PLTS DONE,"unfamiliar glyph (span A, col 3) - check by eye; unfamiliar glyph (span A, col 34) - check by eye; unfamiliar glyph (span A, col 37) - check by eye; unfamiliar glyph (span A, col 38) - check by eye; order: low confidence"
+6,6,SE21,4.0,753,RP26512-1,DPP40WB1238,PE405,PPP,P,R1R1R1,WB WB WB,Send to Bobst. Mark lead edge & make sure of pc count. | 525 PLTS DONE,"unfamiliar glyph (span A, col 27) - check by eye; unfamiliar glyph (span A, col 28) - check by eye; unfamiliar glyph (span A, col 33) - check by eye; unfamiliar glyph (span A, col 34) - check by eye; unfamiliar glyph (span A, col 35) - check by eye; die: low confidence"
+7,7,SE22,10.0,1704,RP26311-1,RPAA0WB318,PB130,PPP,A,R1R1R1,WB WB WB,965 PLTS DONE,
+7,7,SE22,13.0,2691,H68A053-1,RPPD0WB176,PB130,PPP,P,R1R1R1,WB WB WB,"VOIDFORM, PLEASE WATCH WEIGHT | MAKE UP FOR MISSING PLT","unfamiliar glyph (span A, col 4) - check by eye; unfamiliar glyph (span B, col 30) - check by eye"
+8,8,SE23,4.0,793,H67A120-1,DPP40WB1670,PB456,PPP,P,R1R1R1,WB WB WB,SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT.,
+8,8,SE23,4.0,793,H69A166-1,RPP40WB1847,PB456,PPP,P,R1R1R1,WB WB WB,"VOIDFORM, PLEASE WATCH WEIGHT (RANGE IS 729 - 751 ) | COOL SEAL 112 PLTS DONE",
+8,8,SE23,4.0,793,H68A091-1,DPP40WB1669,PB456,PPP,P,R1R1R1,WB WB WB,SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT.,
+8,8,SE23,4.0,651,RP26821-2,RPA40WB3051,PB456,PPP,A,R1R1R1,WB WB WB,,
+8,8,SE23,4.0,753,RP26731-2,DPP40WB1235,PB456,PPP,P,R1R1R1,WB WB WB,Send to Bobst. Mark lead edge & make sure of pc count. | CORN BOX 934 PLTS DONE,
+8,8,SE23,4.0,753,RP26902-1,DPP40WB1235,PB456,PPP,P,R1R1R1,WB WB WB,Send to Bobst. Mark lead edge & make sure of pc count. | CORN BOX,
+8,8,SE23,4.0,651,RP26202-1,RPA40WB3143,PB456,PPP,A,R1R1R1,WB WB WB,91 PLTS DONE,
+10,10,SE24,4.0,651,RP26901-1,RPA40WB3630,PC607,PPP,A,R1R1R1,WB WB WB,RUN WITH RPA40WB3051 10 PLTS DONE,
+10,10,SE24,4.0,651,RP26803-2,RPA40WB3051,PC607,PPP,A,R1R1R1,WB WB WB,632 PLTS DONE,
+10,10,SE24,4.0,753,RP26514-1,RPA40WB1795,PC607,PPP,A,S1S1S1,WB WB WB,ULTRA SMOOTH,
+10,10,SE24,4.0,602,RP25710-1,RPP40WB1625,PC607,PPP,P,R4R4R4,WB WB WB,DO NOT RUN,
+11,13,SE31,4.0,753,H68A153-1,SPA40WB953,PC405,PPP,A,D2D0DD,WB WB WB,"Send to Slitter, Mark lead edge & make sure of pc count. Tak | Signs 365, sheets must be clean, flat and smooth. | Make up for scrap pallet | WHITE OPAQUE",spec: low confidence; spec: low confidence; R2 exception: spec token DD is letter+letter - confirm; spec: low confidence
+11,13,SE31,4.0,651,H69A100-13,RPA40WB3466,PC405,PPP,A,R1R1R1,WB WB WB,RUN WITH RPA40WB3051,
+11,13,SE31,4.0,651,H69A225-1,RPA40WB3633,PC405,PPP,A,R1R1R1,WB WB WB,RUN WITH RPA40WB3051 2 PLTS DONE,
+11,13,SE31,4.0,651,RP26413-1,SPA40WB765,PC405,PPP,A,R1R1R1,WB WB WB,Send to Guillotine. Mark lead edge & make sure of pc count.,
+11,13,SE31,4.0,651,RP26120-1,RPA40WB3051,PC405,PPP,A,R1R1R1,WB WB WB,802 PLTS DONE RUN WITH NEXT,"unfamiliar glyph (span A, col 2) - check by eye; unfamiliar glyph (span A, col 3) - check by eye"
+12,14,SE32,4.0,651,RP26731-1,RPA40WB3051,PC406,PPP,A,R1R1R1,WB WB WB,278 PLTS DONE,"unfamiliar glyph (span B, col 26) - check by eye"
+12,14,SE32,4.0,651,RP26525-3,SPA40WB755,PC406,PPP,A,R1R1R1,WB WB WB,Send to Slitter. Mark edge & make sure of pc count. Take to | converting. Do not double stack so QC can check. | Extrusion to hold width -0.+1/16. 71 PLTS DONE,
+13,11,SE25,4.0,783,H68A111-4,RPP40WB890,PB406,PPP,P,R2R2R2,WB WB WB,Rolls. Rolled material. Each roll counts has 12 pcs. Please | bands together through the cores.NO telescoping. End must be | straight. Rolls must be tight. No loose sloppy rolls. | Watch weights. 8 PLTS DONE,
+13,11,SE25,4.0,783,H68A111-5,RPP40WB890,PB406,PPP,P,R2R2R2,WB WB WB,SAME AS ABOVE,"unfamiliar glyph (span B, col 18) - check by eye"
+13,11,SE25,4.0,753,RP26923-1,RPP40WB1186,PB406,PPP,P,R2R2R2,WB WB WB,1 Ticket per pallet & move to repacking area. LTL MATERIAL | COLOR DOES NOT MATTER,
+13,11,SE25,4.0,651,H69A097-1,RPP40WB1852,PB406,PPP,P,R1R1R1,WB WB WB,,
+13,11,SE25,4.0,753,H68A127-1,DPP40WB1700,PB406,PPP,P,R1R1R1,WB GT WB,Send to Bobst. Mark lead edge & make sure of pc count.,
+13,11,SE25,5.0,1052,H66A116-1,DPP50WB308,PB406,PPP,P,R1R1R1,WB WB WB,"SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. | VOIDFORM, PLEASE WATCH WEIGHT (RANGE IS 970 - 1000 GSM) | MAKE UP FOR SCRAP PLTS","unfamiliar glyph (span B, col 32) - check by eye"
+13,11,SE25,4.0,602,RP26717-2,RPP40WB1625,PB406,PPP,P,R4R4R4,WB WB WB,62 PLTS DONE,
+13,11,SE25,5.0,1052,H64A244-1,DPP50WB305,PB406,PPP,P,R1R1R1,WB WB WB,,"unfamiliar glyph (span B, col 32) - check by eye"
+15,15,SE42,3.0,660,H68A080-1,CPP30KS215,PA205,PPP,P,R1R1R1,KS KS KS,Send to printing. Mark lead edge & make sure of pc count.,"unfamiliar glyph (span A, col 2) - check by eye; unfamiliar glyph (span A, col 3) - check by eye"
+15,15,SE42,4.0,753,RP26410-1,DPP40WB1235,PC405,PPP,P,R1R1R1,WB WB WB,Send to Bobst. Mark lead edge & make sure of pc count. | CORN BOX 262 PLTS DONE,"unfamiliar glyph (span A, col 9) - check by eye"
+16,16,SE43,4.0,651,RP26915-1,RPA40WB3143,PB405,PPP,A,R1R1R1,WB WB WB,100 PLTS DONE,
+16,16,SE43,4.0,651,RP26415-1,RPA40WB3073,PB405,PPP,A,R1R1R1,WB WB WB,20 PLTS DONE,
+16,16,SE43,4.0,651,RP26218-1,RPA40WB3051,PB405,PPP,A,R1R1R1,WB WB WB,729 PLTS DONE,
+16,16,SE43,4.0,651,RP26526-2,RPA40WB3126,PB405,PPP,A,R1R1R1,WB WB WB,19 PLTS DONE,
+17,17,SE61,10.0,2006,H68A620-1,RBPA0KS70,BB510,PPP,P,RDRDRD,KS KS KS,"GENESIS, TARGET THICKNESS 10 (RANGE IS 9.50-10.50)","unfamiliar glyph (span A, col 3) - check by eye; unfamiliar glyph (span A, col 4) - check by eye; unfamiliar glyph (span A, col 5) - check by eye; unfamiliar glyph (span B, col 30) - check by eye; order: low confidence; R2 exception: spec token RD is letter+letter - confirm; R2 exception: spec token RD is letter+letter - confirm; R2 exception: spec token RD is letter+letter - confirm"
+17,17,SE61,5.0,1502,H64A178-1,RBP50EB52,BB510,BBB,P,RMR6R6,EB KS EB,"Bradford, treat both sides minimum 42 dynes. Thickness range | 3.3-3.8mm.",R2 exception: spec token RM is letter+letter - confirm
+17,17,SE61,5.0,1502,H64A289-1,RBP50EB52,BB510,BBB,P,RMR6R6,EB KS EB,,"unfamiliar glyph (span A, col 2) - check by eye; unfamiliar glyph (span A, col 3) - check by eye; unfamiliar glyph (span A, col 4) - check by eye; unfamiliar glyph (span A, col 5) - check by eye; unfamiliar glyph (span A, col 6) - check by eye; R2 exception: spec token RM is letter+letter - confirm"
+17,17,SE61,5.0,1502,H64A289-2,RBP50EB45,BB510,BBB,P,RMR6R6,EB KS EB,2 PLTS DONE,"unfamiliar glyph (span A, col 2) - check by eye; unfamiliar glyph (span A, col 3) - check by eye; unfamiliar glyph (span A, col 4) - check by eye; unfamiliar glyph (span A, col 5) - check by eye; unfamiliar glyph (span A, col 6) - check by eye; unfamiliar glyph (span B, col 9) - check by eye; unfamiliar glyph (span B, col 30) - check by eye; order: low confidence; R2 exception: spec token RM is letter+letter - confirm"
+17,17,SE61,5.0,1502,H64A289-3,RBP50EB53,BB510,BBB,P,RMR6R6,EB KS EB,1 PLT DONE,"unfamiliar glyph (span A, col 2) - check by eye; unfamiliar glyph (span A, col 3) - check by eye; unfamiliar glyph (span A, col 4) - check by eye; unfamiliar glyph (span A, col 5) - check by eye; unfamiliar glyph (span A, col 6) - check by eye; unfamiliar glyph (span B, col 8) - check by eye; unfamiliar glyph (span B, col 30) - check by eye; R2 exception: spec token RM is letter+letter - confirm"
+17,17,SE61,5.0,1502,H64A289-4,RBP50EB54,BB510,BBB,P,RMR6R6,EB KS EB,,"unfamiliar glyph (span A, col 4) - check by eye; unfamiliar glyph (span A, col 5) - check by eye; unfamiliar glyph (span A, col 6) - check by eye; unfamiliar glyph (span B, col 32) - check by eye; R2 exception: spec token RM is letter+letter - confirm"
+17,17,SE61,5.0,1503,RP26826-1,RBP50EB10,BB510,BBB,P,RDRDRD,EB KS EB,39 PLTS DONE,"unfamiliar glyph (span B, col 11) - check by eye; unfamiliar glyph (span B, col 32) - check by eye; R2 exception: spec token RD is letter+letter - confirm; R2 exception: spec token RD is letter+letter - confirm; R2 exception: spec token RD is letter+letter - confirm"

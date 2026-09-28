@@ -1,0 +1,7 @@
+{
+ "ext_crosscheck": "Key fields (line, product code, die, material, grade, spec, colours, Thk, GSM) were also read independently by the glyph reader ext_scan_reader.py and compared by scan_reader/crosscheck.py: 67 of 71 orders identical. The other 4 (H69A039-1 GSM, RP26512-1 product code and die, H68A020-1 order no., H68A153-1 spec) were misread by the glyph reader and flagged by it; each was settled by eye on the page in favour of the transcription. None silently different.",
+ "no_total_note": "No printed total on this page; the line's total is on its continuation page.",
+ "final_note": ". Rows = 6,131,179 PCs / 20,771,336 LBs: matches exactly.",
+ "weight_note": ".",
+ "ext_pages_note": "All 17 report pages are on the scan (report page 11 and 12, missing on 23 and 24 Sep, are here). Scan page 9 holds only the SE23 line total; scan page 14 holds the end of H64A244-1 (its last 2 cut rows and the end of its special instructions, joined to its record) and the SE25 line total. Scan pages 11-12 are report pages 13-14 (SE31, SE32); scan pages 13-14 are report pages 11-12 (SE25). Handwritten 'James' at the top of page 1 is an addressee note."
+}
