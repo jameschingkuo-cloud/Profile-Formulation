@@ -1,0 +1,338 @@
+<title>Profile Formulation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: control-room board. Status strip on top, line rail on the left, the selected line's formulation drawn as its
+   feeder layout on the right. Codes in mono; labels in condensed caps like the plant's line signage. */
+:root{
+  --bg:#EDF0F3; --panel:#FFFFFF; --panel-2:#F6F8FA; --ink:#15202B; --muted:#5A6774; --line:#D3DAE1;
+  --accent:#1F4FA3; --accent-soft:#E2EAF7; --warn:#9A6212; --warn-soft:#FBF0DB; --crit:#B3261E; --crit-soft:#F8E0DE;
+  --ok:#2A7248; --ok-soft:#DFF1E6; --info:#4F5D6B; --info-soft:#E9EDF1; --seg-ink:#15202B;
+  --r-virgin:#C9D6EA; --r-homo:#B9CFE0; --r-talc:#DCDCD3; --r-caco3:#E6E1D4; --r-colour:#C8D8F2; --r-reclaim:#D5DDD0;
+  --r-modifier:#E4D5E8; --r-skin:#D0E4E0; --r-foam:#F0E2C8; --r-other:#DDE2E7;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --f-body:"Barlow","Segoe UI",Arial,sans-serif; --f-mono:"JetBrains Mono",Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E141A; --panel:#161F28; --panel-2:#1B2631; --ink:#E4EAF0; --muted:#95A3B1; --line:#2A3743;
+  --accent:#86ABF2; --accent-soft:#1B2944; --warn:#E3AE55; --warn-soft:#382A11; --crit:#F29189; --crit-soft:#3C1B19;
+  --ok:#74CD98; --ok-soft:#163022; --info:#A9B5C1; --info-soft:#22303C; --seg-ink:#E4EAF0;
+  --r-virgin:#2B3B55; --r-homo:#27404F; --r-talc:#3A3A33; --r-caco3:#3F3A2E; --r-colour:#2A3C5C; --r-reclaim:#33402E;
+  --r-modifier:#43334A; --r-skin:#284540; --r-foam:#4A3C22; --r-other:#2E3842; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --panel:#161F28; --panel-2:#1B2631; --ink:#E4EAF0; --muted:#95A3B1; --line:#2A3743;
+  --accent:#86ABF2; --accent-soft:#1B2944; --warn:#E3AE55; --warn-soft:#382A11; --crit:#F29189; --crit-soft:#3C1B19;
+  --ok:#74CD98; --ok-soft:#163022; --info:#A9B5C1; --info-soft:#22303C; --seg-ink:#E4EAF0;
+  --r-virgin:#2B3B55; --r-homo:#27404F; --r-talc:#3A3A33; --r-caco3:#3F3A2E; --r-colour:#2A3C5C; --r-reclaim:#33402E;
+  --r-modifier:#43334A; --r-skin:#284540; --r-foam:#4A3C22; --r-other:#2E3842; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:18px 40px;display:grid;gap:16px}
+@media (max-width:480px){.wrap{padding-inline:16px}}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;letter-spacing:.01em;margin:0;text-wrap:balance}
+.mono{font-family:var(--f-mono);font-size:.86em}
+.caps{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.08em;font-size:12.5px;color:var(--muted);font-weight:600}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+header.top h1{font-size:34px;line-height:1}
+header.top .sub{color:var(--muted);font-size:13.5px;margin-top:4px}
+.proto{font-size:12.5px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r);padding:6px 10px;background:var(--panel-2);max-width:46ch}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.strip>div{background:var(--panel);padding:12px 14px;display:grid;gap:2px;min-width:0}
+.strip b{font-family:var(--f-display);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.strip .ok b{color:var(--ok)} .strip .crit b{color:var(--crit)} .strip .acc b{color:var(--accent)}
+.strip small{color:var(--muted);font-size:12.5px}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+nav.tabs button{font:600 15px var(--f-display);letter-spacing:.06em;text-transform:uppercase;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:8px 12px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.board{display:grid;grid-template-columns:236px minmax(0,1fr);gap:16px;align-items:start}
+.rail{display:grid;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:6px;position:sticky;top:env(safe-area-inset-top,0px)}
+.rail button{font:inherit;color:inherit;background:none;border:0;text-align:left;cursor:pointer;display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:8px;padding:7px 8px;border-radius:4px}
+.rail button:hover{background:var(--panel-2)}
+.rail button[aria-current="true"]{background:var(--accent-soft)}
+.rail .no{font-family:var(--f-display);font-size:13px;color:var(--muted)}
+.rail .code{font-family:var(--f-mono);font-weight:600;font-size:14px}
+.rail .meta{display:flex;gap:5px;align-items:center;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--f-display);letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;border-radius:3px;white-space:nowrap}
+.chip.auger{background:var(--info-soft);color:var(--info)} .chip.weight{background:var(--accent-soft);color:var(--accent)}
+.chip.crit{background:var(--crit-soft);color:var(--crit)} .chip.warn{background:var(--warn-soft);color:var(--warn)} .chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.var{background:var(--panel-2);color:var(--muted);border:1px solid var(--line)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--crit);display:inline-block}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:14px;min-width:0}
+.linehead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-end;justify-content:space-between}
+.linehead h2{font-size:30px;line-height:1}
+.linehead p{margin:4px 0 0;color:var(--muted);font-size:13.5px;max-width:72ch}
+.group{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:12px}
+.orders{display:flex;flex-wrap:wrap;gap:6px}
+.order{display:grid;gap:1px;padding:6px 9px;border:1px solid var(--line);border-radius:4px;background:var(--panel-2);min-width:0}
+.order .o{font-family:var(--f-mono);font-weight:600;font-size:13px}
+.order .p{font-size:12px;color:var(--muted);display:flex;gap:5px;align-items:center}
+.formula{display:grid;gap:8px}
+.formula + .formula{padding-top:10px;border-top:1px dashed var(--line)}
+.fhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fhead .code{font-family:var(--f-mono);font-weight:600;font-size:15px}
+.fhead .note{color:var(--muted);font-size:13px}
+.feeders{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
+.tile{border:1px solid var(--line);border-radius:4px;padding:8px 9px;display:grid;gap:6px;background:var(--panel);min-width:0;align-content:start}
+.tile.flag-crit{border-color:var(--crit);box-shadow:inset 3px 0 0 var(--crit)}
+.tile.flag-warn{border-color:var(--warn);box-shadow:inset 3px 0 0 var(--warn)}
+.tile.empty{background:var(--panel-2);border-style:dashed;color:var(--muted)}
+.tile .pos{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.tile .mat{font-size:13px;line-height:1.3;overflow-wrap:anywhere;display:flex;gap:6px;align-items:flex-start}
+.tile .id{font-family:var(--f-mono);font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.gauge{height:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.gauge i{display:block;height:100%;background:var(--accent)}
+.setv{font-family:var(--f-display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+.setv small{font:500 12px var(--f-body);color:var(--muted);margin-left:3px}
+.sw{width:14px;height:14px;border-radius:3px;border:1px solid var(--line);display:inline-block;flex:none;margin-top:2px}
+.extrow{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start}
+.extrow .xl{font-family:var(--f-display);font-weight:600;font-size:20px;color:var(--muted);line-height:26px;text-align:center}
+.bar{display:flex;height:28px;border-radius:4px;overflow:hidden;border:1px solid var(--line);margin-bottom:6px}
+.bar span{display:flex;align-items:center;justify-content:center;font:600 12px var(--f-display);color:var(--seg-ink);min-width:0;overflow:hidden;white-space:nowrap;border-right:2px solid var(--panel);font-variant-numeric:tabular-nums}
+.bar span:last-child{border-right:0}
+.legend{font-size:12.5px;color:var(--muted)}
+.foot{font-size:12.5px;color:var(--muted);display:grid;gap:2px;border-top:1px solid var(--line);padding-top:10px}
+.search{display:flex;gap:8px;flex-wrap:wrap}
+.search input{flex:1 1 260px;min-width:0;font:15px var(--f-mono);padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink)}
+.search button,.btn{font:600 14px var(--f-display);letter-spacing:.06em;text-transform:uppercase;padding:10px 14px;border-radius:var(--r);border:1px solid var(--accent);background:var(--accent);color:var(--panel);cursor:pointer}
+.btn.ghost{background:none;color:var(--accent)}
+.hint{display:flex;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--muted);align-items:center}
+.hint button{font:13px var(--f-mono);background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:3px 7px;color:var(--ink);cursor:pointer}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font:600 12px var(--f-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.tscroll{overflow-x:auto}
+.issue{display:grid;grid-template-columns:78px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.issue:last-child{border-bottom:0}
+.issue h3{font-size:17px}
+.issue p{margin:3px 0 0;color:var(--muted);font-size:13.5px;max-width:95ch}
+.issue .ln{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.flow div{border:1px solid var(--line);border-radius:4px;padding:10px;background:var(--panel-2);display:grid;gap:4px;align-content:start}
+.flow b{font-family:var(--f-display);font-size:16px;font-weight:600}
+.flow small{color:var(--muted);font-size:12.5px}
+.flow .done{border-color:var(--ok)} .flow .now{border-color:var(--accent);background:var(--accent-soft)}
+.flow .st{font:600 11px var(--f-display);letter-spacing:.07em;text-transform:uppercase}
+.flow .done .st{color:var(--ok)} .flow .now .st{color:var(--accent)} .flow .todo .st{color:var(--muted)}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:26px 16px;text-align:center;display:grid;gap:6px;color:var(--muted);background:var(--panel-2)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop strong{color:var(--ink);font-family:var(--f-display);font-size:20px;font-weight:600}
+.two{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:13.5px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+@media (max-width:860px){.board,.two{grid-template-columns:1fr}.rail{position:static;grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto}.rail button{grid-template-columns:auto auto}.rail .no{display:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="caps">Inteplast Profile Plant · WPJK</div>
+      <h1>Profile Formulation</h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <div class="proto">Design prototype. The figures are a snapshot of the published 28 Sep 2026 files; nothing here is live or editable yet.</div>
+  </header>
+
+  <section class="strip" id="strip" aria-label="Today at a glance"></section>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" id="t-board" aria-selected="true" data-view="board">Line board</button>
+    <button role="tab" id="t-find" aria-selected="false" data-view="find">Look up</button>
+    <button role="tab" id="t-master" aria-selected="false" data-view="master">Master health</button>
+    <button role="tab" id="t-run" aria-selected="false" data-view="run">Daily run</button>
+  </nav>
+
+  <section id="v-board" class="board">
+    <div class="rail" id="rail" aria-label="Extrusion lines"></div>
+    <div class="panel" id="line"></div>
+  </section>
+
+  <section id="v-find" class="panel" hidden>
+    <div>
+      <h2 style="font-size:26px">Look up an order, product or formula</h2>
+      <p class="muted" style="margin:4px 0 0">Every packet on record: where it ran, on which line, with which formula.</p>
+    </div>
+    <form class="search" id="findform">
+      <input id="q" type="search" autocomplete="off" placeholder="e.g. H68A127-1, DPP40WB1700, FUA152WB4" aria-label="Order, product or formula code">
+      <button type="submit">Find</button>
+    </form>
+    <div class="hint">Try <button type="button" data-q="H68A127-1">H68A127-1</button><button type="button" data-q="FU0151KS3">FU0151KS3</button><button type="button" data-q="RP26512-1">RP26512-1</button><button type="button" data-q="BF0000EB3">BF0000EB3</button></div>
+    <div id="results"></div>
+  </section>
+
+  <section id="v-master" hidden>
+    <div class="two">
+      <div class="panel">
+        <div class="linehead"><div><h2>Formulation Master</h2><p>Draft, seeded from IWPFT062 Rev 17.0 and Tech's issued pages. Nothing is approved until Tech approves it.</p></div><span class="chip ok" id="pfchip">Pre-flight clean</span></div>
+        <div id="issues"></div>
+      </div>
+      <div class="panel">
+        <h2 style="font-size:22px">How a change gets in</h2>
+        <div class="flow" style="grid-template-columns:1fr">
+          <div class="done"><span class="st">1 · In Excel</span><b>Tech edits the cell</b><small>Drop-down lists only accept listed lines, materials, formulas and variants.</small></div>
+          <div class="done"><span class="st">2 · Change Log</span><b>One row per change</b><small>Sheet, Row Key, Field, Old → New, Why, Requested By, Approved By.</small></div>
+          <div class="now"><span class="st">3 · Every run</span><b>Pre-flight compares</b><small>Against the last accepted version. A change with no approved row stops the run and is listed here.</small></div>
+          <div class="todo"><span class="st">4 · Accepted</span><b>New baseline</b><small>The accepted version is kept in git, so every change stays traceable.</small></div>
+        </div>
+        <dl class="kv" id="mkv"></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-run" hidden>
+    <div class="two">
+      <div class="panel">
+        <div><h2 style="font-size:26px">Daily run</h2><p class="muted" style="margin:4px 0 0">One day's packet from scan to published records. Shown for 28 Sep.</p></div>
+        <div class="flow" id="flow"></div>
+        <label class="drop" id="drop" for="scanfile">
+          <strong>Drop tomorrow's scan here</strong>
+          <span>PDF from the copier: the EXT schedule, CNV sheets and Tech's FRM pages.</span>
+          <span class="caps">Not connected in this prototype</span>
+          <input id="scanfile" type="file" accept="application/pdf" hidden>
+        </label>
+        <div id="dropmsg" class="muted" role="status"></div>
+      </div>
+      <div class="panel">
+        <h2 style="font-size:22px">Records so far</h2>
+        <div class="tscroll"><table id="rec"></table></div>
+        <p class="muted" style="margin:0;font-size:13px">Append-only. A day is added once; a changed past row stops the run instead of being overwritten.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtDate = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', {day:'numeric', month:'short'});
+const SEV = {High:'crit', Medium:'warn', Low:'var', Info:'var'};
+const ROLEVAR = {VIRGIN:'--r-virgin',HOMO:'--r-homo',TALC:'--r-talc',CACO3:'--r-caco3',COLOUR:'--r-colour',RECLAIM:'--r-reclaim',MODIFIER:'--r-modifier',SKIN:'--r-skin',FOAM:'--r-foam',ADDITIVE:'--r-other',HDPE:'--r-other',OTHER:'--r-other'};
+const SWATCH = [[/W26038|W40020|PE-W22151|WB/,'--sw-wb'],[/KS|PE-500|PE90000|B9000/,'--sw-ks'],[/B26004|BD-/,'--sw-bd'],[/R34874|OF-/,'--sw-of'],[/B60387|B26003|BL-/,'--sw-bl'],[/W26329|WM-/,'--sw-wm'],[/D26074|OG-/,'--sw-og'],[/D26002|GT|EA Premix/,'--sw-gt'],[/N26177|UV-/,'--sw-ns']];
+const matOf = f => f.id ? D.materials[f.id] : null;
+function flagOf(f){
+  if (!f.id) return f.mat ? {cls:'warn', text:'No material ID'} : null;
+  const m = D.materials[f.id]; if (!m) return null;
+  if (m.st === 'Withdrawn') return {cls:'crit', text:'Withdrawn'};
+  if (m.st === 'In-active') return {cls:'crit', text:'In-active'};
+  if (m.st === 'Not listed' && f.id.startsWith('NL-')) return {cls:'crit', text:'Not on IWPFT062'};
+  return null;
+}
+const issuesFor = code => D.issues.filter(i => i.sev !== 'Info' && (i.line || '').split(', ').includes(code));
+
+// ---- header + strip
+const high = D.issues.filter(i => i.sev === 'High').length;
+$('#sub').innerHTML = `Packet ${fmtDate(D.day)} 2026 · <span class="mono">${esc(D.scans.packet)}</span> + FRM <span class="mono">${esc(D.scans.frm)}</span>`;
+$('#strip').innerHTML = [
+  ['acc', D.stats.orders, 'orders on 13 lines', 'every one has a formula on its line page'],
+  ['ok', `${D.stats.draft_match}/${D.stats.drafted}`, 'draft matched Tech', `${D.stats.exceptions} new orders went to an engineer`],
+  ['crit', high, 'material issues', 'formulas using materials IWPFT062 does not allow'],
+  ['ok', D.master.changes, 'unlogged master changes', `pre-flight clean · accepted ${D.master.accepted}`],
+].map(([c, b, t, s]) => `<div class="${c}"><span class="caps">${t}</span><b>${b}</b><small>${s}</small></div>`).join('');
+
+// ---- line board
+let current = localGet('line') || D.lines[0].code;
+function renderRail(){
+  $('#rail').innerHTML = D.lines.map(l => {
+    const n = l.groups.reduce((a, g) => a + g.orders.length, 0);
+    const bad = l.groups.some(g => g.formulas.some(f => f.feeders.some(x => flagOf(x)?.cls === 'crit')));
+    return `<button type="button" data-line="${l.code}" aria-current="${l.code === current}">
+      <span class="no">L${l.no}</span><span class="code">${l.code}</span>
+      <span class="meta">${bad ? '<span class="dot" title="Material issue on this line"></span>' : ''}<span class="chip ${l.dosing === 'WEIGHT' ? 'weight' : 'auger'}">${l.dosing === 'WEIGHT' ? 'Wt' : 'Aug'}</span>${n}</span></button>`;
+  }).join('');
+}
+function tile(f, weight){
+  const m = matOf(f), fl = flagOf(f), role = m?.role || 'OTHER';
+  const sw = SWATCH.find(([rx]) => rx.test(f.mat));
+  const v = String(f.set).trim(), num = parseFloat(v);
+  const unit = weight ? (v.toLowerCase() === 'auto' ? 'balance' : '%') : 'speed';
+  const gauge = !weight && !isNaN(num) ? `<div class="gauge" title="Auger motor speed ${num} of 100"><i style="width:${Math.min(100, num)}%"></i></div>` : '';
+  return `<div class="tile ${fl ? 'flag-' + fl.cls : ''}">
+    <div class="pos"><span class="caps">${esc(f.col.replace('Extruder ', ''))}</span>${fl ? `<span class="chip ${fl.cls}">${fl.text}</span>` : `<span class="chip var" style="background:var(${ROLEVAR[role]});color:var(--seg-ink);border:0">${role.toLowerCase()}</span>`}</div>
+    <div class="mat">${sw ? `<span class="sw" style="background:var(${sw[1]})"></span>` : ''}<span>${esc(f.mat || '—')}</span></div>
+    <div class="setv">${esc(v)}<small>${unit}</small></div>${gauge}
+    <div class="id">${f.id ? esc(f.id) + (m?.code ? ' · ' + esc(m.code) : '') : 'no IWPFT062 no.'}</div></div>`;
+}
+function weightBars(fs){
+  const by = {};
+  fs.feeders.forEach(f => { const x = (f.col.replace('Extruder ', '').match(/^([A-D]) /) || [,''])[1]; (by[x] = by[x] || []).push(f); });
+  return Object.entries(by).map(([x, list]) => {
+    const fixed = list.filter(f => String(f.set).toLowerCase() !== 'auto').reduce((a, f) => a + (parseFloat(f.set) || 0), 0);
+    const segs = list.map(f => { const auto = String(f.set).toLowerCase() === 'auto'; const p = auto ? Math.max(0, 100 - fixed) : parseFloat(f.set) || 0;
+      const role = matOf(f)?.role || 'OTHER'; return {f, p, auto, role}; });
+    const bar = `<div class="bar" role="img" aria-label="Extruder ${x || 'main'} blend: ${segs.map(s => `${s.f.mat} ${Math.round(s.p * 10) / 10}%`).join(', ')}">${segs.filter(s => s.p > 0).map(s =>
+      `<span style="flex:${s.p};background:var(${ROLEVAR[s.role]})" title="${esc(s.f.mat)} ${s.p.toFixed(1)}%${s.auto ? ' (Auto)' : ''}">${s.p >= 6 ? (Math.round(s.p * 10) / 10) + '%' : ''}</span>`).join('')}</div>`;
+    return `<div class="extrow"><div class="xl">${x || '·'}</div><div>${bar}<div class="feeders">${list.map(f => tile(f, true)).join('')}</div></div></div>`;
+  }).join('');
+}
+function renderLine(){
+  const l = D.lines.find(x => x.code === current);
+  const n = l.groups.reduce((a, g) => a + g.orders.length, 0);
+  const iss = issuesFor(l.code);
+  $('#line').innerHTML = `
+    <div class="linehead"><div><div class="caps">Line ${l.no}${l.ac ? ' · ' + esc(l.ac) : ''}</div><h2>${l.code} · ${n} order${n > 1 ? 's' : ''}</h2>
+      <p>${l.dosing === 'WEIGHT' ? 'Weight blender: Set is weight %, each extruder adds to 100, Auto takes the balance.' : 'Auger dosing: Set is motor speed 0–100, not a percentage. Weight % needs the hopper\'s calibration slope.'}</p></div>
+      <span class="chip ${l.dosing === 'WEIGHT' ? 'weight' : 'auger'}">${l.dosing === 'WEIGHT' ? 'Weight blender' : 'Auger'}</span></div>
+    ${iss.length ? `<div class="legend">${iss.map(i => `<span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span> ${esc(i.check)}`).join(' &nbsp; ')}</div>` : ''}
+    ${l.groups.map(g => `<div class="group">
+      <div class="orders">${g.orders.map(o => `<div class="order"><span class="o">${esc(o.order)}</span><span class="p"><span class="mono">${esc(o.prod || '')}</span>${o.colors ? ' · ' + esc(o.colors) : ''}${o.thk ? ' · ' + esc(o.thk) + ' mm' : ''}</span></div>`).join('')}</div>
+      ${g.formulas.map((f, i) => `<div class="formula"><div class="fhead"><span class="code">${esc(f.code)}</span><span class="chip ${i ? 'var' : 'ok'}">${i ? 'Alternate' : 'Primary'}</span>${f.note ? `<span class="note">${esc(f.note)}</span>` : ''}</div>
+        ${l.dosing === 'WEIGHT' ? weightBars(f) : `<div class="feeders">${l.cols.map(c => { const x = f.feeders.find(y => y.col === c); return x ? tile(x, false) : `<div class="tile empty"><div class="pos"><span class="caps">${esc(c)}</span></div><div class="mat">not used</div></div>`; }).join('')}</div>`}
+      </div>`).join('')}</div>`).join('')}
+    ${l.notes.length ? `<div class="foot">${l.notes.map(esc).join('<br>')}</div>` : ''}`;
+}
+$('#rail').addEventListener('click', e => { const b = e.target.closest('button[data-line]'); if (!b) return; current = b.dataset.line; localSet('line', current); renderRail(); renderLine(); });
+
+// ---- look up
+function find(q){
+  q = q.trim().toUpperCase(); if (!q) { $('#results').innerHTML = ''; return; }
+  const rows = [];
+  Object.entries(D.hist).forEach(([order, hs]) => hs.forEach(([d, line, codes]) => {
+    const today = D.lines.find(l => l.code === line)?.groups.flatMap(g => g.orders).find(o => o.order === order);
+    if (order.includes(q) || codes.some(c => c.includes(q)) || (today?.prod || '').includes(q)) rows.push({d, line, order, codes, prod: today?.prod});
+  }));
+  rows.sort((a, b) => b.d.localeCompare(a.d) || a.line.localeCompare(b.line));
+  $('#results').innerHTML = rows.length ? `<div class="tscroll"><table><thead><tr><th>Packet</th><th>Line</th><th>Order</th><th>Formula(s), primary first</th></tr></thead><tbody>${rows.slice(0, 200).map(r =>
+    `<tr><td>${fmtDate(r.d)}</td><td class="mono">${r.line}</td><td class="mono">${esc(r.order)}</td><td class="mono">${r.codes.map(esc).join(' · ')}</td></tr>`).join('')}</tbody></table></div>
+    <p class="muted" style="font-size:13px">${rows.length} issue${rows.length > 1 ? 's' : ''} found across ${new Set(rows.map(r => r.d)).size} packet(s).</p>` : `<p class="muted">Nothing on record for “${esc(q)}”. Check the code, or it has not run since ${fmtDate(D.dates[0])}.</p>`;
+}
+$('#findform').addEventListener('submit', e => { e.preventDefault(); find($('#q').value); });
+document.querySelectorAll('.hint button').forEach(b => b.addEventListener('click', () => { $('#q').value = b.dataset.q; find(b.dataset.q); }));
+
+// ---- master health
+$('#issues').innerHTML = D.issues.map(i => `<div class="issue"><div><span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span></div><div><h3>${esc(i.check)}</h3><div class="ln">${esc(i.line || 'all lines')}</div><p>${esc(i.detail)}</p></div></div>`).join('');
+$('#mkv').innerHTML = [['Formulas', D.master.formulas], ['Line settings', D.master.settings], ['Materials', D.master.materials], ['Accepted version', D.master.accepted], ['Changes since', D.master.changes + ' (none unlogged)']]
+  .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+
+// ---- daily run
+$('#flow').innerHTML = [
+  ['done', 'Scan', 'EXT + CNV 25 pp; FRM 13 pp, scanned separately'],
+  ['done', 'Transcribe + check', '75 orders; glyph reader cross-check; line totals tie'],
+  ['done', 'Draft', `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
+  ['done', 'Publish', 'EXT, CNV, FRM workbooks; Product Master merged'],
+  ['done', 'Records', 'Appended to the three history records'],
+  ['now', 'Tech signs', 'Next: Tech approves the draft instead of retyping it'],
+].map(([c, b, s], i) => `<div class="${c}"><span class="st">${c === 'done' ? 'Done' : c === 'now' ? 'Next' : 'Later'}</span><b>${b}</b><small>${s}</small></div>`).join('');
+$('#rec').innerHTML = `<thead><tr><th>Record</th><th>Rows</th><th>Packets</th></tr></thead><tbody>${[['Formulation Report Record', D.records.frm], ['Extrusion Production Record', D.records.ext], ['Converting Production Record', D.records.cnv]].map(([n, r]) =>
+  `<tr><td>${n}</td><td>${r.toLocaleString()}</td><td>${D.dates.map(fmtDate).join(', ')}</td></tr>`).join('')}</tbody>`;
+const drop = $('#drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+function took(f){ if (f) $('#dropmsg').textContent = `${f.name} (${(f.size / 1048576).toFixed(1)} MB) was not sent anywhere: uploads are not connected in this prototype.`; }
+drop.addEventListener('drop', e => took(e.dataTransfer.files[0]));
+$('#scanfile').addEventListener('change', e => took(e.target.files[0]));
+
+// ---- tabs
+function show(v){
+  document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
+  ['board', 'find', 'master', 'run'].forEach(x => { $('#v-' + x).hidden = x !== v; });
+  localSet('view', v);
+}
+document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
+function localGet(k){ try { return localStorage.getItem('pf-' + k); } catch { return null; } }
+function localSet(k, v){ try { localStorage.setItem('pf-' + k, v); } catch {} }
+if (!D.lines.some(l => l.code === current)) current = D.lines[0].code;
+renderRail(); renderLine();
+const hv = (location.hash || '').slice(1); show(['board', 'find', 'master', 'run'].includes(hv) ? hv : (localGet('view') || 'board'));
+</script>

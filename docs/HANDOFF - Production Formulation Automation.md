@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.17 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.18 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1287,6 +1287,22 @@ DATABASE.md §6 (decisions) and §7 (maintenance) record it.
 - **Change control:** `db/preflight.py check|accept` compares the published master with the accepted version in
   `data/snapshots/` (git). Baseline accepted after publishing. Test `test_master_change_control`. Daily run step 0.
 
+## 7.28 Interface design started as a claude.ai Artifact (28 Sep 2026)
+
+James: *"also start designing the UI as well for Artifacts"*. First design published (private):
+**https://claude.ai/artifact/1kSFUwuS1GUeiG13twAw5j** (*Profile Formulation*). A **design prototype on a snapshot** of
+the 28 Sep files, not live and not editable. Source: `ui/page.template.html`, data from `ui/build.py`.
+
+- **Line board:** the 13 lines in plant order, each line's formulation drawn as its feeder layout (hoppers H1-H5 with
+  a 0-100 speed gauge on auger lines; per-extruder weight % bars on weight lines, Auto shown as the balance). Material
+  tiles carry the IWPFT062 number and flag Withdrawn / In-active / Not listed.
+- **Look up:** order, product or formula code across all packets.
+- **Master health:** the master's Issues, and the Excel + Change Log + pre-flight flow.
+- **Daily run:** the steps from scan to records; a scan drop zone that is **not connected**.
+- **Next design decisions** (for James): who uses it (Tech on the floor, engineers, managers); whether the page reads
+  the live SharePoint files (Microsoft 365 connector) or a snapshot published after each run; whether Tech signs the
+  draft on the page (needs the `db` and `user` capabilities: a sign-off record per day).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1415,6 +1431,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.18 | 2026-09-28 | Claude Code (local, with James Kuo) | **Interface design started (§7.28):** Profile Formulation Artifact (prototype on the 28 Sep snapshot); source in `ui/`. |
 | 1.17 | 2026-09-28 | Claude Code (local, with James Kuo) | **Masters maintained in Excel with change control (§7.27).** James: *"Yes to all. lets build it this way"*. Calc workbook renamed Formulation Calc Library; Draft Formulation Master seeded from IWPFT062 Rev 17.0 + the four FRMs and published; `db/preflight.py` stops on unlogged edits. IWPFT062 raises 4 High material issues (Q1203K, F1102K, Yungsox, HM-10HP). |
 | 1.16 | 2026-09-28 | Claude Code (local, with James Kuo) | **The three history records built (§7.26).** James: *"build them"*. `daily/record.py` (append-only, enforced and tested); Formulation Report Record 1,656 rows, Extrusion Production Record 308, Converting Production Record 270, from the 23–28 Sep packets. Schema: `Formula Row` key, `Note`, `Source Scan`, `Handwritten`. Published (James: *"yes"*); §11 updated. |
 | 1.15 | 2026-09-28 | Claude Code (local, with James Kuo) | **25 and 28 Sep published; Product Master merged (§7.25).** James: *"yes"*. Six daily workbooks and the Product Master (2,087 products) published and verified; §11 updated. Fixed a double-escaped quote in six 25 Sep CNV notes before publishing; `build_master.py` keeps prior `calc …` Check notes when run without calc data. Branch pushed to GitHub. |
