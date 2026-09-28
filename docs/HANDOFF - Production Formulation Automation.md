@@ -1235,7 +1235,7 @@ James: *"yes"* (publish both days, merge the Product Master, push). §7.23 items
 
 James: *"the three history records (Formulation Report, Extrusion and Converting Production Records) from the four
 packets. build them"*. New `daily/record.py <date> ...` writes them from `data/packets/`, columns taken by name from
-`db/schema.py`. Built for 23, 24, 25 and 28 Sep; in `out/`, **not yet published**.
+`db/schema.py`. Built for 23, 24, 25 and 28 Sep and **published** (James: *"yes"*; verified by content, §11). A re-run on the published copies skipped all four dates as identical.
 
 | Record | Rows | Per day | One row per |
 |---|---|---|---|
@@ -1366,6 +1366,9 @@ This document is not listed (it can't carry its own hash). Update this table whe
 | `Extrusion Schedule/EXT Extrusion Schedule 2026-09-28.xlsx` | 44,813 | `a58645b7f2209c5e` | cells sha256 `b6ccf01509ce771a` |
 | `Converting Schedule/CNV Converting Schedule 2026-09-28.xlsx` | 36,161 | `be6bc95130fc5d66` | cells sha256 `9aa7f50425b498ea` |
 | `Daily Formulation Report/FRM Formulation Report 2026-09-28.xlsx` | 47,828 | `23d87a1ba57ee8b3` | cells sha256 `5e10b38ea19a1a2f` |
+| `Daily Formulation Report/Formulation Report Record.xlsx` (§7.26) | 126,316 | `221b55efede0f730` | cells sha256 `de1655012b9a5193` (1,656 rows) |
+| `Extrusion Schedule/Extrusion Production Record.xlsx` (§7.26) | 30,140 | `68c3d4bdcddca9c1` | cells sha256 `7755a7328ec270e2` (308 rows) |
+| `Converting Schedule/Converting Production Record.xlsx` (§7.26) | 35,507 | `5f08605a883247ba` | cells sha256 `a6992f47668109d7` (270 rows) |
 | `Daily/2026/CNV Converting Schedule 2026-09-23.xlsx` | 46,840 | `05fd6755e1cf7463` | cells sha256 `6a9604c5d6643749` (170 rows) |
 | `Daily/2026/CNV Converting Schedule 2026-09-24.xlsx` | 47,886 | `27c12183b4abe094` | cells sha256 `9a45c01c77e130a6` (174 rows) |
 | `Daily/2026/EXT Extrusion Schedule 2026-09-23.xlsx` | 60,575 | `ebbd6648d699391c` | cells sha256 `385699de5f812b1c` (304 rows) |
@@ -1383,7 +1386,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
-| 1.16 | 2026-09-28 | Claude Code (local, with James Kuo) | **The three history records built (§7.26).** James: *"build them"*. `daily/record.py` (append-only, enforced and tested); Formulation Report Record 1,656 rows, Extrusion Production Record 308, Converting Production Record 270, from the 23–28 Sep packets. Schema: `Formula Row` key, `Note`, `Source Scan`, `Handwritten`. Not published yet. |
+| 1.16 | 2026-09-28 | Claude Code (local, with James Kuo) | **The three history records built (§7.26).** James: *"build them"*. `daily/record.py` (append-only, enforced and tested); Formulation Report Record 1,656 rows, Extrusion Production Record 308, Converting Production Record 270, from the 23–28 Sep packets. Schema: `Formula Row` key, `Note`, `Source Scan`, `Handwritten`. Published (James: *"yes"*); §11 updated. |
 | 1.15 | 2026-09-28 | Claude Code (local, with James Kuo) | **25 and 28 Sep published; Product Master merged (§7.25).** James: *"yes"*. Six daily workbooks and the Product Master (2,087 products) published and verified; §11 updated. Fixed a double-escaped quote in six 25 Sep CNV notes before publishing; `build_master.py` keeps prior `calc …` Check notes when run without calc data. Branch pushed to GitHub. |
 | 1.14 | 2026-09-28 | Claude Code (local, with James Kuo) | **28 Sep FRM pages transcribed (§7.24)** from a separate scan James sent. The packet gains `frm` and `frm_source_scan`; the 74 missing-FRM Highs are gone; FRM Formulation Report 2026-09-28 is built. The FRM Draft matched Tech's issue on all 59 drafted orders. Nothing published. |
 | 1.13 | 2026-09-28 | Claude Code (local, with James Kuo) | **R2 exception `OP` added.** H68A153-1 (SE31, 25 Sep) prints `OPOPOP`, "WHITE OPAQUE"; asked whether to accept it, James: *"yes"*. `SPEC_EXCEPTIONS` in `ext_scan_reader.py` is now D, M, P; same handling as RD/RM (accepted, always flagged); §7.6 R2 row and the field pattern updated; test `test_r2_exceptions` added. **OF/BD re-confirmed** (James: *"yes"*, already in R7 since Rev 1.10). The 25 Sep OPOPOP and 28 Sep colour-code manual issues go from High to Info with the decision recorded. Local setup done: Python 3.11.9 + `.venv`, handoff Rev 1.12 copied to the workspace folder (it matched Rev 1.8 byte for byte before), scans in `inputs\scans`; tests 23 passed, 1 skipped (no calc workbooks). Nothing published. |
