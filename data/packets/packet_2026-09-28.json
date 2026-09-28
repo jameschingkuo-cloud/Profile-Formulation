@@ -4419,5 +4419,2511 @@
    "page_notes": "No handwriting (scanner specks only). This page has Plate Status and Ink Color columns. 'LINE NO: SC31' and 'SC31' above Req. Date header. Die Description is two lines per row (joined with ' / '). H67A063-1 and H68A142-1 are identical except order, Req. Date (30-Sep vs 16-Oct) and the '18 DONE REPACK' note on H67A063-1. Total Sheets '8400' has no thousands comma (as printed). Total Sheets = # of Plts x Pc./Plt. for every row."
   }
  ],
- "frm": []
+ "frm": [
+  {
+   "scan_page": 1,
+   "title": "Line 1 (SE11) Formulations",
+   "line_no": "1",
+   "line_code": "SE11",
+   "date": "9/28/26",
+   "header_note": "AC = 1",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "footnotes": [
+    "Note: For KS orders, increase Hopper 1 setting if the board looks too gray, because the PP Mix Reclaim from the boxes/silo 8 might be too much WB (or others) colored.",
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "06/06/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "H69A039-1",
+      "H68A088-1",
+      "H63A200-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0022WB3",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "15"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "45"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 –Heritage HM-10MAX",
+         "set": "6"
+        }
+       },
+       "note": "(For VOIDFORM order only)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26811-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA151WB2",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "60"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "21"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "21"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "35"
+        },
+        "Hopper 5": {
+         "material": "Exxon - Vistamaxx 6102FL",
+         "set": "34"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A180-1",
+      "H69A180-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "RU0000KS3",
+       "feeders": {
+        "Hopper 1": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 3": {
+         "material": "PP Mix Reclaim",
+         "set": "95"
+        },
+        "Hopper 4": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A206-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0151BL3",
+       "feeders": {
+        "Hopper 1": {
+         "material": "BL-B26003A (OR NPC-B60387)",
+         "set": "43"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "15"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "12"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "58"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "11"
+        }
+       },
+       "note": "Match color and opacity with QC sample"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 2,
+   "title": "Line 2 (SE12) Formulations",
+   "line_no": "2",
+   "line_code": "SE12",
+   "date": "9/28/26",
+   "header_note": "AC = 90",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "06/06/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "RP26821-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "27"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "14"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "71"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26511-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "WB-W26038A",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "41"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "20"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "71"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "(For sign blank orders only)"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 3,
+   "title": "Line 3 (SE13) Formulations",
+   "line_no": "3",
+   "line_code": "SE13",
+   "date": "9/28/26",
+   "header_note": "AC = 90",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "06/06/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "H69A237-1",
+      "RP26618-3",
+      "RP26506-5",
+      "RP25522-4",
+      "RP26618-2",
+      "RP26717-1",
+      "RP26327-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "33"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 5": {
+         "material": "WB-W26038A",
+         "set": "16"
+        }
+       },
+       "note": "(For sign blank orders only)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A158-1",
+      "H69A105-3",
+      "RP24C18-4"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "48"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "25"
+        },
+        "Hopper 4": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "48"
+        },
+        "Hopper 5": {
+         "material": "WB-W26038A",
+         "set": "15"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 4,
+   "title": "Line 4 (SE21) Formulations",
+   "line_no": "4",
+   "line_code": "SE21",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "footnotes": [
+    "Note: For KS orders, increase Hopper 4 setting if the board looks too gray, because the PP Mix Reclaim from the boxes/silo 8 might be too much WB (or others) colored.",
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "RP26810-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152KS4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "53"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "6"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "13"
+        },
+        "Hopper 4": {
+         "material": "KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)",
+         "set": "24"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 –Heritage HM-10MAX",
+         "set": "24"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26925-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152BD4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "44"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "11"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "Hopper 4": {
+         "material": "BD-B26004A",
+         "set": "30"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "23"
+        }
+       },
+       "note": "Match color and opacity with QC sample"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26918-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152OF4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "11"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "27"
+        },
+        "Hopper 4": {
+         "material": "OF-PP-R34874 (New NPC orange color)",
+         "set": "30"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "24"
+        }
+       },
+       "note": "Match color and opacity with QC sample"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26825-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA011NS4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "50"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "13"
+        },
+        "Hopper 4": {
+         "material": "UV-N26177A",
+         "set": "18"
+        },
+        "Hopper 5": {
+         "material": "Exxon – Vistamaxx 6102FL",
+         "set": "36"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26424-2",
+      "RP26527-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F-6502A)",
+         "set": "47"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "25"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "21"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP25818-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F-6502A)",
+         "set": "47"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "25"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "21"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26512-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0041WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "30"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "18"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FU0031WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "80"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "32"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "36"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FU0011WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "48"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "24"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "22"
+        }
+       },
+       "note": "(Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 5,
+   "title": "Line 5 (SE22) Formulations",
+   "line_no": "5",
+   "line_code": "SE22",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "RP26311-1",
+      "RP26928-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA060WBA",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "20"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "90"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "7"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FUA060WBA",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "30"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "75"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "7"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FUA010WBA",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "70"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "6"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "15"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "5"
+        }
+       },
+       "note": "(Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H68A053-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0001WBD",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "64"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "4"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "13"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": "For VOIDFORM order only"
+      },
+      {
+       "formula_code": "FU0061WBD",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (6502A)",
+         "set": "22"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "4"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "99"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "6"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 –Heritage HM-10MAX",
+         "set": "4"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 6,
+   "title": "Line 6 (SE23) Formulations",
+   "line_no": "6",
+   "line_code": "SE23",
+   "date": "9/28/26",
+   "header_note": "AC = 1",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "H68A127-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021GT4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "85"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "11"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "28"
+        },
+        "Hopper 4": {
+         "material": "WB EA Premix",
+         "set": "27"
+        },
+        "Hopper 5": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "30"
+        }
+       },
+       "note": "WB : EA = 9 : 1 WB – W26038A, GT – D26002M"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A166-1",
+      "H68A091-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "85"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "12"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "28"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "24"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "For VOIDFORM order only"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26821-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "18"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "54"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "43"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26731-2",
+      "RP26902-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "Hopper 3": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "20"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "(CORN BOX FORMULA)"
+      },
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "14"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "32"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "28"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "(CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26202-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "18"
+        },
+        "Hopper 3": {
+         "material": "F1203K",
+         "set": "54"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "43"
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 7,
+   "title": "Line 7 (SE24) Formulations",
+   "line_no": "7",
+   "line_code": "SE24",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "Extruder A V1",
+    "Extruder A V2",
+    "Extruder A V3",
+    "Extruder A V4",
+    "Extruder A V5",
+    "Extruder B V1",
+    "Extruder B V2",
+    "Extruder B V3",
+    "Extruder B V4",
+    "Extruder C V1",
+    "Extruder C V2",
+    "Extruder C V3",
+    "Extruder C V4"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "RP26901-1",
+      "RP26803-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "Extruder A V1": {
+         "material": "WB-W26038A",
+         "set": "2.7"
+        },
+        "Extruder A V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "9"
+        },
+        "Extruder A V4": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "73.3"
+        },
+        "Extruder A V5": {
+         "material": "F1203K",
+         "set": "15"
+        },
+        "Extruder B V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V4": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26514-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FSA200WB4",
+       "feeders": {
+        "Extruder A V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V2": {
+         "material": "FOAM – Bergen XO-256",
+         "set": "1.0"
+        },
+        "Extruder A V3": {
+         "material": "CaCO3 -Heritage HM-10HP",
+         "set": "10"
+        },
+        "Extruder A V4": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "89"
+        },
+        "Extruder A V5": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V1": {
+         "material": "WB-W26038A",
+         "set": "6"
+        },
+        "Extruder B V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "30"
+        },
+        "Extruder B V4": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "64"
+        },
+        "Extruder C V1": {
+         "material": "WB-W26038A",
+         "set": "6"
+        },
+        "Extruder C V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "30"
+        },
+        "Extruder C V4": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "64"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP25710-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "RU0000WB4",
+       "feeders": {
+        "Extruder A V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder A V4": {
+         "material": "PP WB Reclaim",
+         "set": "100"
+        },
+        "Extruder A V5": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder B V4": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V1": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V2": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V3": {
+         "material": "",
+         "set": ""
+        },
+        "Extruder C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 8,
+   "title": "Line 8 (SE31) Formulations",
+   "line_no": "8",
+   "line_code": "SE31",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "A V1",
+    "A V2",
+    "A V3",
+    "A V4",
+    "A V5",
+    "B V1",
+    "B V2",
+    "B V3",
+    "B V4",
+    "C V1",
+    "C V2",
+    "C V3",
+    "C V4"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "H69A066-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA151WM4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "50"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "A V4": {
+         "material": "WM-W26329M",
+         "set": "20"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A290-3",
+      "H69A291-10",
+      "RP26120-1",
+      "RP26826-3"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "48"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "20"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26413-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "45"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "33"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "11"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "18"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "New formulation for sign blank"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 9,
+   "title": "Line 9 (SE32) Formulations",
+   "line_no": "9",
+   "line_code": "SE32",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "A V1",
+    "A V2",
+    "A V3",
+    "A V4",
+    "A V5",
+    "B V1",
+    "B V2",
+    "B V3",
+    "B V4",
+    "C V1",
+    "C V2",
+    "C V3",
+    "C V4"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "RP26731-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "48"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "9"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "18"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26525-3"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA152WB4",
+       "feeders": {
+        "A V1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "40"
+        },
+        "A V2": {
+         "material": "F1203K",
+         "set": "18"
+        },
+        "A V3": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "A V4": {
+         "material": "WB-W26038A",
+         "set": "17"
+        },
+        "A V5": {
+         "material": "",
+         "set": ""
+        },
+        "B V1": {
+         "material": "",
+         "set": ""
+        },
+        "B V2": {
+         "material": "",
+         "set": ""
+        },
+        "B V3": {
+         "material": "",
+         "set": ""
+        },
+        "B V4": {
+         "material": "",
+         "set": ""
+        },
+        "C V1": {
+         "material": "",
+         "set": ""
+        },
+        "C V2": {
+         "material": "",
+         "set": ""
+        },
+        "C V3": {
+         "material": "",
+         "set": ""
+        },
+        "C V4": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": "SIGN BLANK"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 10,
+   "title": "Line 10 (SE25) Formulations",
+   "line_no": "10",
+   "line_code": "SE25",
+   "date": "9/28/26",
+   "header_note": "AC = 1",
+   "feeder_columns": [
+    "Hopper 1",
+    "Hopper 2",
+    "Hopper 3",
+    "Hopper 4",
+    "Hopper 5"
+   ],
+   "footnotes": [
+    "Note: CaCO3 means calcium carbonate."
+   ],
+   "footer": "Tech. Department",
+   "effective_date": "5/30/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "H68A111-4",
+      "H68A111-5"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "20"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "15"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "28"
+        }
+       },
+       "note": "(For roll material only) Check weight"
+      },
+      {
+       "formula_code": "FU0001WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "22"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10MAX",
+         "set": "17"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "17"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "28"
+        }
+       },
+       "note": "(For roll material only) (Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A097-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "16"
+        }
+       },
+       "note": ""
+      },
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "45"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "16"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "16"
+        }
+       },
+       "note": "(Use this formula in case PP WB Reclaim is run out)"
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H66A116-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10HP",
+         "set": "3"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "10"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        }
+       },
+       "note": "(Foe VOIDFORM orders only)"
+      },
+      {
+       "formula_code": "FUA011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "52"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "32"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26717-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "RU0001WB4",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP WB Reclaim",
+         "set": "99"
+        },
+        "Hopper 2": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 5": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H64A244-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 3 (F6502A)",
+         "set": "40"
+        },
+        "Hopper 2": {
+         "material": "PP WB Reclaim",
+         "set": "60"
+        },
+        "Hopper 3": {
+         "material": "CaCO3 -Heritage HM-10HP",
+         "set": "3"
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "10"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        }
+       },
+       "note": "(Foe VOIDFORM orders only)"
+      },
+      {
+       "formula_code": "FUA011WB5",
+       "feeders": {
+        "Hopper 1": {
+         "material": "PP Virgin-silo 4 (F6502A)",
+         "set": "52"
+        },
+        "Hopper 2": {
+         "material": "F1203K",
+         "set": "26"
+        },
+        "Hopper 3": {
+         "material": "",
+         "set": ""
+        },
+        "Hopper 4": {
+         "material": "WB-W26038A",
+         "set": "16"
+        },
+        "Hopper 5": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "32"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 11,
+   "title": "Line 12 (SE42) Formulations",
+   "line_no": "12",
+   "line_code": "SE42",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9"
+   ],
+   "footnotes": [],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "RP26410-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0021WB4",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "Q1203K",
+         "set": "10"
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "49"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "White Reclaim",
+         "set": "30"
+        },
+        "V8": {
+         "material": "WB-W26038A",
+         "set": "3"
+        },
+        "V9": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 12,
+   "title": "Line 13 (SE43) Formulations",
+   "line_no": "13",
+   "line_code": "SE43",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9"
+   ],
+   "footnotes": [],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "RP26915-1",
+      "RP26415-1",
+      "RP26218-1",
+      "RP26526-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA151WB4",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "8"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "",
+         "set": ""
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "74.0"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "F1203K",
+         "set": "15"
+        },
+        "V8": {
+         "material": "WB-W26038A",
+         "set": "3.0"
+        },
+        "V9": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H68A080-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0151KS3",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "",
+         "set": ""
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "77"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "F1203K",
+         "set": "15"
+        },
+        "V8": {
+         "material": "",
+         "set": ""
+        },
+        "V9": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "3"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H69A038-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FU0151WB3",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "",
+         "set": ""
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "77.3"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "F1203K",
+         "set": "15"
+        },
+        "V8": {
+         "material": "WB-W26038A",
+         "set": "2.7"
+        },
+        "V9": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "RP26911-2"
+     ],
+     "formulas": [
+      {
+       "formula_code": "FUA151WB3",
+       "feeders": {
+        "V1": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "6"
+        },
+        "V2": {
+         "material": "",
+         "set": ""
+        },
+        "V3": {
+         "material": "",
+         "set": ""
+        },
+        "V4": {
+         "material": "",
+         "set": ""
+        },
+        "V5": {
+         "material": "PP Virgin (F6502A)",
+         "set": "76.3"
+        },
+        "V6": {
+         "material": "",
+         "set": ""
+        },
+        "V7": {
+         "material": "F1102K",
+         "set": "15"
+        },
+        "V8": {
+         "material": "WB-W26038A",
+         "set": "2.7"
+        },
+        "V9": {
+         "material": "",
+         "set": ""
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scan_page": 13,
+   "title": "Line 16 (SE61) Formulations",
+   "line_no": "16",
+   "line_code": "SE61",
+   "date": "9/28/26",
+   "header_note": "",
+   "feeder_columns": [
+    "A 1",
+    "A 2",
+    "A 3",
+    "A 4",
+    "A 5",
+    "A 6",
+    "B 1",
+    "C 1",
+    "C 2",
+    "C 3",
+    "C 4",
+    "C 5",
+    "C 6",
+    "D 1"
+   ],
+   "footnotes": [],
+   "footer": "Tech. Department",
+   "effective_date": "6/15/00",
+   "handwritten": "",
+   "unclear": "",
+   "groups": [
+    {
+     "orders": [
+      "H69A068-1",
+      "H69A164-1",
+      "H69A209-1",
+      "H69A300-1",
+      "H69A199-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "BF0000EB3",
+       "feeders": {
+        "A 1": {
+         "material": "PP Mix Reclaim",
+         "set": "50"
+        },
+        "A 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "A 3": {
+         "material": "KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)",
+         "set": "2.0"
+        },
+        "A 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "A 5": {
+         "material": "",
+         "set": ""
+        },
+        "A 6": {
+         "material": "",
+         "set": ""
+        },
+        "B 1": {
+         "material": "Adsyl 5C30F",
+         "set": "100"
+        },
+        "C 1": {
+         "material": "",
+         "set": ""
+        },
+        "C 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "C 3": {
+         "material": "OG-D26074A",
+         "set": "3.0"
+        },
+        "C 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "C 5": {
+         "material": "",
+         "set": ""
+        },
+        "C 6": {
+         "material": "",
+         "set": ""
+        },
+        "D 1": {
+         "material": "Adsyl 5C30F",
+         "set": "100"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H68A020-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "BF0000KSA",
+       "feeders": {
+        "A 1": {
+         "material": "PP Mix Reclaim",
+         "set": "50"
+        },
+        "A 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "A 3": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "1.0"
+        },
+        "A 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "A 5": {
+         "material": "",
+         "set": ""
+        },
+        "A 6": {
+         "material": "",
+         "set": ""
+        },
+        "B 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        },
+        "C 1": {
+         "material": "",
+         "set": ""
+        },
+        "C 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "C 3": {
+         "material": "",
+         "set": ""
+        },
+        "C 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "C 5": {
+         "material": "",
+         "set": ""
+        },
+        "C 6": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "2.0"
+        },
+        "D 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        }
+       },
+       "note": ""
+      }
+     ]
+    },
+    {
+     "orders": [
+      "H64A178-1",
+      "H64A289-1",
+      "H64A289-2",
+      "H64A289-3",
+      "H64A289-4",
+      "RP26826-1"
+     ],
+     "formulas": [
+      {
+       "formula_code": "BF0000EB5",
+       "feeders": {
+        "A 1": {
+         "material": "PP Mix Reclaim",
+         "set": "50"
+        },
+        "A 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "A 3": {
+         "material": "KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)",
+         "set": "2.0"
+        },
+        "A 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "10"
+        },
+        "A 5": {
+         "material": "",
+         "set": ""
+        },
+        "A 6": {
+         "material": "",
+         "set": ""
+        },
+        "B 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        },
+        "C 1": {
+         "material": "",
+         "set": ""
+        },
+        "C 2": {
+         "material": "F6502A",
+         "set": "Auto"
+        },
+        "C 3": {
+         "material": "OG-D26074A",
+         "set": "3.0"
+        },
+        "C 4": {
+         "material": "HiTalc ZS (or N40109A)",
+         "set": "5"
+        },
+        "C 5": {
+         "material": "",
+         "set": ""
+        },
+        "C 6": {
+         "material": "",
+         "set": ""
+        },
+        "D 1": {
+         "material": "PP Yungsox 5050S",
+         "set": "100"
+        }
+       },
+       "note": ""
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "frm_source_scan": "doc05254620260928150919.pdf"
 }

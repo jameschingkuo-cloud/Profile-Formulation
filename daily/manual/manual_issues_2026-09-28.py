@@ -2,7 +2,22 @@
 # that the automated checks don't cover. Each was seen on today's page image.
 MANUAL = [
  # (Severity, Document, Line, Order, Check, Detail, Source)
- ('High','FRM','(all)','','No formulation pages in the packet','The 28 Sep packet has EXT and CNV only (25 pages); Tech’s FRM pages are not in it. FRM Draft 2026-09-28 proposes one from the last issued FRM, for Tech to check and sign','scan'),
+ ('Info','FRM','(all)','','Formulation pages scanned separately','The 28 Sep packet scan has EXT and CNV only (25 pages). Tech’s 13 FRM pages (SE11-SE61, dated 9/28/26) came later as a separate scan, doc05254620260928150919.pdf, and are transcribed from it','FRM scan'),
+ # ---- FRM, new today (FRM scan doc05254620260928150919.pdf)
+ ('Low','FRM','SE43','RP26911-2','Different resin grade on one row','FUA151WB3 has F1102K in V7; the other three SE43 formulas use F1203K. Checked at zoom: printed F1102K (F1102K was also on SE42 on 25 Sep)','FRM p12'),
+ ('Medium','FRM','SE23','H68A127-1','New code on the new line; premix wording','On SE23 it is FU0021GT4 with "WB EA Premix" 27 and CaCO3 30; on SE25 on 25 Sep it was FU001GTW4 with "WB GT Premix". The note says "WB : EA = 9 : 1" but names WB - W26038A and GT - D26002M','FRM p6'),
+ ('Info','FRM','SE21','RP26925-1, RP26918-1, RP26825-1','New colour formulas','FUA152BD4 (BD-B26004A 30), FUA152OF4 ("OF-PP-R34874 (New NPC orange color)" 30), FUA011NS4 (UV-N26177A 18, Vistamaxx 36). BD and OF rows say "Match color and opacity with QC sample"','FRM p4'),
+ ('Info','FRM','SE61','H69A068-1, H69A164-1, H69A209-1, H69A300-1, H69A199-1','New formula code','BF0000EB3: Adsyl 5C30F on extruders B and D (BF0000EB5 and BF0000KSA use PP Yungsox 5050S)','FRM p13'),
+ ('Info','FRM','SE31 / SE21 / SE23','','Orders gone from the FRM pages','Not on today’s pages (or the EXT schedule): H68A153-1 (FXA020WB4), H69A100-13, H69A225-1 (SE31), H69A139-1, H69A206-2, H69A238-2..-5, H69A255-1 (SE21), H67A120-1 (SE23)','FRM p4, p6, p8'),
+ # ---- FRM, carried from 25 Sep: still on today's pages
+ ('Medium','FRM','SE21','RP26512-1','Two formulas with no note','FU0041WB4 and FU0031WB4 both listed with no note saying which to use (FU0031WB4 = 2x FU0041WB4: 80/10/60/32/36 vs 40/5/30/16/18); FU0011WB4 is the reclaim run-out backup','FRM p4'),
+ ('Medium','FRM','SE22','RP26311-1, RP26928-1','Same code, two recipes, no note','FUA060WBA printed twice: 20/5/90/7/4 and 30/5/75/7/4, nothing to tell them apart. New order RP26928-1 now shares the group','FRM p5'),
+ ('Low','FRM','SE23','(page)','One code, three recipes','FU0021WB4 is the VOIDFORM group, the corn box formula (45/10/60/20) and its run-out backup (99/14/32/28); the corn box rows name the resin only as "PP Virgin"','FRM p6'),
+ ('Medium','FRM','SE42','RP26410-1','Resin grade printed Q1203K','"Q1203K" in V3; every other page uses F1203K (fourth packet running)','FRM p11'),
+ ('Medium','FRM','SE25','H69A097-1','Backup formula has the same code','Main and "in case PP WB Reclaim is run out" rows are both FU0021WB4 with different recipes; H68A111 has its own backup code (FU0001WB4)','FRM p10'),
+ ('Low','FRM','(all)','','Same resin written several ways','"(6502A)", "(F6502A)", "(F-6502A)" (SE21, two groups), bare "F6502A"; silo 3 / silo 4 / plain "PP Virgin"','FRM p1-13'),
+ ('Info','FRM','SE24 / SE25','','Different CaCO3 grade','HM-10HP on Line 7 and in FU0011WB5 (Line 10); HM-10MAX elsewhere','FRM p7, p10'),
+ ('Info','FRM','SE25','H66A116-1, H64A244-1','Typo in note','"(Foe VOIDFORM orders only)"','FRM p10'),
  ('Info','EXT','SE21','RP26825-1, RP26918-1, RP26925-1','New colour codes','New orders print colours NS (RPA40NS235), OF (RPA40OF37) and BD (RPA40BD59), all PPP A R1R1R1 4.0. Checked at zoom: OF is letter O + F. James Kuo, 28 Sep 2026: OF = fade-resistant orange, BD = dark blue; both added to the R7 colour list','scan p5'),
  ('High','Scan reader','SE21','RP26925-1','Glyph reader silent misread (fixed)','The glyph reader read BD as BL with no flag: its colour list had no BD, so the word snapped to the nearest listed colour. Caught by the crosscheck. The reader now also reads each colour letter by letter and flags any difference (scan_reader/ext_scan_reader.py colour_word); the 25 Sep scan reads the same as before','scan p5'),
  ('Medium','EXT','SE23','(page)','Report page 8 missing from the scan','SE23 continues on report page 8 (its line total). Handwritten 3,939,487# on page 7 equals the sum of its weights, and the Final Total equals all rows, so no order is missing','scan p7-8'),
