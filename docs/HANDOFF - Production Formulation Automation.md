@@ -448,6 +448,12 @@ handwritten `-PC405`); the handwriting also produced one phantom row, flagged. *
 most of the 24 Sep orders are the same printout content as 23 Sep, so this is a new scan of largely
 known text, not a fully new page set. Output: `ext_read_2026-09-24.csv` (project).
 
+**Bank grown, 28 Sep 2026 (James: yes):** the verified 25 and 28 Sep rows (`data/ext_truth_2026-09-25.csv`,
+`data/ext_truth_2026-09-28.csv`; two independent reads + printed totals + every difference settled by eye) were added:
+3,894 → **10,844 glyphs**, now including F and N. **Blind test first** (bank + 25 Sep only, reading 28 Sep, never seen):
+same accuracy, **0 silent errors**, flagged rows 35 → 29 (fewer false alarms). With both days in, OF / BD / NS read
+correctly and unflagged. Pages whose row count differs from the truth (rows under handwriting) are skipped by `train`.
+
 **Not done yet:** R9 checksum in the glyph reader (Total Sheets and Weight columns, plus
 continuation cut rows); the special-instructions text is still read by Tesseract (fine for
 `RUN WITH` / `VOIDFORM` keywords, not for numbers); rows under handwriting.
@@ -1281,6 +1287,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.11 | 2026-09-28 | Claude (cloud session with James Kuo) | **Glyph bank grown** with the verified 25 and 28 Sep rows (James: *"yes"*): 3,894 → 10,844 glyphs. Blind test on 28 Sep with 25 Sep added: 0 silent errors, 6 fewer flagged rows (§7.7). |
 | 1.10 | 2026-09-28 | Claude (cloud session with James Kuo) | James: *"OF Fade-resistant orange"*, *"BD Dark blue"*. Both added to R7 (reader) and the Product Master colour list; meanings kept in `data/colour_codes.csv` (with WB = blue white). |
 | 1.9 | 2026-09-28 | Claude (cloud session with James Kuo) | **28 Sep packet and the first FRM Draft (§7.22).** Scan arrived via chat. 68/75 identical; totals tie. The glyph reader's first silent error (new colour BD read as BL) caught by the crosscheck and fixed (colours also read letter by letter). `daily/resolve.py` drafts the day's formulation from the last issued FRM: backtest 68/69 identical on 25 Sep; 28 Sep 59/75 proposed, 16 to an engineer. |
 | 1.8 | 2026-09-28 | Claude (cloud session with James Kuo) | **Two folders (§7.21).** Database workbooks in `Engineering Pipeline\Production Formulation\<kind>` (`PUBLISH_DIR`); handoff, `.md`, `.py` in the old folder, now Claude's workspace (`DOCS_DIR`). Product Master and the 23–24 Sep daily workbooks copied to the database folders; `publish.py` routes by `db/schema.py`; manifest moved. |
