@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.9 (28 Sep 2026).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.12 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1171,6 +1171,30 @@ not). EXT pages 1-14 (Run Date 9/28/26 13:56:14; report page 8, SE23's total, mi
   H68A127-1 SE25 → SE23, H68A080-1 SE42 → SE43, 5 new SE61 BA253 orders). Draft only; Tech signs.
 - `build_xlsx.py` now skips the FRM workbook when a packet has no FRM pages.
 
+## 7.23 Back to James's PC (28 Sep 2026)
+
+James: *"please change it to local. I dont see much value in cloud right now"*. The cloud session stops here. Everything
+is on GitHub, branch `claude/new-session-6wgvkd` (not yet merged into `main`). **Open items for the local session:**
+
+1. **This document:** the repo copy (`docs/HANDOFF - Production Formulation Automation.md`, Rev 1.12) is newer than the
+   one in the workspace folder (Rev 1.8). Copy it over the workspace copy (`HANDOFF` in `local_settings.json`).
+2. **`local_settings.json`:** set `PUBLISH_DIR` to `...\General\Engineering Pipeline\Production Formulation` and add
+   `DOCS_DIR` (see `local_settings.example.json`); then `pip install -r requirements.txt` in `.venv`.
+3. **Publish 25 and 28 Sep** (EXT, CNV, FRM 25 Sep, FRM Draft 28 Sep) once James has seen the High issues: rebuild them
+   locally (`PKT_DATE=... python daily/build_xlsx.py`, `python daily/resolve.py`), then `python publish.py ...`.
+4. **Product Master merge** for 25 and 28 Sep (`PKT_DATE=... python daily/build_master.py`; it reads the published master
+   in `Product Master\`, which the cloud session could not open in full).
+5. **Scans:** 25 Sep is in `Production Formulation\Extrusion Schedule\`; 28 Sep is `doc05253620260928134035.pdf` in
+   James's Downloads. Put both in `inputs\scans` to re-run the reader.
+6. **Decisions waiting for James:** `docs/DATABASE.md` §6 (rename the calc-derived workbook, who approves, Material ID,
+   variants); H68A153-1 spec `OPOPOP` (R2); FXA020WB4's WB-W40020M; RP26923-1's formula change; delete the old copies
+   of the database workbooks from the workspace folder.
+7. **Next build:** the three records (Formulation Report, Extrusion and Converting Production Records) from the 23, 24,
+   25 and 28 Sep packets; then the Formulation Master (needs Tech's calc workbooks in `CALC_DIR`).
+
+Cost note (James asked what uses the cloud credit): most of it was the parallel transcription readers (5–7 per packet,
+~150k tokens each). Growing the glyph bank reduces how much of each page needs a second reader.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1287,6 +1311,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.12 | 2026-09-28 | Claude (cloud session with James Kuo) | **Back to James's PC (§7.23).** James: *"please change it to local"*. Open items listed for the local Claude Code session. |
 | 1.11 | 2026-09-28 | Claude (cloud session with James Kuo) | **Glyph bank grown** with the verified 25 and 28 Sep rows (James: *"yes"*): 3,894 → 10,844 glyphs. Blind test on 28 Sep with 25 Sep added: 0 silent errors, 6 fewer flagged rows (§7.7). |
 | 1.10 | 2026-09-28 | Claude (cloud session with James Kuo) | James: *"OF Fade-resistant orange"*, *"BD Dark blue"*. Both added to R7 (reader) and the Product Master colour list; meanings kept in `data/colour_codes.csv` (with WB = blue white). |
 | 1.9 | 2026-09-28 | Claude (cloud session with James Kuo) | **28 Sep packet and the first FRM Draft (§7.22).** Scan arrived via chat. 68/75 identical; totals tie. The glyph reader's first silent error (new colour BD read as BL) caught by the crosscheck and fixed (colours also read letter by letter). `daily/resolve.py` drafts the day's formulation from the last issued FRM: backtest 68/69 identical on 25 Sep; 28 Sep 59/75 proposed, 16 to an engineer. |
