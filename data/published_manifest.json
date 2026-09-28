@@ -1,75 +1,82 @@
 {
- "Daily/2026/CNV Converting Schedule 2026-09-23.xlsx": {
+ "Converting Schedule/CNV Converting Schedule 2026-09-23.xlsx": {
   "bytes": 46840,
   "content": "6a9604c5d6643749cbf5981a9464a56e26d5754a0e9aed069dd79bc380b45a31",
   "from": "Cowork session",
+  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "05fd6755e1cf74634927b2ea6fc0e2a822c78bc8eedea269047f7b9940d8c911"
  },
- "Daily/2026/CNV Converting Schedule 2026-09-24.xlsx": {
+ "Converting Schedule/CNV Converting Schedule 2026-09-24.xlsx": {
   "bytes": 47886,
   "content": "9a45c01c77e130a67975080a298ed13cd6646502925d0daa91c1a0963e9b06c2",
   "from": "Cowork session",
+  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "27c12183b4abe094f6a2b73b52877bd45d7d50fe90c5468218f94295bf0befa3"
  },
- "Daily/2026/EXT Extrusion Schedule 2026-09-23.xlsx": {
-  "bytes": 60575,
-  "content": "385699de5f812b1cd4c79b1aaddbb33db2521f72c5331edfe536b7a789135ead",
-  "from": "Cowork session",
-  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
-  "sha256": "ebbd6648d699391cf1a3e90b326a84f84d483b25d005d3b54b225c0951b457c5"
- },
- "Daily/2026/EXT Extrusion Schedule 2026-09-24.xlsx": {
-  "bytes": 60286,
-  "content": "93a4216a6a489dc5c73e536f2de8213b3eec0577a323dd330b6ff3372149b52e",
-  "from": "Cowork session",
-  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
-  "sha256": "4174cbee805fa8457222210347cce58f516cd26e05331b6cd8f3334289bf5477"
- },
- "Daily/2026/FRM Formulation Report 2026-09-23.xlsx": {
+ "Daily Formulation Report/FRM Formulation Report 2026-09-23.xlsx": {
   "bytes": 57524,
   "content": "05f6f7e41a1413720aeee65a614efa471b74179ff55bb19c2d66e0f200a21416",
   "from": "Cowork session",
+  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "1c9378a17d8b1e45be189c95231eb5a9c700c34f602cc06d0fe0fc3823ac76ec"
  },
- "Daily/2026/FRM Formulation Report 2026-09-24.xlsx": {
+ "Daily Formulation Report/FRM Formulation Report 2026-09-24.xlsx": {
   "bytes": 56072,
   "content": "312ec9162999c34c6907bbe56b842dd208e90b50d46c8efe8145bf6d5844528d",
   "from": "Cowork session",
+  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "0491a2256a5c31036fb4a6c91aea78f9df56ec2d688cb1de1b60e5bbbc804f8b"
  },
- "Formulation Master.xlsx": {
+ "Extrusion Schedule/EXT Extrusion Schedule 2026-09-23.xlsx": {
+  "bytes": 60575,
+  "content": "385699de5f812b1cd4c79b1aaddbb33db2521f72c5331edfe536b7a789135ead",
+  "from": "Cowork session",
+  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
+  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
+  "sha256": "ebbd6648d699391cf1a3e90b326a84f84d483b25d005d3b54b225c0951b457c5"
+ },
+ "Extrusion Schedule/EXT Extrusion Schedule 2026-09-24.xlsx": {
+  "bytes": 60286,
+  "content": "93a4216a6a489dc5c73e536f2de8213b3eec0577a323dd330b6ff3372149b52e",
+  "from": "Cowork session",
+  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
+  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
+  "sha256": "4174cbee805fa8457222210347cce58f516cd26e05331b6cd8f3334289bf5477"
+ },
+ "Product Master/Product Master.xlsx": {
+  "bytes": 277049,
+  "content": "085b7ead92283aafbe6f0cbd3c6c55017fc41bfbb44efe395e4d0825df2eefe8",
+  "from": "Cowork session",
+  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
+  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
+  "sha256": "15800f5bc34cf73ea7540be3ee61d723cd1a5342b01812dd7fad2a5884c0dad7"
+ },
+ "workspace/Formulation Master.xlsx": {
   "bytes": 3667095,
   "content": "e0197d136359737adbf5062475214092d210907033c6bf91088dd01ce965b945",
   "from": "Cowork session",
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "4e5781f776f7b4ce1d178c3170a71dc1414592d7a49b1ccba1650270da1005df"
  },
- "Product Master.xlsx": {
-  "bytes": 277049,
-  "content": "085b7ead92283aafbe6f0cbd3c6c55017fc41bfbb44efe395e4d0825df2eefe8",
-  "from": "Cowork session",
-  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
-  "sha256": "15800f5bc34cf73ea7540be3ee61d723cd1a5342b01812dd7fad2a5884c0dad7"
- },
- "auger_rules.py": {
+ "workspace/auger_rules.py": {
   "bytes": 4885,
   "content": "644d1268af7accabe40d7a85c6a647925ab9f24f90eb94b5ee7cb84e63b643a0",
   "from": "Cowork session",
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "644d1268af7accabe40d7a85c6a647925ab9f24f90eb94b5ee7cb84e63b643a0"
  },
- "ext_scan_reader.py": {
+ "workspace/ext_scan_reader.py": {
   "bytes": 26947,
   "content": "b449c3c96c62ffea55c8973f2eaa1ed5ecf1fbfac1d916f41ad9f2420ccec85f",
   "from": "Cowork session",
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "b449c3c96c62ffea55c8973f2eaa1ed5ecf1fbfac1d916f41ad9f2420ccec85f"
  },
- "ext_truth_2026-09-23.csv": {
+ "workspace/ext_truth_2026-09-23.csv": {
   "bytes": 5385,
   "content": "94ed4d1c2b9b31f029a38247dfde30e60b687c3407f6323dc67ea65c6c385a42",
   "from": "Cowork session",

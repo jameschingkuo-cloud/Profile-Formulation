@@ -21,7 +21,7 @@ look at the spec." So the thickness in the code is nominal only. A difference un
 is ever corrected automatically.
 
 Usage:
-    python product_master/prepare.py "<PUBLISH_DIR>/Product Master.xlsx" [--asof 2026-09-28]
+    python product_master/prepare.py "<PUBLISH_DIR>/Product Master/Product Master.xlsx" [--asof 2026-09-28]
 
 Writes to OUTPUT_DIR (config.py; out/ by default). It is a working file for James and
 Tech, not one of the six target files (HANDOFF §7.13), so publish.py is not used.

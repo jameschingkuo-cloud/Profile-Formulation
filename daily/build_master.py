@@ -101,8 +101,9 @@ PKT_DATE = datetime.date.fromisoformat(os.environ.get('PKT_DATE', '2026-09-23'))
 LAST_UPDATE = datetime.date.fromisoformat(os.environ.get('RUN_DATE', str(PKT_DATE)))     # date written into Last Updated for rows this run changes
 CALC_JSON = os.environ.get('CALC_JSON')   # per-product summary of Tech's formulation calc workbooks (export_calc_products.py), optional
 MASTER = config.OUTPUT_DIR / 'Product Master.xlsx'
-# existing master to merge into: PRIOR_MASTER, else the published one in PUBLISH_DIR (None = build fresh)
-PRIOR = os.environ.get('PRIOR_MASTER') or (str(config.PUBLISH_DIR / 'Product Master.xlsx') if config.PUBLISH_DIR and (config.PUBLISH_DIR / 'Product Master.xlsx').exists() else None)
+# existing master to merge into: PRIOR_MASTER, else the published one (PUBLISH_DIR/Product Master/; None = build fresh)
+_pub = config.published_path('Product Master.xlsx')
+PRIOR = os.environ.get('PRIOR_MASTER') or (str(_pub) if _pub and _pub.exists() else None)
 if PRIOR and os.path.exists(PRIOR): config.record_read(PRIOR, 'prior Product Master')
 cols = [  # (header, group, key, width)
  ('Product Code', 'id', None, 14),

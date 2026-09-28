@@ -112,5 +112,7 @@ Nothing reaches a master without a Change Log row that names an approver. That i
 2. **Approval:** who may approve a formula or slope (Tech only, or Tech and James)? Their names go in the Change Log.
 3. **Material ID:** use the IWPFT062 item number (`50-1560-050`) as the key? It needs the current IWPFT062 (Rev 16).
 4. **Variants:** is the list complete (Primary, Reclaim run-out, VOIDFORM, Sign blank, Corn box, Roll)?
-5. **Move the published files** from `Claude MD, PY Pipeline File\...\Production Formulation Automation` to the new
-   folders when `publish.py` routing is added?
+5. ~~Move the published files to the new folders?~~ **Done 28 Sep 2026.** Product Master and the 23–24 Sep daily
+   workbooks were copied (by SharePoint, same bytes) into their folders, and `publish.py` now routes every file.
+   James: the old folder is *"where you will put all the MD, PY etc etc that is not data base related file"* —
+   *"its basically your work space"*. `Formulation Master.xlsx` stays there until decision 1 (the rename) is made.

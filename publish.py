@@ -1,4 +1,5 @@
-"""Copy finished files from out/ to the SharePoint-synced folder (PUBLISH_DIR) - the only way outputs reach SharePoint.
+"""Copy finished files from out/ to SharePoint - the only way outputs reach it.
+Database workbooks go to PUBLISH_DIR/<folder> (db/schema.py); anything else to DOCS_DIR, Claude's workspace.
 
     python publish.py "Product Master.xlsx" "FRM Formulation Report 2026-09-28.xlsx" ...
     python publish.py --check            (report what would be refused, copy nothing)
@@ -24,15 +25,20 @@ DAILY_PREFIXES = ('EXT Extrusion Schedule ', 'CNV Converting Schedule ', 'FRM Fo
 
 
 def destination(name):
-    """Daily workbooks go to Daily/<year>/, everything else to the folder root (handoff §9)."""
-    if name.startswith(DAILY_PREFIXES):
-        year = name.rsplit(' ', 1)[-1][:4]
-        return config.PUBLISH_DIR / 'Daily' / year / name
-    return config.PUBLISH_DIR / name
+    """Database workbooks go to PUBLISH_DIR/<their folder> (db/schema.py); everything else (handoff, .md, .py ...)
+    to DOCS_DIR, Claude's workspace (James Kuo, 28 Sep 2026)."""
+    dst = config.published_path(name)
+    if dst is None:
+        raise SystemExit(f'{name}: its destination root is not set (PUBLISH_DIR for database files, DOCS_DIR for the rest).')
+    return dst
 
 
 def rel(p):
-    return Path(p).relative_to(config.PUBLISH_DIR).as_posix()
+    """Manifest key: path under PUBLISH_DIR, or 'workspace/<path>' under DOCS_DIR."""
+    p = Path(p)
+    if config.PUBLISH_DIR and p.is_relative_to(config.PUBLISH_DIR):
+        return p.relative_to(config.PUBLISH_DIR).as_posix()
+    return 'workspace/' + p.relative_to(config.DOCS_DIR).as_posix()
 
 
 def main(argv):
@@ -40,10 +46,10 @@ def main(argv):
     reissue = '--reissue' in argv
     today = datetime.date.today().isoformat()
     names = [a for a in argv if not a.startswith('--')]
-    if not config.PUBLISH_DIR:
-        raise SystemExit('PUBLISH_DIR is not set (local_settings.json).')
-    if not config.PUBLISH_DIR.exists():
-        raise SystemExit(f'PUBLISH_DIR does not exist: {config.PUBLISH_DIR}')
+    for key in ('PUBLISH_DIR', 'DOCS_DIR'):
+        root = getattr(config, key)
+        if root and not root.exists():
+            raise SystemExit(f'{key} does not exist: {root}')
     manifest = json.loads(MANIFEST.read_text(encoding='utf-8')) if MANIFEST.exists() else {}
     read_by_build = {Path(k): v for k, v in config.reads().items()}
     if check_only and not names:

@@ -19,10 +19,14 @@ def _path(key, default):
 
 # ---- where things live ----------------------------------------------------------------------------------
 OUTPUT_DIR = _path('OUTPUT_DIR', ROOT / 'out')            # builds write here first (staging, not in git)
-PUBLISH_DIR = _path('PUBLISH_DIR', None)                   # the SharePoint-synced "Production Formulation Automation" folder
+PUBLISH_DIR = _path('PUBLISH_DIR', None)                   # the database: SharePoint-synced "General/Engineering Pipeline/Production Formulation"
+                                                           #   one subfolder per kind (db/schema.py: Book.folder)
+DOCS_DIR = _path('DOCS_DIR', None)                         # Claude's workspace: "General/Claude MD, PY Pipeline File/Engineering Pipeline/
+                                                           #   Production Formulation Automation" - the handoff, .md, .py, anything not database
+                                                           #   (James Kuo, 28 Sep 2026)
 CALC_DIR = _path('CALC_DIR', ROOT / 'inputs' / 'calc')     # Tech's "SExx Formulation.xls" workbooks (live location: handoff §10 Q14)
 SCAN_DIR = _path('SCAN_DIR', ROOT / 'inputs' / 'scans')    # daily packet scans (PDF)
-HANDOFF = _path('HANDOFF', None)                           # the handoff document (lives in PUBLISH_DIR)
+HANDOFF = _path('HANDOFF', None)                           # the handoff document (lives in DOCS_DIR)
 WORK_DIR = _path('WORK_DIR', ROOT / 'work')                # intermediate files: parsed.pkl, issues.json, calc_products.json, reads.json
 DATA_DIR = ROOT / 'data'
 PACKETS_DIR = DATA_DIR / 'packets'                         # transcribed daily packets: packet_YYYY-MM-DD.json (kept in git)
@@ -31,6 +35,18 @@ GLYPH_BANK = ROOT / 'scan_reader' / 'glyph_bank.npz'
 
 for _d in (OUTPUT_DIR, WORK_DIR):
     _d.mkdir(parents=True, exist_ok=True)
+
+
+def published_path(name):
+    """Where a file lives once published: database workbooks in PUBLISH_DIR/<their folder> (db/schema.py),
+    everything else (handoff, .md, .py ...) in DOCS_DIR, Claude's workspace. None if that root is not set."""
+    import sys as _sys
+    _sys.path.insert(0, str(ROOT / 'db'))
+    from schema import destination
+    folder = destination(name)
+    if folder:
+        return PUBLISH_DIR / folder / name if PUBLISH_DIR else None
+    return DOCS_DIR / name if DOCS_DIR else None
 
 
 def packet_path(date):

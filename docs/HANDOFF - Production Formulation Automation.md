@@ -56,7 +56,7 @@ the production packet issued for that day. It contains three documents:
     MR §8).
   - A file Cowork publishes is unknown to the repo's manifest, so `publish.py` will refuse to overwrite it until
     someone checks it. That is on purpose.
-- **This document stays in this SharePoint folder and is edited in place** by Claude Code and Cowork alike. After a
+- **This document stays in this SharePoint folder (Claude's workspace, `DOCS_DIR`) and is edited in place** by Claude Code and Cowork alike. After a
   Cowork session changes it, mirror it to the Claude Project `Engineering Pipeline`
   (`claude/HANDOFF - Production Formulation Automation.md`).
 
@@ -1117,6 +1117,30 @@ formula changed** FU0021WB4 → RU0001WB4; H69A139-1 on FRM but no longer on EXT
 `daily/manual/manual_issues_2026-09-25.py` and the workbooks' Issues sheets. Workbooks built in `out/`, not published.
 **Product Master not merged yet:** the merge reads the published master, which this cloud session can't open in full.
 
+## 7.21 Two folders: the database and Claude's workspace (28 Sep 2026)
+
+James: *"put it here C:\Users\JamesKuo\Inteplast-WPJK\Profile Production Data Control - Documents\General\Engineering
+Pipeline\Production Formulation\Product Master"*, then *"this is where you will put all the MD, PY etc etc that is not data
+base related file C:\...\General\Claude MD, PY Pipeline File\Engineering Pipeline\Production Formulation Automation"* and
+*"its basically your work space"*.
+
+| Setting | Folder | Holds |
+|---|---|---|
+| `PUBLISH_DIR` | `General\Engineering Pipeline\Production Formulation\<kind>` | The database workbooks only (`db/schema.py` says which folder) |
+| `DOCS_DIR` | `General\Claude MD, PY Pipeline File\Engineering Pipeline\Production Formulation Automation` | This handoff, `.md`, `.py`, code snapshots: Claude's workspace |
+
+- **Copied (SharePoint server-side copy, same bytes, sizes checked against §11):** `Product Master.xlsx` → `Product
+  Master\`; EXT / CNV / FRM 2026-09-23 and -24 → `Extrusion Schedule\`, `Converting Schedule\`, `Daily Formulation
+  Report\`. The originals are still in the workspace folder; delete them there once James is happy.
+- `Formulation Master.xlsx` (calc-derived) stays in the workspace until the rename to `Formulation Calc Library.xlsx`
+  is decided (`docs/DATABASE.md` §6.1).
+- Code: `config.DOCS_DIR`, `config.published_path()`; `publish.py` routes every file; `daily/build_master.py` reads
+  the prior master from `Product Master\`. `data/published_manifest.json` moved to the new paths (workspace files
+  keyed `workspace/...`). On James's PC, `local_settings.json` needs the new `PUBLISH_DIR` and a `DOCS_DIR` (see
+  `local_settings.example.json`).
+- The 25 Sep scan sits in `Extrusion Schedule\` (James put it there). Scans are source files, not database; they could
+  have their own `Scans` folder.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1224,6 +1248,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.8 | 2026-09-28 | Claude (cloud session with James Kuo) | **Two folders (§7.21).** Database workbooks in `Engineering Pipeline\Production Formulation\<kind>` (`PUBLISH_DIR`); handoff, `.md`, `.py` in the old folder, now Claude's workspace (`DOCS_DIR`). Product Master and the 23–24 Sep daily workbooks copied to the database folders; `publish.py` routes by `db/schema.py`; manifest moved. |
 | 1.7 | 2026-09-28 | Claude (cloud session with James Kuo) | **25 Sep packet processed (§7.20)**; `scan_reader/crosscheck.py` added (transcription vs glyph reader vs printed totals). 67/71 identical, 4 reader misreads all flagged, every total ties. Converting Production Record added to the database (§7.19). |
 | 1.6 | 2026-09-28 | Claude (cloud session with James Kuo) | **Database structure and flow (§7.19).** James: *"lets build the data base structure and flow first, then we design the interface"*. `db/schema.py` describes every workbook (masters with Change Logs, append-only records, daily files, calc evidence) in James's new folders; templates, a checker and `docs/DATABASE_TABLES.md` come from it; flow in `docs/DATABASE.md`. Starter code committed to GitHub (§7.18). No data built or published. |
 | 1.5 | 2026-09-28 | Claude (cloud session with James Kuo) | **Product Master prepared as the base table (§7.18).** Excel only; Product Master first. James confirmed: in-between thicknesses (3.3 mm) are not in the code, the spec decides; the 4 letter-O codes are A0. `product_master/prepare.py` adds code-derived columns, completeness, an Issues sheet, Verify First, Colour Codes and an Import Map for the full data pull. Run on the 1,608 rows the SharePoint connector returns. This copy is in the GitHub repo; mirror to SharePoint. |

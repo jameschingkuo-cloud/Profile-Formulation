@@ -308,7 +308,7 @@ def book_for(filename: str) -> Book | None:
 
 
 def destination(filename: str) -> str | None:
-    """Subfolder of PUBLISH_DIR a file belongs in (used by publish.py once PUBLISH_DIR moves)."""
+    """Subfolder of PUBLISH_DIR a database file belongs in; None = not a database file (goes to DOCS_DIR)."""
     b = book_for(filename)
     return b.folder if b else None
 

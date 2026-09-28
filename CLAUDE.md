@@ -2,7 +2,15 @@
 
 This repo automates the plant's daily production formulation work for **James Kuo**, Technical Process Engineer.
 It is the code. The spec and running state live in the **handoff document**, at the `HANDOFF` path in
-`local_settings.json` in the SharePoint-synced folder. The § numbers below refer to it.
+`local_settings.json`, in Claude's workspace folder (`DOCS_DIR`). The § numbers below refer to it.
+
+**Two SharePoint folders (James, 28 Sep 2026):**
+- `PUBLISH_DIR` = `General\Engineering Pipeline\Production Formulation`: **the database only**, one subfolder per kind
+  (Product Master, Formulation Data Base, Daily Formulation Report, Extrusion Schedule, Converting Schedule;
+  `db/schema.py` says which file goes where).
+- `DOCS_DIR` = `General\Claude MD, PY Pipeline File\Engineering Pipeline\Production Formulation Automation`: Claude's
+  workspace, *"where you will put all the MD, PY etc etc that is not data base related file"*: the handoff, `.md`, `.py`,
+  code snapshots.
 **Before changing anything, read its Standing instructions, §7.13–§7.16 and §10.**
 
 Moved here from a Cowork (claude.ai) session on 28 Sep 2026; handoff Rev 1.4 describes the move.
@@ -24,10 +32,11 @@ On every run, before building or updating any file:
 
 How the code enforces it:
 - Every input goes through `config.record_read()`, which writes it to `work/reads.json`.
-- `publish.py` is the **only** way anything reaches `PUBLISH_DIR`. It refuses to replace a file unless that file's
-  content is either what this build read or what we last published (`data/published_manifest.json`).
+- `publish.py` is the **only** way anything reaches `PUBLISH_DIR` or `DOCS_DIR`. It routes each file (database
+  workbooks to their folder, the rest to the workspace) and refuses to replace a file unless that file's content is
+  either what this build read or what we last published (`data/published_manifest.json`).
 - There is no override. Never copy into `PUBLISH_DIR` by hand or edit files there directly. The one exception is
-  the handoff `.md`, which you edit in place.
+  the handoff `.md`, which you edit in place in `DOCS_DIR`.
 
 ## Hardcoded rules
 
@@ -66,7 +75,7 @@ Change these only with James's explicit say-so, and log the change in the handof
 | Path | What |
 |---|---|
 | `config.py` | Paths (env var → `local_settings.json` → default in repo); `record_read`, `content_hash` |
-| `publish.py` | out/ → PUBLISH_DIR with the hard-rule guard and verify-after-copy |
+| `publish.py` | out/ → PUBLISH_DIR/<folder> (database) or DOCS_DIR (workspace), with the hard-rule guard and verify-after-copy |
 | `daily/` | Packet JSON → EXT / CNV / FRM workbooks (`build_xlsx.py`, `checks.py`) and Product Master merge (`build_master.py`) |
 | `daily/manual/` | Hand-found issues per day (`manual_issues_<date>.py`) |
 | `daily/cfg/` | Read Me notes per day (`cfg_<date>.json`) |
