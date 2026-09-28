@@ -1,0 +1,1155 @@
+# HANDOFF — Production Formulation Automation
+
+**Status: Rev 1.4. The code has moved to a Claude Code repo on James's PC (§7.17); this document stays the spec. Two daily packets processed (23 and 24 Sep); Tech's formulation calc workbooks read into `Formulation Master.xlsx` (§7.12); target file set and disconnects reviewed (§7.13); auger preference rules drafted for James to confirm (§7.14); dosing type per line confirmed by James (§7.16: Lines 7, 12, 13, 16 weigh; the rest are auger lines with a 0–100 speed setting). The EXT scan reader is built and tested (`ext_scan_reader.py`, §7.5–§7.7); the formulation master and FRM renderer are not started.** The daily packet has been read end to end
+(§2–§5). The proposed pipeline is in §7. §6 lists what the paper shows but I can't confirm yet;
+James needs to answer §10 before anything is built. **The input stays a scan of the printed
+report (§7.5):** the AS400 can't produce the report as text (James, 23 Sep 2026).
+
+Built for Inteplast Group Profile Plant, WPJK (James Kuo, Technical Process Engineer).
+**Established 23 September 2026** in `Claude MD, PY Pipeline File\Engineering Pipeline\Production Formulation Automation\`.
+
+**Source read for this revision:** James's scan `doc05228320260923140823.pdf` (39 pages, 23 Sep 2026):
+the production packet issued for that day. It contains three documents:
+
+| # | Document | Scan pages | Made by | Format |
+|---|---|---|---|---|
+| **EXT** | *PP Profile Production Instruction — Extrusion* (program `BPN9PFR`, report `WPPPOPRC`) | 1–16 | System report, Run Date 9/23/26 13:15:36 | Fixed-width system print, one section per line |
+| **CNV** | *PP Profile Production Instructions — <converting line>* | 17–26 | Planning, Excel, "Issue Date 9/23/2026" | Spreadsheet print, one sheet per converting line |
+| **FRM** | *Line N (SExx) Formulations* | 27–39 | **Tech. Department**, dated 9/23/26 | Word/Excel table, one page per extrusion line |
+
+---
+
+## Standing instructions
+
+- **HARD RULE — VERIFY THE SOURCES BEFORE MAKING ANYTHING (James, 25 Sep 2026: *"there need to be hard rule
+  set that you must check the data before making anything. As change may have occur by engineer."*).**
+  Every run, before building or updating any file:
+  1. Re-read every source from where it lives now (calc workbooks, formula books, calibration records, the day's
+     packet, the current masters). Never build from a cached or earlier copy.
+  2. Compare them with the masters and the Change Log.
+  3. Any difference with no Change Log entry = **unlogged change**: stop, list it for James/Tech, overwrite nothing.
+  4. Only after James/Tech confirms: log it (date, who, why, old → new), then build.
+  5. Every output's Read Me lists the source files with their modified time and the pre-flight result.
+  Never skip this because "nothing changed yesterday". Engineers edit the calcs and books directly.
+- **Write findings here while you work on them, not at the end.** This document is the running state.
+- **Verify state. Do not trust these notes.** A scan is a snapshot of one day. The formulation
+  master (§6) has to come from Tech's own files, not be rebuilt from scans.
+- **The formulation decides what goes into the extruder. Never auto-issue a formula the pipeline
+  guessed.** Anything not matched exactly goes to an engineer (§7.4). Output is a draft until Tech signs it.
+- **Read columns by name, never by position** (house rule, `Claude MD, PY Pipeline File\README.md`).
+- **Re-stage the live file immediately before every build, and verify every device write by content.** Stage it back
+  and compare cell values (`.xlsx`) or bytes (`.md`, `.py`). SharePoint adds metadata parts to `.xlsx`, so the file
+  hash changes on upload. Update the checksum manifest (§11) in the same pass.
+- **Dosing type decides every formulation check (James, 26 Sep 2026; §7.16).** Lines 7, 12, 13, 16 weigh
+  (Set = weight %, adds to 100 per extruder, `Auto` = balance). All other lines are auger lines: Set is motor speed
+  0–100 with no RPM feedback, it never adds to 100, and weight % exists only through the calibration slope.
+  Hardcoded in `load.py` and `auger_rules.py` (`DOSING`); change both together, only with James's say-so.
+- **Hoppers: read the function, not the number.** Hopper numbering differs by line (§7.14). The slope follows the
+  material and the hopper together; never carry a slope to another material or another hopper.
+- **The code lives in the `formulation-pipeline` git repo on James's PC (§7.17).** That repo is the master for code.
+  The copies under `claude/formulation/` in the claude.ai Project are a snapshot from 28 Sep 2026. Change code in
+  the repo, not in Cowork.
+- **Publishing:**
+  - From Claude Code, outputs reach this folder only through `publish.py`. It refuses to replace a file whose content
+    is neither what the build read nor what the pipeline last published.
+  - From Cowork, use `SendUserFile` → `device_commit_files`. Never base64-upload a workbook (Void Form §11/§16,
+    MR §8).
+  - A file Cowork publishes is unknown to the repo's manifest, so `publish.py` will refuse to overwrite it until
+    someone checks it. That is on purpose.
+- **This document stays in this SharePoint folder and is edited in place** by Claude Code and Cowork alike. After a
+  Cowork session changes it, mirror it to the Claude Project `Engineering Pipeline`
+  (`claude/HANDOFF - Production Formulation Automation.md`).
+
+---
+
+## 1. What the three documents are and how they connect
+
+```
+             Order entry / scheduling system
+                          |
+                          v
+  EXT  Extrusion Production Instruction  (system, per line SE11…SE61)
+       order · product code · material spec · thickness · GSM · qty · special instructions
+          |                                   |
+          | order # per line                  | semi-finished pallets → converting
+          v                                   v
+  FRM  Line N Formulations (Tech)       CNV  Converting Production Instructions (Planning)
+       order # → formula code →              order # · product · "Extrusion Status  X OF Y"
+       material + setting per hopper/feeder   · die · plate · ink · pack · req. date
+```
+
+- **The order number is the join key across all three.** EXT prints `Mfg# / Ord#` as `H69A237 - 3`.
+  FRM and CNV write it as `H69A237-3`. Normalise to `<Mfg#>-<Ord#>`.
+- **Line names.** FRM uses both a line number and a line code. The mapping, from the FRM page titles:
+
+| FRM line | Code | Feeder layout on the FRM page |
+|---|---|---|
+| Line 1 | SE11 | Hopper 1–5 (Material · Set), header `AC = 1` |
+| Line 2 | SE12 | Hopper 1–5, `AC = 90` |
+| Line 3 | SE13 | Hopper 1–5, `AC = 90` |
+| Line 4 | SE21 | Hopper 1–5, no AC value |
+| Line 5 | SE22 | Hopper 1–5, no AC value |
+| Line 6 | SE23 | Hopper 1–5, `AC = 1` |
+| Line 7 | SE24 | Extruder A V1–V5, B V1–V4, C V1–V4 |
+| Line 8 | SE31 | Extruder A V1–V5, B V1–V4, C V1–V4 |
+| Line 9 | SE32 | Extruder A V1–V5, B V1–V4, C V1–V4 |
+| Line 10 | SE25 | Hopper 1–5, `AC = 1` |
+| Line 12 | SE42 | V1–V9 |
+| Line 13 | SE43 | V1–V9 |
+| Line 16 | SE61 | Extruder A 1–6, B 1, C 1–6, D 1 (co-ex; some feeders set to `Auto`) |
+
+Lines 11, 14 and 15 are not in this packet (not scheduled that day, or they don't exist; §10 Q6).
+
+---
+
+## 2. EXT: Extrusion Production Instruction
+
+One section per extrusion line, `LINE NO: SExx Company: WP`, then a line total (PCs, LBs). The
+report ends `Final Total: ** END OF REPORT **`.
+
+**Columns:** `T` · `Mfg# / Ord#` · `Prod Code` · `Die` · `Actual Order Size (Width, Length)` ·
+`Mat A Sp. Req.` · `Color` · `Thk` · `GSM` · `Cut Dimensions (Width, Length)` · `Total Sheets` ·
+`pack Code` · `# Plt` · `PCs./Stack` · `Stk./Plt.` · `Weight (LBs)` · `In-str Date` · `Web Width`,
+then a free-text `Special Instructions:` block.
+
+**The `Mat A Sp. Req. / Color` field carries what the formula depends on.** Example:
+`PPP P R1R1R1 WB WB WB 3.0 602`
+
+| Part | Example | Meaning (from the data; confirm, §10 Q2) |
+|---|---|---|
+| Material | `PPP` / `BBB` | Resin family per layer (BBB only on SE61) |
+| Grade | `P` / `A` | Two grades; **`A` orders get `FUA…` formulas** (§6.2) |
+| Spec per layer | `R1R1R1` · `R4R4R4` · `R2R2R2` · `S1S1S1` · `RDRDRD` · `RMR6R6` | **`R4` orders get reclaim-only `RU…` formulas** |
+| Color per layer | `WB WB WB` · `KS KS KS` · `BL` · `WM` · `WB GT WB` · `EB KS EB` | Color code; becomes the formula's color suffix |
+| Thk | `2.0`–`13.0` | mm |
+| GSM | `504`–`3,014` | Target basis weight |
+
+**Special instructions matter to the formulation:** `VOIDFORM, PLEASE WATCH WEIGHT (RANGE IS 582-600
+GSM)`, `CORN BOX`, `RUN WITH RPA40WB3051` / `RUN WITH NEXT` / `RUN WITH ABOVE`, `ULTRA SMOOTH`,
+`GENESIS, TARGET THICKNESS 10 (RANGE IS 9.50-10.50)`, `Bradford, treat both sides minimum 42 dynes`,
+`Rolls. Rolled material…`, `DO NOT RUN`. They also carry the pallet progress note `NNN PLTS DONE`.
+
+**Scan observations:**
+- Report page numbers run 1–17. **Page 11 is missing from the scan** (between SE31 p.12–13 and SE25
+  p.10). It is probably a second SE25 page.
+- The scan is out of order: SE25 (report p.10) comes after SE32 (p.14).
+- Handwriting on the print: `591,328#` on SE25, `1044` beside H64A244, and die `PC405` written over
+  RP26410 on SE42. **The printout gets marked up by hand after it runs.**
+
+---
+
+## 3. CNV: Converting Production Instructions
+
+One sheet per converting line, 10 scan pages:
+
+| Scan p. | Converting line |
+|---|---|
+| 17–18 | SD31 Bobst die cutter (2 pp.) |
+| 19 | SD11/SD12 Rotary / printing |
+| 20–21 | SD22 Baysek (Bobst die cutter form) (2 pp.) |
+| 22–23 | SD41/SD42 Guillotine (2 pp.) |
+| 24–25 | SD51 Slitter (2 pp.) |
+| 26 | SC31 Folder gluer |
+
+**Columns:** `Order #` · `Product Code` · `Extrusion Status` · `Semi pc/plt` · `Semi-Size` · `Color` ·
+`Apl.` · `MM` · `Flute` · `Die #` · `Die Description` · `Die Status` · `Plate Status` · `Ink Color` ·
+`Total Sheets` · `Pack Code` · `# of Plts` · `Pc./Plt.` · `Req. Date`. The slitter adds `Semi Start`.
+Standing notes are typed between rows: weight targets such as `Target wt is 0.2891. Acceptable range
+is 0.2746 - 0.3035`, pallet rules, VoidForm pallet-ticket rules.
+
+**`Extrusion Status` = `X OF Y` extruded pallets, and someone types it by hand.** It drifts from EXT:
+
+| Order | EXT (same day) | CNV (same day) |
+|---|---|---|
+| H63A200-1 | `343 PLTS DONE` | `368 OF 374` |
+| H64A244-1 | `822 PLTS DONE` (1044 handwritten) | `823 OF 1044` |
+
+CNV is **not an input to the formulation**. It matters here because it is the second consumer of the
+same order list, and its `Extrusion Status` is a second automation candidate (§8, Phase 4).
+
+---
+
+## 4. FRM: Line Formulations (what we automate)
+
+One page per extrusion line, title `Line N (SExx) Formulations`, date top right, footer
+`Tech. Department` + `Effective Date: 06/06/00` (L1, L2, L3), `5/30/00` (L4, L5, L6, L10) or `6/15/00`
+(L7, L8, L9, L12, L13, L16). Those are form revision dates.
+
+**One row group per formula.** `Order #` (one or several orders sharing a formula) · `Formula Code` ·
+per feeder `Material` + `Set` · `Note`. Standing footers: *"CaCO3 means calcium carbonate"* and, on
+L1 and L4, *"For KS orders, increase Hopper N setting if the board looks too gray, because the PP Mix
+Reclaim from the boxes/silo 8 might be too much WB (or others) colored."*
+
+**An order can carry more than one formula**, a primary and one or more alternates:
+
+| Note on the row | Meaning | Example |
+|---|---|---|
+| *Use this formula in case PP WB Reclaim is run out* | Backup formula with no reclaim | H68A007-1: FU0042WB3 main, FU0022WB3 backup |
+| *For VOIDFORM order only* | VoidForm-specific formula | H66A116-1: FU0011WB5 |
+| *For sign blank orders only* / *New formulation for sign blank* / *SIGN BLANK* | Application variant | L3 FUA152WB4 at 60/33/45/16 vs 48/25/48/15 |
+| *CORN BOX FORMULA* | Application variant | RP26731-2 on L6 |
+| *For roll material only. Check weight* | Rolled-material variant | H68A111-4/-5 on L10 |
+| *Match color and opacity with QC sample* | Colour check | H69A206-1 (BL), H69A066 (WM) |
+| *WB : EA = 9 : 1, WB – W26038A, GT – D26002M* | Premix recipe | H68A127-1 (`WB GT WB`) |
+
+**Materials seen** (a substitute in brackets):
+
+| Material on FRM | Role |
+|---|---|
+| PP Virgin-silo 3 (6502A / F6502A), PP Virgin-silo 4 (6502A / F6502A), PP Virgin (F6502A) | Base resin, virgin |
+| PP WB Reclaim, PP Mix Reclaim, White Reclaim | In-house reclaim |
+| F1203K, F1102K, Q1203K | Resin grades |
+| HiTalc ZS (or N40109A) | Talc filler |
+| CaCO3 – Heritage HM-10MAX / HM-10HP | Calcium carbonate filler |
+| WB-W26038A · WM-W26329M · BL-B26003A (or NPC-B60387) · OG-D26074A · WB GT Premix | Colour masterbatch |
+| KS-MDI PE-500 (or Spartech B60009 / NPC PE90000F / PolyOne LD-250) | KS colour / PE carrier |
+| Exxon Vistamaxx 6102FL | Elastomer modifier |
+| FOAM – Bergen XO-256 | Foaming agent |
+| PP Yungsox 5050S | Skin layer resin (L16 Extruders B, D) |
+
+**What `Set` means depends on the line's dosing (James, 26 Sep 2026; §7.16).** On the weight lines (7, 12, 13, 16)
+it is the weight % per extruder. On every other line it is the auger motor speed, 0–100, with no RPM feedback:
+g/min = calibration slope × setting and % = g/min ÷ total (Tech's calc workbooks, §7.12). That is why Lines 1–6,
+8, 9 and 10 never add to 100.
+(Original note:) **`Set` is a feeder setting, not always a percentage.** L7, L12 and L13 add to 100 per extruder
+(2.7 + 9 + 73.3 + 15; 5 + 78 + 15 + 2). L1–L6 and L10 do not (L1 FU0042WB3 = 41 + 10 + 31 + 30 + 23
+= 135). **The same formula code has different settings on different lines**: FUA152WB4 is
+50/27/14/71 on L2 but 99/18/54/43 on L6. So a setting belongs to *(line, formula code, variant)*, not
+to the formula code alone (§10 Q3).
+
+---
+
+## 5. Cross-check: EXT orders vs FRM orders, 23 Sep 2026
+
+Every order on EXT has a formula row on FRM for the same line. **13 lines, 82 order lines, 0 missing.**
+That is the check the pipeline has to run every day.
+
+| Line | EXT orders | On FRM |
+|---|---|---|
+| SE11 | H68A007-1, H69A039-1, H68A088-1, H63A200-1, RP26811-1, H69A180-1/-2, H69A206-1 | 8/8 |
+| SE12 | H69A099-1, RP26821-1, RP26511-1 | 3/3 |
+| SE13 | H69A237-1, RP26618-3/-2, RP26506-5, RP25522-4, H69A158-1, H69A105-3, RP26717-1, RP26327-1, RP24C18-4 | 10/10 |
+| SE21 | H69A090-2, H69A238-1…-5, H69A206-2, H69A139-1, RP26810-1, RP26424-2, RP26527-1, RP25818-2, RP26512-1 | 13/13 |
+| SE22 | RP26311-1, H68A053-1 | 2/2 |
+| SE23 | H69A166-1, H68A091-1, RP26821-2, RP26731-2, RP26902-1, RP26202-1 | 6/6 |
+| SE24 | H69A237-3/-2, RP26901-1, RP26803-2, RP26514-1, RP25710-1 (*DO NOT RUN*) | 6/6 |
+| SE31 | H69A105-4, H69A197-1, H69A100-13, H69A066-1/-2/-3/-5, H69A062-4, H69A225-1, RP26413-1, RP26120-1 | 11/11 |
+| SE32 | RP26731-1, RP26525-3 | 2/2 |
+| SE25 | H68A111-4/-5, H69A097-1, H68A127-1, H66A116-1, RP26717-2, H64A244-1 (+ missing p.11) | 7/7 seen |
+| SE42 | H68A080-1, RP26410-1 | 2/2 |
+| SE43 | RP26915-1, RP26415-1, RP26218-1, RP26526-2 | 4/4 |
+| SE61 | RP26910-1, H68A020-1, H64A178-1, H64A289-1…-4, RP26826-1 | 8/8 |
+
+Read by eye from the scan. Re-verify with the §7.5 reader and its checksums once it is built.
+
+---
+
+## 6. The formulation rule: what the data suggests
+
+### 6.1 Formula code structure (my reading; not confirmed)
+
+`F U A 152 WB 4`
+
+| Pos | Values seen | Seems to mean | Evidence |
+|---|---|---|---|
+| 1–2 | `FU` · `FS` · `RU` · `BF` | Formula family: standard / ultra-smooth (`S1S1S1`) / reclaim-only (`R4R4R4`) / BBB co-ex (SE61) | RP26514 `S1S1S1` → FSA200WB4 · RP25710 `R4` → RU0000WB4 · RP26717-2 `R4` → RU0001WB4 · SE61 → BF0000EBA |
+| 3 | `A` or `0` | Grade A, or not | `PPP A` → FUA…; `PPP P` → FU0… (exception: *RUN WITH*, §6.3) |
+| 4–6 | `000`–`200` | Formula number | |
+| 7–8 | `WB` `KS` `BL` `WM` `EB` `GT…` | Colour | matches EXT colour; H68A127 `WB GT WB` → FU001**GTW**4 breaks the pattern |
+| last | `2` `3` `4` `5` `A` `D` | Thickness: digit = mm, letter = 10 + n (`A` = 10 mm, `D` = 13 mm) | RP26311 10.0 → FUA060WB**A** · H68A053 13.0 → FU0001WB**D**. Same letter rule as the product code (Void Form handoff, `parse_target_thickness_mm`) |
+
+### 6.2 What decides the formula for an order
+
+From the 82 order lines, the formula follows from **line + grade + spec + colour + thickness +
+application** (VoidForm, sign blank, corn box, rolls). **The formula number itself (e.g. 152 vs
+151 vs 041) can't be derived from the order.** It is Tech's choice and has to come from a master
+table: product code → formula, or a Tech rule (§10 Q3).
+
+### 6.3 Exceptions the pipeline must handle
+
+- **RUN WITH.** H69A237-3 and -2 are `PPP P` but get FUA152WB4, the formula of the `PPP A` order
+  they run with (`RUN WITH RPA40WB3051`). An order that runs with another inherits that order's formula.
+- **One formula, several orders.** Orders that share a formula are grouped into one row block.
+- **Alternates.** A backup formula for when reclaim runs out, plus VoidForm, sign-blank and corn-box variants (§4).
+- **DO NOT RUN** orders still get a formula row (RP25710-1).
+- **Substitute materials** (`HiTalc ZS (or N40109A)`) are part of the material text, not a separate row.
+
+---
+
+## 7. Proposed pipeline (design; not built)
+
+### 7.1 Inputs
+
+| Input | Best source | Fallback |
+|---|---|---|
+| EXT order list | **Scan of the printed `WPPPOPRC`** (§7.5). No text export: the AS400 report is tied to the printer (James, 23 Sep 2026) | A text/spool export, if IT ever fixes the AS400 (future) |
+| Formulation master | Tech's existing formula files per line (§10 Q3/Q4) | Built up from past FRM pages, reviewed by Tech |
+| Yesterday's FRM | Last issued output | — |
+
+### 7.2 Master tables (`Formulation Master.xlsx`)
+
+| Sheet | Key | Columns |
+|---|---|---|
+| `Lines` | Line code | Line no · feeder layout (hopper 1–5 / A–C V1–V5 / V1–V9 / A–D co-ex) · AC value · form effective date |
+| `Formulas` | Line + Formula Code + Variant | per-feeder Material and Set · Note · Status (active / retired) · Last approved by/date |
+| `Product → Formula` | Product code (or grade + spec + colour + thickness) + Line | Primary formula · alternates + when to use |
+| `Materials` | Material text | Resin/additive · approved substitutes |
+| `Standing Notes` | Line | Footer notes (CaCO3, KS gray) |
+
+### 7.3 Daily run
+
+1. **Parse EXT** into rows: line, order, product code, grade, spec, colour, thickness, GSM,
+   special instructions, `RUN WITH` target, `PLTS DONE`.
+2. **Resolve the formula** for each order: `RUN WITH` inherits from its partner; otherwise
+   look up product → formula for that line; then add the alternates.
+3. **Group** orders that share a formula and variant into one row block, in EXT order.
+4. **Render FRM** in the current layout, one sheet/page per line with the line's feeder layout,
+   date, notes, footers. Output `Formulations YYYY-MM-DD.xlsx` + PDF.
+5. **Exceptions sheet** (§7.4), for Tech to resolve before the formulation goes out.
+6. **Diff against yesterday**: new orders, dropped orders, changed formulas or settings.
+
+### 7.4 Exceptions (nothing guessed goes out)
+
+- Product not in the master, or no formula for that line → **engineer must assign**.
+- A formula number that doesn't match what the code implies (grade/colour/thickness mismatch).
+- `RUN WITH` partner not found on the same line.
+- New special instruction text the rules don't recognise.
+- A feeder layout that doesn't match the line (e.g. a V-layout formula on a hopper line).
+- A feeder-% line (L7/L12/L13) where an extruder doesn't total 100.
+- An EXT line whose read totals don't match its printed `LINE NO. SExx Total` (§7.5).
+
+### 7.5 Reading the EXT scan (no text export)
+
+**James, 23 Sep 2026:** *"our AS400 has a lot of problem and cant really make report as text. Its tie
+into the printer."* So the input is the scanned printout, now and for the foreseeable future.
+
+**Plain OCR is not good enough on its own. Tested on scan page 1 (SE11) with Tesseract 5.3.4 at 300 dpi:**
+
+| Printed | Tesseract read |
+|---|---|
+| `H68A007 - 1` | `H68A007 - I` |
+| `31 5/8` | `31 578` |
+| `R1R1R1` | `RIRIRI` |
+| `RPP30KS1143` | `RPPSOKSII43` |
+| `R4R4R4` | `RARARS` |
+| `H63A200` / `27,465` / `03-Oct` | lost entirely |
+
+**James, 23 Sep 2026:** *"we may be able to improve with some logic… Extrusion line is always two
+english alphabet follow by two number. The Spec requirement for R is alphabet follow by number."*
+And: *"make sure these are hardcode so we never forget these instruction."* So OCR stays, and
+logic makes it reliable. What was built is in §7.6 (the hardcoded rules) and §7.7 (the reader and
+its test results). The checks below still apply on top:
+
+1. **Checksums from the printout itself.** Each line ends `LINE NO. SExx Total: N PCs  N LBs`.
+   - **PCs = the sum of every printed `Total Sheets` value, counting each cut-dimension row.** SE11:
+     12,810×2 + 34,675×2 + 18,460×2 + 1,080×2 + 4,000 + 1,750 + 700 + 1,750×4 = **147,500** ✓
+   - **LBs = the sum of `Weight (LBs)`.** SE11: 27,465 + 67,270 + 22,558 + 3,041 + 13,160 + 6,913 +
+     3,171 + 2,520 = **146,098** ✓
+
+   A line whose rows don't add up to its printed totals has been misread or has a missing row.
+   Re-read it; never pass it on.
+2. **Field patterns.** Order `[HR][A-Z0-9]{6} - \d+` (e.g. `H68A007`, `RP24C18`); product code
+   `[DRSCB][A-Z]{2}[0-9A-Z]{2}[A-Z]{2}\d+`; the material field `(PPP|BBB) [PA] (R\d|S\d|RD|RM|R6){3} …`;
+   Thk in the product code (chars 4–5) must equal the `Thk` column.
+3. **Report page numbers** 1…N with none missing (the 23 Sep scan was missing p.11).
+4. **Line list** matches the lines on yesterday's FRM, give or take lines starting or stopping.
+5. **Handwriting on the print** (die changes, pallet counts) is reported as a note, never read as data.
+
+**What the formulation actually needs from EXT is small:** line, order #, product code, material
+field, Thk, GSM, special instructions. Sizes, pallets and weights are read only for the checksum.
+
+**Scanning practice that helps:** scan the report in page order, one side, at 300 dpi or more, and
+before anyone writes on it.
+
+### 7.6 HARDCODED READING RULES (James, 23 Sep 2026 — never drop these)
+
+These are written into the top of `ext_scan_reader.py` as constants, in a block marked *DO NOT REMOVE
+OR LOOSEN WITHOUT JAMES KUO'S SAY-SO*. **This table and that block must always match.** Change both
+together, and log the change in the revision history.
+
+| # | Rule | Source | How the reader uses it |
+|---|---|---|---|
+| **R1** | **Extrusion line code is always 2 letters + 2 digits** (`SE11`, `SE61`) | **James** | Positions 1–2 can only be letters and 3–4 only digits. Three readings must agree: the header word, the `LINE NO. xxxx Total` word, and the glyph read |
+| R1b | Known lines: SE11 SE12 SE13 SE21 SE22 SE23 SE24 SE25 SE31 SE32 SE42 SE43 SE61 | FRM 23 Sep | A code that fits R1 but isn't listed is flagged as a possible new line |
+| **R2** | **Material spec is a letter + a number**, three layers (`R1R1R1`, `R4R4R4`, `S1S1S1`) | **James** (rule and exception handling **confirmed 24 Sep 2026**) | Odd positions can only be letters, even positions only digits. **Exceptions:** `RD`, `RM` (seen on SE61 only: `RDRDRD`, `RMR6R6`) are accepted from that list and **always flagged** for confirmation |
+| R3 | Mfg# is 7 characters, shaped `LDDLDDD` (H68A007), `LLDDDDD` (RP26811) or `LLDDLDD` (RP24C18); Ord# is digits | Data | Each position read as letter or digit only |
+| R4 | Product code = 3 letters + thickness (2 digits, or letter + 0) + 2-letter colour + digits | Data | Same |
+| R5 | Die = letter, letter, digit, letter-or-digit, digit (`PB204`, `PA3B5`) | Data | Same |
+| R6 | Material ∈ {PPP, BBB}; grade ∈ {P, A} | Data | Read as a whole word from the list |
+| R7 | Colour ∈ {WB, KS, BL, WM, GT, EB, NS} | Data | Read as a whole two-letter word from the list, never letter by letter |
+| R8 | Thickness in the product code = the Thk column (`30` = 3.0, `A0` = 10, `D0` = 13) | Data + Void Form rule | Mismatch is flagged |
+| R9 | Line totals: PCs = Σ Total Sheets, LBs = Σ Weight | Printout | Checksum (§7.5 check 1). Not yet in the glyph reader, see §7.7 |
+| R10 | Fixed character columns of WPPPOPRC (span A: Mfg# 0–6, `-` 8, Ord# ends 12, Prod from 16, Die 30–34; span B: material 0–2, grade 4, spec 6–11, colours 13/16/19, Thk ends 26, GSM ends 32) | Measured on 82 rows | Each field is read from its own columns, so stray marks can't shift it |
+
+Rules marked **James** are his standing instructions. Rules marked *Data* were taken from the
+23 Sep scan; confirm or correct them with James (§10 Q2).
+
+### 7.7 The reader: `ext_scan_reader.py` (built 23 Sep 2026)
+
+**How it reads a page:** Tesseract is used only to find the title, the header row and the line/page
+words. Every data character is read by a glyph classifier built for this printer font:
+
+1. Deskew the scan using the table's ruling lines (the scans lean 0.5–0.8°).
+2. Find each record line from the ink in the Mfg# column. On the 23 Sep scan this found all
+   82 rows on all 16 pages, and never merged or dropped one.
+3. Cut the line into **fixed-pitch character cells** (~15 px at 300 dpi; the report is monospace).
+   The grid is lined up on the centres of the characters, and each stroke goes to the cell holding
+   its centre, so the leg of an `R` isn't cut off into a `P` and touching letters (`BB`) still split.
+4. Classify each cell against a **bank of labelled glyphs from real scans** (`glyph_bank.npz`,
+   3,894 glyphs from the 82 verified rows, nearest neighbour).
+5. Decode each field **under the §7.6 rules**: each position may only be what its rule allows, and
+   colours, materials and line codes are read as whole words from their lists.
+6. **Flag, never guess:** a glyph unlike anything trained (distance > 0.65), a near-tie between two
+   readings, an R2 exception, an R8 mismatch, or line-code readings that disagree.
+
+**Tested honestly: leave-one-page-out.** Each page was read with a bank built only from the *other*
+15 pages, so every page was a page it had never seen:
+
+| Result, 82 rows × 10 fields | Rows |
+|---|---|
+| Every field correct | **69** |
+| Something wrong, **but flagged** for review | 13 |
+| **Something wrong and not flagged (silent)** | **0** |
+
+For comparison, plain Tesseract plus text rules got about half the order numbers right and several
+fields silently wrong (e.g. `RPP40WB1853` → `RPP40WB1653`, die `PA3B5` → `PA6B5`).
+
+**What the 13 flagged rows were:**
+
+- 8 are on SE61, whose `D` and `M` (in `RDRDRD` / `RMR6R6`) appear on no other page.
+- 2 are colour codes that each appear on only one page (`BL`, `GT`).
+- 1 is RP26410, with the handwritten `PC405` over it.
+- 2 had a character too faint to read with confidence (a Thk; an `8` in RP26811).
+
+With the only page holding a character left out of training, that character had never been seen,
+so it was flagged as unfamiliar. In daily use the bank holds all 16
+pages, so these characters are known. A brand-new character still gets flagged the same way.
+
+**Daily-use run (bank from all 16 pages, whole 39-page scan):** the reader skipped the 23 CNV/FRM
+pages by itself and returned 82 rows. **80 were fully correct.** The other 2 were flagged: the faint
+Thk on H69A062-4 and the handwriting over RP26410-1. 0 were silent. 10 rows carry a flag; 8 of those
+are the SE61 R2 exceptions (`RD`/`RM`), which are flagged every time by design. This isn't a
+blind test, since the bank has seen these pages; the leave-one-page-out table above is the honest
+figure.
+
+**False alarms:** 21 of the 69 correct rows also carry a flag (mostly "unfamiliar glyph"). That is
+deliberately cautious. The bank grows with every day Tech confirms, and false alarms should fall.
+
+**Growing the bank:** after Tech checks a day's read (or corrects its flags), add it:
+`python3 ext_scan_reader.py train <scan.pdf> <verified.csv> glyph_bank.npz`.
+
+**Second-day test (24 Sep scan, bank from the 23 Sep scan only):** 80 orders. **76 fully correct;
+4 wrong but flagged** (a GSM, a colour, the RD spec on RP26826-1, and RP26410-1 under the
+handwritten `-PC405`); the handwriting also produced one phantom row, flagged. **0 silent.** Caveat:
+most of the 24 Sep orders are the same printout content as 23 Sep, so this is a new scan of largely
+known text, not a fully new page set. Output: `ext_read_2026-09-24.csv` (project).
+
+**Not done yet:** R9 checksum in the glyph reader (Total Sheets and Weight columns, plus
+continuation cut rows); the special-instructions text is still read by Tesseract (fine for
+`RUN WITH` / `VOIDFORM` keywords, not for numbers); rows under handwriting.
+
+**Files** (this folder and the Claude Project):
+
+| File | What |
+|---|---|
+| `ext_scan_reader.py` | The reader. The hardcoded rules are at the top. `train` / `read` commands |
+| `ext_truth_2026-09-23.csv` | 82 verified rows from the 23 Sep scan: the training labels |
+| `glyph_bank.npz` | Built from the scan + truth file with the `train` command (1 MB; rebuild if missing) |
+| Source scan | `doc05228320260923140823.pdf` (James's upload, 23 Sep 2026). **Save it to `Source\`**: the bank is rebuilt from it |
+
+---
+
+## 7.8 Full transcription of the 23 Sep packet (24 Sep 2026)
+
+James: *"extract and product 3 excel file. lets see if there are any other issue."* Every field of all
+three documents was transcribed from the page images: 82 EXT orders with 130 cut rows, 70 CNV rows on
+10 sheets, and 55 FRM formula rows / 250 feeder settings on 13 pages. Scripts then cross-checked them.
+The EXT key fields match `ext_truth_2026-09-23.csv` exactly.
+
+| Workbook | Sheets |
+|---|---|
+| `EXT Extrusion Schedule 2026-09-23.xlsx` | Orders · Cut Rows · Line Totals (formulas) · Issues · Pages · Read Me |
+| `CNV Converting Schedule 2026-09-23.xlsx` | Orders (status split into X / Y / left, sheets check) · Banner Notes · Issues · Read Me |
+| `FRM Formulation Report 2026-09-23.xlsx` | Formulations (long: one row per feeder) · Order to Formula · Set Sums (formulas) · Pages · Materials · Issues · Read Me |
+
+**Checks that passed:** every printed line total and the Final Total (6,141,058 PCs / 20,802,359 LBs)
+equal the rows. Missing report page 11 held no orders. Every EXT order has a formula on its line, and
+every FRM order is on the EXT schedule. Every EXT weight is within 2% of sheets × size × GSM.
+
+**Issues found** (full list on each workbook's Issues sheet):
+
+- **EXT `# Plt` is capped at 999.** H68A091-1 needs 1,880 pallets and H64A244-1 needs 1,044; both
+  were corrected by hand. Any order over 999 pallets is understated on the printout.
+- **VOIDFORM orders carry two different weight targets.** For all seven with a stated range, the GSM column is about 7%
+  above the "RANGE IS … GSM" in the special instructions (e.g. 631 vs 582–600).
+- **CNV SD22 H64A244-1:**
+  - Total Sheets 1,431,000 ≠ 560 × 2,700.
+  - Semi size 60 4/16 × 36 4/16 ≠ the EXT size of 31 5/8 × 38 1/2.
+- **CNV H65A163-1:** Total Sheets prints "201.6" (it should be 201,600), and status 145 OF 141.
+- **CNV H5BA121-1:** status 53 OF 52.
+- **CNV RP26731-2:** listed twice on SD31, with blank quantities.
+- **FRM Line 8/9:** settings add to 107/102/104/107 and 91/85, while Line 7 (same layout) adds to exactly 100. *Explained 25 Sep (§7.12): on SE31/SE32 Set is an auger setting, not a %.*
+- **FRM `Q1203K` on Line 12:** F1203K everywhere else, so probably a typo.
+- **FRM backup codes:** H69A097-1's backup formula has the same code as its main formula.
+- **FRM codes reused:** the same formula code has different recipes on 8 lines.
+- **FRM spellings:** the virgin resin is written four ways.
+- **EXT `# Plt` meaning:** sometimes the remaining pallets and sometimes the full order. The EXT
+  "PLTS DONE" notes lag the CNV status.
+
+Build scripts and the transcribed JSON: Claude Project `claude/formulation/packet_extract/`.
+
+## 7.9 Product Master (material master), started 24 Sep 2026, simplified in Rev 0.8
+
+James: *"I want to maintain a master data list as well … Product Code as first column. Product Code
+is basically our material master number."* Then (Rev 0.8): *"let product master stay as product
+master. no need to keep history or line. just a column that said when is the last update. the
+product master should have the basic data from extrusion and converting. I will give you
+formation data after."*
+
+The workbook is `Product Master.xlsx`, built by `build_master.py` from the 23 Sep packet. It has two sheets:
+- **Product Master:** one row per Product Code (after 24 Sep: 96 codes; 65 with EXT data, 51 with CNV data).
+- **Read Me:** notes and a live summary.
+
+| Column group | Columns |
+|---|---|
+| Key | **Product Code** (col A, never duplicated) |
+| Extrusion (green) | Material, Grade, Spec, Colours (3 layers), Thk, GSM, GSM Range (VOIDFORM), Width, Length, Cut Size, EXT Pack Code, PCs/Stack, Stk/Plt, Handling Tags |
+| Converting (brown) | CNV Die #, Die Description, Semi Size, Semi pc/plt, Colour, Apl., MM, Flute, Plate, Ink, CNV Pack Code, Pc/Plt, Piece Wt Target / Min / Max, Marking |
+| Formulation (olive, Rev 1.0) | Formula Code(s) (daily FRM primary + calc codes within a year of the last run), Formula Last Run; also End Use (Packaging / Graphic Arts, from the calcs) in the extrusion group |
+| Control | Source (Packet / Formulation calc), Check (orange = product disagrees with itself or with its code; 12 rows on 23 Sep), Status (Draft / Verified / Needs Review / Obsolete), **Last Updated** (date of the packet that last added or changed a value on the row) |
+
+
+**Rules:**
+- The sheet holds no order history and no line assignments. Extrusion line, die and formula by
+  line, order history, and first/last seen were removed in Rev 0.8.
+- 1-up/2-up cutting and web width are per-order choices, so they are not kept.
+- If a product shows two values, the cell lists both (`A | B`) and Check names the field.
+- **Daily merge (Rev 0.9):** `build_master.py` reads the prior master (`PRIOR_MASTER`) and merges one
+  packet into it. A new code is added as Draft. A new value for an existing code is added beside the
+  old one (`A | B`), Check names it with the date, and Last Updated changes; a Verified row that
+  changes goes back to Needs Review. A code missing from a packet is never deleted.
+- 24 Sep merge: 96 codes (5 new: RPP40WB1689, RPA40KS824, RPP40WB1186 from EXT; DPP40KS409,
+  DPP40WB1552 from the new SD21 Flat-Bed sheet). No existing product had a changed value.
+- **Formulation data:** James will provide it separately. Columns for it will be added after that.
+
+The 7-sheet version (Rev 0.7) is kept locally as `build_master_v1_7sheet.py` for reference only.
+
+## 7.10 Daily run, as done for 24 Sep 2026
+
+James sent the 24 Sep packet (`doc05237220260924134843.pdf`, 41 pages) with *"todays data"* and
+*"update your 4 excel sheet"*. The run:
+
+1. Render pages at 300 dpi, rotate to landscape, cut each page into quarter tiles.
+2. Find the documents from the page titles: EXT p1–16, CNV p17–28, FRM p29–41 (page ranges change day to day).
+3. Transcribe to JSON with yesterday's files as the schema (8 parallel readers, each told to take every
+   value from today's image). Spot-checked by eye: FRM Line 4, CNV SD21.
+4. Run `ext_scan_reader.py read` on the scan as an independent check of the EXT key fields (§7.7).
+5. `PKT_OUT=<json dir>/ PKT_DATE=YYYY-MM-DD PKT_SRC=<scan> PKT_CFG=cfg_<date>.json python3 build_xlsx.py`
+   → EXT / CNV / FRM workbooks. The day's hand-found issues go in `manual_issues.py` (saved per day
+   as `manual_issues_<date>.py`); the day's Read Me notes go in `cfg_<date>.json`.
+6. `PRIOR_MASTER=<Product Master.xlsx> python3 build_master.py` → merge into the Product Master.
+7. Recalculate every workbook (0 errors required).
+
+**24 Sep results:**
+- 80 EXT orders, 69 CNV rows, 51 FRM formula rows.
+- Every printed line total matches its rows. SE25 again has no total, because report page 11 is
+  missing again. The Final Total matches all rows on LBs (20,752,083). PCs are 160,080 short, which is
+  exactly the two H64A244-1 cut rows (2 × 80,040) on the missing page. **Ask for report page 11 to be
+  scanned:** it has now been missing two days running.
+- Every EXT order has a formula on its line, and every FRM order is on EXT.
+- **No formula setting changed from 23 Sep.** Only the order lists changed. New orders: H69A242-3
+  (L2), H69A255-1 (L4), RP26923-1 (L10). Gone: H68A007-1, H69A099-1, H69A105-4, H69A197-1, RP26910-1.
+- **New converting sheet SD21 Flat-Bed** (2 orders).
+- **Slitter page 1 was scanned twice** (p25 = p26). `load.py` now drops an identical second scan.
+- **New issue:** RP26618-3 board use 202 OF 200. The issues carried over from 23 Sep are still open
+  (999-pallet cap, VOIDFORM GSM ~7% over the stated range, Q1203K, Line 8/9 sums, H64A244-1
+  converting sheets/size, H65A163-1 201.6, RP26731-2 listed twice).
+- Pen dots in the left margin now sit beside the new orders only (H69A242-3, H69A255-1). They may
+  mark new orders; ask James.
+
+## 7.11 Formulation records on SharePoint (surveyed 24–25 Sep 2026)
+
+James: *"start going through the formulation record"* — site ProfileProcessManagement-TechnicalFormulation,
+folders `Daily Formulation` and `Profile Formulation - 2023`. Inventory of all 581 files:
+Claude Project `claude/formulation/records/formulation_records_inventory.csv`.
+
+| Folder | What it holds |
+|---|---|
+| `Daily Formulation/Old Formulations` | **Current per-line formula books**: one Word file per line, L01–L16 (`L##-form-1.doc` / `-01.doc`), each listing every formula used on that line (orders, materials, settings, notes) back to ~2009. Edited 30 Jul–3 Sep 2026. |
+| `Daily Formulation/PDF 2026/2026-01 … 2026-07` | 134 daily FRM PDFs, 2 Jan–31 Jul 2026. **Image-only scans** (no text). Nothing after July. |
+| `Daily Formulation/06302026`, `07172026` | Snapshots of the daily line sheets (`L##-form.doc`) plus the formula books. |
+| `Profile Formulation - 2023/FORMUL` | Legacy 1997–2015: auger speed–weight tables (`Formul01–10.xls`), die gaps, calibration, 2012–15 files. 249 folders, most empty. |
+
+- Lines 11 (SE41, last edited Mar 2018), 14 (SE44, May 2015) and 15 (SE51, polystyrene foam with N-butane,
+  Jun 2016) have formula books but look idle (§10 Q6).
+- Only 6 of 16 formula books convert to text through the SharePoint connector (L07, L09, L11, L12, L14, L15);
+  the other 10 fail Graph's conversion. The Technical Formulation library is **not** synced to James's PC
+  (only Converting Team, Process Control and Production Data Control are), so the originals can't be read
+  locally yet. The calc workbooks (§7.12) supersede most of this need.
+
+## 7.12 Tech's formulation calc workbooks → `Formulation Master.xlsx` (25 Sep 2026)
+
+James sent 14 workbooks: *"Here are the formulation calculation which also has our Auger Crew rotation
+calibration"*: `SE11/12/13/21/22/23/24/25/31/32/43/61 Formulation.xls` (+ an older `Copy of SE25`, left
+out: every block in it is also in SE25) and `Production Formula Item-092226.xls`. **No SE42 workbook.**
+
+**Layout:** one sheet per product type (e.g. `3.0 mm WB-P (28)`); each sheet holds calc blocks, one per
+order: order(s), product code(s), formula code, Prod. Period, Thk, GSM, line speed, output lb/hr, grade
+(end use), size, then per hopper `H n (gear ratio, screw)` → material, **calibration slope (g/min per
+setting unit)**, formula setting, g/min, formulation %. SE24/SE43 blocks hold % only; SE61 has
+extruders A–D plus a Total; SE24/SE31 co-ex blocks have A/B/C groups.
+
+**Read:** 5,125 blocks (2015–2026), 28,289 block × feeder rows, 2,083 product codes, 346 line + formula
+codes, 1,264 recipe variants, 519 calibrations. g/min = slope × setting on every block but 4.
+Parser `parse_fcal.py`, builder `build_formulation_master.py` (Claude Project `claude/formulation/calc/`).
+
+**Dates:** the Prod. Period on the block where given, else read from the order number (inferred:
+`RP26811` = 2026-08-11; `H69A…` = Sep 2026; older `H` + letter year, K = 2009 … W = 2021). The two agree
+on all but 29 of ~1,700 blocks.
+
+**`Formulation Master.xlsx` sheets:** Formula Library (line + code + recipe; Current/Earlier) · Current
+Recipes (one row per feeder — what the automation reads) · Auger Calibration (current slope per line,
+hopper, material; earlier slopes) · Calibration History · Product to Formula · FRM 24 Sep vs Calc ·
+Formula Item Log · Issues · Calc History (raw extract).
+
+**Findings:**
+- **The FRM page is copied from these calcs:** 22 of 94 FRM rows on 24 Sep match a calc block exactly
+  (same settings, same code), e.g. SE11 FU0022WB3 50/15/16/45/6 = WB 4.8%, talc 6.0%, 1203K 22.6%,
+  virgin 63.7%, CaCO3 2.9%.
+- **Formula codes disagree between FRM and calc for the same settings (32 rows):** FRM `FUA152WB4` is
+  `FUA012WB4` in the SE13 calc, `FUA062WB4` in SE21/SE23, `FU062WB4` in SE12; `FUA152KS4` ↔ `FUA032KS4`;
+  `FU0021WB4` ↔ `FU0041WB4` (SE23); `FUA151WM4` ↔ `FUA152WB4` (SE31); `RU0000KS3` ↔ `RU0001KS3`;
+  `FU0001WBD` ↔ `FUA001WBD`; `FU001GTW4` ↔ `FU0014WB4`. Which one is the real code? (§10 Q9)
+- **Settings differ (24 primary rows):** e.g. SE21 RU0000KS4 (FRM: H3 Mix Reclaim 99, H4 KS 10; calc: H1
+  Mix Reclaim 65, H4 KS 10); SE32 RP26731-1/RP26525-3 (1203K 16/18 on FRM vs 24/27 in calc); SE23 FU0021WB4
+  (FRM reclaim recipe 45/10/60/20 vs calc 85/12/28/24); SE25 H68A111/RP26923/H69A097/H66A116; SE61.
+- **Two calibration slopes in use for the same hopper + material in the last year (8 cases)**, e.g.
+  SE21 H1 6502A 219.1497 vs 231.7782; SE32 H2 1203K 92.2099 vs 82.3269. Sheets copied from old sheets carry
+  old slopes, so their % is off.
+- 140 blocks use `FU062WB4` (8 characters) and other codes break the pattern (`FX020WB4`, `HU000WB5`).
+- Hopper setups: SE11/SE12 H1 1:36 15x25, H2 1:36 39x39, H3/H4 1:36 69x69, H5 1:36 39x39; SE13 same but
+  H4 1:14; SE21/22/23/25/31/32 H1 1:14 69x69, H2/H3 1:36 69x69, H4 1:100 or 1:70 45–49, H5 1:36.
+- `Production Formula Item` = a log by date/shift of line, order and "Formula Item #" (1–8). Meaning of
+  the item # unknown (§10 Q10).
+
+**Product Master (§7.9) now carries formulation data:** Formula Code(s), Formula Last Run, End Use,
+Source; the 1,990 products found only in the calcs were added with their basic data (Thk, GSM, cut size,
+end use — GSM/size only from blocks naming that product alone). 2,086 products in total.
+
+## 7.13 Target file set and design review (25 Sep 2026)
+
+**Agreed with James (25 Sep):** six files: (1) **Real Formulation Master**: weight % per formula code + lb/hr
+by line (13 active lines: SE11 12 13 21 22 23 24 25 31 32 42 43 61) + a line-deviation flag, with a
+**Change Log tab** (every recipe or slope change: date, who, why, old → new); (2) **Auger Calibration**
+(most recent record); (3) **Formulation Report Record** (what was issued each day, per order and feeder);
+(4) **Daily Formulation Report** (generated, never hand-edited); (5) **Extrusion Production Record**
+(converting kept inside it); (6) **Product Master** (auto-populates; a new product with no formula goes
+to exceptions). Not built yet: James asked for this review of disconnects first.
+
+**Disconnects found (evidence from the 23–24 Sep packets and the 5,125 calc blocks):**
+
+*A. Which source wins*
+1. Three formula sources disagree: calc workbooks, Word formula books, daily FRM. On 24 Sep: 32 FRM rows
+   have the same settings as the calc but a different code; 24 primary rows have different settings. In
+   SE12 H69A242-3, SE23 RP26731-2 and SE25 H68A111 the FRM issues the WB-reclaim recipe while the calc holds
+   the no-reclaim one. Need a rule: FRM as issued = record; Real Formulation Master = target; calc = derived.
+2. Alternate formulas (reclaim run-out, VOIDFORM, sign blank, corn box) are not in the calcs at all (8 of 8
+   on 24 Sep). They exist only on the FRM and in the Word books, 10 of which the SharePoint connector can't read.
+3. The calc workbooks' home folder is unknown (they are not in Daily Formulation or Profile Formulation -
+   2023). The hard rule needs them read where Tech saves them, every run.
+4. 8 of 80 orders on 24 Sep have no calc block (including both SE42 orders; there is no SE42 workbook).
+   50 of the 72 that do have no Prod. Period, so the calc can't say which block is current.
+
+*B. Formula code (the key everything hangs on)*
+5. Same settings, different code (e.g. FUA152WB4 ↔ FUA012WB4 / FUA062WB4 / FU062WB4).
+6. Same code, different recipe by line: FUA152WB4 is consistent (73–74% virgin, 15% 1203K, 8.4–9.2% talc,
+   2.5–2.7% WB), but FU0041WB4 ranges 76–85% virgin with CaCO3 on some lines only. Is a code a recipe or a family?
+7. The code does not describe the product in many blocks: thickness digit ≠ order thickness in 557 of 4,696
+   (e.g. FU0041WB4 on 5 mm); colour ≠ product colour in 300 (WB code on BL, FW, WM, NS products); grade-P
+   products on A formulas in 689 (RUN WITH explains some). Either these are errors or §6.1 is wrong, and
+   then new codes can't be derived by rule.
+8. Malformed codes: FU062WB4 ×140, FX020WB4 ×37, HU000WB5, RO000WB4, FUA102lY4; blocks with no code.
+9. What the formula number (152 / 151 / 041 / 062) means is still unknown, so the system can only reuse codes.
+
+*C. Calibration and the weight math ("real formulation")*
+10. Slopes are per hopper, not per material, for colour and additives: SE11 H1 uses 5.6139 for every colour
+    MB and antistat; every virgin grade (6502A, PC416, Braskem, Basell, Total 4252, HDPE) shares the virgin
+    slope. Different pellets have different bulk density, so their weight % is approximate.
+11. **Calc material names lag the FRM:** the 2026 calcs say `Talc MB-TL460` on SE11 12 13 24 25 31 32 43 61
+    (only SE21 22 23 say `HiTalc ZS`), `CaCO3MB-CA410`, `KS MB-CR401K`. The FRM says `HiTalc ZS (or N40109A)`,
+    `CaCO3 – Heritage HM-10MAX/HP`, `KS-MDI PE-500`. If the material changed, was the auger recalibrated?
+12. Two slopes in use for one hopper + material (8 cases): sheets copied from older sheets.
+13. No calibration date or owner anywhere; "most recent" can only be inferred from use.
+14. **Absolute rates don't reconcile:** auger total g/min is 1.3–3.5× the calc's Output lb/hr on every line
+    (median ≈ 2×). Unit of the slope (g/min vs g/30 s as in the 1997 tables) or the output formula is off.
+    Until solved, lb/hr per material = weight % × line lb/hr, not auger g/min.
+15. **Output lb/hr uses a fixed width per line group:** 1.996 m (78.6") on SE11–13, 2.634 m (103.7") on
+    SE21–SE43, 2.295 m on SE61, whatever the order's web width (0.64–2.74 m on 24 Sep), at the planned line
+    speed. So it is gross die-width throughput. Confirm that is the lb/hr wanted.
+16. Feeder naming: FRM SE31/SE32 shows "A V1–V4" while the calc uses H1–H5 with gear ratios (matched by
+    position on 24 Sep); SE24/SE43 are % only (no calibration); SE61 has `Auto` feeders.
+
+*D. Materials*
+17. 210 material spellings in the calcs vs FRM text; virgin resin in the calc (PC416, Total 4252, PC5050)
+    differs from the FRM text ("PP Virgin-silo 3 (6502A)"). A material master (item no., name, bulk
+    density, slope per hopper) is needed before weight % can be trusted.
+
+*E. Products and orders*
+18. Product Master conflicts between calc and packet (e.g. RPP40KS2136 GSM 651 vs 1003; RPA40WB3142 Thk 4 vs
+    4.3); 48 products coded thickness 33 carry Thk 3.0.
+19. VOIDFORM: EXT GSM is ~7% above the instruction range. Which GSM drives lb/hr and the formula?
+20. Calc blocks covering several products carry one GSM/size; RUN WITH orders take another product's formula.
+21. Order-number dates are inferred (agree with Prod. Period on all but 29 of ~1,700 blocks); confirm.
+
+*F. Records and timing*
+22. Daily FRM PDFs stop at 31 Jul 2026, are image-only and miss 14 weekdays; our records start 23 Sep.
+    Backfill Aug–Sep from scans?
+23. Report page 11 missing two days running.
+24. Formula Item # meaning unknown; Item Log sheet names don't match the dates inside.
+25. Timing: the system only sees the packet after it is printed (~13:30). To draft the FRM it needs the EXT
+    scan before Tech starts.
+
+**Status after the sibling documents were read (Rev 1.2, §7.15):** #13 partly settled (the calibration
+records exist: `Process tech/CALIB`, IWPFM031, the 2024 calibration screen; no current per-hopper table found
+yet). #15 settled as the house convention (throughput is calculated, not measured, and the plant wrote so in
+1998); what is still open is gross die width vs net order width. #17 partly settled (IWPFT062 is the material
+code list; `PC416` = F6502A). #10 and #12 are now hard checks A2/A3 in §7.14. #16: the archive adds that
+hopper numbers don't carry between Lines 8 and 9 either. **Rev 1.3 (§7.16):** #14 has a likely explanation (the augers
+run on demand and the settings only set the ratio; Q20). #16 is settled: Lines 8/9 are auger lines laid out like
+Line 7's weight blender. #10 and #12: the slopes are one shared set per hardware + material, copied to every line.
+
+## 7.14 Auger (hopper) preference rules — DRAFT, 25 Sep 2026 (James to confirm)
+
+**James (25 Sep 2026), verbatim:** *"I think we also need to set some preference with Auger. Take line 6 as
+example. Auger 1 2 and 3 are larger so 1 and 3 are usually the main PP that feed Co poly (6502A) or Homo
+(1203K) or Reclaim while 2 feed our main additive (Talc). 4 Feed our color (W26038A blue white) and 5 feed
+caco3 additive."*
+
+The 2025–26 calc blocks for SE23 agree with that exactly: H1 (1:14, 69×69) virgin 48 / WB reclaim 7; H2
+(1:36, 69×69) talc 53; H3 (1:36, 69×69) 1203K 27 / WB reclaim 26; H4 (1:70, 49×49) WB colour 54; H5 (1:36,
+39×43) CaCO₃ 51. **Once confirmed, this becomes a hardcoded rule set like R1/R2 (§7.6), in `auger_rules.py`.**
+
+**The pattern holds within a line but not across lines. Read the function, not the number** (the archive's
+standing warning: the plant's *Hopper Auger Ratios* master table has lines 1–3 running #1 colour → #4 virgin
+and lines 4–10 running #1 virgin → #4 colour).
+
+| Line | Code | H1 | H2 | H3 | H4 | H5 | Differs from Line 6 |
+|---|---|---|---|---|---|---|---|
+| 1, 2 | SE11, SE12 | **Colour** (1:36 15×25) | Talc (1:36 39×39) | Homo / reclaim (1:36 69×69) | **Virgin** (1:36 69×69) | CaCO₃ / Vistamaxx (1:36 39×39) | Colour and virgin swap ends; large augers are H3 + H4, H2 is small |
+| 3 | SE13 | Spare small additive (CaCO₃, UV; 9 uses) | Talc | Homo / reclaim | **Virgin** (1:14 since 2019) | **Colour** (1:36 39×39) | Colour on H5, not H1 as on Lines 1–2 |
+| 4 | SE21 | Main PP (1:14 69×69) | Talc | Second PP | Colour (1:100 45×49) | CaCO₃ (1:36 39×43) | Same as Line 6 |
+| 5 | SE22 | Main PP | Talc | Second PP (mostly reclaim) | Colour (1:100 49×49) | CaCO₃ (**1:36 69×69**) | H5 is a large auger |
+| **6** | **SE23** | **Main PP** | **Talc** | **Second PP** | **Colour** (1:70) | **CaCO₃** | **the reference** |
+| 7 | SE24 | Weight blender, set in %, per extruder A/B/C: V1 colour · V2 CaCO₃ (or FA additive) · V3 talc · V4 virgin · V5 homo | | | | | No slope; check is Σ = 100 per extruder |
+| 8, 9 | SE31, SE32 | Virgin | **Homo** (or WB reclaim on SE32) | **Talc** | Colour (1:70) | CaCO₃ / Vistamaxx / white NPC | Talc and second PP swap (H2 ↔ H3) |
+| 10 | SE25 | Main PP | Second PP (homo, reclaim or virgin) | **CaCO₃** | Colour (1:70) | **Talc** (1:36 39×43) | Talc and CaCO₃ swap (H3 ↔ H5): talc on the small auger |
+| 12 | SE42 | **Weight blender** (V1–V9, set in %); no calc workbook, probably because a weight line needs no slope | | | | | No slope; Σ = 100 |
+| 13 | SE43 | Set in %: V1 talc · V2 talc / Vistamaxx · V3 minor additive · V5 virgin · V7 homo · V8 WB colour · V9 KS colour | | | | | No slope |
+| 16 | SE61 | **Weight blender**, co-ex, per extruder: A1 virgin / homo · A2 reclaim · A3 talc · A5 black MB; B1 virgin; C1 virgin · C2 reclaim · C3 talc · C5 colour · C6 antistat; D1 virgin | | | | | No slope; `Auto` = balance to 100 |
+
+On Lines 4–6, H1 and H3 carry either PP. The main (largest) stream goes on H1, the fast 1:14 auger. For
+example, SE21 KS formulas (FU0051KS4) put mix reclaim on H1 and 6502A on H3, and SE23 FU0041WB4 in Jan 2025
+put WB reclaim on H1 and 6502A on H3. **So the rule that has to follow the material is the slope, not the
+hopper.**
+
+**Hard checks (proposed; every calc block and every FRM row on the auger lines, every run; weight lines get the Σ = 100 / `Auto` checks in §7.16 instead):**
+
+| # | Check | Action |
+|---|---|---|
+| **A1** | Material's role is allowed on that line's hopper (table above) | Outside the role = **stop** unless the Change Log has it |
+| **A2** | **The slope must be that hopper's calibration for that material.** A slope that belongs to another material on the same hopper is an error | **Stop**. This is the RP25711-2 case below |
+| **A3** | Material has no calibration of its own on that hopper and borrows another's | Flag, unless James/Tech approve a **calibration family** (e.g. all WB/KS colour MBs share one H4 slope) |
+| **A4** | Hopper hardware (gear ratio, screw) in the block header matches the line's hardware table | A change voids every slope on that hopper until it is recalibrated (Line 3 H4 went 1:36 → 1:14 in 2019, 2.57× at the same dial) |
+| **A5** | Setting inside the calibrated range | Flag settings under ~5 or at the dial maximum: the archive curves are unusable near zero, and saturation sets in at the top |
+| **A6** | When two PP streams swap between H1 and H3, their slopes swap too | Otherwise A2 |
+| **A7** | **Slope fits the hardware:** slope × gear ratio (grams per auger turn, up to a constant) within ~8% of the norm for that screw size and kind of pellet (§7.16) | Flag: slope copied from another hopper, or the header's gear ratio is wrong |
+
+**Evidence (calc workbooks, all years):**
+
+- **The case in James's screenshot:** SE23 sheet `4 mm WB-P (61)`, RP25711-2, FU0041WB4, 11 Jul 2025. H1 is
+  `PP WB Reclaim` at slope **219.1497**, which is the H1 **6502A** slope (48 uses). The same line's Jan 2025
+  sheets `(57)` and `(58)` carry an **H1 reclaim slope of 232.1703**. If 232.1703 is right, the sheet
+  under-counts H1 reclaim by 5.6% (219.1497 / 232.1703 = 0.944). The reclaim-only R4 sheets (RP25424-1,
+  H54A247-1, H59A059-1, RP25910-1, last 10 Sep 2025) do the same thing.
+- **A2 across all lines: 258 feeder rows (34 hopper + material pairs) use another material's slope although
+  that material has its own on the hopper. 33 rows are in the last 12 months.** The ones that move the
+  numbers: SE21 H1 virgin at reclaim's 231.7782 vs its own 219.1497 (33 rows, last 1 Jul 2026, 5.8%); SE32 H4
+  WB colour at 17.5191 vs 19.8612 (16 rows, last May 2026, 13%); SE13 H4 reclaim at virgin's 219.1497 (9 rows,
+  last Aug 2026); SE21/SE22 H3 UV at 1203K's 82.3269 vs its own 74.6577 (10%). Pairs 0.2% apart (82.3269 vs
+  82.4662) are copy-over noise, not errors.
+- **A3: 3,319 rows (342 in the last 12 months) borrow a sibling's slope because the material has none of its
+  own on that hopper**: KS ↔ WB colour, 1102K → 1203K (1203K replaced 1102K on the old 1102K slope, 82.3269),
+  WB ↔ mix reclaim, and most colour, UV and antistat MBs. That is either an approved family or a missing
+  calibration. James/Tech to say which (§10 Q13).
+- **A1 on the draft table: 82 of 5,988 feeder rows in 2025–26 (1.4%) fall outside it.** Mostly: SE21 H3
+  antistat (21), HDPE on SE21/SE13 H1/H3/H4 (32, trials?), SE22 H5 1102K (3), SE25 H3 colour / homo / UV (7),
+  SE23 H5 talc (2), SE23 H2 reclaim (2), SE31 H1 reclaim (2). Each is either a rule to widen or a sheet to fix.
+
+**Why it matters for the "real formulation":** weight % = slope × setting ÷ total. A wrong slope makes a wrong
+%, and nothing on the sheet shows it. The archive also shows the calc's model is simpler than the hardware.
+The plant's curves are cubic with intercepts (−4.5 g to +33.2 g at zero), the blending system is volumetric
+at ±5%, and the one verification that states a target (19 Jul 2024) measured colour at 3.7% against 2.1%.
+**So the Real Formulation Master must label calc % as *target by calibration*, never *measured*.**
+
+**Files:** `auger_rules.py` (draft role table and the `role()` classifier; saved to the Project under
+`claude/formulation/calc/` and to this folder). Checks A2/A3 extend the existing "two slopes" check in
+`build_formulation_master.py` (§7.12). Nothing is enforced until James confirms the table.
+
+## 7.15 What the other pipeline documents settle (read 25 Sep 2026)
+
+James: *"if you havent read other process MD go through them"*. Read: `README.md`, `ARCHIVE-HANDOVER.md`
+(materials, plant map, controlled documents, parts 25, 26, 32, 35), `OEMS Management/INDEX.md`, the Void Form, QC
+Digital Record, Management Review, MR BI, Physical Inventory and CAS handoffs, and the archive's
+`auger_dose_from_setting.py` / `auger_phantom_origin_check.py`.
+
+**Settled or strengthened:**
+
+1. **`PC416` = Formosa F6502A** (IWPFT062: `50-1560-050 · PC416 · F6502A`). `PC419` (`50-1560-809`) and
+   `PC716` (`50-1560-060`) are multi-vendor copolymer codes. **IWPFT062 is the material master** to key the
+   material table on. On file it is Rev 13, while Rev 16 was approved in Mar 2024. Vistamaxx 3588FL is
+   `50-1560-405 · PC3588`.
+2. **IWPFT057 formula code system (Rev 2) is obsolete except for the colour letters**; its reclaim letters J/K/L/M
+   (WB, dark mix, light mix, blue-white) have 1997–2006 auger calibrations. Today's FU/FS/RU/BF codes (§6.1)
+   are not documented anywhere found so far.
+3. **Output lb/hr is calculated, not measured, and has been since at least 1998.** A process record says it at
+   source: *"The through put is based on line speed, average 950GSM for 2.64 M line."* That is the calc's
+   formula (§7.13 #15).
+4. **Calibration records exist:** `Process tech/CALIB` on the Technical Formulation site (13 files: `CALDATA.XLS`,
+   a 33-page PPT-E-7 set for 1999–2001, `CALIB-SE12-102208.XLS`, `CALIB-SE25-051809.XLS`, three MathCAD sources).
+   Also **IWPFM031** *Standard Calibration Procedure for the OMRON Blending System*, Rev 9, with per-line
+   attachments (controlled, **read only**), the `Blending System Calibration Screen 2024-09-25` folder, and
+   `Auger Throughput Verification Records 2010-2024` (33 forms, last 17 Sep 2024). **None of these has been read
+   for current slopes yet.** The Auger Calibration file (§7.13 file 2) should come from whichever is current,
+   not only from the calc sheets.
+5. **Hopper hardware:** the plant's *Extruder Blender — Hopper Auger Ratios* master table (revisions 2011, Mar
+   2019, Aug 2019) gives ratio, OD × pitch and tube colour for lines 1–10. The only change in eight years is
+   Line 3 H4, 1:36 → 1:14 (2019), which the SE13 calc header matches. The 1999 table notes that the B and C
+   extruder blenders on Lines 8 and 9 are numbered oppositely; nothing records this being checked.
+6. **Calibration maths:** the plant's curves are cubic, not through the origin, and unusable below dial ~5. The
+   1997 Line 1 and Line 3 fits carry a phantom point at the origin (43 fits). The dial is 0–999 on Lines 1–4
+   and 0–100 on Lines 6, 8 and 9 (1997 hardware; Lines 8/9 re-driven in 2009). The calc's slope × setting is a
+   linear simplification. That is acceptable for targets, but it is one reason the auger total doesn't match
+   the output (§7.13 #14).
+7. **Extrusion Production Record source:** the plant's **paperless production system on AS400** (extrusion live
+   late 2024, converting 2025, packing mid-2025; documented in `OEMS\8. Software, ERP, IT System\Bar Coding\SYSTEM\`)
+   is the likely source of actual production, rather than the printed EXT plan (§10 Q17).
+
+**House rules adopted from the sibling pipelines (added to the standing instructions):** re-stage the live file
+immediately before every build; after every device write, stage it back and verify it **by content**, not by
+size. SharePoint adds `customXml` and metadata parts to every `.xlsx` on upload, so file hashes never match the
+built file; compare cell values. Keep a checksum manifest (§11). Controlled Technical documents are read-only.
+Never open the plaintext password files flagged in the OEMS index.
+
+## 7.16 Dosing: weight lines vs auger lines (James, 26 Sep 2026)
+
+**James (26 Sep 2026), verbatim:** *"correct line 7,12,13, and 16 use more modern weight based dosing. The rest of the
+lines use old Auger dosing. What make it even worst is that the motor rotation speed is no RPM or some measurement.
+It is simply speed setting 0 to 100. You can probably tell when you see that the formulation dont even add up to 100
+for those lines"*
+
+| Dosing | Lines | What `Set` is | Adds to 100? | Weight % comes from |
+|---|---|---|---|---|
+| **Weight blender** | 7 (SE24), 12 (SE42), 13 (SE43), 16 (SE61) | Weight % per extruder | Yes, per extruder; one feeder may be `Auto` = the balance | The setpoint itself (weighed) |
+| **Auger** | 1–6 (SE11 12 13 21 22 23), 8 (SE31), 9 (SE32), 10 (SE25) | Motor speed 0–100, whole numbers, **no RPM feedback** | No | Calibration slope × setting ÷ total (a calculated target) |
+
+**Hardcoded** as `DOSING` in `load.py` (daily pipeline) and `auger_rules.py` (formulation), in a block marked
+*DO NOT CHANGE WITHOUT JAMES'S SAY-SO*, the same way as R1/R2.
+
+**What the data shows, and what this settles:**
+
+1. **FRM sums, 24 Sep:** the weight lines add to 100. SE24 is 100 per extruder (FSA200WB4 100/100/100); SE42 and
+   SE43 are 100. On SE61, extruder A is 61 fixed + `Auto` (F6502A) = 39, extruder C is 7–8 + `Auto` = 92–93, and B
+   and D are 100. So `Auto` is the balance. The auger lines don't add to 100: Line 8 is 102/104/107, Line 9 is 91/85,
+   Line 1 FU0042WB3 is 135. The 23/24 Sep question "Are V settings percentages?" is answered: no. Lines 8/9 only
+   borrow Line 7's A/B/C page layout.
+2. **Same code, different settings by line, explained.** FUA152WB4 is 50/27/14/71 on L2 and 99/18/54/43 on L6, but its
+   weight % is the same everywhere (73–74% virgin, 15% 1203K, 8.4–9.2% talc, 2.5–2.7% WB, §7.13 #6). The settings
+   differ because the hoppers, gear ratios and slopes differ. **So the recipe is the weight %; settings are derived
+   per line.** That is the core of the Real Formulation Master.
+3. **The calc workbooks already follow the split:** SE24, SE43 and SE61 hold % only, with 0 slopes in 6,559 feeder
+   rows. SE61 adds extruder shares (e.g. A and C 41%, B and D 9%) and lb/hr per material. All nine auger lines carry
+   slopes. No SE42 workbook: a weight line needs no slope calc (Q11).
+4. **IWPFM031** (*Standard Calibration Procedure for the OMRON Blending System*) has attachments for lines 1–2, 3,
+   4, 5 and 6/8/9/10: exactly the auger lines. The weight lines are not in it. So IWPFM031 is the auger lines'
+   procedure (controlled, read only).
+
+**What it adds (new disconnects on the auger lines):**
+
+5. **Nothing measures what an auger actually does.** With a 0–100 speed setting and no RPM feedback, a drifting drive
+   or a worn screw is invisible. The 1997 drive cards differed by ±4% for the same output. The only measurement is a
+   timed catch test. The last one on record is 17 Sep 2024, and the one test that states a target failed: colour
+   3.7% against 2.1%. **The Auger Calibration file needs a "last verified" date per hopper and an overdue flag.**
+6. **The slopes are one shared set, not per-line calibrations.** The same number sits on every line with the same
+   hardware:
+   - 82.3269 (1203K, 1:36 69×69) on 8 lines;
+   - 219.1497 (virgin, 1:14 69×69) on 6 lines;
+   - 148.7313 (talc, 1:36 69×69) on 5 lines;
+   - 17.5191 (colour, 49×49) on 5 lines.
+
+   Each was calibrated once and copied. **Only SE32 has its own set** (92.2099 / 141.0847 / 19.8612 / 27.493, ±11–13%):
+   either a newer calibration the other lines lack, or errors (Q19).
+7. **New check A7, the slope must fit the hardware.** The auger turns at setting/100 × motor speed ÷ gear ratio, so
+   slope × gear ratio is grams per auger turn (up to a constant). For one screw size and one kind of pellet it should
+   be the same on every line, and it is, within 3%:
+
+   | Screw | Material | Grams per turn index (2025–26 calcs) |
+   |---|---|---|
+   | 69×69 | PP pellets | 2,969 (1:36), 3,068 (1:14) |
+   | 69×69 | Reclaim | 3,140 (1:36), 3,245 (1:14) |
+   | 69×69 | Talc | 5,354 |
+   | 69×69 | CaCO₃ | 6,380 |
+   | 39×43 | CaCO₃ | 1,106 |
+   | 39×39 | CaCO₃ | 1,003 |
+   | 39×39 | Talc | 842 |
+   | 49×49 | Colour | 1,226 |
+   | 15×25 | Colour | 202 |
+
+   69×69 vs 39×39 is 6.4× for both talc and CaCO₃, which is consistent geometry. **192 of 5,743 auger feeder rows in
+   2025–26 fall more than 8% outside the norm:**
+   - **SE22 H4 colour: the header says 1:100 but the slope is the 1:70 slope, 17.5191** (+43%, 97 rows, last 9 Sep 2026).
+     If the gearbox really is 1:100, Line 5 runs about 30% less colour than its calc shows. SE21 H4 (1:100, 45×49,
+     16.089) gives more per turn than the larger 49×49 screw at 1:70, the same question. The archive says Lines 4–6
+     drifted from the design ratios on colour, additive and flake. A catch test settles it (Q18).
+   - SE13 H4 (1:14) reclaim at 87.2183, the 1:36 slope: −61% (2 rows, Feb 2025).
+   - **The screenshot case, settled by physics:** reclaim on a 1:14 69×69 auger should be ≈ 231.8–232.2 (3,245 ÷ 14).
+     RP25711-2's 219.1497 is the wrong slope, and the Jan 2025 sheets' 232.1703 is right.
+   - SE32's own set (±11–13%); SE21 H3 antistat 93.3676 (+13%); SE21 H1 virgin at reclaim's 231.7782 (+9%).
+8. **Old sheet copies carry old hardware.** The calc was updated when Line 3 H4 went 1:36 → 1:14 in 2019 (header and
+   slope 219.1497 from 2019), but 2 blocks in 2021 still carry 1:36 / 82.4662. That is check A4.
+9. **Dial resolution.** Settings are whole numbers. 838 of 5,309 auger feeder rows in 2025–26 (16%) run below 10:
+   talc 39%, CaCO₃ 34%, additives 35%, colour 10%. At setting 4 (148 rows) one step is 25% of that feeder's dose, and
+   the plant's own curves are unreliable below ~5. Check A5: flag settings under 10.
+10. **Auger total vs extruder output (§7.13 #14): likely explained.** On 1,233 of 1,239 blocks the augers' total
+    rate is above the extruder output (median 1.4–2.5× by line); only 6 are below 1. A continuously running blender
+    would have to match the output. A blender that starts and stops on a level switch needs spare capacity, and then
+    the settings only fix the ratio. Confirm (Q20). If so, lb/hr per material = weight % × line lb/hr, never auger
+    g/min, and all settings on a line can be scaled together to lift low settings off the bottom of the dial.
+11. **The weight lines can measure.** A weight blender weighs every component, and most can total usage per
+    component. That would be the only measured formulation and material consumption in the plant: a real
+    "real formulation" for Lines 7, 12, 13, 16 and an input to the Extrusion Production Record (Q21).
+
+**Design consequences (for the six files, when James says go):**
+- **Real Formulation Master:** weight % per formula (per extruder for co-ex), each line tagged WEIGHT (setpoint,
+  weighed) or AUGER (target by calibration).
+- **Settings on auger lines are derived, never stored as the recipe:** setting = weight % × T ÷ slope, rounded to a
+  whole number. The weight % is then recomputed after rounding and shown. T is chosen so the largest setting stays
+  ≤ 99 and additives stay ≥ 10 where possible.
+- **Daily Formulation Report:** auger lines print setting and calculated weight %; weight lines print % with the
+  `Auto` balance.
+- **Checks:** A1–A7 on auger lines; Σ = 100 / one `Auto` / `Auto` balance between 0 and 100 on weight lines.
+
+**Code changed (daily pipeline, `claude/formulation/packet_extract/`):**
+- `load.py`: the `DOSING` table.
+- `checks.py`, FRM section, now by dosing type:
+  - weight lines: must add to 100 per extruder, with `Auto` = balance (impossible balance or two `Auto`s flagged);
+  - auger lines: setting outside 0–100 → High; `Auto` on an auger line → High; non-numeric setting → Medium.
+- `build_xlsx.py`: Set Sums gains Dosing, Auto = balance (%) and Adds to 100? columns, and a Read Me note.
+- `manual_issues.py`: the template drops the Line 8/9 "percentages?" question.
+
+Re-ran the checks on the 23 and 24 Sep packets: identical issue lists (82 and 71). A synthetic auger setting of
+105 and an impossible `Auto` balance are both caught. The 23/24 Sep workbooks were not rebuilt; they stay as issued.
+`auger_rules.py` gains `DOSING`, `rev_index()` (A7) and notes.
+
+## 7.17 Moved to Claude Code (28 Sep 2026)
+
+**James (27–28 Sep 2026):** *"with such major project. Should this be done by claude code instead?"* Answer: yes for
+the build phase. The code, the data and the checksum manifest had been kept in step across three places by hand
+(this session's temporary cloud workspace, the Project, this folder), and the link to James's PC drops. Then:
+*"yes lets do it"*.
+
+**What was handed over:** `formulation-pipeline starter 2026-09-28.zip` in this folder. Unzip it to a local folder
+(not synced) and follow its `README.md`: Python 3.11+, Git for Windows, Claude Code, and Tesseract (optional).
+It contains:
+- `CLAUDE.md`: the standing rules for Claude Code — the hard rule, R1/R2, `DOSING`, the auger rules, the never
+  list, the daily and calc runs, and output conventions. It is built from this document's Standing instructions,
+  §7.6, §7.14 and §7.16.
+- All pipeline code:
+  - `daily/`: from `packet_extract/`;
+  - `calc/`: parser, Formulation Master builder, `auger_rules.py`;
+  - `scan_reader/`: reader, glyph bank, new `render_pages.py`.
+- The two transcribed packets, the verified EXT rows and the hand-found issues per day.
+- `publish.py` and `config.py`.
+- `tests/`.
+- `.claude/settings.json`: denies reading `*Password*` files and editing `inputs/`; sets `PYTHONUTF8=1`.
+- `.claude/settings.local.json`: gives Claude Code access to this folder.
+
+**What changed in the code (behaviour kept the same):**
+- **One `config.py`** for every path, read from an env var, then `local_settings.json`, then a default in the repo.
+  The hard-coded `/home/claude/...` and `/mnt/...` paths are gone. Builds write to `out/`, and only `publish.py`
+  writes here.
+- **The hard rule is now enforced by code:**
+  - every input goes through `config.record_read()` (size, modified time, SHA-256, content hash → `work/reads.json`);
+  - `publish.py` refuses to replace a published file whose cell content is neither what the build read nor what was
+    last published (`data/published_manifest.json`, in git, seeded 28 Sep from the files in this folder: all eight
+    workbooks matched §11);
+  - an earlier day's daily workbook is refused unless James asks for `--reissue`;
+  - after copying, each file is re-read and compared by content.
+- The daily scripts read the packet from `data/packets/packet_<date>.json` (`packet_date` and `source_scan` added to
+  the 23 Sep file; its content is unchanged).
+- The day's hand-found issues and Read Me notes are picked up by date. `RUN_DATE` is used instead of a fixed
+  "transcribed" date.
+- **The superseded-copy rule is general** (`common.superseded_copies`): a line's "Copy of …" workbook is left out when
+  the line has another one. SE25's copy is dropped; SE21's only workbook, itself a "Copy of", is kept.
+- Upload-name prefixes are stripped by pattern, not by position.
+- The FRM-vs-Calc sheet takes its date from the packet instead of "24 Sep".
+- A missing Formula Item log no longer stops the build.
+- **Windows:** explicit UTF-8 on every text file. No `%-d` date formats. `TESSERACT_CMD` setting. The PDF rendering
+  falls back to **PyMuPDF** (pip only) when poppler's `pdftoppm` isn't installed.
+
+**Regression (rebuilt everything from the starter in a clean folder and compared cell by cell with the published files):**
+
+| Output | Result |
+|---|---|
+| EXT and CNV 2026-09-24 | **Identical** |
+| FRM 2026-09-24 | Identical except the Rev 1.3 dosing columns in Set Sums and one Read Me line |
+| 23 Sep workbooks | Data identical. Some Read Me and notes text differs, because the published 23 Sep files came from the 23 Sep version of the code |
+| Product Master | **Identical** (and a rebuild from the published master is idempotent: 0 changed) |
+| Formulation Master | Identical except the Read Me source line and floats beyond the 15th digit (the published copy was recalculated in LibreOffice, which rounds to 15 digits) |
+| Daily checks | 82 issues for 23 Sep, 71 for 24 Sep, as before |
+| EXT scan reader, 24 Sep scan | Same result with PyMuPDF as with pdftoppm: 76 of 80 fully correct, 3 wrong but flagged, **0 silent**. PyMuPDF raises 4 more false alarms (21 vs 17) |
+| `pytest` | 8 passed with the calc workbooks, 7 + 1 skipped without; same in a fresh unzip |
+| `publish.py` | Tested on a copy of this folder: an edited published file is refused, an unchanged one republishes and verifies, and an earlier day's workbook is refused without `--reissue` |
+
+**Where the Project files went in the repo:**
+
+| Project (`claude/formulation/`) | Repo |
+|---|---|
+| `packet_extract/load.py`, `checks.py`, `build_xlsx.py`, `build_master.py`, `manual_issues.py` | `daily/` |
+| `packet_extract/manual_issues_<date>.py`, `cfg_<date>.json` | `daily/manual/`, `daily/cfg/` |
+| `packet_extract/packet_<date>.json` | `data/packets/` |
+| `calc/*.py` | `calc/` |
+| `ext_scan_reader.py` | `scan_reader/` |
+| `ext_truth_2026-09-23.csv`, `ext_read_2026-09-24.csv` | `data/` |
+
+The Project copies were refreshed on 28 Sep to the starter's code, so the two match at hand-over. From here on the
+repo leads.
+
+**What stays in Cowork:** SharePoint and Outlook through the Microsoft 365 connector, the Project mirror of this
+document, and design discussions.
+
+**Still needed from James before the first Claude Code daily run:**
+1. Where Tech saves the calc workbooks, so `CALC_DIR` points at the live files (§10 Q14). Until then, copy the 14
+   uploaded workbooks into `inputs\calc`.
+2. Whether IT allows the installs.
+
+## 8. Automation plan: one step at a time
+
+| Phase | What | Needs |
+|---|---|---|
+| 0 | **This document.** Read the packet and agree the rules | In progress: Rev 1.4 (R1, R2 confirmed; daily run §7.10; calcs §7.12; file set §7.13; auger rules drafted §7.14, awaiting James; dosing split §7.16; code moved to a Claude Code repo §7.17) |
+| 1 | Seed formula master: **built from Tech's calc workbooks** (`Formulation Master.xlsx`, §7.12); Tech reviews the code/setting mismatches | James/Tech answer §10 Q9 |
+| 2 | EXT scan reader: **built** (§7.7). 0 silent errors in the leave-one-page-out test and on the 24 Sep second-day scan. Still to do: R9 checksum, rows under handwriting | More days' scans |
+| 3 | Formula resolution + FRM rendering in the current layout; run beside the manual FRM for 2 weeks, diffing them | Phases 1–2 |
+| 4 | Converting `Extrusion Status` X OF Y taken from EXT instead of typed by hand | Who owns CNV (§10 Q7) |
+| 5 | Formula-change log: every settings change dated, with who approved it | Tech agreement |
+
+**Not automated, by design:** choosing a new formula or changing settings. The pipeline proposes; Tech decides.
+
+---
+
+## 9. Output location (proposed)
+
+```
+Production Formulation Automation\                  (SharePoint-synced; outputs only arrive via publish.py)
+  HANDOFF - Production Formulation Automation.md   (this document: the spec, edited in place)
+  Formulation Master.xlsx · Product Master.xlsx
+  Daily\YYYY\EXT Extrusion Schedule / CNV Converting Schedule / FRM Formulation Report YYYY-MM-DD.xlsx
+  formulation-pipeline starter 2026-09-28.zip      (the repo as handed over, §7.17)
+  auger_rules.py · ext_scan_reader.py · ext_truth_2026-09-23.csv   (Rev 1.1–1.3 copies; the repo now holds the live ones)
+
+C:\Users\JamesKuo\dev\formulation-pipeline\       (local, NOT synced; git)  the code, the transcribed packets
+```
+
+This folder also holds `HANDOFF - Monthly Complaint CA Summary.md` **Rev 0.2**, a stale copy of a
+different pipeline. The current version is Rev 0.3 in the Claude Project. It belongs in
+`Monthly Customer Complain Corrective Action Summary\` (CAS §7).
+
+---
+
+## 10. Open questions for James
+
+1. ~~Can `WPPPOPRC` be exported as text?~~ **Answered 23 Sep 2026: no.** The AS400 report is tied to
+   the printer; James will look at it later. The pipeline reads the scan (§7.5).
+2. **The `Mat A Sp. Req.` codes** (§7.6 R3–R7 are taken from one day's data; please confirm): what do `P`/`A`, `R1` `R2` `R4` `S1` `RD` `RM` `R6` and the colour
+   codes (`WB` `KS` `WM` `BL` `EB` `GT`) stand for?
+3. ~~Where does Tech keep the formulas today?~~ **Answered 25 Sep 2026:** per-line calc workbooks
+   `SExx Formulation.xls` (settings from auger calibration) and per-line Word formula books (§7.11–7.12).
+   Still open: what decides the formula number (152 vs 151 vs 041)? Original question:
+   **Where does Tech keep the formulas today?** Is there a master file per line, or is each day's
+   FRM edited from yesterday's? What decides the formula number (152 vs 151 vs 041)?
+4. **Who makes FRM each day, how long does it take, and when must it reach the floor?**
+5. ~~`Set`~~ **answered 25 Sep:** auger setting; g/min = calibration slope × setting (§7.12). Still open: `AC = 1` / `AC = 90`.
+   Original: **`Set` and `AC`:** what unit is `Set` (feeder %, rpm, dial)? What do `AC = 1` / `AC = 90` mean?
+6. Lines 11, 14 and 15: do they exist, and do they need FRM pages?
+7. **CNV:** who owns the converting sheets? Is the `Extrusion Status` X OF Y in scope?
+8. Is the formula code structure in §6.1 right?
+9. **FRM vs calc formula codes (§7.12):** the same settings carry different codes on the FRM page and in the
+   calc workbook (e.g. FUA152WB4 vs FUA012WB4/FUA062WB4/FU062WB4). Which is the real code?
+10. **Production Formula Item log:** what is the "Formula Item #" (1–8)?
+11. Is there an SE42 calc workbook? *(Probably not needed: Line 12 is a weight line, §7.16. Confirm.)*
+12. Two calibration slopes in use for the same hopper + material (8 cases): which is current?
+13. **Auger preference table (§7.14):** is the draft right for every line? Which materials may share one
+    calibration (a "calibration family", e.g. all colour MBs on H4, 1102K/1203K, WB/mix reclaim)? Are the 82
+    out-of-role rows (HDPE on SE21/SE13, antistat on SE21 H3, talc on SE23 H5 …) allowed, or sheet errors?
+14. **Where do the calc workbooks live** (so the hard rule can read them where Tech saves them)? *Now also `CALC_DIR` in the repo's `local_settings.json` (§7.17).*
+15. **Which source wins** when calc, Word book and FRM disagree (§7.13 #1)?
+16. **Slope units** (g/min per dial unit, or g/30 s as in the 1997 tables?), and were the augers recalibrated when
+    talc, CaCO₃ and KS grades changed (§7.13 #11)? Which of `Process tech/CALIB`, IWPFM031 records or the 2024
+    calibration screen holds the current slopes?
+17. **lb/hr:** gross die width (the calc's convention since 1998) or net order width? And is the AS400
+    paperless production system the source for actual output in the Extrusion Production Record?
+18. **SE22 and SE21 hopper 4 (colour):** the headers say 1:100 but the slopes fit a 1:70 gearbox (§7.16 A7).
+    Which is fitted? A one-minute catch test on each settles it; if 1:100 is right, Line 5 runs about 30% less colour
+    than its calc shows.
+19. **SE32's slopes differ from every other line's** (1203K 92.2099, talc 141.0847, WB 19.8612, CaCO₃ 27.493, all
+    ±11–13% off the shared set). Was SE32 recalibrated on its own (then the others are stale), or are these errors?
+20. **Do the auger blenders run continuously or on demand** (start/stop on a level switch)? The augers' total is
+    above the extruder's output on 1,233 of 1,239 blocks, which only makes sense on demand. If so, the settings set
+    the ratio only, and #14 in §7.13 is closed.
+21. **Weight blenders (Lines 7, 12, 13, 16):** which make/model, and can they export material usage per
+    component? That would give the only measured formulation and material consumption in the plant.
+
+---
+
+## 11. Checksum manifest (25 Sep 2026)
+
+The files in this folder, as staged back from the device after upload. `.xlsx` files are checked by a hash of
+every sheet's cell values: SharePoint adds `customXml` / metadata parts on upload, so the file hash differs from the
+built file even when every cell matches. On 25 Sep 2026 all eight workbooks matched their build copies cell for cell.
+This document is not listed (it can't carry its own hash). Update this table whenever a file here changes.
+
+| File | Bytes (device) | SHA-256 of file (first 16) | Content check |
+|---|---|---|---|
+| `Formulation Master.xlsx` | 3,667,095 | `4e5781f776f7b4ce` | cells sha256 `e0197d136359737a` (35916 rows) |
+| `Product Master.xlsx` | 277,049 | `15800f5bc34cf73e` | cells sha256 `085b7ead92283aaf` (2107 rows) |
+| `Daily/2026/CNV Converting Schedule 2026-09-23.xlsx` | 46,840 | `05fd6755e1cf7463` | cells sha256 `6a9604c5d6643749` (170 rows) |
+| `Daily/2026/CNV Converting Schedule 2026-09-24.xlsx` | 47,886 | `27c12183b4abe094` | cells sha256 `9a45c01c77e130a6` (174 rows) |
+| `Daily/2026/EXT Extrusion Schedule 2026-09-23.xlsx` | 60,575 | `ebbd6648d699391c` | cells sha256 `385699de5f812b1c` (304 rows) |
+| `Daily/2026/EXT Extrusion Schedule 2026-09-24.xlsx` | 60,286 | `4174cbee805fa845` | cells sha256 `93a4216a6a489dc5` (287 rows) |
+| `Daily/2026/FRM Formulation Report 2026-09-23.xlsx` | 57,524 | `1c9378a17d8b1e45` | cells sha256 `05f6f7e41a141372` (491 rows) |
+| `Daily/2026/FRM Formulation Report 2026-09-24.xlsx` | 56,072 | `0491a2256a5c3103` | cells sha256 `312ec9162999c34c` (460 rows) |
+| `ext_scan_reader.py` | 26,947 | `b449c3c96c62ffea` | bytes |
+| `ext_truth_2026-09-23.csv` | 5,385 | `94ed4d1c2b9b31f0` | bytes (CSV: LF on device, CRLF in the build copy) |
+| `auger_rules.py` (Rev 1.3) | 4,885 | `644d1268af7accab` | bytes |
+| `formulation-pipeline starter 2026-09-28.zip` (Rev 1.4) | 1,123,527 | `7f2972634fc7e62b` | bytes; unzips to 36 entries, tests pass in a fresh unzip |
+
+---
+
+## Revision history
+
+| Rev | Date | Editor | What changed and why |
+|---|---|---|---|
+| 1.4 | 2026-09-28 | Claude (session with James Kuo) | **Code moved to a Claude Code repo (§7.17).** James: *"with such major project. Should this be done by claude code instead?"* then *"yes lets do it"*. Delivered `formulation-pipeline starter 2026-09-28.zip`: all pipeline code, packets and reference data, a `CLAUDE.md` built from this document's rules, a README for setup on Windows, `config.py` (paths), `publish.py` (the hard rule enforced: it refuses to overwrite a published file that changed since it was read or last published, and verifies by content after copying), and regression tests. Rebuilt every output from the starter: data identical to the published files (differences only where Rev 1.3 intended, plus Read Me text); the scan reader gives the same result with pip-only PyMuPDF. Standing instructions updated: the repo is the master for code; this document stays here and is edited in place. |
+| 1.3 | 2026-09-26 | Claude (session with James Kuo) | **Dosing type per line (§7.16).** James: *"line 7,12,13, and 16 use more modern weight based dosing. The rest of the lines use old Auger dosing… It is simply speed setting 0 to 100."* Hardcoded as `DOSING` (load.py, auger_rules.py). This settles why auger lines don't add to 100, why one code has different settings by line (weight % is the recipe; settings are derived), and why SE42 has no calc; IWPFM031 covers exactly the auger lines. New: the slopes are one shared set copied to every line (SE32 alone differs); check A7 (slope × gear ratio fits the hardware) flags 192 rows, chiefly SE22 H4 colour on a 1:70 slope under a 1:100 header (+43%), and it confirms 232.17, not 219.15, for reclaim on a 1:14 auger; 16% of auger settings are below 10; the auger total above output points to on-demand blenders. Daily checks now depend on dosing type (Σ = 100 with `Auto` balance on weight lines; 0–100 range on auger lines); the 23/24 Sep issue lists are unchanged. Q18–Q21 added. |
+| 1.2 | 2026-09-25 | Claude (session with James Kuo) | **Auger preference rules drafted (§7.14).** James: *"I think we also need to set some preference with Auger. Take line 6 as example…"* Per-line hopper role table built from the 2025–26 calcs, the plant's Hopper Auger Ratios table and James's Line 6 rule. It holds within a line but not across lines (Lines 1–3 reversed, 8/9 swap talc and homo, 10 swaps talc and CaCO₃). Proposed hard checks A1–A6. The key one, A2 (the slope must belong to that material on that hopper), is shown by the screenshot case RP25711-2 and by 258 rows elsewhere. **Other pipeline documents read (§7.15).** James: *"if you havent read other process MD go through them"*. PC416 = F6502A; IWPFT062 is the material master; lb/hr is calculated by design; calibration records located; AS400 paperless system as a production source. House rules adopted: re-stage before build, verify by content, checksum manifest (§11). Committed files from Rev 1.1 staged back and verified: identical. Nothing built, per James (*"Not yet about the file"*). |
+| 1.1 | 2026-09-25 | Claude (session with James Kuo) | **Hard rule added: verify every source before making anything** (standing instructions). Target file set agreed (§7.13): Real Formulation Master (weight % + lb/hr by line + Change Log tab), Auger Calibration, Formulation Report Record, Daily Formulation Report, Extrusion Production Record, Product Master. Design review: 25 disconnects listed with evidence. Nothing built yet, per James. |
+| 1.0 | 2026-09-25 | Claude (session with James Kuo) | **Formulation records surveyed and Tech's calc workbooks read** (§7.11–7.12). James: *"start going through the formulation record"*; *"Here are the formulation calculation which also has our Auger Crew rotation calibration"*. Built `Formulation Master.xlsx` (5,125 calc blocks; formula library, current recipes, auger calibration, product → formula, FRM vs calc). Set = auger setting (g/min = slope × setting). FRM and calc formula codes disagree for the same settings (Q9). Product Master gains Formula Code(s), Formula Last Run, End Use, Source and 1,990 calc-only products (2,086 total). |
+| 0.9 | 2026-09-24 | Claude (session with James Kuo) | **Second daily packet (24 Sep) processed** (§7.10). James: *"todays data"*, *"update your 4 excel sheet"*. Built the EXT/CNV/FRM workbooks for 2026-09-24 and merged the packet into the Product Master: 96 codes, 5 new, none changed. Second-day reader test: 76/80 correct, 4 flagged, 0 silent (§7.7). The scripts now take the packet date and folder from the environment; `load.py` drops a sheet scanned twice; `build_master.py` merges into the prior master. Report page 11 missing again, and it cuts off H64A244-1. |
+| 0.8 | 2026-09-24 | Claude (session with James Kuo) | **Product Master simplified** (§7.9). James: keep it as a product master only, with no history and no line data, plus a Last Updated column; basic EXT and CNV data only; formulation data to follow. The workbook is now one Product Master sheet (91 codes, Check / Status / Last Updated) and a Read Me. |
+| 0.7 | 2026-09-24 | Claude (session with James Kuo) | **Product Master started** (§7.9). James: keep a master data list, with Product Code (= material master number) in the first column. 91 codes from the 23 Sep packet, plus Product x Line (the formula map), Product x Converting, Order History and Conflicts. Script `build_master.py`. |
+| 0.6 | 2026-09-24 | Claude (session with James Kuo) | **Transcribed the whole 23 Sep packet into three workbooks and cross-checked it** (§7.8). All totals reconcile. The issues are listed in §7.8 and on each workbook's Issues sheet. Scripts and JSON are saved to the project. |
+| 0.5 | 2026-09-24 | Claude (session with James Kuo) | **R2 confirmed by James**, as written: spec = letter + number; `RD`/`RM` accepted only from the exceptions list and flagged every time for confirmation. §7.6 table and the rules block in `ext_scan_reader.py` updated to say so. No behaviour change. |
+| 0.4 | 2026-09-23 | Claude (session with James Kuo) | **Built the EXT scan reader with hardcoded rules.** James: improve OCR with logic, and *"make sure these are hardcode so we never forget"*: line code = 2 letters + 2 digits (R1), spec = letter + number (R2). Added §7.6, the rules table (R1–R10), and §7.7, the reader: deskew, fixed-pitch glyph cells, a nearest-neighbour glyph bank from the 82 verified rows, and decoding under the rules with flags for anything uncertain. Leave-one-page-out: 69/82 rows fully correct, 13 flagged, **0 silent errors**. Files: `ext_scan_reader.py`, `ext_truth_2026-09-23.csv`. |
+| 0.3 | 2026-09-23 | Claude (session with James Kuo) | **§10 Q1 answered: no text export.** James: the AS400 can't produce the report as text because it is tied to the printer. Added §7.5, reading the scan: Tesseract tested on SE11 and rejected (misreads `1`→`I`, `5/8`→`578`, `R1`→`RI`, drops fields); Claude reads the page images instead, checked against the printed line totals (PCs = sum of all Total Sheets rows, LBs = sum of Weight; SE11 checks out at 147,500 / 146,098), field patterns and page numbering. §7.1, §8 Phase 2 and §9 updated to match. |
+| 0.2 | 2026-09-23 | Claude (session with James Kuo) | **Read the daily production packet** (scan, 39 pp.: EXT pp. 1–16, CNV pp. 17–26, FRM pp. 27–39). Documented all three layouts, the order-number join, the line map (L1 = SE11 … L16 = SE61) and the feeder layouts; cross-checked all 82 EXT order lines against FRM (0 missing); set out how formula codes appear to be built and the exceptions (RUN WITH inheritance, alternates, variants); proposed the master tables and daily run. Renamed to the house `HANDOFF - …` convention. Earlier scan `doc05228120260923134352.pdf` was the CAS scan, not this packet. |
+| 0.1 | 2026-09-23 | Claude (session with James Kuo) | Generic scaffold (`Production_Formulation_Automation.md`) before any source was seen. |
