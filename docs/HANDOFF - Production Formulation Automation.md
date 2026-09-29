@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.33 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.34 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1493,6 +1493,36 @@ James: *"yes this allow the engineer to update the data base and trigger a re ru
   RPAA0WB318 on SE22 is approved for FUA060WBA / FUA060WBA / FUA010WBA; the re-run then fills it with all three in order.
 - CLAUDE.md "Print formulation for the floor" step 4 describes the loop.
 
+## 7.44 First end-to-end daily run from a schedule-only scan (29 Sep 2026)
+
+James: *"today schedule. Lets do a test. Using this, run it through the process. It should follow checking product
+master (if missing update product master), checking formulation, then check auger calibration, create daily
+formulation, update formulation record, extrusion record and converting record"*. Scan doc05261220260929142225.pdf,
+26 pages: EXT 15 (report pages 1-8, 10, 12-15, plus SE25 and SE61 printed as separate one-page reports), CNV 11, no
+FRM pages.
+- **Transcribed** to `data/packets/packet_2026-09-29.json`: 76 EXT orders, 62 CNV rows. All 12 printed line totals
+  equal their rows; SE23's total is on the missing report page 9 (handwritten 3,939,487# = its page weights). The glyph
+  reader did not run: Tesseract is not installed on James's PC (optional); line totals were the independent check.
+- **New today**: SE21 H69A203-1 RPP50BL1501, H67A164-1 RPP63KS1, H67A164-2 RPP63RF1 (colour **RF**, not seen before;
+  asked James); SE24 RP26604-1 SPA40WB755 (handwritten "Run with RPA40WB3051"). Gone: H69A290-3, H69A291-10, H68A111-4.
+- **Product Master**: 0 missing; the three new SE21 products were known only from Tech's calc workbooks and now carry
+  the EXT fields. RPP63RF1 Thk: calc 6 vs printed 6.3 (flagged in Check). Published.
+  Fixed on the way: `daily/build_master.py` line 284 had a straight apostrophe in a quoted string (from the Calc Library
+  rename in 15ca587) and did not compile.
+- **Formulation**: the Formulation Master was open in James's Excel (file locked) and the run waited for it; the
+  pre-flight then showed 0 changes since the accepted version. IWPFT062 sync: 0 differences. `resolve.py`: 72 of 76
+  orders from the last issued FRM (28 Sep); 4 Exceptions = the four new orders. Calc-workbook hints for the engineer
+  (not used): RPP50BL1501 FU0011BL5 / FUA011BL5; RPP63KS1 RU0000KS4; RPP63RF1 FU0000RF6.
+- **Auger calibration**: no Auger Calibration master yet (Tech's calc workbooks not in `inputs/calc`). New
+  `daily/auger_check.py` checks each auger-line hopper setting in the FRM Draft against `auger_rules.RULES` (draft Q13):
+  144 settings / 38 formulas, 0 outside the rules (28 Sep: 124 / 34, 0). Slopes not checked.
+- **Daily formulation**: `out/FRM Formulation 2026-09-29.docx`, 15 pages, DRAFT (4 orders for an engineer). Not
+  published: only the issued copy goes to Daily Formulation Report.
+- **checks.py**: on a packet with no FRM pages the "Order has no formulation" check flagged all 74 orders High; it now
+  adds one Info instead and skips the per-order comparison.
+- **Records**: Extrusion (+76) and Converting (+62) appended and published. Formulation Report Record: nothing appended
+  (no issued formulation yet); today's rows follow when the document is issued (CLAUDE.md step 5).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1621,6 +1651,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.34 | 2026-09-29 | Claude Code (local, with James Kuo) | **First end-to-end run from a schedule-only scan (§7.44)**: 29 Sep packet, Product Master, FRM Draft + docx, `daily/auger_check.py`, EXT/CNV records; build_master syntax fix; no-FRM check fix. |
 | 1.33 | 2026-09-29 | Claude Code (local, with James Kuo) | **Exceptions completed in the database, re-run fills them (§7.43)**: resolve uses approved Product to Formula; `db/assign_formula.py`. |
 | 1.32 | 2026-09-29 | Claude Code (local, with James Kuo) | **Print-ready Word formulation (§7.42)**: `daily/render_frm.py`, IWPFO055 issue block, one page per line, every formulation. |
 | 1.31 | 2026-09-29 | Claude Code (local, with James Kuo) | **Operator and production manager views (§7.41)**; # Plt 999 confirmed as an AS400 limit (Info, real count shown). |

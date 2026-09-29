@@ -147,7 +147,9 @@ schedule. you will product a word formulation document for us to print out"*.
 
 1. Transcribe the EXT schedule into the packet (Daily run step 1; FRM pages are not needed for this).
 2. `PKT_DATE=<date> python daily/resolve.py` (FRM Draft: every order as last issued on its line, or an Exception).
-3. `PKT_DATE=<date> python daily/render_frm.py` -> `out/FRM Formulation <date>.docx`. Send it to the engineer.
+3. `PKT_DATE=<date> python daily/auger_check.py`: every hopper setting on an auger line against the draft hopper
+   rules (Q13); list anything outside them for James. Slopes are not checked until the Auger Calibration master exists.
+   Then `PKT_DATE=<date> python daily/render_frm.py` -> `out/FRM Formulation <date>.docx`. Send it to the engineer.
    - It is a **DRAFT** while any order is an Exception: that row prints "ENGINEER TO COMPLETE", never a suggestion.
    - IWPFO055 §5.3: Technical issues it (cover issue block); a copy goes in the Schedule binder (§5.4).
    - Every formulation of an order, in run order (reclaim first); replaced materials printed as what to load.
@@ -158,6 +160,8 @@ schedule. you will product a word formulation document for us to print out"*.
    steps 2-3: `resolve.py` uses the last issue for the order first, then **approved** Product to Formula rows (never
    Draft ones). When no Exception is left the document reads READY TO ISSUE; publish the issued copy with
    `python publish.py "FRM Formulation <date>.docx"` (Daily Formulation Report folder).
+5. The Formulation Report Record takes a day only when its formulation is issued. On a schedule-only packet
+   (no Tech FRM pages) `record.py` appends EXT and CNV and skips FRM; the FRM rows follow once the document is issued.
 
 ## Calc workbooks → Formulation Master (when Tech's workbooks change)
 

@@ -1,0 +1,7 @@
+{
+ "ext_crosscheck": "The glyph reader was not run (Tesseract is not installed on this PC). Instead every printed line total was checked against the transcribed rows: all 12 printed totals match exactly; SE23's total is on the missing report page 9, and the handwritten 3,939,487# on its page equals the sum of its weights.",
+ "no_total_note": "No printed total: SE23 continues on report page 9, which is missing from the scan. Handwritten 3,939,487# on page 8 = sum of its weights. The main report's Final Total is not in the scan either.",
+ "final_note": ". Not in today's scan: the main report's Final Total page is missing (SE25 and SE61 were printed as separate reports).",
+ "weight_note": ".",
+ "ext_pages_note": "Scan pages 1-15 are report pages 1-8, 10, 12, 13 (run 13:26:45), SE25 page 1 (run 13:31:50), report pages 14, 15 (13:26:45) and SE61 page 1 (run 13:34:20). Report pages 9 (SE23 continuation with its line total) and 11 are missing. No formulation (FRM) pages in this packet: see FRM Draft / FRM Formulation 2026-09-29.docx."
+}

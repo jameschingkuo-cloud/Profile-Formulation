@@ -281,7 +281,7 @@ dv = DataValidation(type='list', formula1='"Draft,Verified,Needs Review,Obsolete
 ws.add_data_validation(dv); dv.add(f"{get_column_letter(ci['Status'])}2:{get_column_letter(ci['Status'])}{n+1}")
 ws.cell(1, 1).comment = Comment('Product Code = material master number (James Kuo, 24 Sep 2026). One row per code - never duplicate.', 'Claude')
 ws.cell(1, ci['Last Updated']).comment = Comment('Date of the source (daily packet, or Tech formulation calc workbooks) that last added or changed a value on this row.', 'Claude')
-ws.cell(1, ci['Formula Code(s)']).comment = Comment('Formula codes this product ran with: the daily FRM page (primary formula) and Tech formulation calc workbooks (codes used within a year of the latest run), most recent first. Line-by-line recipes are in Formulation Master.xlsx (approved) and Formulation Calc Library.xlsx (Tech's calcs).', 'Claude')
+ws.cell(1, ci['Formula Code(s)']).comment = Comment('Formula codes this product ran with: the daily FRM page (primary formula) and Tech formulation calc workbooks (codes used within a year of the latest run), most recent first. Line-by-line recipes are in Formulation Master.xlsx (approved) and Formulation Calc Library.xlsx (Tech’s calcs).', 'Claude')
 ws.cell(1, ci['Formula Last Run']).comment = Comment('Latest run date of this product in the formulation calc workbooks (Prod. Period, else estimated from the order number) or the daily packet.', 'Claude')
 
 # summary counts under Read Me (formulas)

@@ -89,7 +89,9 @@ frm_orders=defaultdict(set)
 for f in frm_rows:
     for o in f['orders']: frm_orders[f['line']].add(o)
 ext_by_order={r['order']:r for r in ext_rows}
-for ln,rows in bytline.items():
+if not frm_rows:   # no Tech FRM pages in the packet (29 Sep 2026): the formulation is the pipeline's FRM Draft / docx
+    add('Info','EXT vs FRM','(all)','','No FRM pages to compare','This packet has no formulation pages; each order’s formulation is in FRM Draft / FRM Formulation <date>.docx (daily/resolve.py), where orders without one are Exceptions','')
+for ln,rows in (bytline.items() if frm_rows else []):
     eo={r['order'] for r in rows}; fo=frm_orders.get(ln,set())
     for o in sorted(eo-fo): add('High','EXT vs FRM',ln,o,'Order has no formulation',f'{o} is on the extrusion schedule for {ln} but not on the {ln} formulation page','')
     for o in sorted(fo-eo): add('Medium','EXT vs FRM',ln,o,'Formulation for an order not scheduled',f'{o} is on the {ln} formulation page but not on the {ln} extrusion schedule','')
