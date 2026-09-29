@@ -238,6 +238,13 @@ BOOKS: list[Book] = [
          [Sheet("Formulations", "as built today", [Col("Line"), Col("Orders"), Col("Formula Code"), Col("Feeder"), Col("Set")]),
           ISSUES, README], status="existing"),
 
+    Book("FRM Formulation <date>.docx", "Daily Formulation Report", "daily",
+         "The print-ready formulation for the floor (Word): one page per line, every formulation of each order in run "
+         "order, cover with exceptions and the IWPFO055 §5.3 issue block. DRAFT until an engineer completes the "
+         "exceptions and Technical signs (James Kuo, 29 Sep 2026: operators use the paper copy)",
+         "daily/render_frm.py (from the FRM Draft)", "extrusion operators (printed), Schedule binder (IWPFO055 §5.4)",
+         [], status="new"),
+
     Book("Formulation Report Record.xlsx", "Daily Formulation Report", "record",
          "Every formulation issued, per day, order and feeder. Append-only: the plant's history of what ran",
          "daily/record.py (to build) after Tech signs the day", "traceability, complaints, trends",

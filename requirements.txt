@@ -6,3 +6,4 @@ opencv-python-headless==4.13.0.92   # scan reader: deskew, glyph cells
 pytesseract==0.3.13        # scan reader: title/header words. Needs Tesseract itself (see README)
 pymupdf==1.28.2            # scan reader: renders PDF pages (used when poppler's pdftoppm is not installed)
 pytest                     # tests/
+python-docx==1.1.2        # daily/render_frm.py: the print-ready formulation (Word)

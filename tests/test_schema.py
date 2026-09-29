@@ -27,7 +27,8 @@ def test_every_book_has_read_me_and_a_folder():
                "Extrusion Schedule", "Converting Schedule"}
     for b in schema.BOOKS:
         assert b.folder in folders, b.name
-        assert "Read Me" in [s.name for s in b.sheets], b.name
+        if b.name.endswith(".xlsx"):   # the printed formulation (.docx) has no sheets; its cover carries the sources
+            assert "Read Me" in [s.name for s in b.sheets], b.name
 
 
 def test_destination_by_name():

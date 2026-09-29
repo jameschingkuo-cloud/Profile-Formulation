@@ -353,6 +353,15 @@ The day's formulation as issued (today: transcribed from Tech's page; later: ren
 - Written by: daily/build_xlsx.py
 - Read by: floor, Formulation Report Record
 
+## FRM Formulation <date>.docx
+
+*daily* · folder `Daily Formulation Report` · new
+
+The print-ready formulation for the floor (Word): one page per line, every formulation of each order in run order, cover with exceptions and the IWPFO055 §5.3 issue block. DRAFT until an engineer completes the exceptions and Technical signs (James Kuo, 29 Sep 2026: operators use the paper copy).
+
+- Written by: daily/render_frm.py (from the FRM Draft)
+- Read by: extrusion operators (printed), Schedule binder (IWPFO055 §5.4)
+
 ## Formulation Report Record.xlsx
 
 *record* · folder `Daily Formulation Report` · new

@@ -182,3 +182,28 @@ def test_draft_keeps_every_formulation(tmp_path):
         assert [rowmap[i] for i in sorted(rowmap)] == want, (k, rowmap, want)
         multi += len(want) > 1
     assert multi >= 5          # RP26311-1 (3 formulas), RP26512-1 (3), RP26731-2, RP26902-1, H68A111-4/-5, H69A097-1 ...
+
+
+def test_print_formulation_docx(tmp_path):
+    """daily/render_frm.py (29 Sep 2026): the Word formulation for the floor. One page per line, every formulation,
+    exceptions blank for an engineer (never a suggestion), replaced materials printed as what to load."""
+    from docx import Document
+    out = tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28')
+    for script in ('resolve.py', 'render_frm.py'):
+        r = subprocess.run([sys.executable, str(ROOT / 'daily' / script)], env=env, capture_output=True, text=True, cwd=ROOT)
+        assert r.returncode == 0, r.stdout + r.stderr
+    doc = Document(out / 'FRM Formulation 2026-09-28.docx')
+    text = '\n'.join(p.text for p in doc.paragraphs)
+    cells = [c.text for t in doc.tables for row in t.rows for c in row.cells]
+    assert sum(1 for p in doc.paragraphs if p.text.startswith('Line ') and p.text.endswith('Formulations')) == 13
+    assert 'DRAFT' in ' '.join(cells) and 'DRAFT' in doc.sections[0].header.paragraphs[0].text
+    rows = [row for t in doc.tables for row in t.rows]
+    assert sum(any('ENGINEER TO COMPLETE' in c.text for c in row.cells) for row in rows) == 16   # the 16 Exceptions
+    assert any('F1203K' in c and 'replaces Q1203K' in c for c in cells)           # SE42 V3
+    assert not any('XO-256' in c for c in cells) and any('X0-256' in c for c in cells)
+    assert any('If reclaim runs out' in c for c in cells) and any('Run first' in c for c in cells)
+    for row in rows:                                                          # an exception is never filled from a suggestion
+        if row.cells[0].text.startswith('RP26928-1'):
+            assert any('ENGINEER TO COMPLETE' in c.text for c in row.cells) and not any('FUA060WBA' in c.text for c in row.cells)

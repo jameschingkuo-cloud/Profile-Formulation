@@ -140,6 +140,20 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 8. Run `python -m pytest -q`, then commit the packet JSON, the manual issues and `data/published_manifest.json`.
 9. Handoff: add the day's notes (as in §7.10) and a revision-history row.
 
+## Print formulation for the floor (an engineer sends the schedule scan)
+
+James, 29 Sep 2026: *"operator will use the paper copy. So whenever i or any other engineer scan you the production
+schedule. you will product a word formulation document for us to print out"*.
+
+1. Transcribe the EXT schedule into the packet (Daily run step 1; FRM pages are not needed for this).
+2. `PKT_DATE=<date> python daily/resolve.py` (FRM Draft: every order as last issued on its line, or an Exception).
+3. `PKT_DATE=<date> python daily/render_frm.py` -> `out/FRM Formulation <date>.docx`. Send it to the engineer.
+   - It is a **DRAFT** while any order is an Exception: that row prints "ENGINEER TO COMPLETE", never a suggestion.
+   - IWPFO055 §5.3: Technical issues it (cover issue block); a copy goes in the Schedule binder (§5.4).
+   - Every formulation of an order, in run order (reclaim first); replaced materials printed as what to load.
+4. When the engineer decides an Exception, record it, re-run steps 2-3, and publish the issued copy with
+   `python publish.py "FRM Formulation <date>.docx"` (Daily Formulation Report folder).
+
 ## Calc workbooks → Formulation Master (when Tech's workbooks change)
 
 1. `python calc/parse_fcal.py` reads every `*Formulation*.xls` in `CALC_DIR` and records each one.

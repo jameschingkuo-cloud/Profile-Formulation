@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.31 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.32 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1455,6 +1455,31 @@ with the real count (sheets / (pcs x stacks)); the operator and manager views sh
 999"); the records keep the printed 999 and the hand correction (values as printed). Open: live SharePoint data vs a
 copy after each run, and Tech sign-off on the page.
 
+## 7.42 The print-ready Word formulation for the floor (29 Sep 2026)
+
+James: *"operator will use the paper copy. So whenever i or any other engineer scan you the production schedule. you
+will product a word formulation document for us to print out"*; *"you can use the current one (and maybe improve a
+little) as template"*. Tech's per-line Word formula books are not synced to this PC, so the template is the FRM page
+as scanned. Read (read only) **IWPFO055** Formulation and Instruction Issue Procedure (§5.3 Technical issues the
+formulation; §5.4 copy in the "Schedule" binder; records under IWPFO112) and **IWPFT018** Formulation System.
+
+New `daily/render_frm.py` (python-docx; `requirements.txt`) -> `FRM Formulation <date>.docx`, routed to
+`Daily Formulation Report\` (`db/schema.py`, `publish.py` daily guard). US Letter landscape, Times New Roman like
+Tech's page:
+- **Cover:** status (DRAFT while any order has no formulation, else READY TO ISSUE), how to read the pages, the orders
+  an engineer must complete (with the reason and the draft's suggestion, marked "not used"), and the **issue block**
+  (Issued by (Technical), signature, date/time, copy in Schedule binder, per IWPFO055 §5.3-5.5).
+- **One page per line**, as Tech's: "Line N (SExx) Formulations", AC and date, Order # | Formula Code | feeders | Note,
+  the line's footnotes, "Tech. Department / Effective Date". Improvements: a line saying what Set means on that line;
+  the product under each order; every formulation of an order with "Run first / Next / If reclaim runs out";
+  replaced materials printed as what to load ("F1203K (replaces Q1203K)"); James's naming decisions printed
+  (X0-256, "PP Virgin (F6502A)", "PP WB Reclaim (White Reclaim)"); weight-line Auto shown with its balance; an order
+  without a formulation gets one wide shaded row "ENGINEER TO COMPLETE" to write in, never a suggestion.
+- Rendered for 28 Sep from the draft (75 orders, 16 for an engineer) and checked page by page through Word's own PDF
+  export. Test `test_print_formulation_docx`. Not published (28 Sep already has Tech's issued FRM).
+- **Next:** a way to record an engineer's decision for an Exception (e.g. "use the suggestion" / "same as order X")
+  so the re-render fills it in; today the engineer writes it on the printed row.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1583,6 +1608,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.32 | 2026-09-29 | Claude Code (local, with James Kuo) | **Print-ready Word formulation (§7.42)**: `daily/render_frm.py`, IWPFO055 issue block, one page per line, every formulation. |
 | 1.31 | 2026-09-29 | Claude Code (local, with James Kuo) | **Operator and production manager views (§7.41)**; # Plt 999 confirmed as an AS400 limit (Info, real count shown). |
 | 1.30 | 2026-09-29 | Claude Code (local, with James Kuo) | **Customer formulas parked for naming; every formulation always given (§7.40).** |
 | 1.29 | 2026-09-29 | Claude Code (local, with James Kuo) | **Reclaim first (§7.39)**: several recipes under one code are expected; the daily check marks them Info unless unexplained. |
