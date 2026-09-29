@@ -312,6 +312,7 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
         <label class="drop" id="drop" for="scanfile">
           <strong>Drop a schedule scan here</strong>
           <span>PDF from the copier (or page images). CNV and FRM pages in the same file are skipped.</span>
+          <span class="caps" id="dropnote"></span>
           <input id="scanfile" type="file" accept="application/pdf,image/jpeg,image/png" hidden>
         </label>
         <div class="genopts">
@@ -567,17 +568,26 @@ const ORDER_RX = /^[A-Z0-9]{6,8}-\d{1,3}$/;
 let sampleFn = null, imgCaps = null, busy = false, ctl = null;
 $('#gendate').value = new Date().toISOString().slice(0, 10);
 drop.classList.add('off');
-gmsg.textContent = 'Connecting to Claude…';
+const dropNote = $('#dropnote');
+const say = (t, inBox) => { gmsg.textContent = t; dropNote.textContent = inBox || ''; };
+say('Connecting to Claude…', 'Connecting to Claude…');
 (async () => {
   const s = window.claude?.use ? await window.claude.use('sample') : null;
-  const lim = s ? await s.limits().catch(() => null) : null;
-  if (!s || !lim?.images) {
-    gmsg.textContent = s ? 'This viewer cannot send images to Claude, so a scan cannot be read here.'
-                         : 'Reading a scan needs the Claude viewer: open this page on claude.ai or in the Claude app.';
+  if (!s) {
+    say(window.claude?.use ? 'This view did not give the page access to Claude (claude.use("sample") answered null). Open the artifact from claude.ai or the Claude app, signed in, rather than a saved copy or a direct link in another browser.'
+                           : 'This copy of the page is not running inside a Claude viewer, so it cannot ask Claude to read a scan.',
+        'Not available in this view: see the note beside this box');
     return;
   }
-  sampleFn = s; imgCaps = lim.images; drop.classList.remove('off');
-  gmsg.textContent = 'Ready. Reading a scan uses your own Claude usage; you are asked once before the first call.';
+  const lim = await s.limits().catch(e => ({failed: e?.code || 'unknown'}));
+  if (lim && !lim.failed && !lim.images) {
+    say('This viewer answers text but cannot send images to Claude (its limits list no images), so a scan cannot be read here. Try the page on claude.ai in a desktop browser, or in the Claude desktop app.',
+        'This viewer cannot send images to Claude: see the note beside this box');
+    return;
+  }
+  // a failed limits() check is not a reason to block: the first real call says what is wrong
+  sampleFn = s; imgCaps = lim?.images || {maxCount: 1}; drop.classList.remove('off');
+  say('Ready. Reading a scan uses your own Claude usage; you are asked once before the first call.' + (lim?.failed ? ` (limits check: ${lim.failed})` : ''), 'Ready');
 })();
 ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); if (sampleFn && !busy) drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
