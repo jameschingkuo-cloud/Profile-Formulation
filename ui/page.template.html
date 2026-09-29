@@ -131,6 +131,9 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 .gentable .fl{display:grid;gap:4px}
 .gentable details summary{cursor:pointer;font:600 14px var(--f-mono)}
 .gentable details table{margin:6px 0 4px}
+.genalt{display:grid;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.genaltrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.genalt textarea{width:100%;box-sizing:border-box;font:13px var(--f-mono);padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink)}
 @media (max-width:860px){.genrow{grid-template-columns:1fr}}
 .drop strong{color:var(--ink);font-family:var(--f-display);font-size:20px;font-weight:600}
 .two{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
@@ -320,6 +323,16 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
           <button type="button" id="genstop" class="btn" hidden>Stop</button>
           <div id="genmsg" class="muted" role="status" aria-live="polite"></div>
         </div>
+      </div>
+      <div class="genalt">
+        <div class="caps">Without reading a scan</div>
+        <div class="genaltrow">
+          <button type="button" class="btn" id="gentrans">Use the transcribed schedule</button>
+          <span class="muted" id="gentransnote"></span>
+        </div>
+        <label for="genpaste" class="muted" style="font-size:13px">Or paste rows from the EXT workbook (Line, Order, Prod Code: whole rows are fine, other columns are ignored)</label>
+        <textarea id="genpaste" rows="4" spellcheck="false" placeholder="SE11	H69A039-1	DPP30WB1023"></textarea>
+        <div><button type="button" class="btn ghost" id="genpastebtn">Generate from pasted rows</button></div>
       </div>
       <div id="genpages" class="genpages"></div>
       <div id="genout"></div>
@@ -595,6 +608,39 @@ drop.addEventListener('drop', e => generate(e.dataTransfer.files));
 $('#scanfile').addEventListener('change', e => { generate(e.target.files); e.target.value = ''; });
 drop.addEventListener('click', e => { if (!sampleFn || busy) e.preventDefault(); });
 gstop.addEventListener('click', () => ctl?.abort());
+// Without reading a scan (a viewer that cannot send images to Claude): the transcribed schedule for the date, or rows
+// pasted from the EXT workbook. Same lookup and Tech comparison as a read scan.
+function transNote(){
+  const d = $('#gendate').value, t = (D.sched_by_date || {})[d];
+  $('#gentrans').disabled = !t;
+  $('#gentransnote').textContent = t ? `${t.length} orders transcribed for ${fmtDate(d)}` : `No transcribed schedule for ${d || 'this date'}; pick a date that has one (${Object.keys(D.sched_by_date || {}).map(fmtDate).join(', ')})`;
+}
+$('#gendate').addEventListener('change', transNote); transNote();
+function readsFrom(rows, source){
+  const by = {};
+  rows.forEach(([line, order, prod]) => { (by[line] = by[line] || []).push({order, prod}); });
+  return Object.entries(by).map(([line, orders]) => ({page: source, line, orders}));
+}
+$('#gentrans').addEventListener('click', () => {
+  const d = $('#gendate').value, t = (D.sched_by_date || {})[d];
+  if (!t) return;
+  gpages.innerHTML = '';
+  render(readsFrom(t, 'transcribed'), d, null);
+  gmsg.textContent = `Generated from the transcribed schedule for ${fmtDate(d)} (${t.length} orders). The scan itself was not read.`;
+});
+$('#genpastebtn').addEventListener('click', () => {
+  const rows = [];
+  $('#genpaste').value.split(/\r?\n/).forEach(l => {
+    const u = l.toUpperCase(), line = (u.match(/\bSE\d\d\b/) || [])[0];
+    const order = (u.replace(/(\S)\s*-\s*(\d{1,3})\b/g, '$1-$2').match(/\b[A-Z0-9]{6,8}-\d{1,3}\b/) || [])[0];
+    const prod = (u.match(/\b[A-Z]{3}(?:\d{2}|[A-Z]0)[A-Z]{2}\d{1,5}\b/) || [])[0];
+    if (line && order && prod) rows.push([line, order, prod]);
+  });
+  if (!rows.length) { gmsg.textContent = 'No rows found: each pasted row needs a line (SE11), an order (H69A039-1) and a product code (DPP30WB1023).'; return; }
+  gpages.innerHTML = '';
+  render(readsFrom(rows, 'pasted'), $('#gendate').value, null);
+  gmsg.textContent = `Generated from ${rows.length} pasted row(s) for ${fmtDate($('#gendate').value)}.`;
+});
 
 let pdfjs = null;
 function loadPdfJs(){
@@ -729,7 +775,7 @@ function render(reads, date, nPages){
         ? `<span class="noform">ENGINEER TO COMPLETE</span><div class="muted" style="font-size:13px">${esc(r.why)}</div>`
         : `<div class="fl">${r.formulas.map((f, k, all) => `<details><summary>${esc(whenLabel(f, k, all))} · ${esc(f.code)}</summary>${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></details>`).join('')}
            <div class="muted" style="font-size:12px">${r.how === 'last' ? `As issued ${fmtDate(r.date)}` : 'Engineer decision (approved in the master)'}</div></div>`;
-      return `<tr><td class="mono">${i + 1}</td><td><b class="mono">${esc(o.order)}</b>${okOrder ? '' : ' <span class="chip crit">check</span>'}<div class="muted" style="font-size:12px">scan p${esc(o.page)}</div></td>
+      return `<tr><td class="mono">${i + 1}</td><td><b class="mono">${esc(o.order)}</b>${okOrder ? '' : ' <span class="chip crit">check</span>'}<div class="muted" style="font-size:12px">${/^\d+$/.test(o.page) ? 'scan p' + esc(o.page) : esc(o.page)}</div></td>
         <td class="mono">${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}</td><td>${form}</td><td>${vs}</td></tr>`;
     }).join('');
     return `<div class="genline"><h3>Line ${meta.no} · ${line} <span class="chip ${weight ? 'weight' : 'auger'}">${weight ? 'Weight %' : 'Auger speed'}</span></h3>
