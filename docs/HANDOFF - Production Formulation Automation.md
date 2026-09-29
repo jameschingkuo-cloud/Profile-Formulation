@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.32 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.33 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1480,6 +1480,19 @@ Tech's page:
 - **Next:** a way to record an engineer's decision for an Exception (e.g. "use the suggestion" / "same as order X")
   so the re-render fills it in; today the engineer writes it on the printed row.
 
+## 7.43 Engineer completes an Exception in the database; the re-run fills it (29 Sep 2026)
+
+James: *"yes this allow the engineer to update the data base and trigger a re run"*. Built the loop:
+- `daily/resolve.py`: after "last issued for this order on this line", it now looks up **approved** Product to Formula
+  rows in the Formulation Master (with that line's Line Settings), in run order (Primary, then more reclaim before
+  less, run-out last). Draft rows are never used. The master is pre-flighted first (unlogged edit: STOP; no accepted
+  version: not used). Such rows show How Resolved "Product to Formula", source "Formulation Master, approved by ...".
+- New `db/assign_formula.py`: records the engineer's decision (product, line, formulas in run order), approving
+  existing Draft rows or adding new ones, each logged in the Change Log; stops if a formula has no settings on that line.
+- Test `test_engineer_decision_fills_the_rerun` (on a copy of the published master): RP26928-1 is an Exception until
+  RPAA0WB318 on SE22 is approved for FUA060WBA / FUA060WBA / FUA010WBA; the re-run then fills it with all three in order.
+- CLAUDE.md "Print formulation for the floor" step 4 describes the loop.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1608,6 +1621,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.33 | 2026-09-29 | Claude Code (local, with James Kuo) | **Exceptions completed in the database, re-run fills them (§7.43)**: resolve uses approved Product to Formula; `db/assign_formula.py`. |
 | 1.32 | 2026-09-29 | Claude Code (local, with James Kuo) | **Print-ready Word formulation (§7.42)**: `daily/render_frm.py`, IWPFO055 issue block, one page per line, every formulation. |
 | 1.31 | 2026-09-29 | Claude Code (local, with James Kuo) | **Operator and production manager views (§7.41)**; # Plt 999 confirmed as an AS400 limit (Info, real count shown). |
 | 1.30 | 2026-09-29 | Claude Code (local, with James Kuo) | **Customer formulas parked for naming; every formulation always given (§7.40).** |

@@ -95,6 +95,56 @@ def draft_rows(line, order, product, rec):
     return rows
 
 
+def approved_master():
+    """Engineer decisions from the Formulation Master (James Kuo, 29 Sep 2026: an Exception is completed by an engineer
+    in the database, then the run is repeated). Only APPROVED Product to Formula rows are used, with that line's
+    settings; the master is pre-flighted first (hard rule). Returns {(line, product): [formula dicts in run order]}."""
+    from db import preflight, schema
+    pub = config.published_path(schema.FM)
+    if not (pub and pub.exists()):
+        return {}, None
+    ok, lines, (cur, _log) = preflight.check(schema.FM)
+    if ok is None:            # no accepted version yet: cannot vouch for it, so do not use it
+        print("Formulation Master has no accepted version (db/preflight.py accept --baseline); not used for this draft.")
+        return {}, None
+    if ok is False:
+        print("\n".join(lines))
+        raise SystemExit("STOP: the Formulation Master has changes without an approved Change Log row. Nothing built.")
+    mats = cur["Materials"]
+    text = {k: (m.get("FRM Text") or m.get("Name") or k) for k, m in mats.items()}
+    notes = {(f["Formula Code"], f["Variant"]): f.get("When to Use") or "" for f in cur["Formulas"].values()}
+    settings = {}
+    for s in cur["Line Settings"].values():
+        settings.setdefault((s["Line Code"], s["Formula Code"], s["Variant"]), []).append(s)
+    out = {}
+    for p in cur["Product to Formula"].values():
+        if p["Status"] != "Approved":
+            continue
+        key = (p["Line Code"], p["Formula Code"], p["Variant"])
+        if key not in settings:
+            continue          # approved, but no settings on this line: stays an Exception (reason says so)
+        rows = settings[key]
+        reclaim = sum(float(s["Set"]) for s in rows if "RCL" in (s["Material ID"] or "") and s["Set"].replace(".", "", 1).isdigit())
+        out.setdefault((p["Line Code"], p["Product Code"]), []).append({
+            "formula_code": p["Formula Code"], "variant": p["Variant"], "note": notes.get((p["Formula Code"], p["Variant"]), ""),
+            "approved_by": p.get("Approved By") or "", "rank": (p["Priority"] != "Primary", p["Variant"] == "Reclaim run-out", -reclaim),
+            "feeders": {(s["Extruder"] + " " + s["Feeder"]).strip(): {"material": text.get(s["Material ID"], s["Material ID"]), "set": s["Set"]}
+                        for s in rows}})
+    for k in out:
+        out[k].sort(key=lambda f: f["rank"])
+    return out, pub
+
+
+def master_rows(line, order, product, formulas):
+    rows = []
+    for i, f in enumerate(formulas):
+        for col, v in f["feeders"].items():
+            ext, feeder = split_feeder(col)
+            rows.append([line, order, product, f["formula_code"], f["variant"], ext, feeder, None, v["material"], v["set"], None,
+                         "Product to Formula", None, f"Formulation Master, approved by {f['approved_by']}", i + 1, f["note"]])
+    return rows
+
+
 def main():
     if not PKT:
         raise SystemExit("Set PKT_DATE=YYYY-MM-DD")
@@ -104,6 +154,7 @@ def main():
     today = packets[PKT]
     by_order, by_product = issued_history(packets, PKT)
     history_dates = sorted(d for d in packets if d < PKT and packets[d]["frm"])
+    approved, _ = approved_master()
 
     draft, exceptions = [], []
     for pg in today["ext"]:
@@ -112,6 +163,9 @@ def main():
             rec = by_order.get((line, order))
             if rec:
                 draft += draft_rows(line, order, product, rec)
+                continue
+            if (line, product) in approved:      # an engineer decided it in the master
+                draft += master_rows(line, order, product, approved[(line, product)])
                 continue
             hint = ""
             prod_rec = by_product.get((line, product))

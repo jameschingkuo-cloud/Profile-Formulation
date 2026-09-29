@@ -207,3 +207,41 @@ def test_print_formulation_docx(tmp_path):
     for row in rows:                                                          # an exception is never filled from a suggestion
         if row.cells[0].text.startswith('RP26928-1'):
             assert any('ENGINEER TO COMPLETE' in c.text for c in row.cells) and not any('FUA060WBA' in c.text for c in row.cells)
+
+
+def test_engineer_decision_fills_the_rerun(tmp_path):
+    """James, 29 Sep 2026: an Exception is completed by an engineer in the database, then the run is repeated.
+    db/assign_formula.py approves Product to Formula rows (logged); resolve.py then fills the order, every formulation."""
+    import shutil
+    from openpyxl import load_workbook
+    pub, out = tmp_path / 'pub', tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
+               SNAP_DIR=str(tmp_path / 'snap'), PKT_DATE='2026-09-28')
+    py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
+    name = 'Formulation Master.xlsx'
+    live = config.published_path(name)                       # a copy of the published master (read only)
+    if not (live and live.exists()):
+        pytest.skip('Formulation Master not published on this PC')
+    (pub / 'Formulation Data Base').mkdir(parents=True)
+    shutil.copy(live, pub / 'Formulation Data Base' / name)
+    assert py(str(ROOT / 'db' / 'preflight.py'), 'accept', name, '--baseline').returncode == 0
+
+    def exceptions():
+        assert py(str(ROOT / 'daily' / 'resolve.py')).returncode == 0
+        wb = load_workbook(out / 'FRM Draft 2026-09-28.xlsx', read_only=True)
+        exc = [x[1] for x in list(wb['Exceptions'].iter_rows(values_only=True))[1:]]
+        draft = [x for x in list(wb['Draft'].iter_rows(values_only=True))[1:] if x[1] == 'RP26928-1']
+        return exc, draft
+    exc, draft = exceptions()
+    assert 'RP26928-1' in exc and not draft                     # Draft rows in the master are not used
+    r = py(str(ROOT / 'db' / 'assign_formula.py'), '--line', 'SE22', '--product', 'RPAA0WB318', '--by', 'Test', '--why', 'test',
+           '--formula', 'FUA060WBA', 'Primary', '--formula', 'FUA060WBA', 'Other', '--formula', 'FUA010WBA', 'Reclaim run-out')
+    assert r.returncode == 0, r.stdout + r.stderr
+    shutil.copy(out / name, pub / 'Formulation Data Base' / name)   # as publish.py would
+    assert py(str(ROOT / 'db' / 'preflight.py'), 'accept', name).returncode == 0
+    exc, draft = exceptions()
+    assert 'RP26928-1' not in exc
+    assert [c for c in dict.fromkeys((x[14], x[3], x[4]) for x in draft)] == \
+        [(1, 'FUA060WBA', 'Primary'), (2, 'FUA060WBA', 'Other'), (3, 'FUA010WBA', 'Reclaim run-out')]
+    assert all(x[11] == 'Product to Formula' for x in draft)

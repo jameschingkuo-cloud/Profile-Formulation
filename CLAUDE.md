@@ -151,7 +151,12 @@ schedule. you will product a word formulation document for us to print out"*.
    - It is a **DRAFT** while any order is an Exception: that row prints "ENGINEER TO COMPLETE", never a suggestion.
    - IWPFO055 §5.3: Technical issues it (cover issue block); a copy goes in the Schedule binder (§5.4).
    - Every formulation of an order, in run order (reclaim first); replaced materials printed as what to load.
-4. When the engineer decides an Exception, record it, re-run steps 2-3, and publish the issued copy with
+4. The engineer completes each Exception **in the database** (James, 29 Sep 2026: *"this allow the engineer to update
+   the data base and trigger a re run"*): approved Product to Formula rows in the Formulation Master, in Excel with a
+   Change Log row, or through `python db/assign_formula.py --line .. --product .. --by .. --why .. --formula CODE VARIANT ...`
+   (run order: reclaim first, run-out last). Then publish the master, `db/preflight.py check` / `accept`, and re-run
+   steps 2-3: `resolve.py` uses the last issue for the order first, then **approved** Product to Formula rows (never
+   Draft ones). When no Exception is left the document reads READY TO ISSUE; publish the issued copy with
    `python publish.py "FRM Formulation <date>.docx"` (Daily Formulation Report folder).
 
 ## Calc workbooks → Formulation Master (when Tech's workbooks change)
