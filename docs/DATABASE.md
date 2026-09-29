@@ -111,7 +111,7 @@ Nothing reaches a master without a Change Log row that names an approver. That i
 1. **Renamed:** the calc-derived workbook is `Formulation Data Base\Formulation Calc Library.xlsx` (published 28 Sep,
    same content); `calc/build_formulation_master.py` now writes that name. `Formulation Master.xlsx` is the approved master.
 2. **Approval:** formulas and slopes by Tech; rules (dosing, R1/R2, hopper roles) by James. Names go in Approved By.
-3. **Material ID** = the IWPFT062 Material No. (e.g. `50-1560-050`), from IWPFT062 Rev 17.0. Plant materials with no
+3. **Material ID** = the IWPFT062 Material No. (e.g. `50-1560-050`), from IWPFT062 (Rev 17.0 at the seed; Rev 18.0 added PC5050 on 29 Sep 2026). Plant materials with no
    number get `INT-` IDs (reclaims, premix); materials used on the FRM but not on IWPFT062 get `NL-` IDs and a High issue.
 4. **Variants:** Primary, Reclaim run-out, VOIDFORM, Sign blank, Corn box, Roll, Other.
 5. **Folders:** the published files live in their database folders (done 28 Sep). The stale copies in the workspace
