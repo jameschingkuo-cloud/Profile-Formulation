@@ -36,8 +36,7 @@ WEIGHT_LINES = {'SE24', 'SE42', 'SE43', 'SE61'}   # load.DOSING / auger_rules.DO
 EXTRA_MATERIALS = [
     ('50-3963-301', 'Q1203K', 'Q1203K', 'Formosa', 'Withdrawn', 'HOMO',
      'Withdrawn from IWPFT062 at Rev 16.0 (Kevin Sung, 9.9.2026; "IWPFT062 Rev 16 - vendor list revision.md")'),
-    ('NL-HM-10HP', '', 'CaCO3 HM-10HP', 'Heritage', 'Not listed', 'CACO3',
-     'IWPFT062 lists HM10 MAX (CA410) only'),
+    # NL-HM-10HP was seeded on 28 Sep and retired on 29 Sep (same material as CA410; master Changes 6-7)
     ('NL-YUNGSOX-5050S', '', 'PP Yungsox 5050S', '', 'Not listed', 'SKIN', 'Not on IWPFT062'),
     ('INT-RCL-PP-MIX', '', 'PP Mix Reclaim', 'Plant', 'Not listed', 'RECLAIM', 'Plant reclaim (boxes / silo 8)'),
     ('INT-RCL-PP-WB', '', 'PP WB Reclaim', 'Plant', 'Not listed', 'RECLAIM', 'Plant reclaim, WB colour'),
@@ -55,7 +54,7 @@ MAP = {
     'F1203K': '50-3963-019', 'F1102K': '50-3963-002', 'Q1203K': '50-3963-301',
     'HiTalc ZS (or N40109A)': '50-7002-433',
     'CaCO3 -Heritage HM-10MAX': '50-7002-034', 'CaCO3 –Heritage HM-10MAX': '50-7002-034',
-    'CaCO3 -Heritage HM-10HP': 'NL-HM-10HP',
+    'CaCO3 -Heritage HM-10HP': '50-7002-034',   # same CaCO3 as CA410 (James Kuo, 29 Sep 2026; master Changes 1-7)
     'WB-W26038A': '50-7002-248', 'WB-W40020M': '50-7002-095', 'NPC NPC PE-W22151': '50-7002-393',
     'WM-W26329M': '50-7015-557', 'BD-B26004A': '50-7002-356', 'OF-PP-R34874 (New NPC orange color)': '50-7002-602',
     'OG-D26074A': '50-7002-372', 'BL-B26003A (OR NPC-B60387)': '50-7002-281', 'UV-N26177A': '50-7002-249',
@@ -75,8 +74,8 @@ MAP_ISSUES = [  # (severity, FRM text(s), check, detail)
      'F1102K (PH401, 50-3963-002) is In-active on IWPFT062 Rev 16.0, yet FUA151WB3 (SE43, RP26911-2, 28 Sep) and SE42 (25 Sep) use it'),
     ('High', ['PP Yungsox 5050S'], 'Material not on IWPFT062',
      'PP Yungsox 5050S (SE61 extruders B and D) is not on the qualified list. Add it to IWPFT062 or name the listed resin'),
-    ('High', ['CaCO3 -Heritage HM-10HP'], 'Material not on IWPFT062',
-     'Heritage HM-10HP (SE24, and FU0011WB5 on SE25) is not on the list; IWPFT062 carries HM10 MAX (CA410) only'),
+    ('Info', ['CaCO3 -Heritage HM-10HP'], 'Grade name differs from IWPFT062',
+     'FRM prints "Heritage HM-10HP" (SE24, FU0011WB5 on SE25); IWPFT062 CA410 reads "HM10 MAX". James Kuo, 29 Sep 2026: same CaCO3 -> 50-7002-034'),
     ('Medium', ['PP Virgin'], 'Resin not named',
      'SE23 corn box formulas print just "PP Virgin"; the other rows name F6502A (silo 3 or 4). Material ID left blank for an engineer'),
     ('Medium', ['KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)', 'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F',

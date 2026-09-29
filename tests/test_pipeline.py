@@ -125,7 +125,7 @@ def test_master_change_control(tmp_path):
     py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
     r = py(str(ROOT / 'db' / 'seed_master.py'))
     if r.returncode and 'IWPFT062' in (r.stdout + r.stderr):
-        pytest.skip('IWPFT062 not on this PC')
+        pytest.skip('IWPFT062 not readable (missing, or locked: open in Word or syncing)')
     assert r.returncode == 0, r.stdout + r.stderr
     name = 'Formulation Master.xlsx'
     (pub / 'Formulation Data Base').mkdir(parents=True)

@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-28T16:51:53",
-"change_log_max_id": 0,
+"accepted_at": "2026-09-29T09:09:38",
+"change_log_max_id": 7,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -2662,7 +2662,7 @@
 "Feeder": "V3",
 "Formula Code": "FSA200WB4",
 "Line Code": "SE24",
-"Material ID": "NL-HM-10HP",
+"Material ID": "50-7002-034",
 "Recipe Weight %": "",
 "Set": "10",
 "Slope Used": "",
@@ -2962,7 +2962,7 @@
 "Feeder": "Hopper 3",
 "Formula Code": "FU0011WB5",
 "Line Code": "SE25",
-"Material ID": "NL-HM-10HP",
+"Material ID": "50-7002-034",
 "Recipe Weight %": "",
 "Set": "3",
 "Slope Used": "",
@@ -4986,7 +4986,7 @@
 "Material Code": "CA410",
 "Material ID": "50-7002-034",
 "Name": "CaCO3 / HM10 MAX",
-"Other Spellings": "CaCO3 –Heritage HM-10MAX",
+"Other Spellings": "CaCO3 –Heritage HM-10MAX | CaCO3 -Heritage HM-10HP",
 "Role": "CACO3",
 "Status": "Draft",
 "Supplier": "Heritage"
@@ -5694,7 +5694,7 @@
 "Supplier": "Plant"
 },
 "NL-HM-10HP": {
-"Approved Substitutes": "IWPFT062 lists HM10 MAX (CA410) only",
+"Approved Substitutes": "Same material as CA410 50-7002-034 (James Kuo, 29 Sep 2026)",
 "Bulk Density (g/cm3)": "",
 "FRM Text": "CaCO3 -Heritage HM-10HP",
 "IWPFT062 Status": "Not listed",
@@ -5703,7 +5703,7 @@
 "Name": "CaCO3 HM-10HP",
 "Other Spellings": "",
 "Role": "CACO3",
-"Status": "Draft",
+"Status": "Retired",
 "Supplier": "Heritage"
 },
 "NL-YUNGSOX-5050S": {
@@ -7233,6 +7233,15 @@
 "Variant": "Primary",
 "Weight %": "89"
 },
+"FSA200WB4|Primary|A|50-7002-034": {
+"Balance": "No",
+"Extruder": "A",
+"Formula Code": "FSA200WB4",
+"Material ID": "50-7002-034",
+"Note": "from SE24 FRM 2026-09-28 p7",
+"Variant": "Primary",
+"Weight %": "10"
+},
 "FSA200WB4|Primary|A|50-7002-430": {
 "Balance": "No",
 "Extruder": "A",
@@ -7241,15 +7250,6 @@
 "Note": "from SE24 FRM 2026-09-28 p7",
 "Variant": "Primary",
 "Weight %": "1"
-},
-"FSA200WB4|Primary|A|NL-HM-10HP": {
-"Balance": "No",
-"Extruder": "A",
-"Formula Code": "FSA200WB4",
-"Material ID": "NL-HM-10HP",
-"Note": "from SE24 FRM 2026-09-28 p7",
-"Variant": "Primary",
-"Weight %": "10"
 },
 "FSA200WB4|Primary|B|50-1560-050": {
 "Balance": "No",

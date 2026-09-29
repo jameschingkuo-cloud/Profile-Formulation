@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.18 (28 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.19 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1303,6 +1303,19 @@ the 28 Sep files, not live and not editable. Source: `ui/page.template.html`, da
   the live SharePoint files (Microsoft 365 connector) or a snapshot published after each run; whether Tech signs the
   draft on the page (needs the `db` and `user` capabilities: a sign-off record per day).
 
+## 7.29 First master change through the Change Log: HM-10HP = CA410 (29 Sep 2026)
+
+James pointed to IWPFT062 *"50-7002-034 CA410 CaCO3 / HM10 MAX Heritage Active"* and *"thats the CACO3"*, and chose
+"Same material as CA410" for the FRM's "Heritage HM-10HP". Applied the way every master change goes (§7.27): the
+published master was copied to `out/`, edited, and **Changes 1-7** logged (Requested/Approved By James Kuo):
+Line Settings SE24 FSA200WB4 A V3 and SE25 FU0011WB5 VOIDFORM Hopper 3 -> 50-7002-034; the Recipe row re-keyed
+(removed + added); CA410 gains the spelling; `NL-HM-10HP` retired (kept, not deleted). Published; pre-flight matched
+all 7 to approved rows; accepted (`data/snapshots/`). The High issue is now Info. `db/seed_master.py` MAP updated to
+agree. Interface republished. Three High material issues remain: Q1203K, F1102K, PP Yungsox 5050S.
+
+Note: IWPFT062 could not be read on 29 Sep (permission denied: open in Word or syncing); the change did not need it.
+`test_master_change_control` skips while it is locked.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1431,6 +1444,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.19 | 2026-09-29 | Claude Code (local, with James Kuo) | **HM-10HP mapped to CA410 (§7.29)**: the first master change through the Change Log (Changes 1-7, approved by James); pre-flight accepted it. |
 | 1.18 | 2026-09-28 | Claude Code (local, with James Kuo) | **Interface design started (§7.28):** Profile Formulation Artifact (prototype on the 28 Sep snapshot); source in `ui/`. |
 | 1.17 | 2026-09-28 | Claude Code (local, with James Kuo) | **Masters maintained in Excel with change control (§7.27).** James: *"Yes to all. lets build it this way"*. Calc workbook renamed Formulation Calc Library; Draft Formulation Master seeded from IWPFT062 Rev 17.0 + the four FRMs and published; `db/preflight.py` stops on unlogged edits. IWPFT062 raises 4 High material issues (Q1203K, F1102K, Yungsox, HM-10HP). |
 | 1.16 | 2026-09-28 | Claude Code (local, with James Kuo) | **The three history records built (§7.26).** James: *"build them"*. `daily/record.py` (append-only, enforced and tested); Formulation Report Record 1,656 rows, Extrusion Production Record 308, Converting Production Record 270, from the 23–28 Sep packets. Schema: `Formula Row` key, `Note`, `Source Scan`, `Handwritten`. Published (James: *"yes"*); §11 updated. |
