@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.19 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.20 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1316,6 +1316,14 @@ agree. Interface republished. Three High material issues remain: Q1203K, F1102K,
 Note: IWPFT062 could not be read on 29 Sep (permission denied: open in Word or syncing); the change did not need it.
 `test_master_change_control` skips while it is locked.
 
+## 7.30 Q1203K replaced by F1203K (29 Sep 2026)
+
+James: *"yes. Q1203K is replaced by F1203K"*. Master **Changes 8-12** (approved by James Kuo) through the new reusable
+`db/replace_material.py OLD NEW --by --why`: SE42 FU0021WB4 V3 Material ID 50-3963-301 -> 50-3963-019 (F1203K,
+PH1203); the Recipe row re-keyed; Q1203K retired with "Replaced by 50-3963-019". Published, pre-flight matched all 5,
+accepted. The issue stays open as **Medium** until Tech corrects the SE42 FRM page (it still prints Q1203K).
+High material issues left: F1102K (In-active, SE43 FUA151WB3) and PP Yungsox 5050S (SE61, not on IWPFT062).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1444,6 +1452,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.20 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K replaced by F1203K (§7.30)**: master Changes 8-12 via the new `db/replace_material.py`; pre-flight accepted. |
 | 1.19 | 2026-09-29 | Claude Code (local, with James Kuo) | **HM-10HP mapped to CA410 (§7.29)**: the first master change through the Change Log (Changes 1-7, approved by James); pre-flight accepted it. |
 | 1.18 | 2026-09-28 | Claude Code (local, with James Kuo) | **Interface design started (§7.28):** Profile Formulation Artifact (prototype on the 28 Sep snapshot); source in `ui/`. |
 | 1.17 | 2026-09-28 | Claude Code (local, with James Kuo) | **Masters maintained in Excel with change control (§7.27).** James: *"Yes to all. lets build it this way"*. Calc workbook renamed Formulation Calc Library; Draft Formulation Master seeded from IWPFT062 Rev 17.0 + the four FRMs and published; `db/preflight.py` stops on unlogged edits. IWPFT062 raises 4 High material issues (Q1203K, F1102K, Yungsox, HM-10HP). |

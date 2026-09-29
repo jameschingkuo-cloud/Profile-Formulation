@@ -68,8 +68,8 @@ MAP = {
     'PP Virgin': None,   # resin not named on the page: an engineer names it
 }
 MAP_ISSUES = [  # (severity, FRM text(s), check, detail)
-    ('High', ['Q1203K'], 'Withdrawn material on the FRM',
-     'Q1203K (50-3963-301) was withdrawn from IWPFT062 at Rev 16.0 (9.9.2026), yet SE42 prints it (V3) on all four packets. Should it read F1203K (PH1203)?'),
+    ('Medium', ['Q1203K'], 'FRM page still prints a withdrawn material',
+     'SE42 FU0021WB4 V3 prints Q1203K (withdrawn at IWPFT062 Rev 16.0). James Kuo, 29 Sep 2026: replaced by F1203K (50-3963-019); master Changes 8-12. Tech to correct the SE42 page'),
     ('High', ['F1102K'], 'In-active material in a current formula',
      'F1102K (PH401, 50-3963-002) is In-active on IWPFT062 Rev 16.0, yet FUA151WB3 (SE43, RP26911-2, 28 Sep) and SE42 (25 Sep) use it'),
     ('High', ['PP Yungsox 5050S'], 'Material not on IWPFT062',

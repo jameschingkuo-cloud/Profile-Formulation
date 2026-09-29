@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-29T09:09:38",
-"change_log_max_id": 7,
+"accepted_at": "2026-09-29T09:17:27",
+"change_log_max_id": 12,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -3742,7 +3742,7 @@
 "Feeder": "V3",
 "Formula Code": "FU0021WB4",
 "Line Code": "SE42",
-"Material ID": "50-3963-301",
+"Material ID": "50-3963-019",
 "Recipe Weight %": "",
 "Set": "10",
 "Slope Used": "",
@@ -4966,7 +4966,7 @@
 "Supplier": "Formosa"
 },
 "50-3963-301": {
-"Approved Substitutes": "Withdrawn from IWPFT062 at Rev 16.0 (Kevin Sung, 9.9.2026; \"IWPFT062 Rev 16 - vendor list revision.md\")",
+"Approved Substitutes": "Replaced by 50-3963-019 (James Kuo, 29 Sep 2026)",
 "Bulk Density (g/cm3)": "",
 "FRM Text": "Q1203K",
 "IWPFT062 Status": "Withdrawn",
@@ -4975,7 +4975,7 @@
 "Name": "Q1203K",
 "Other Spellings": "",
 "Role": "HOMO",
-"Status": "Draft",
+"Status": "Retired",
 "Supplier": "Formosa"
 },
 "50-7002-034": {
@@ -7314,11 +7314,11 @@
 "Variant": "Primary",
 "Weight %": "49"
 },
-"FU0021WB4|Primary||50-3963-301": {
+"FU0021WB4|Primary||50-3963-019": {
 "Balance": "No",
 "Extruder": "",
 "Formula Code": "FU0021WB4",
-"Material ID": "50-3963-301",
+"Material ID": "50-3963-019",
 "Note": "from SE42 FRM 2026-09-28 p11",
 "Variant": "Primary",
 "Weight %": "10"
