@@ -184,6 +184,8 @@ for pc in sorted(set(P) | set(old) | set(CALC)):
                 if prev and k not in QUIET: changed.append(f"{h} new {v}")
                 elif k in QUIET and k != 'formula_last': quiet = True     # formula_last: compared as max date below
         if o is not None and not prev and new_v and k not in QUIET: changed.append(f"{h} added")
+        if k == 'formula':                              # most recent first (the column's header comment)
+            merged = [v for v in merged if v not in prev] + list(prev)
         M[k] = merged
     if o is not None and not o.get('source'):          # masters built before the Source column came only from packets
         M['source'] = ['Packet'] + [x for x in M.get('source', []) if x != 'Packet']

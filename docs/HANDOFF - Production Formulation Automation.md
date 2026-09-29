@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.35 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.36 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1528,6 +1528,33 @@ FRM pages.
 - **Records**: Extrusion (+76) and Converting (+62) appended and published. Formulation Report Record: nothing appended
   (no issued formulation yet); today's rows follow when the document is issued (CLAUDE.md step 5).
 
+## 7.45 Tech's 29 Sep FRM reviewed and loaded; interface copy decided (29 Sep 2026)
+
+James sent Tech's FRM pages (doc05261320260929142259.pdf, 13 pages): *"excellent. I didnt see any mistake. Here are the
+missing data. Review to see if there is anything wrong. also update your data base with it"*.
+- **Transcribed** into `packet_2026-09-29.json` (`frm`, `frm_source_scan`); all 76 scheduled orders are on the pages.
+- **Draft vs Tech**: the pipeline's draft (made before the pages came) equals Tech's issue field for field on 71 of 72
+  proposed orders. RP26810-1 differs: Tech added a second formula FU0041KS4 (PP Mix Reclaim 70). The 4 Exceptions are
+  the 4 new orders; Tech wrote FU0012BL5 (H69A203-1), FU0001RF6 (H67A164-2), FU0070KS6 (H67A164-1) and grouped
+  RP26604-1 on SE24 FUA152WB4 (as the handwritten "Run with RPA40WB3051" said).
+- **Review findings** (manual issues and interface Open items): H69A203-1 FU0012BL5 prints "PP Virgin-silo 3 (DOW-C104)"
+  (not on IWPFT062; nearest PC104 = TI4015F Braskem; asked James), F1102K on a new formula (read as F1203K), and
+  "CaCO3 -Heritage HM-10HP (BayShore BI-113)" (BayShore not on IWPFT062); RP26810-1 lists the virgin formula before the
+  reclaim one with no note (asked James which runs first). RF = red: IWPFT062 50-7002-601 CR400RF "Red / R26006A".
+  A pen loop on the SE11 page: James, *"disregard the loop. someone had a question so i circle it while explaining"*.
+  Auger hopper rules: 180 settings on Tech's auger-line pages, none outside them.
+- **Database updated**: FRM Formulation Report 2026-09-29, EXT/CNV (issue lists), Product Master (formula codes, now most
+  recent first as its header says; `daily/build_master.py` fixed) published; Formulation Report Record +441 rows.
+  Formulation Master: Materials spellings (Changes 53-55: RF-R26006A, "BL-B26003A (or NPC-B60387)", the BayShore CaCO3
+  text) and new `db/import_frm.py` (Changes 56-82: 4 formulas, 18 line settings, 5 product-to-formula rows, all Draft).
+  FU0012BL5 Hopper 1 (DOW-C104, 63) is NOT in the master until James names the resin. Test
+  `test_import_frm_adds_only_what_is_missing`.
+- **Interface (§7.28)**: James, *"lets keep a copy create a separate folder in the fomulation record for now to hold these
+  file. No Tech sign off require"*. `ui/build.py` now reads the published, pre-flighted master and records (no longer
+  out/ or typed-in figures), computes draft-vs-Tech from the day's FRM Draft, and writes `Profile Formulation <date>.html`,
+  published to **Daily Formulation Report/Interface Copy** (new `schema.Book`, daily, kept as issued). The "Tech signs"
+  step is off the page. Artifact republished (version 16).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1656,6 +1683,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.36 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tech's 29 Sep FRM reviewed and loaded; interface copy folder (§7.45)**: draft = Tech on 71/72; `db/import_frm.py` (master Changes 53-82); Formulation Report Record +441; Interface Copy folder, no Tech sign-off. |
 | 1.35 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tesseract 5.4 installed; glyph reader header anchor fixed (§7.44)**: 29 Sep crosscheck 67/76, rest settled for the transcription. |
 | 1.34 | 2026-09-29 | Claude Code (local, with James Kuo) | **First end-to-end run from a schedule-only scan (§7.44)**: 29 Sep packet, Product Master, FRM Draft + docx, `daily/auger_check.py`, EXT/CNV records; build_master syntax fix; no-FRM check fix. |
 | 1.33 | 2026-09-29 | Claude Code (local, with James Kuo) | **Exceptions completed in the database, re-run fills them (§7.43)**: resolve uses approved Product to Formula; `db/assign_formula.py`. |

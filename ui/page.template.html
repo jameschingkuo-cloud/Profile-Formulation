@@ -192,7 +192,7 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
       <h1>Profile Formulation</h1>
       <div class="sub" id="sub"></div>
     </div>
-    <div class="proto">Design prototype. The figures are a snapshot of the published 28 Sep 2026 files; nothing here is live or editable yet.</div>
+    <div class="proto" id="proto"></div>
   </header>
 
   <section class="strip" id="strip" aria-label="Today at a glance"></section>
@@ -405,13 +405,14 @@ $('#mkv').innerHTML = [['Formulas', D.master.formulas], ['Line settings', D.mast
   .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
 
 // ---- daily run
+$('#proto').textContent = `Copy of the published files after the ${fmtDate(D.day)} run (built ${D.built}); refreshed after each daily run, not live.`;
 $('#flow').innerHTML = [
-  ['done', 'Scan', 'EXT + CNV 25 pp; FRM 13 pp, scanned separately'],
-  ['done', 'Transcribe + check', '75 orders; glyph reader cross-check; line totals tie'],
+  ['done', 'Scan', `Schedule ${D.scans.packet}; FRM ${D.scans.frm}`],
+  ['done', 'Transcribe + check', `${D.stats.orders} orders; glyph reader cross-check; line totals tie`],
   ['done', 'Draft', `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
   ['done', 'Publish', 'EXT, CNV, FRM workbooks; Product Master merged'],
   ['done', 'Records', 'Appended to the three history records'],
-  ['now', 'Tech signs', 'Next: Tech approves the draft instead of retyping it'],
+  ['done', 'Interface copy', 'Saved to Daily Formulation Report \ Interface Copy (no Tech sign-off: James, 29 Sep 2026)'],
 ].map(([c, b, s], i) => `<div class="${c}"><span class="st">${c === 'done' ? 'Done' : c === 'now' ? 'Next' : 'Later'}</span><b>${b}</b><small>${s}</small></div>`).join('');
 $('#rec').innerHTML = `<thead><tr><th>Record</th><th>Rows</th><th>Packets</th></tr></thead><tbody>${[['Formulation Report Record', D.records.frm], ['Extrusion Production Record', D.records.ext], ['Converting Production Record', D.records.cnv]].map(([n, r]) =>
   `<tr><td>${n}</td><td>${r.toLocaleString()}</td><td>${D.dates.map(fmtDate).join(', ')}</td></tr>`).join('')}</tbody>`;

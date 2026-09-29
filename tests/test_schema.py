@@ -26,7 +26,7 @@ def test_every_book_has_read_me_and_a_folder():
     folders = {"Product Master", "Formulation Data Base", "Daily Formulation Report",
                "Extrusion Schedule", "Converting Schedule"}
     for b in schema.BOOKS:
-        assert b.folder in folders, b.name
+        assert b.folder.split("/")[0] in folders, b.name   # a subfolder of one of them (Interface Copy, 29 Sep 2026)
         if b.name.endswith(".xlsx"):   # the printed formulation (.docx) has no sheets; its cover carries the sources
             assert "Read Me" in [s.name for s in b.sheets], b.name
 
@@ -37,6 +37,7 @@ def test_destination_by_name():
     assert schema.destination("Product Master.xlsx") == "Product Master"
     assert schema.destination("Formulation Master.xlsx") == "Formulation Data Base"
     assert schema.destination("something else.xlsx") is None
+    assert schema.destination("Profile Formulation 2026-09-29.html") == "Daily Formulation Report/Interface Copy"
 
 
 def test_templates_pass_their_own_check(tmp_path):

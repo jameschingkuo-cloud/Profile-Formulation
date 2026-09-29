@@ -137,8 +137,17 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
    `python daily/record.py <date>` and
    `python publish.py "Formulation Report Record.xlsx" "Extrusion Production Record.xlsx" "Converting Production Record.xlsx"`.
    The records are append-only: a date already recorded is skipped if identical; if it differs the script stops.
-8. Run `python -m pytest -q`, then commit the packet JSON, the manual issues and `data/published_manifest.json`.
-9. Handoff: add the day's notes (as in §7.10) and a revision-history row.
+8. When Tech's FRM pages are in the packet: `python db/import_frm.py --date <date> --by .. --why ..` adds the formulas,
+   line settings and product-to-formula rows the Formulation Master lacks, as Draft rows logged in its Change Log
+   (James, 29 Sep 2026: *"update your data base with it"*). It never changes a setting (differences are listed) and
+   never writes an unmapped material (add the spelling in Materials with `db/edit_master.py` first). Then publish,
+   `db/preflight.py check` / `accept`.
+9. Interface copy (James, 29 Sep 2026: *"lets keep a copy create a separate folder in the fomulation record for now to
+   hold these file. No Tech sign off require"*): `PKT_DATE=<date> python ui/build.py`, then
+   `python publish.py "Profile Formulation <date>.html"` (Daily Formulation Report/Interface Copy) and republish the
+   artifact from `out/profile-formulation.html`.
+10. Run `python -m pytest -q`, then commit the packet JSON, the manual issues and `data/published_manifest.json`.
+11. Handoff: add the day's notes (as in §7.10) and a revision-history row.
 
 ## Print formulation for the floor (an engineer sends the schedule scan)
 

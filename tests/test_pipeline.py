@@ -260,3 +260,26 @@ def test_reader_header_anchor_survives_rod():
     no_weight, _ = e.anchors(line([(w, x) for w, x in words if w not in ('Prod', 'Weight')]))
     assert good and rod and no_weight is None
     assert all(abs(good(k) - rod(k)) <= 1 for k in e.REF)
+
+
+def test_import_frm_adds_only_what_is_missing(tmp_path):
+    """James, 29 Sep 2026 (Tech's FRM): "update your data base with it". db/import_frm.py adds the day's new formulas as
+    logged Draft rows; a second run adds nothing; a material with no mapping (DOW-C104) is never written."""
+    import shutil
+    pub, out = tmp_path / 'pub', tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
+               SNAP_DIR=str(tmp_path / 'snap'))
+    py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
+    name = 'Formulation Master.xlsx'
+    live = config.published_path(name)
+    if not (live and live.exists()):
+        pytest.skip('Formulation Master not published on this PC')
+    (pub / 'Formulation Data Base').mkdir(parents=True)
+    shutil.copy(live, pub / 'Formulation Data Base' / name)
+    assert py(str(ROOT / 'db' / 'preflight.py'), 'accept', name, '--baseline').returncode == 0
+    r = py(str(ROOT / 'db' / 'import_frm.py'), '--date', '2026-09-29', '--by', 'test', '--why', 'test', '--dry-run')
+    assert r.returncode == 0, r.stderr
+    assert 'DIFFERS' not in r.stdout                                   # retired spellings do not shadow active ones
+    assert [l for l in r.stdout.splitlines() if l.startswith('NOT WRITTEN')] == \
+        ['NOT WRITTEN (material not mapped): SE21 FU0012BL5 Primary  Hopper 1: "PP Virgin-silo 3 (DOW-C104)" 63 (orders H69A203-1)']

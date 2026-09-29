@@ -7,6 +7,27 @@
       "items": [
         {
           "sev": "Medium",
+          "title": "DOW-C104 on a new formula",
+          "detail": "H69A203-1 FU0012BL5 (SE21, 29 Sep) Hopper 1 prints \"PP Virgin-silo 3 (DOW-C104)\" 63. DOW-C104 is not on IWPFT062 (nearest: PC104 = TI4015F, Braskem); silo 3 normally holds F6502A. That one setting is not in the master until you say which resin it is.",
+          "where": "FRM SE21",
+          "source": "FRM 29 Sep p4"
+        },
+        {
+          "sev": "Medium",
+          "title": "RP26810-1: reclaim formula listed second",
+          "detail": "FUA152KS4 (no reclaim) is listed before the new FU0041KS4 (PP Mix Reclaim 70), with no note. The plant rule is reclaim first, virgin as the fallback. Which runs first?",
+          "where": "FRM SE21",
+          "source": "FRM 29 Sep p4"
+        },
+        {
+          "sev": "Medium",
+          "title": "F1102K on a new formula",
+          "detail": "FU0012BL5 (new on 29 Sep) Hopper 3 prints F1102K, which is obsolete (replaced by F1203K). Recorded as F1203K; Tech to correct the formula. BayShore BI-113 on the same formula (CaCO3) is not on IWPFT062.",
+          "where": "FRM SE21",
+          "source": "FRM 29 Sep p4"
+        },
+        {
+          "sev": "Medium",
           "title": "Same code, different weight % on two lines",
           "detail": "FU0151KS3: virgin 78 / KS 2 in V8 on SE42 (25 Sep), virgin 77 / KS 3 in V9 on SE43 (28 Sep). Is the recipe per line, or should one code mean one recipe?",
           "where": "SE42 · SE43",
@@ -96,13 +117,6 @@
         },
         {
           "sev": "Low",
-          "title": "Interface: live data and sign-off",
-          "detail": "For extrusion operators and the production manager (James, 29 Sep 2026). Still open: should the page read the live SharePoint files, or a copy refreshed after each daily run? Should Tech sign the day's draft on the page?",
-          "where": "Profile Formulation",
-          "source": "Handoff §7.28"
-        },
-        {
-          "sev": "Low",
           "title": "Housekeeping",
           "detail": "Delete the stale workspace copies (Product Master.xlsx, Daily\\, old Formulation Master.xlsx). Merge the branch into main when ready. Remaining background questions: Q2 codes, Q4 who makes the FRM and when, Q5 AC = 1 / 90, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
           "where": "",
@@ -146,6 +160,11 @@
       "date": "2026-09-29",
       "title": "Interface audience: operators and production manager",
       "detail": "New Operator and Production manager views; engineering tabs moved behind them."
+    },
+    {
+      "date": "2026-09-29",
+      "title": "Interface: a copy after each run, no Tech sign-off",
+      "detail": "James: \"lets keep a copy create a separate folder in the fomulation record for now to hold these file. No Tech sign off require\". Daily Formulation Report\\Interface Copy\\Profile Formulation <date>.html, built from the published files after each run."
     }
   ]
 }

@@ -1,12 +1,17 @@
 """Build the Profile Formulation UI prototype (published as a claude.ai Artifact, HANDOFF §7.28).
 
-    PKT_DATE=2026-09-28 python ui/build.py     -> out/profile-formulation.html (a snapshot; not live data)
+    PKT_DATE=2026-09-29 python ui/build.py  -> out/Profile Formulation <date>.html (+ out/profile-formulation.html)
+    python publish.py "Profile Formulation <date>.html"  -> Daily Formulation Report/Interface Copy/
 
-Reads the packets and out/Formulation Master.xlsx (run db/seed_master.py first, or copy the published master there).
+A copy, refreshed after each daily run, not live data (James Kuo, 29 Sep 2026: "lets keep a copy create a separate
+folder in the fomulation record for now to hold these file. No Tech sign off require"). Reads the packets, the
+PUBLISHED Formulation Master (pre-flighted) and records, and out/FRM Draft <date>.xlsx for the draft-vs-Tech figures.
 """
+import datetime
 import glob
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -47,6 +52,46 @@ def replaced():
     return {}
 
 
+def draft_vs_tech(day, P):
+    """Orders the FRM Draft proposed, how many equal Tech's issue field for field, and the Exceptions."""
+    from resolve import split_feeder
+    src = config.OUTPUT_DIR / f'FRM Draft {day}.xlsx'
+    if not src.exists():
+        return {'drafted': 0, 'draft_match': 0, 'exceptions': 0}
+    config.record_read(src, 'FRM Draft (interface copy)')
+    wb = load_workbook(src, read_only=True)
+    rows = list(wb['Draft'].iter_rows(values_only=True)); h = {k: i for i, k in enumerate(rows[0])}
+    draft = {}
+    for r in rows[1:]:
+        k = (r[h['Line Code']], r[h['Order']])
+        draft.setdefault(k, {}).setdefault((r[h['Formula Row']], r[h['Formula Code']]), set()).add(
+            (r[h['Extruder']] or '', r[h['Feeder']], r[h['Material (as issued)']] or '', r[h['Set']] or ''))
+    draft = {k: [(c, v) for (_, c), v in sorted(d.items())] for k, d in draft.items()}
+    tech = {}
+    for pg in P['frm']:
+        for g in pg['groups']:
+            for f in g['formulas']:
+                s = {split_feeder(c) + (v['material'], v['set']) for c, v in f['feeders'].items() if v['material'] or v['set']}
+                for o in g['orders']:
+                    tech.setdefault((pg['line_code'], o), []).append((f['formula_code'], s))
+    exc = len(list(wb['Exceptions'].iter_rows(values_only=True))) - 1
+    return {'drafted': len(draft), 'draft_match': sum(1 for k, v in draft.items() if tech.get(k) == v), 'exceptions': exc}
+
+
+def record_rows():
+    """Rows in the three published records (read where they live)."""
+    out = {}
+    for key, (name, sheet) in {'frm': ('Formulation Report Record.xlsx', 'Issued'), 'ext': ('Extrusion Production Record.xlsx', 'Orders by Day'),
+                               'cnv': ('Converting Production Record.xlsx', 'Orders by Day')}.items():
+        p = config.published_path(name)
+        if p and p.exists():
+            config.record_read(p, 'record (interface copy)')
+            out[key] = load_workbook(p, read_only=True)[sheet].max_row - 1
+        else:
+            out[key] = 0
+    return out
+
+
 def main():
     pk = {}
     for f in sorted(glob.glob(str(config.PACKETS_DIR / 'packet_*.json'))):
@@ -54,7 +99,14 @@ def main():
         pk[d['packet_date']] = d
     day = os.environ.get('PKT_DATE') or max(d for d in pk if pk[d]['frm'])
     P = pk[day]
-    wb = load_workbook(config.OUTPUT_DIR / 'Formulation Master.xlsx', read_only=True)
+    from db import preflight, schema
+    ok, pf_lines, _ = preflight.check(schema.FM)          # hard rule: the master is read where it lives, pre-flighted
+    if not ok:
+        print(chr(10).join(pf_lines)); raise SystemExit('STOP: the Formulation Master has unaccepted changes; interface not built.')
+    accepted = re.search(r'accepted version \(([^)]+)\)', pf_lines[0])
+    fm = config.published_path(schema.FM)
+    config.record_read(fm, 'master (interface copy)')
+    wb = load_workbook(fm, read_only=True)
 
     def sheet(n):
         r = list(wb[n].iter_rows(values_only=True))
@@ -87,23 +139,24 @@ def main():
                  for e in sorted(P['ext'], key=lambda e: e['scan_page']) if e['line'] == lc for r in e['rows']]
         lines.append({'code': lc, 'no': LN[lc], 'dosing': DOS.get(lc, 'AUGER'), 'cols': pg['feeder_columns'],
                       'ac': pg.get('header_note', ''), 'groups': groups, 'notes': pg.get('footnotes', []), 'sched': sched})
-    stats = json.loads(os.environ.get('UI_STATS', '{"drafted":59,"draft_match":59,"exceptions":16}'))
+    stats = draft_vs_tech(day, P)
     stats['orders'] = sum(len(g['orders']) for ln in lines for g in ln['groups'])
     data = {'day': day, 'dates': sorted(pk),
             'scans': {'packet': P['source_scan'], 'frm': P.get('frm_source_scan') or P['source_scan']},
             'lines': lines, 'materials': mats, 'hist': hist, 'stats': stats,
             'issues': [{'sev': i['Severity'], 'line': i['Line'], 'check': i['Check'], 'detail': i['Detail']} for i in sheet('Issues')],
             'master': {'formulas': len(sheet('Formulas')), 'settings': len(sheet('Line Settings')), 'materials': len(mats),
-                       'accepted': os.environ.get('UI_ACCEPTED', ''), 'changes': 0},
-            'records': json.loads(os.environ.get('UI_RECORDS', '{"frm":1656,"ext":308,"cnv":270}')),
+                       'accepted': accepted.group(1)[:16].replace('T', ' ') if accepted else '', 'changes': 0},
+            'records': record_rows(), 'built': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
             'open': json.loads((ROOT / 'ui' / 'open_items.json').read_text(encoding='utf-8')),
             'cust': json.loads((ROOT / 'ui' / 'customer_formulas.json').read_text(encoding='utf-8')),
             'replaced': replaced()}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
-    out = config.OUTPUT_DIR / 'profile-formulation.html'
-    out.write_text(t.replace('__DATA__', blob), encoding='utf-8')
-    print(out)
+    page = t.replace('__DATA__', blob)
+    for out in (config.OUTPUT_DIR / f'Profile Formulation {day}.html', config.OUTPUT_DIR / 'profile-formulation.html'):
+        out.write_text(page, encoding='utf-8')
+        print(out)
 
 
 if __name__ == '__main__':

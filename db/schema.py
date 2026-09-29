@@ -245,6 +245,12 @@ BOOKS: list[Book] = [
          "daily/render_frm.py (from the FRM Draft)", "extrusion operators (printed), Schedule binder (IWPFO055 §5.4)",
          [], status="new"),
 
+    Book("Profile Formulation <date>.html", "Daily Formulation Report/Interface Copy", "daily",
+         "The Profile Formulation page (operators, production manager, engineering tabs) as built after the day's run: "
+         "a copy of the published files, not live (James Kuo, 29 Sep 2026: \"lets keep a copy create a separate folder in "
+         "the fomulation record for now to hold these file. No Tech sign off require\")",
+         "ui/build.py (after the daily run)", "extrusion operators, production manager, engineers", [], status="new"),
+
     Book("Formulation Report Record.xlsx", "Daily Formulation Report", "record",
          "Every formulation issued, per day, order and feeder. Append-only: the plant's history of what ran",
          "daily/record.py (to build) after Tech signs the day", "traceability, complaints, trends",

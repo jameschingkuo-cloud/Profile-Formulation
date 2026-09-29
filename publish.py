@@ -21,7 +21,8 @@ from pathlib import Path
 import config
 
 MANIFEST = config.DATA_DIR / 'published_manifest.json'
-DAILY_PREFIXES = ('EXT Extrusion Schedule ', 'CNV Converting Schedule ', 'FRM Formulation Report ', 'FRM Formulation ')
+DAILY_PREFIXES = ('EXT Extrusion Schedule ', 'CNV Converting Schedule ', 'FRM Formulation Report ', 'FRM Formulation ',
+                  'Profile Formulation ')
 
 
 def destination(name):
