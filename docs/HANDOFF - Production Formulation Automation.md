@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.28 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.29 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1407,6 +1407,19 @@ owns those (§7.36). `replace_material.py` now (a) drops the old Recipe row when
 same %, stopping if it differs, and (b) leaves Approved Substitutes alone on IWPFT062 rows. `checks.REPLACED` gains
 F1102K (every packet prints it: Info note; regression counts 84 / 73). **No High material issue is left.**
 
+## 7.39 One code, several recipes: reclaim first (29 Sep 2026)
+
+James: *"Some product can use reclaim as well as virgin resin. Whenever we have product like this, we will display both
+or more formulation so if we have reclaim in the silo, we will use it up first before going to virgin resin."*
+
+- `daily/checks.py`: "Same formula code, different recipes on one line" is now **Info** ("One code, several recipes
+  (reclaim first / variants)") when each recipe is told apart by its reclaim content or a noted variant (run-out,
+  VOIDFORM, sign blank, corn box, roll); it stays **Medium** only when neither explains the difference. On all four
+  packets every case is explained (e.g. SE22 FUA060WBA reclaim 90; reclaim 75; SE23 FU0021WB4 VOIDFORM; corn box;
+  run-out). Issue counts unchanged (severity only).
+- The published 25 / 28 Sep workbooks keep their Medium rows as issued; the manual "two formulas with no note" rows are
+  not carried forward (CLAUDE.md step 3). DATABASE.md §6.4 records the rule; off Open items.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1535,6 +1548,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.29 | 2026-09-29 | Claude Code (local, with James Kuo) | **Reclaim first (§7.39)**: several recipes under one code are expected; the daily check marks them Info unless unexplained. |
 | 1.28 | 2026-09-29 | Claude Code (local, with James Kuo) | **F1102K replaced by F1203K (§7.38)**: master Changes 47-52; last High material issue closed. |
 | 1.27 | 2026-09-29 | Claude Code (local, with James Kuo) | **XO-256 disregarded (§7.37)**: master Change 46; no XO left in the master data. |
 | 1.26 | 2026-09-29 | Claude Code (local, with James Kuo) | **Master follows IWPFT062 (§7.36)**: `db/sync_iwpft062.py` in daily step 0; preview 0 differences. |

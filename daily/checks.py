@@ -144,10 +144,30 @@ seen=defaultdict(list)
 for f in frm_rows:
     rec=tuple(sorted((k,v['material'],v['set']) for k,v in f['feeders'].items() if v['material'] or v['set']))
     seen[(f['line'],f['formula_code'])].append((rec,f))
+# James Kuo, 29 Sep 2026: "Some product can use reclaim as well as virgin resin. Whenever we have product like this, we
+# will display both or more formulation so if we have reclaim in the silo, we will use it up first before going to
+# virgin resin." So one code with several recipes is expected when reclaim content (or a noted variant: sign blank,
+# VOIDFORM, corn box, roll, run-out) tells them apart; run them in the order listed. Only an unexplained difference is Medium.
+NOTE_VARIANTS=[(r'run\s*out','run-out'),(r'void\s*form','VOIDFORM'),(r'sign\s*blank','sign blank'),(r'corn\s*box','corn box'),(r'roll','roll')]
+def note_variant(note):
+    return next((v for rx,v in NOTE_VARIANTS if re.search(rx,note or '',re.I)),'')
+def reclaim_set(f):
+    return sum(num(v['set']) or 0 for v in f['feeders'].values() if 'reclaim' in (v['material'] or '').lower())
 for (ln,code),lst in seen.items():
     recs={x[0] for x in lst}
     if len(recs)>1:
-        add('Medium','FRM',ln,'; '.join(', '.join(x[1]['orders']) for x in lst),'Same formula code, different recipes on one line',f'{code} appears {len(lst)} times with {len(recs)} different settings/materials',f"FRM p{lst[0][1]['scan_page']}")
+        first={}
+        for rec,f in lst: first.setdefault(rec,f)
+        keys={(note_variant(f['note']),reclaim_set(f)) for f in first.values()}
+        orders='; '.join(', '.join(x[1]['orders']) for x in lst)
+        if len(keys)==len(first):
+            desc='; '.join(f"{note_variant(f['note']) or ('reclaim '+format(reclaim_set(f),'g') if reclaim_set(f) else 'no reclaim')}"
+                           for f in sorted(first.values(),key=lambda f:(f['group'],f['row_in_group'])))
+            why=('reclaim versions run first, then the next one listed' if any(reclaim_set(f) for f in first.values())
+                 else 'the variants are told apart by their notes')
+            add('Info','FRM',ln,orders,'One code, several recipes (reclaim first / variants)',f'{code}: {desc}; {why} (James, 29 Sep 2026)',f"FRM p{lst[0][1]['scan_page']}")
+        else:
+            add('Medium','FRM',ln,orders,'Same formula code, different recipes on one line',f'{code} appears {len(lst)} times with {len(recs)} different settings/materials, not told apart by reclaim content or a note',f"FRM p{lst[0][1]['scan_page']}")
 codes_lines=defaultdict(set)
 for f in frm_rows: codes_lines[f['formula_code']].add(f['line'])
 # material spellings

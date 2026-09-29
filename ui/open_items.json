@@ -7,13 +7,6 @@
       "items": [
         {
           "sev": "Medium",
-          "title": "One formula code, several recipes",
-          "detail": "On 7 lines the same code is printed with different settings: FUA152WB4 (SE12, SE13, SE31, SE32), FU0021WB4 (SE23, SE25), FUA060WBA twice on SE22 with no note. Some are variants (sign blank, VOIDFORM, run-out); FUA060WBA and RP26512-1's FU0041WB4 / FU0031WB4 have nothing telling the floor which to run.",
-          "where": "SE12 · SE13 · SE21 · SE22 · SE23 · SE25 · SE31 · SE32",
-          "source": "FRM Issues, every packet"
-        },
-        {
-          "sev": "Medium",
           "title": "Same code, different weight % on two lines",
           "detail": "FU0151KS3: virgin 78 / KS 2 in V8 on SE42 (25 Sep), virgin 77 / KS 3 in V9 on SE43 (28 Sep). Is the recipe per line, or should one code mean one recipe?",
           "where": "SE42 · SE43",
@@ -138,6 +131,11 @@
       "date": "2026-09-29",
       "title": "F1102K replaced by F1203K",
       "detail": "Obsolete, replaced by Formosa. Master Changes 47-52 (SE43 FUA151WB3, SE42 FU0151KS3); daily checks read a printed F1102K as F1203K (Info)."
+    },
+    {
+      "date": "2026-09-29",
+      "title": "One code, several recipes: reclaim first",
+      "detail": "James: products that can run on reclaim or virgin show every formulation; reclaim versions run first, virgin is the fallback. The daily check now marks these Info and flags only a difference that neither reclaim content nor a note explains."
     }
   ]
 }

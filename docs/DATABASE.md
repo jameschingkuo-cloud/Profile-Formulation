@@ -114,6 +114,9 @@ Nothing reaches a master without a Change Log row that names an approver. That i
 3. **Material ID** = the IWPFT062 Material No. (e.g. `50-1560-050`), from IWPFT062 (Rev 17.0 at the seed; Rev 18.0 added PC5050 on 29 Sep 2026). Plant materials with no
    number get `INT-` IDs (reclaims, premix); materials used on the FRM but not on IWPFT062 get `NL-` IDs and a High issue.
 4. **Variants:** Primary, Reclaim run-out, VOIDFORM, Sign blank, Corn box, Roll, Other.
+   **Reclaim first (James, 29 Sep 2026):** a product that can run on reclaim or virgin resin gets every formulation on
+   the FRM, reclaim versions first; the floor uses up the reclaim in the silo, then moves down the list to virgin. So
+   several recipes under one code, or several codes for one order, are expected; Formula Row / Priority keeps the order.
 5. **Folders:** the published files live in their database folders (done 28 Sep). The stale copies in the workspace
    folder (`Product Master.xlsx`, `Daily6\`, the old `Formulation Master.xlsx`) were checked identical to the
    published or superseded files; James deletes them (SharePoint recycle bin keeps them 93 days).
