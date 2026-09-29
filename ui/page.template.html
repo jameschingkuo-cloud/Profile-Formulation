@@ -39,7 +39,7 @@ header.top .sub{color:var(--muted);font-size:13.5px;margin-top:4px}
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .strip>div{background:var(--panel);padding:12px 14px;display:grid;gap:2px;min-width:0}
 .strip b{font-family:var(--f-display);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
-.strip .ok b{color:var(--ok)} .strip .crit b{color:var(--crit)} .strip .acc b{color:var(--accent)}
+.strip .ok b{color:var(--ok)} .strip .warn b{color:var(--warn)} .strip .crit b{color:var(--crit)} .strip .acc b{color:var(--accent)}
 .strip small{color:var(--muted);font-size:12.5px}
 nav.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
 nav.tabs button{font:600 15px var(--f-display);letter-spacing:.06em;text-transform:uppercase;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:8px 12px;cursor:pointer}
@@ -115,6 +115,23 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 .flow .done .st{color:var(--ok)} .flow .now .st{color:var(--accent)} .flow .todo .st{color:var(--muted)}
 .drop{border:2px dashed var(--line);border-radius:var(--r);padding:26px 16px;text-align:center;display:grid;gap:6px;color:var(--muted);background:var(--panel-2)}
 .drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop.off{opacity:.55;cursor:not-allowed}
+.genrow{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;align-items:start;margin-top:12px}
+.genopts{display:grid;gap:10px;align-content:start}
+.genopts label{display:grid;gap:4px;font:600 12px var(--f-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.genopts input[type=date]{font:15px var(--f-mono);padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink);max-width:220px}
+.genpages{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.genpages span{font:600 12px var(--f-mono);padding:3px 7px;border-radius:4px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted)}
+.genpages .ext{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)} .genpages .busy{border-color:var(--accent);color:var(--accent)}
+.genpages .bad{border-color:var(--crit);color:var(--crit)}
+.genline{margin-top:16px}
+.genline h3{font:600 20px var(--f-display);margin:0 0 6px}
+.gentable td{vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+.gentable th{text-align:left;font:600 12px var(--f-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:6px;border-bottom:1px solid var(--line)}
+.gentable .fl{display:grid;gap:4px}
+.gentable details summary{cursor:pointer;font:600 14px var(--f-mono)}
+.gentable details table{margin:6px 0 4px}
+@media (max-width:860px){.genrow{grid-template-columns:1fr}}
 .drop strong{color:var(--ink);font-family:var(--f-display);font-size:20px;font-weight:600}
 .two{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
 .kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:13.5px}
@@ -279,21 +296,32 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
   <section id="v-run" hidden>
     <div class="two">
       <div class="panel">
-        <div><h2 style="font-size:26px">Daily run</h2><p class="muted" style="margin:4px 0 0">One day's packet from scan to published records. Shown for 28 Sep.</p></div>
+        <div><h2 style="font-size:26px">Daily run</h2><p class="muted" style="margin:4px 0 0" id="runsub">One day's packet from scan to published records.</p></div>
         <div class="flow" id="flow"></div>
-        <label class="drop" id="drop" for="scanfile">
-          <strong>Drop tomorrow's scan here</strong>
-          <span>PDF from the copier: the EXT schedule, CNV sheets and Tech's FRM pages.</span>
-          <span class="caps">Not connected in this prototype</span>
-          <input id="scanfile" type="file" accept="application/pdf" hidden>
-        </label>
-        <div id="dropmsg" class="muted" role="status"></div>
       </div>
       <div class="panel">
         <h2 style="font-size:22px">Records so far</h2>
         <div class="tscroll"><table id="rec"></table></div>
         <p class="muted" style="margin:0;font-size:13px">Append-only. A day is added once; a changed past row stops the run instead of being overwritten.</p>
       </div>
+    </div>
+    <div class="panel" id="gen" style="margin-top:16px">
+      <div><h2 style="font-size:24px">Generate the formulation from a schedule scan</h2>
+        <p class="muted" style="margin:4px 0 0">Drop the copier PDF of the extrusion schedule. Claude reads each extrusion page's line, order and product (only the left edge of each page is sent); the page then gives every order the formulation last issued for it on that line <b>before the schedule's date</b>, the same rule as the pipeline. Anything else is left for an engineer. A check, not an issue: the printed document still comes from the pipeline.</p></div>
+      <div class="genrow">
+        <label class="drop" id="drop" for="scanfile">
+          <strong>Drop a schedule scan here</strong>
+          <span>PDF from the copier (or page images). CNV and FRM pages in the same file are skipped.</span>
+          <input id="scanfile" type="file" accept="application/pdf,image/jpeg,image/png" hidden>
+        </label>
+        <div class="genopts">
+          <label>Schedule date <input type="date" id="gendate"></label>
+          <button type="button" id="genstop" class="btn" hidden>Stop</button>
+          <div id="genmsg" class="muted" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+      <div id="genpages" class="genpages"></div>
+      <div id="genout"></div>
     </div>
   </section>
 </div>
@@ -416,12 +444,6 @@ $('#flow').innerHTML = [
 ].map(([c, b, s], i) => `<div class="${c}"><span class="st">${c === 'done' ? 'Done' : c === 'now' ? 'Next' : 'Later'}</span><b>${b}</b><small>${s}</small></div>`).join('');
 $('#rec').innerHTML = `<thead><tr><th>Record</th><th>Rows</th><th>Packets</th></tr></thead><tbody>${[['Formulation Report Record', D.records.frm], ['Extrusion Production Record', D.records.ext], ['Converting Production Record', D.records.cnv]].map(([n, r]) =>
   `<tr><td>${n}</td><td>${r.toLocaleString()}</td><td>${D.dates.map(fmtDate).join(', ')}</td></tr>`).join('')}</tbody>`;
-const drop = $('#drop');
-['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
-['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
-function took(f){ if (f) $('#dropmsg').textContent = `${f.name} (${(f.size / 1048576).toFixed(1)} MB) was not sent anywhere: uploads are not connected in this prototype.`; }
-drop.addEventListener('drop', e => took(e.dataTransfer.files[0]));
-$('#scanfile').addEventListener('change', e => took(e.target.files[0]));
 
 // ---- open items
 const OI = D.open || {groups: []};
@@ -534,6 +556,188 @@ $('#mgrtable').innerHTML = `<thead><tr><th>Line</th><th>Dosing</th><th class="nu
       <td class="num">${l.sched.length}</td><td class="num">${plt.toLocaleString()}</td><td class="num">${Math.round(lbs).toLocaleString()}</td><td class="mono" style="font-size:12.5px">${codes.map(esc).join(' · ')}</td><td>${att}</td></tr>`;
   }).join('')}</tbody>`;
 $('#mgrtable').addEventListener('click', e => { const tr = e.target.closest('tr[data-l]'); if (!tr) return; opLine = tr.dataset.l; localSet('opline', opLine); renderOp(); show('op'); });
+
+// ---- generate the formulation from a schedule scan (James Kuo, 29 Sep 2026: "let me put the same production file in the
+// artifact. see if it generate the right formulation"). Claude (sample capability) reads line / order / product from the
+// left edge of each extrusion page; the lookup below is the pipeline's rule (daily/resolve.py), done here in the page.
+$('#runsub').textContent = `One day's packet from scan to published records. Shown for ${fmtDate(D.day)}.`;
+const drop = $('#drop'), gmsg = $('#genmsg'), gpages = $('#genpages'), gout = $('#genout'), gstop = $('#genstop');
+const PRODUCTS = new Set(D.products || []);
+const ORDER_RX = /^[A-Z0-9]{6,8}-\d{1,3}$/;
+let sampleFn = null, imgCaps = null, busy = false, ctl = null;
+$('#gendate').value = new Date().toISOString().slice(0, 10);
+drop.classList.add('off');
+gmsg.textContent = 'Connecting to Claude…';
+(async () => {
+  const s = window.claude?.use ? await window.claude.use('sample') : null;
+  const lim = s ? await s.limits().catch(() => null) : null;
+  if (!s || !lim?.images) {
+    gmsg.textContent = s ? 'This viewer cannot send images to Claude, so a scan cannot be read here.'
+                         : 'Reading a scan needs the Claude viewer: open this page on claude.ai or in the Claude app.';
+    return;
+  }
+  sampleFn = s; imgCaps = lim.images; drop.classList.remove('off');
+  gmsg.textContent = 'Ready. Reading a scan uses your own Claude usage; you are asked once before the first call.';
+})();
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); if (sampleFn && !busy) drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => generate(e.dataTransfer.files));
+$('#scanfile').addEventListener('change', e => { generate(e.target.files); e.target.value = ''; });
+drop.addEventListener('click', e => { if (!sampleFn || busy) e.preventDefault(); });
+gstop.addEventListener('click', () => ctl?.abort());
+
+let pdfjs = null;
+function loadPdfJs(){
+  if (!pdfjs) pdfjs = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = () => { const L = window['pdfjs-dist/build/pdf']; L.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(L); };
+    s.onerror = () => { pdfjs = null; rej(new Error('The PDF reader (pdf.js) did not load.')); };
+    document.head.appendChild(s);
+  });
+  return pdfjs;
+}
+// The copier scans the landscape report sideways: turn a portrait page clockwise (as scan_reader/ext_scan_reader.upright),
+// then keep the left 30% (T, order, product, die columns and the LINE NO label) as a JPEG.
+async function leftStrip(src, w, h){
+  const turn = h > w, W = turn ? h : w, H = turn ? w : h;
+  const full = document.createElement('canvas'); full.width = W; full.height = H;
+  const x = full.getContext('2d');
+  if (turn) { x.translate(W, 0); x.rotate(Math.PI / 2); }
+  x.drawImage(src, 0, 0);
+  const c = document.createElement('canvas'); c.width = Math.round(W * 0.3); c.height = H;
+  const cx = c.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, c.width, c.height); cx.drawImage(full, 0, 0);
+  return new Promise(r => c.toBlob(r, 'image/jpeg', 0.88));
+}
+async function pagesOf(files){
+  const out = [];
+  for (const f of files) {
+    if (f.type === 'application/pdf' || /\.pdf$/i.test(f.name)) {
+      const L = await loadPdfJs();
+      const doc = await L.getDocument({data: await f.arrayBuffer()}).promise;
+      for (let i = 1; i <= doc.numPages; i++) {
+        const pg = await doc.getPage(i), v1 = pg.getViewport({scale: 1});
+        const vp = pg.getViewport({scale: 2200 / Math.max(v1.width, v1.height)});
+        const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+        await pg.render({canvasContext: c.getContext('2d'), viewport: vp}).promise;
+        out.push({label: `${out.length + 1}`, blob: await leftStrip(c, c.width, c.height)});
+      }
+    } else if (/^image\//.test(f.type)) {
+      const b = await createImageBitmap(f);
+      out.push({label: `${out.length + 1}`, blob: await leftStrip(b, b.width, b.height)});
+    }
+  }
+  return out;
+}
+const READ_PROMPT = n => `You are reading ${n} image(s). Each is the LEFT EDGE of one scanned page of a plastics plant's production packet, in order (image 1, image 2, ...).
+An EXTRUSION schedule page has "LINE NO: SE.." near its top (SE plus 2 digits, e.g. SE11) and a table whose first columns are "T", "Mfg# / Ord#", "Prod Code", "Die". Each order row starts with "Y |", then the order number printed like "H69A039 -   1", then the product code like "DPP30WB1023".
+Every other page is OTHER: converting sheets ("LINE NO: SD31 BOBST", "SC31", "SD41 & 42 GUILLOTINE"...), formulation pages titled "Line N (SExx) Formulations" with columns "Order #" and "Formula Code", and blank pages.
+Return one object per image, in image order:
+{"image": 1, "kind": "EXT", "line": "SE11", "orders": [{"order": "H69A039-1", "prod": "DPP30WB1023"}]}
+{"image": 2, "kind": "OTHER", "line": "", "orders": []}
+Rules: copy characters exactly as printed; write the order number and its suffix joined by one hyphen with no spaces (H69A039-1); list every order row on the page, top to bottom; ignore special instructions, handwriting and continuation text that carries no order number; put "?" for a character you cannot read.
+Reply with only a JSON array of these objects.`;
+const ERR = {not_granted: 'Claude was not allowed for this page, so the scan cannot be read.', rate_limited: 'Claude is busy or your usage limit was reached. Try again later.',
+  sampling_disabled: 'Claude is not available for this account.', images_unavailable: 'This viewer cannot send images to Claude.', image_rejected: 'Claude could not take one of the page images.',
+  invalid_json: 'Claude answered in a form the page could not read. Try again.', session_expired: 'Sign in again, then try again.', cancelled: 'Stopped.'};
+
+async function generate(files){
+  if (!sampleFn || busy || !files?.length) return;
+  const m = /(20\d{2})(\d{2})(\d{2})\d{6}/.exec(files[0].name || '');
+  if (m) $('#gendate').value = `${m[1]}-${m[2]}-${m[3]}`;          // copier file names carry the scan date
+  busy = true; drop.classList.add('off'); gstop.hidden = false; gout.innerHTML = ''; gpages.innerHTML = '';
+  ctl = new AbortController();
+  const reads = [];
+  try {
+    gmsg.textContent = 'Rendering the pages…';
+    const pages = await pagesOf([...files]);
+    gpages.innerHTML = pages.map(p => `<span id="gp${p.label}">p${p.label}</span>`).join('');
+    const per = Math.max(1, Math.min(imgCaps.maxCount || 1, 4));
+    for (let i = 0; i < pages.length; i += per) {
+      const batch = pages.slice(i, i + per);
+      batch.forEach(p => { $('#gp' + p.label).className = 'busy'; });
+      gmsg.textContent = `Claude is reading pages ${batch[0].label}–${batch[batch.length - 1].label} of ${pages.length}…`;
+      const ans = await sampleFn.json(READ_PROMPT(batch.length), {images: batch.map(p => p.blob), signal: ctl.signal});
+      batch.forEach((p, k) => {
+        const a = (Array.isArray(ans) ? ans : []).find(x => Number(x?.image) === k + 1) || (Array.isArray(ans) ? ans[k] : null) || {};
+        const ext = a.kind === 'EXT' && /^SE\d\d$/.test(String(a.line || ''));
+        $('#gp' + p.label).className = ext ? 'ext' : '';
+        $('#gp' + p.label).textContent = ext ? `p${p.label} ${a.line}` : `p${p.label}`;
+        if (ext) reads.push({page: p.label, line: String(a.line), orders: (a.orders || []).map(o => ({order: String(o.order || '').replace(/\s+/g, ''), prod: String(o.prod || '').trim()}))});
+      });
+    }
+    render(reads, $('#gendate').value, pages.length);
+    gmsg.textContent = `Done: ${reads.length} extrusion page(s) of ${pages.length} read.`;
+  } catch (e) {
+    gmsg.textContent = e?.code ? (ERR[e.code] || `Claude could not finish (${e.code}).`) : (e?.message || 'Something went wrong reading the file.');
+    if (reads.length) render(reads, $('#gendate').value, null);
+  } finally {
+    busy = false; drop.classList.remove('off'); gstop.hidden = true;
+  }
+}
+
+const fkey = f => f.code + '|' + f.feeders.map(x => `${x.col}=${x.mat}=${x.set}`).sort().join(';');
+const same = (a, b) => a.length === b.length && a.every((f, i) => fkey(f) === fkey(b[i]));
+function lookup(line, order, prod, date){
+  const dates = Object.keys(D.issued || {}).filter(d => d < date).sort().reverse();
+  for (const d of dates) { const g = (D.issued[d][line] || []).find(g => g.orders.includes(order)); if (g) return {how: 'last', date: d, formulas: g.formulas}; }
+  const ap = (D.approved || {})[line + '|' + prod];
+  if (ap?.length) return {how: 'approved', formulas: ap};
+  for (const d of dates) {
+    const other = Object.entries(D.issued[d]).find(([ln, gs]) => ln !== line && gs.some(g => g.orders.includes(order)));
+    if (other) return {how: 'exception', why: `Last issued on ${other[0]} (${fmtDate(d)}); a formula belongs to its line`};
+  }
+  return {how: 'exception', why: 'New order on this line: no formula issued for it before'};
+}
+function render(reads, date, nPages){
+  const byLine = {};
+  reads.forEach(r => r.orders.forEach(o => {
+    const L = (byLine[r.line] = byLine[r.line] || []);
+    if (!L.some(x => x.order === o.order)) L.push({...o, page: r.page});
+  }));
+  const lines = Object.keys(byLine).sort((a, b) => (D.linemeta[a]?.no || 99) - (D.linemeta[b]?.no || 99));
+  const tech = (D.issued || {})[date];
+  const trans = (D.sched_by_date || {})[date];
+  let n = 0, filled = 0, exc = 0, cmp = 0, match = 0, badRead = 0;
+  const html = lines.map(line => {
+    const meta = D.linemeta[line] || {no: '?', dosing: 'AUGER'}, weight = meta.dosing === 'WEIGHT';
+    const rows = byLine[line].map((o, i) => {
+      n++;
+      const okOrder = ORDER_RX.test(o.order), okProd = PRODUCTS.has(o.prod);
+      if (!okOrder || !okProd) badRead++;
+      const r = okOrder ? lookup(line, o.order, o.prod, date) : {how: 'exception', why: 'Order number not read cleanly: check the page'};
+      if (r.how === 'exception') exc++; else filled++;
+      let vs = '<span class="muted">No Tech issue on file for this date</span>';
+      if (tech) {
+        const tg = (tech[line] || []).find(g => g.orders.includes(o.order));
+        if (!tg) vs = '<span class="chip var">Not on Tech’s page</span>';
+        else if (r.how === 'exception') vs = `<span class="chip warn">Tech issued ${tg.formulas.map(f => esc(f.code)).join(', ')}</span>`;
+        else { cmp++; if (same(r.formulas, tg.formulas)) { match++; vs = '<span class="chip ok">Same as Tech</span>'; }
+               else vs = `<span class="chip crit">Tech: ${tg.formulas.map(f => esc(f.code)).join(', ')}</span>`; }
+      }
+      const form = r.how === 'exception'
+        ? `<span class="noform">ENGINEER TO COMPLETE</span><div class="muted" style="font-size:13px">${esc(r.why)}</div>`
+        : `<div class="fl">${r.formulas.map((f, k, all) => `<details><summary>${esc(whenLabel(f, k, all))} · ${esc(f.code)}</summary>${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></details>`).join('')}
+           <div class="muted" style="font-size:12px">${r.how === 'last' ? `As issued ${fmtDate(r.date)}` : 'Engineer decision (approved in the master)'}</div></div>`;
+      return `<tr><td class="mono">${i + 1}</td><td><b class="mono">${esc(o.order)}</b>${okOrder ? '' : ' <span class="chip crit">check</span>'}<div class="muted" style="font-size:12px">scan p${esc(o.page)}</div></td>
+        <td class="mono">${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}</td><td>${form}</td><td>${vs}</td></tr>`;
+    }).join('');
+    return `<div class="genline"><h3>Line ${meta.no} · ${line} <span class="chip ${weight ? 'weight' : 'auger'}">${weight ? 'Weight %' : 'Auger speed'}</span></h3>
+      <div class="tscroll"><table class="gentable"><thead><tr><th>#</th><th>Order</th><th>Product</th><th>Formulation (run order)</th><th>Against Tech</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }).join('');
+  let check = '';
+  if (trans) {
+    const want = new Set(trans.map(t => t.join('|'))), got = new Set(lines.flatMap(l => byLine[l].map(o => [l, o.order, o.prod].join('|'))));
+    const miss = [...want].filter(x => !got.has(x)), extra = [...got].filter(x => !want.has(x));
+    check = `<div class="${miss.length || extra.length ? 'warn' : 'ok'}"><span class="caps">reading vs the transcribed packet</span><b>${want.size - miss.length}/${want.size}</b><small>${
+      miss.length || extra.length ? `Missed: ${miss.map(esc).join(', ') || 'none'}. Read differently: ${extra.map(esc).join(', ') || 'none'}` : 'every line, order and product as transcribed'}</small></div>`;
+  }
+  gout.innerHTML = `<section class="strip" style="margin-top:14px">
+      <div class="acc"><span class="caps">orders read</span><b>${n}</b><small>${lines.length} lines${nPages ? ` · ${reads.length} of ${nPages} pages were extrusion` : ''}${badRead ? ` · ${badRead} to check` : ''}</small></div>
+      <div class="${exc ? 'warn' : 'ok'}"><span class="caps">formulation found</span><b>${filled}/${n}</b><small>${exc} for an engineer · schedule date ${esc(date)}</small></div>
+      ${tech ? `<div class="${match === cmp ? 'ok' : 'crit'}"><span class="caps">same as Tech’s issue</span><b>${match}/${cmp}</b><small>Tech’s FRM for ${fmtDate(date)} is on file</small></div>` : ''}
+      ${check}</section>${html}`;
+}
 
 // ---- tabs
 function show(v){

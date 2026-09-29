@@ -92,6 +92,35 @@ def record_rows():
     return out
 
 
+def product_codes():
+    """Product codes in the published Product Master (to flag a code the page read that the plant does not know)."""
+    p = config.published_path('Product Master.xlsx')
+    if not (p and p.exists()):
+        return []
+    config.record_read(p, 'Product Master (interface copy)')
+    ws = load_workbook(p, read_only=True)['Product Master']
+    return sorted({r[0] for r in ws.iter_rows(min_row=2, max_col=1, values_only=True) if r[0]})
+
+
+def approved_decisions(sheet):
+    """Engineer decisions (APPROVED Product to Formula rows with that line's settings), as daily/resolve.py uses them:
+    {'LINE|PRODUCT': [formula, ...]} in run order (Primary first)."""
+    text = {m['Material ID']: (m.get('FRM Text') or m.get('Name') or m['Material ID']) for m in sheet('Materials')}
+    sets = {}
+    for s in sheet('Line Settings'):
+        sets.setdefault((s['Line Code'], s['Formula Code'], s['Variant']), []).append(s)
+    out = {}
+    for p in sheet('Product to Formula'):
+        k = (p['Line Code'], p['Formula Code'], p['Variant'])
+        if p['Status'] != 'Approved' or k not in sets:
+            continue
+        out.setdefault(f"{p['Line Code']}|{p['Product Code']}", []).append((p['Priority'] != 'Primary', {
+            'code': p['Formula Code'], 'note': p['Variant'] if p['Variant'] != 'Primary' else '',
+            'feeders': [{'col': (s['Extruder'] + ' ' + s['Feeder']).strip() if s['Extruder'] else s['Feeder'],
+                         'mat': text.get(s['Material ID'], s['Material ID']), 'set': s['Set'], 'id': s['Material ID']} for s in sets[k]]}))
+    return {k: [f for _, f in sorted(v, key=lambda x: x[0])] for k, v in out.items()}
+
+
 def main():
     pk = {}
     for f in sorted(glob.glob(str(config.PACKETS_DIR / 'packet_*.json'))):
@@ -150,7 +179,20 @@ def main():
             'records': record_rows(), 'built': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
             'open': json.loads((ROOT / 'ui' / 'open_items.json').read_text(encoding='utf-8')),
             'cust': json.loads((ROOT / 'ui' / 'customer_formulas.json').read_text(encoding='utf-8')),
-            'replaced': replaced()}
+            'replaced': replaced(),
+            # for "generate from a scan" on the Daily run tab (James Kuo, 29 Sep 2026: "let me put the same production
+            # file in the artifact. see if it generate the right formulation"): every issued FRM by date, the
+            # transcribed schedule by date (to check the page's reading), known product codes, approved decisions
+            'issued': {d: {pg['line_code']: [{'orders': g['orders'],
+                                              'formulas': [{'code': f['formula_code'], 'note': f.get('note', ''),
+                                                            'feeders': [{'col': c, 'mat': v['material'], 'set': v['set'], 'id': MAP.get(v['material'])}
+                                                                        for c, v in f['feeders'].items() if v['material'] or v['set']]}
+                                                           for f in g['formulas']]} for g in pg['groups']]
+                           for pg in p['frm']} for d, p in pk.items() if p['frm']},
+            'sched_by_date': {d: [[e['line'], r['order'], r['prod_code']] for e in p['ext'] for r in e['rows']] for d, p in pk.items()},
+            'products': product_codes(),
+            'approved': approved_decisions(sheet),
+            'linemeta': {c: {'no': n, 'dosing': DOS.get(c, 'AUGER')} for c, n in LN.items()}}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     page = t.replace('__DATA__', blob)
