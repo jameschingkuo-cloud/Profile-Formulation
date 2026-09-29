@@ -133,6 +133,17 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 .item p{margin:3px 0 0;font-size:13.5px;color:var(--muted)}
 .item .where{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
 @media (max-width:480px){.owners{grid-template-columns:1fr}}
+.openctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--f-display);letter-spacing:.06em;text-transform:uppercase;background:none;border:0;color:var(--muted);padding:7px 12px;cursor:pointer}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.bysev{display:grid;gap:16px}
+.bysev .owner header h3{display:flex;gap:8px;align-items:baseline}
+.bysev .items{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));column-gap:24px}
+@media (max-width:480px){.bysev .items{grid-template-columns:1fr}}
+.item.Info .stripe{background:var(--ok)}
+.who{font:600 11px var(--f-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:1px 6px;white-space:nowrap}
 @media (max-width:860px){.board,.two{grid-template-columns:1fr}.rail{position:static;grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto}.rail button{grid-template-columns:auto auto}.rail .no{display:none}}
 </style>
 
@@ -158,7 +169,11 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 
   <section id="v-open" hidden>
     <div class="openhead"><div><h2 style="font-size:26px">What needs an answer</h2><p class="muted" style="margin:4px 0 0" id="opensub"></p></div>
-      <div class="legend" id="openlegend"></div></div>
+      <div class="openctl"><div class="legend" id="openlegend"></div>
+        <div class="seg" role="group" aria-label="Arrange open items">
+          <button type="button" id="mode-sev" data-mode="sev" aria-pressed="true">By severity</button>
+          <button type="button" id="mode-owner" data-mode="owner" aria-pressed="false">By owner</button>
+        </div></div></div>
     <div class="owners" id="owners"></div>
   </section>
 
@@ -320,8 +335,10 @@ function find(q){
 $('#findform').addEventListener('submit', e => { e.preventDefault(); find($('#q').value); });
 document.querySelectorAll('.hint button').forEach(b => b.addEventListener('click', () => { $('#q').value = b.dataset.q; find(b.dataset.q); }));
 
-// ---- master health
-$('#issues').innerHTML = D.issues.map(i => `<div class="issue"><div><span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span></div><div><h3>${esc(i.check)}</h3><div class="ln">${esc(i.line || 'all lines')}</div><p>${esc(i.detail)}</p></div></div>`).join('');
+// ---- master health (High -> Medium -> Low -> Info)
+const RANK = {High: 0, Medium: 1, Low: 2, Info: 3};
+const bySev = list => list.map((x, n) => [x, n]).sort((a, b) => (RANK[a[0].sev] ?? 9) - (RANK[b[0].sev] ?? 9) || a[1] - b[1]).map(x => x[0]);
+$('#issues').innerHTML = bySev(D.issues).map(i => `<div class="issue"><div><span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span></div><div><h3>${esc(i.check)}</h3><div class="ln">${esc(i.line || 'all lines')}</div><p>${esc(i.detail)}</p></div></div>`).join('');
 $('#mkv').innerHTML = [['Formulas', D.master.formulas], ['Line settings', D.master.settings], ['Materials', D.master.materials], ['Accepted version', D.master.accepted], ['Changes since', D.master.changes + ' (none unlogged)']]
   .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
 
@@ -345,15 +362,35 @@ $('#scanfile').addEventListener('change', e => took(e.target.files[0]));
 
 // ---- open items
 const OI = D.open || {groups: []};
-const allItems = OI.groups.flatMap(g => g.items);
-const cnt = s => allItems.filter(i => i.sev === s).length;
-$('#opensub').textContent = `${allItems.length} items from the master, the daily workbooks and the handoff's open questions, grouped by who can answer. Updated ${fmtDate(OI.updated || D.day)}.`;
-$('#openlegend').innerHTML = ['High', 'Medium', 'Low'].map(s => `<span class="chip ${SEV[s]}">${cnt(s)} ${s}</span>`).join(' ');
-const rank = {High: 0, Medium: 1, Low: 2, Info: 3};
-$('#owners').innerHTML = OI.groups.map(g => `<section class="owner"><header><h3>${esc(g.owner)}</h3><span class="caps">${esc(g.title)}</span></header>
-  ${[...g.items].sort((a, b) => rank[a.sev] - rank[b.sev]).map(i => `<div class="item ${i.sev}"><span class="stripe" aria-hidden="true"></span><div>
-    <div class="fhead"><span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span><h4>${esc(i.title)}</h4></div>
-    <p>${esc(i.detail)}</p><div class="where">${i.where ? esc(i.where) + ' · ' : ''}${esc(i.source)}</div></div></div>`).join('')}</section>`).join('');
+const openItems = OI.groups.flatMap(g => g.items.map(i => ({...i, owner: g.owner})));
+const resolved = (OI.resolved || []).map(r => ({sev: 'Info', title: 'Resolved: ' + r.title, detail: r.detail, where: '', source: fmtDate(r.date), owner: 'Done'}));
+const cnt = s => [...openItems, ...resolved].filter(i => i.sev === s).length;
+$('#opensub').textContent = `${openItems.length} open items from the master, the daily workbooks and the handoff's open questions. Updated ${fmtDate(OI.updated || D.day)}.`;
+$('#openlegend').innerHTML = ['High', 'Medium', 'Low', 'Info'].map(s => `<span class="chip ${SEV[s] === 'var' && s === 'Info' ? 'ok' : SEV[s]}">${cnt(s)} ${s}</span>`).join(' ');
+const itemHtml = (i, showOwner) => `<div class="item ${i.sev}"><span class="stripe" aria-hidden="true"></span><div>
+    <div class="fhead"><span class="chip ${i.sev === 'Info' ? 'ok' : SEV[i.sev]}">${esc(i.sev)}</span><h4>${esc(i.title)}</h4>${showOwner ? `<span class="who">${esc(i.owner)}</span>` : ''}</div>
+    <p>${esc(i.detail)}</p><div class="where">${i.where ? esc(i.where) + ' · ' : ''}${esc(i.source)}</div></div></div>`;
+function renderOpen(mode){
+  $('#mode-sev').setAttribute('aria-pressed', mode === 'sev');
+  $('#mode-owner').setAttribute('aria-pressed', mode === 'owner');
+  const box = $('#owners');
+  if (mode === 'owner') {
+    box.className = 'owners';
+    box.innerHTML = OI.groups.map(g => `<section class="owner"><header><h3>${esc(g.owner)}</h3><span class="caps">${esc(g.title)}</span></header>
+      ${bySev(g.items).map(i => itemHtml(i, false)).join('')}</section>`).join('');
+  } else {
+    box.className = 'bysev';
+    box.innerHTML = ['High', 'Medium', 'Low', 'Info'].map(s => {
+      const list = s === 'Info' ? resolved : openItems.filter(i => i.sev === s);
+      if (!list.length) return '';
+      return `<section class="owner"><header><h3><span class="chip ${s === 'Info' ? 'ok' : SEV[s]}">${s}</span>${list.length} item${list.length > 1 ? 's' : ''}</h3>
+        <span class="caps">${s === 'Info' ? 'resolved' : s === 'High' ? 'answer first' : ''}</span></header><div class="items">${list.map(i => itemHtml(i, true)).join('')}</div></section>`;
+    }).join('');
+  }
+  localSet('openmode', mode);
+}
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => renderOpen(b.dataset.mode)));
+renderOpen(localGet('openmode') === 'owner' ? 'owner' : 'sev');
 
 // ---- tabs
 function show(v){
