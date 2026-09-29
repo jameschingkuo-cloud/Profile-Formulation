@@ -134,6 +134,44 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 .item .where{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
 @media (max-width:480px){.owners{grid-template-columns:1fr}}
 .openctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+nav.tabs button.main{color:var(--ink);font-size:16px}
+nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-left:1px solid var(--line);font-size:11.5px}
+.oppick{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin-bottom:14px}
+.oppick button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px 6px;cursor:pointer;display:grid;gap:1px;text-align:center;min-height:56px}
+.oppick button .n{font:600 12px var(--f-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.oppick button .c{font:600 19px var(--f-mono)}
+.oppick button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+.oppick button[aria-pressed="true"] .c,.oppick button[aria-pressed="true"] .n{color:var(--panel)}
+.ophead{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
+.ophead h2{font-size:34px;line-height:1}
+.ophead p{margin:6px 0 0;font-size:15px;max-width:70ch}
+.opcards{display:grid;gap:14px}
+.opcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:12px;min-width:0}
+.opcard .top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:baseline}
+.opcard .seq{font:600 26px var(--f-display);color:var(--muted);font-variant-numeric:tabular-nums;grid-row:span 2}
+.opcard .ord{font:600 22px var(--f-mono)}
+.opcard .facts{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;color:var(--muted)}
+.opcard .facts b{color:var(--ink);font-weight:600}
+.si{font-size:14.5px;background:var(--panel-2);border-radius:4px;padding:8px 10px;border-left:3px solid var(--line)}
+.si.watch{border-left-color:var(--warn);background:var(--warn-soft)}
+.forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px}
+.form{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:grid;gap:8px;align-content:start}
+.form.first{border-color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
+.form .when{font:600 15px var(--f-display);letter-spacing:.04em;text-transform:uppercase}
+.form.first .when{color:var(--accent)}
+.form .code{font:600 15px var(--f-mono)}
+.sets{width:100%;border-collapse:collapse}
+.sets td{padding:5px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
+.sets tr:last-child td{border-bottom:0}
+.sets .p{font:600 13px var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;width:1%}
+.sets .m{font-size:14px;overflow-wrap:anywhere}
+.sets .m small{display:block;color:var(--warn);font-size:12px}
+.sets .v{font:600 26px var(--f-display);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:1%}
+.sets .v small{font:500 12px var(--f-body);color:var(--muted);margin-left:2px}
+.noform{color:var(--crit);font-weight:600}
+#mgrtable tbody tr{cursor:pointer}
+#mgrtable tbody tr:hover{background:var(--panel-2)}
+#mgrtable td.num{text-align:right}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel)}
 .seg button{font:600 13px var(--f-display);letter-spacing:.06em;text-transform:uppercase;background:none;border:0;color:var(--muted);padding:7px 12px;cursor:pointer}
 .seg button + button{border-left:1px solid var(--line)}
@@ -160,6 +198,9 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
   <section class="strip" id="strip" aria-label="Today at a glance"></section>
 
   <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" id="t-op" aria-selected="false" data-view="op" class="main">Operator</button>
+    <button role="tab" id="t-mgr" aria-selected="false" data-view="mgr" class="main">Production manager</button>
+    <span class="tabsep caps" aria-hidden="true">Engineering</span>
     <button role="tab" id="t-open" aria-selected="false" data-view="open">Open items</button>
     <button role="tab" id="t-board" aria-selected="true" data-view="board">Line board</button>
     <button role="tab" id="t-find" aria-selected="false" data-view="find">Look up</button>
@@ -167,6 +208,19 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
     <button role="tab" id="t-run" aria-selected="false" data-view="run">Daily run</button>
     <button role="tab" id="t-cust" aria-selected="false" data-view="cust">Customer formulas</button>
   </nav>
+
+  <section id="v-op" hidden>
+    <div class="oppick" id="oppick" role="group" aria-label="Choose your line"></div>
+    <div id="opline"></div>
+  </section>
+
+  <section id="v-mgr" hidden>
+    <div class="panel">
+      <div class="linehead"><div><div class="caps" id="mgrday"></div><h2>All lines today</h2>
+        <p>Every extrusion line on the schedule, with its orders, pallets, weight and the formulas it runs. Choose a line to open the operator view.</p></div></div>
+      <div class="tscroll"><table id="mgrtable"></table></div>
+    </div>
+  </section>
 
   <section id="v-cust" class="panel" hidden>
     <div class="linehead"><div><div class="caps">Parked for James · nothing renamed</div><h2>Customer formulas to name</h2>
@@ -416,10 +470,74 @@ $('#custfoot').innerHTML = fd.codes_known ? `Codes in use: ${fd.fit_9} of ${fd.c
   + `IWPFT057 Rev 4.0 describes a 7-digit monoextrusion code instead, so the new codes need IWPFT057 revised to the 9-character form. `
   + `Codes that fit neither: ${fd.not_fitting.map(esc).join(', ')}.` : '';
 
+// ---- operator view: one line, today's orders in schedule order, every formulation with what to set
+const REPL = D.replaced || {};
+const num = s => { const v = parseFloat(String(s ?? '').replace(/,/g, '')); return isNaN(v) ? null : v; };
+const isReclaim = f => f.feeders.some(x => /reclaim/i.test(x.mat || '') && (num(x.set) || 0) > 0);
+const APPS = [[/void\s*form/i, 'VOIDFORM'], [/sign\s*blank/i, 'Sign blank'], [/corn\s*box/i, 'Corn box'], [/roll/i, 'Roll material']];
+function whenLabel(f, i, all){
+  if (/run\s*out/i.test(f.note)) return 'If PP WB Reclaim runs out';
+  if (i === 0) return all.length > 1 ? (isReclaim(f) ? 'Run first · uses reclaim' : 'Run first') : 'Formulation';
+  return isReclaim(f) ? 'Next · less reclaim' : 'Alternative';
+}
+function setRows(f, weight){
+  const byExt = {};
+  f.feeders.forEach(x => { const e = (x.col.replace('Extruder ', '').match(/^([A-D]) /) || [, ''])[1]; (byExt[e] = byExt[e] || []).push(x); });
+  return Object.entries(byExt).map(([e, list]) => {
+    const fixed = list.filter(x => String(x.set).toLowerCase() !== 'auto').reduce((a, x) => a + (num(x.set) || 0), 0);
+    return (e ? `<tr><td colspan="3" class="caps" style="padding-top:8px">Extruder ${e}</td></tr>` : '') + list.map(x => {
+      const r = REPL[x.mat], auto = String(x.set).toLowerCase() === 'auto';
+      const mat = r ? `${esc(r.now.replace(/ \(.*\)$/, ''))}<small>Page prints ${esc(x.mat)}: load ${esc(r.now.replace(/ \(.*\)$/, ''))}</small>` : esc(x.mat || '—');
+      const val = auto ? `${Math.round((100 - fixed) * 10) / 10}<small>% auto</small>` : `${esc(x.set)}<small>${weight ? '%' : ''}</small>`;
+      return `<tr><td class="p">${esc(x.col.replace('Extruder ', '').replace(/^[A-D] /, ''))}</td><td class="m">${mat}</td><td class="v">${val}</td></tr>`;
+    }).join('');
+  }).join('');
+}
+let opLine = localGet('opline') || D.lines[0].code;
+function renderOp(){
+  $('#oppick').innerHTML = D.lines.map(l => `<button type="button" data-l="${l.code}" aria-pressed="${l.code === opLine}"><span class="n">Line ${l.no}</span><span class="c">${l.code}</span></button>`).join('');
+  const l = D.lines.find(x => x.code === opLine) || D.lines[0];
+  const weight = l.dosing === 'WEIGHT';
+  const watch = /watch|weight|range|void\s*form|corn\s*box|roll|check/i;
+  $('#opline').innerHTML = `<div class="ophead"><div><div class="caps">Line ${l.no}${l.ac ? ' · ' + esc(l.ac) : ''} · ${fmtDate(D.day)}</div><h2>${l.code} · ${l.sched.length} order${l.sched.length === 1 ? '' : 's'}</h2>
+      <p>${weight ? 'Weight blender: every setting is <b>weight %</b>. Each extruder adds up to 100; Auto takes the rest.' : 'Auger feeders: every setting is <b>motor speed, 0 to 100</b>. It is not a percentage.'}
+      Where an order has more than one formulation, run the first one while there is reclaim in the silo, then move down the list.</p></div>
+      <span class="chip ${weight ? 'weight' : 'auger'}" style="font-size:13px">${weight ? 'Weight blender' : 'Auger dosing'}</span></div>
+    <div class="opcards">${l.sched.map((o, n) => {
+      const g = o.g == null ? null : l.groups[o.g];
+      const app = g ? [...new Set(g.formulas.map(f => (APPS.find(([rx]) => rx.test(f.note)) || [])[1]).filter(Boolean))] : [];
+      return `<article class="opcard"><div class="top"><span class="seq">${n + 1}</span><span class="ord">${esc(o.order)} ${app.map(a => `<span class="chip warn" style="font-size:12px;vertical-align:middle">${esc(a)}</span>`).join(' ')}</span>
+        <div class="facts"><span>Product <b class="mono">${esc(o.prod)}</b></span><span>Colour <b>${esc(o.colors || '')}</b></span><span><b>${esc(o.thk || '')}</b> mm</span>
+          <span>Size <b>${esc(o.size)}</b></span><span>GSM <b>${esc(o.gsm || '')}</b></span><span>Pallets <b>${o.plt_real ? o.plt_real.toLocaleString() : esc(o.plt || '')}</b>${o.plt_real ? ' <span class="muted">(AS400 prints 999)</span>' : ''}</span><span>Die <b class="mono">${esc(o.die || '')}</b></span></div></div>
+        ${o.si ? `<div class="si ${watch.test(o.si) ? 'watch' : ''}">${esc(o.si)}</div>` : ''}
+        ${g ? `<div class="forms">${g.formulas.map((f, i, all) => `<div class="form ${i === 0 ? 'first' : ''}"><div class="fhead"><span class="when">${whenLabel(f, i, all)}</span><span class="code">${esc(f.code)}</span></div>
+            ${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></div>`).join('')}</div>`
+          : `<div class="noform">No formulation on the FRM for this order. Ask Tech before starting.</div>`}
+      </article>`; }).join('')}</div>
+    ${l.notes.length ? `<div class="foot" style="margin-top:12px">${l.notes.map(esc).join('<br>')}</div>` : ''}`;
+}
+$('#oppick').addEventListener('click', e => { const b = e.target.closest('button[data-l]'); if (!b) return; opLine = b.dataset.l; localSet('opline', opLine); renderOp(); });
+
+// ---- production manager: every line at a glance
+$('#mgrday').textContent = `Packet ${fmtDate(D.day)} · ${D.lines.length} lines · ${D.stats.orders} orders`;
+$('#mgrtable').innerHTML = `<thead><tr><th>Line</th><th>Dosing</th><th class="num">Orders</th><th class="num">Pallets</th><th class="num">Weight (lb)</th><th>Formulas</th><th>Attention</th></tr></thead><tbody>${
+  D.lines.map(l => {
+    const plt = l.sched.reduce((a, o) => a + (o.plt_real || num(o.plt) || 0), 0), lbs = l.sched.reduce((a, o) => a + (num(o.lbs) || 0), 0);
+    const codes = [...new Set(l.groups.flatMap(g => g.formulas.map(f => f.code)))];
+    const noform = l.sched.filter(o => o.g == null).length;
+    const repl = l.groups.some(g => g.formulas.some(f => f.feeders.some(x => REPL[x.mat])));
+    const multi = l.groups.filter(g => g.formulas.length > 1).length;
+    const att = [noform ? `<span class="chip crit">${noform} without formula</span>` : '', repl ? '<span class="chip warn">page prints a replaced material</span>' : '',
+      multi ? `<span class="chip var">${multi} with reclaim / virgin options</span>` : ''].filter(Boolean).join(' ') || '<span class="muted">—</span>';
+    return `<tr data-l="${l.code}"><td><b class="mono">${l.code}</b> <span class="muted">L${l.no}</span></td><td><span class="chip ${l.dosing === 'WEIGHT' ? 'weight' : 'auger'}">${l.dosing === 'WEIGHT' ? 'Weight' : 'Auger'}</span></td>
+      <td class="num">${l.sched.length}</td><td class="num">${plt.toLocaleString()}</td><td class="num">${Math.round(lbs).toLocaleString()}</td><td class="mono" style="font-size:12.5px">${codes.map(esc).join(' · ')}</td><td>${att}</td></tr>`;
+  }).join('')}</tbody>`;
+$('#mgrtable').addEventListener('click', e => { const tr = e.target.closest('tr[data-l]'); if (!tr) return; opLine = tr.dataset.l; localSet('opline', opLine); renderOp(); show('op'); });
+
 // ---- tabs
 function show(v){
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
-  ['open', 'board', 'find', 'master', 'run', 'cust'].forEach(x => { $('#v-' + x).hidden = x !== v; });
+  ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust'].forEach(x => { $('#v-' + x).hidden = x !== v; });
   localSet('view', v);
 }
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
@@ -427,5 +545,8 @@ function localGet(k){ try { return localStorage.getItem('pf-' + k); } catch { re
 function localSet(k, v){ try { localStorage.setItem('pf-' + k, v); } catch {} }
 if (!D.lines.some(l => l.code === current)) current = D.lines[0].code;
 renderRail(); renderLine();
-const hv = (location.hash || '').slice(1); show(['open', 'board', 'find', 'master', 'run', 'cust'].includes(hv) ? hv : (localGet('view') || 'open'));
+if (!D.lines.some(l => l.code === opLine)) opLine = D.lines[0].code;
+renderOp();
+const VIEWS = ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust'];
+const hv = (location.hash || '').slice(1); show(VIEWS.includes(hv) ? hv : (VIEWS.includes(localGet('view')) ? localGet('view') : 'op'));
 </script>

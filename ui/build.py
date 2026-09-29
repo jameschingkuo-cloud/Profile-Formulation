@@ -23,6 +23,30 @@ LN = {'SE11': 1, 'SE12': 2, 'SE13': 3, 'SE21': 4, 'SE22': 5, 'SE23': 6, 'SE24': 
 DOS = {'SE24': 'WEIGHT', 'SE42': 'WEIGHT', 'SE43': 'WEIGHT', 'SE61': 'WEIGHT'}
 
 
+def real_pallets(r):
+    """AS400 caps # Plt at 999 (James Kuo, 29 Sep 2026): above that, sheets / (pcs per stack x stacks per pallet)."""
+    def n(s):
+        try:
+            return float(str(s).replace(',', ''))
+        except (TypeError, ValueError):
+            return None
+    plt, pcs, stk = n(r.get('num_plt')), n(r.get('pcs_per_stack')), n(r.get('stk_per_plt'))
+    sheets = sum(n(c.get('total_sheets')) or 0 for c in r.get('cut_rows', []))
+    if plt == 999 and pcs and stk and sheets / (pcs * stk) > 999.5:
+        return round(sheets / (pcs * stk))
+    return None
+
+
+def replaced():
+    """checks.REPLACED (printed text -> what to load, and why), read from the source without running the checks."""
+    import ast
+    tree = ast.parse((ROOT / 'daily' / 'checks.py').read_text(encoding='utf-8'))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and any(getattr(t, 'id', '') == 'REPLACED' for t in node.targets):
+            return {k: {'now': v[0], 'why': v[1]} for k, v in ast.literal_eval(node.value).items()}
+    return {}
+
+
 def main():
     pk = {}
     for f in sorted(glob.glob(str(config.PACKETS_DIR / 'packet_*.json'))):
@@ -55,8 +79,14 @@ def main():
                                              for c, v in f['feeders'].items() if v['material'] or v['set']]}
                                 for f in g['formulas']]}
                   for g in pg['groups']]
+        grp_of = {o: gi for gi, g in enumerate(pg['groups']) for o in g['orders']}
+        sched = [{'order': r['order'], 'prod': r['prod_code'], 'colors': r.get('colors'), 'thk': r.get('thk'), 'gsm': r.get('gsm'),
+                  'size': f"{r.get('order_width', '')} × {r.get('order_length', '')}", 'die': r.get('die'),
+                  'plt': r.get('num_plt'), 'lbs': r.get('weight_lbs'), 'si': r.get('special_instructions') or '',
+                  'hw': r.get('handwritten') or '', 'g': grp_of.get(r['order']), 'plt_real': real_pallets(r)}
+                 for e in sorted(P['ext'], key=lambda e: e['scan_page']) if e['line'] == lc for r in e['rows']]
         lines.append({'code': lc, 'no': LN[lc], 'dosing': DOS.get(lc, 'AUGER'), 'cols': pg['feeder_columns'],
-                      'ac': pg.get('header_note', ''), 'groups': groups, 'notes': pg.get('footnotes', [])})
+                      'ac': pg.get('header_note', ''), 'groups': groups, 'notes': pg.get('footnotes', []), 'sched': sched})
     stats = json.loads(os.environ.get('UI_STATS', '{"drafted":59,"draft_match":59,"exceptions":16}'))
     stats['orders'] = sum(len(g['orders']) for ln in lines for g in ln['groups'])
     data = {'day': day, 'dates': sorted(pk),
@@ -67,7 +97,8 @@ def main():
                        'accepted': os.environ.get('UI_ACCEPTED', ''), 'changes': 0},
             'records': json.loads(os.environ.get('UI_RECORDS', '{"frm":1656,"ext":308,"cnv":270}')),
             'open': json.loads((ROOT / 'ui' / 'open_items.json').read_text(encoding='utf-8')),
-            'cust': json.loads((ROOT / 'ui' / 'customer_formulas.json').read_text(encoding='utf-8'))}
+            'cust': json.loads((ROOT / 'ui' / 'customer_formulas.json').read_text(encoding='utf-8')),
+            'replaced': replaced()}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     out = config.OUTPUT_DIR / 'profile-formulation.html'

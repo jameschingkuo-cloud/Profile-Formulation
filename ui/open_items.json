@@ -48,13 +48,6 @@
         },
         {
           "sev": "Medium",
-          "title": "# Plt stops at 999",
-          "detail": "The AS400 field caps at 999: 16 orders a day print 999; two are corrected by hand (1880, 1044). Any order above 999 pallets is understated in the schedule and the records.",
-          "where": "EXT, all lines",
-          "source": "EXT Issues"
-        },
-        {
-          "sev": "Medium",
           "title": "Pallets: remaining or full order?",
           "detail": "EXT # Plt is sometimes the remaining pallets, sometimes the full order, so the CNV \"X OF Y\" status can't be checked against it (H68A091-1 786 OF 1880 vs 999; H69A066-2 6 OF 6 vs 1). Also 145 OF 141, 53 OF 52 and board use 237 OF 200.",
           "where": "EXT · CNV",
@@ -103,8 +96,8 @@
         },
         {
           "sev": "Low",
-          "title": "Interface direction",
-          "detail": "Who is it for first (Tech on the floor, engineers, managers)? Live SharePoint data or a copy refreshed after each run? Should Tech sign the day's draft on the page?",
+          "title": "Interface: live data and sign-off",
+          "detail": "For extrusion operators and the production manager (James, 29 Sep 2026). Still open: should the page read the live SharePoint files, or a copy refreshed after each daily run? Should Tech sign the day's draft on the page?",
           "where": "Profile Formulation",
           "source": "Handoff §7.28"
         },
@@ -143,6 +136,16 @@
       "date": "2026-09-29",
       "title": "One code, several recipes: reclaim first",
       "detail": "James: products that can run on reclaim or virgin show every formulation; reclaim versions run first, virgin is the fallback. The daily check now marks these Info and flags only a difference that neither reclaim content nor a note explains."
+    },
+    {
+      "date": "2026-09-29",
+      "title": "# Plt capped at 999: AS400 limitation confirmed",
+      "detail": "James confirmed. Daily check reports it as Info with the real count (sheets / pcs x stacks); the operator and manager views show the real count; records keep the printed 999 and the hand correction."
+    },
+    {
+      "date": "2026-09-29",
+      "title": "Interface audience: operators and production manager",
+      "detail": "New Operator and Production manager views; engineering tabs moved behind them."
     }
   ]
 }

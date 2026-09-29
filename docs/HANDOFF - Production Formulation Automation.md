@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.30 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.31 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1438,6 +1438,23 @@ customer specific list on the side and let me think so we can name these"*.
   Draft already copied every formula of the order in the listed order; now a rule in CLAUDE.md and a test
   (`test_draft_keeps_every_formulation`: all 59 drafted orders match their last issue exactly, incl. the multi-formula ones).
 
+## 7.41 Interface for operators and the production manager; # Plt 999 confirmed (29 Sep 2026)
+
+James: *"its for extrusion production operator and production manager"*. The interface now opens on two views:
+- **Operator:** pick a line (large buttons), then today's orders in schedule order. Each order shows product, colour,
+  thickness, size, GSM, pallets, die and the special instructions (weight ranges, VOIDFORM, corn box highlighted), then
+  **every formulation**, labelled "Run first · uses reclaim" / "Next · less reclaim" / "If PP WB Reclaim runs out",
+  with large set values (auger: speed 0-100; weight: %, Auto shown as its balance). Where the page prints a replaced
+  material (Q1203K, F1102K) it shows what to load. An order with no formulation says "Ask Tech before starting".
+- **Production manager:** every line: dosing, orders, pallets, weight, formulas in use, and what needs attention;
+  a row opens that line's operator view.
+- The engineering tabs (Open items, Line board, Look up, Master health, Daily run, Customer formulas) sit behind them.
+
+**# Plt 999:** James confirmed the AS400 caps # Plt at 999 (*"correct"*). `daily/checks.py` now reports it as **Info**
+with the real count (sheets / (pcs x stacks)); the operator and manager views show the real count ("AS400 prints
+999"); the records keep the printed 999 and the hand correction (values as printed). Open: live SharePoint data vs a
+copy after each run, and Tech sign-off on the page.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1566,6 +1583,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.31 | 2026-09-29 | Claude Code (local, with James Kuo) | **Operator and production manager views (§7.41)**; # Plt 999 confirmed as an AS400 limit (Info, real count shown). |
 | 1.30 | 2026-09-29 | Claude Code (local, with James Kuo) | **Customer formulas parked for naming; every formulation always given (§7.40).** |
 | 1.29 | 2026-09-29 | Claude Code (local, with James Kuo) | **Reclaim first (§7.39)**: several recipes under one code are expected; the daily check marks them Info unless unexplained. |
 | 1.28 | 2026-09-29 | Claude Code (local, with James Kuo) | **F1102K replaced by F1203K (§7.38)**: master Changes 47-52; last High material issue closed. |

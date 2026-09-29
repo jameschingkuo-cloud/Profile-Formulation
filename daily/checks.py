@@ -55,8 +55,8 @@ for r in ext_rows:
     src=f"scan p{r['scan_page']}"
     if plt and pcs and stk:
         need=sheets/(pcs*stk)
-        if plt==999 and need>999.5:
-            add('High','EXT',r['line'],r['order'],'# Plt field capped at 999',f'Printed 999 pallets but {sheets:,.0f} sheets / ({pcs:.0f}x{stk:.0f}) = {need:,.1f} pallets. '+(f"Handwritten correction: {r['handwritten']}" if r['handwritten'] else 'No hand correction.'),src)
+        if plt==999 and need>999.5:   # AS400 limitation, confirmed by James Kuo 29 Sep 2026: report the real count, as Info
+            add('Info','EXT',r['line'],r['order'],'# Plt capped at 999 (AS400)',f'AS400 prints 999 at most (James, 29 Sep 2026). Real pallets = {sheets:,.0f} sheets / ({pcs:.0f}x{stk:.0f}) = {need:,.0f}. '+(f"Handwritten correction: {r['handwritten']}" if r['handwritten'] else 'No hand correction.'),src)
         elif abs(plt*pcs*stk-sheets)>0 and plt!=999 and abs(need-plt)>=0.01:
             add('Low','EXT',r['line'],r['order'],'Pallets x pcs/stack x stacks vs sheets',f'{plt:.0f} x {pcs:.0f} x {stk:.0f} = {plt*pcs*stk:,.0f} vs {sheets:,.0f} sheets (diff {sheets-plt*pcs*stk:+,.0f})',src)
     # GSM vs instruction range
