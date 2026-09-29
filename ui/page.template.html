@@ -120,6 +120,19 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 .kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:13.5px}
 .kv dt{color:var(--muted)} .kv dd{margin:0;font-variant-numeric:tabular-nums}
 .muted{color:var(--muted)}
+.openhead{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+.owners{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:start}
+.owner{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:2px;min-width:0}
+.owner header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.owner header h3{font-size:22px}
+.item{display:grid;grid-template-columns:4px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .stripe{border-radius:2px;background:var(--line)}
+.item.High .stripe{background:var(--crit)} .item.Medium .stripe{background:var(--warn)}
+.item h4{margin:0;font:600 16px/1.25 var(--f-display);letter-spacing:.01em}
+.item p{margin:3px 0 0;font-size:13.5px;color:var(--muted)}
+.item .where{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+@media (max-width:480px){.owners{grid-template-columns:1fr}}
 @media (max-width:860px){.board,.two{grid-template-columns:1fr}.rail{position:static;grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto}.rail button{grid-template-columns:auto auto}.rail .no{display:none}}
 </style>
 
@@ -136,11 +149,18 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
   <section class="strip" id="strip" aria-label="Today at a glance"></section>
 
   <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" id="t-open" aria-selected="false" data-view="open">Open items</button>
     <button role="tab" id="t-board" aria-selected="true" data-view="board">Line board</button>
     <button role="tab" id="t-find" aria-selected="false" data-view="find">Look up</button>
     <button role="tab" id="t-master" aria-selected="false" data-view="master">Master health</button>
     <button role="tab" id="t-run" aria-selected="false" data-view="run">Daily run</button>
   </nav>
+
+  <section id="v-open" hidden>
+    <div class="openhead"><div><h2 style="font-size:26px">What needs an answer</h2><p class="muted" style="margin:4px 0 0" id="opensub"></p></div>
+      <div class="legend" id="openlegend"></div></div>
+    <div class="owners" id="owners"></div>
+  </section>
 
   <section id="v-board" class="board">
     <div class="rail" id="rail" aria-label="Extrusion lines"></div>
@@ -323,10 +343,22 @@ function took(f){ if (f) $('#dropmsg').textContent = `${f.name} (${(f.size / 104
 drop.addEventListener('drop', e => took(e.dataTransfer.files[0]));
 $('#scanfile').addEventListener('change', e => took(e.target.files[0]));
 
+// ---- open items
+const OI = D.open || {groups: []};
+const allItems = OI.groups.flatMap(g => g.items);
+const cnt = s => allItems.filter(i => i.sev === s).length;
+$('#opensub').textContent = `${allItems.length} items from the master, the daily workbooks and the handoff's open questions, grouped by who can answer. Updated ${fmtDate(OI.updated || D.day)}.`;
+$('#openlegend').innerHTML = ['High', 'Medium', 'Low'].map(s => `<span class="chip ${SEV[s]}">${cnt(s)} ${s}</span>`).join(' ');
+const rank = {High: 0, Medium: 1, Low: 2, Info: 3};
+$('#owners').innerHTML = OI.groups.map(g => `<section class="owner"><header><h3>${esc(g.owner)}</h3><span class="caps">${esc(g.title)}</span></header>
+  ${[...g.items].sort((a, b) => rank[a.sev] - rank[b.sev]).map(i => `<div class="item ${i.sev}"><span class="stripe" aria-hidden="true"></span><div>
+    <div class="fhead"><span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span><h4>${esc(i.title)}</h4></div>
+    <p>${esc(i.detail)}</p><div class="where">${i.where ? esc(i.where) + ' · ' : ''}${esc(i.source)}</div></div></div>`).join('')}</section>`).join('');
+
 // ---- tabs
 function show(v){
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
-  ['board', 'find', 'master', 'run'].forEach(x => { $('#v-' + x).hidden = x !== v; });
+  ['open', 'board', 'find', 'master', 'run'].forEach(x => { $('#v-' + x).hidden = x !== v; });
   localSet('view', v);
 }
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
@@ -334,5 +366,5 @@ function localGet(k){ try { return localStorage.getItem('pf-' + k); } catch { re
 function localSet(k, v){ try { localStorage.setItem('pf-' + k, v); } catch {} }
 if (!D.lines.some(l => l.code === current)) current = D.lines[0].code;
 renderRail(); renderLine();
-const hv = (location.hash || '').slice(1); show(['board', 'find', 'master', 'run'].includes(hv) ? hv : (localGet('view') || 'board'));
+const hv = (location.hash || '').slice(1); show(['open', 'board', 'find', 'master', 'run'].includes(hv) ? hv : (localGet('view') || 'open'));
 </script>

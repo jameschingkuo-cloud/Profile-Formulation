@@ -65,7 +65,8 @@ def main():
             'issues': [{'sev': i['Severity'], 'line': i['Line'], 'check': i['Check'], 'detail': i['Detail']} for i in sheet('Issues')],
             'master': {'formulas': len(sheet('Formulas')), 'settings': len(sheet('Line Settings')), 'materials': len(mats),
                        'accepted': os.environ.get('UI_ACCEPTED', ''), 'changes': 0},
-            'records': json.loads(os.environ.get('UI_RECORDS', '{"frm":1656,"ext":308,"cnv":270}'))}
+            'records': json.loads(os.environ.get('UI_RECORDS', '{"frm":1656,"ext":308,"cnv":270}')),
+            'open': json.loads((ROOT / 'ui' / 'open_items.json').read_text(encoding='utf-8'))}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     out = config.OUTPUT_DIR / 'profile-formulation.html'
