@@ -113,6 +113,7 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
    Every difference from your transcription gets settled by looking at the page again.
 3. Hand-found issues:
    - Copy yesterday's `daily/manual/manual_issues_<date>.py` to today's date.
+   - Do not carry forward issues for materials in `checks.REPLACED` (e.g. Q1203K, XO-256): the checks note them as Info.
    - Keep only what is still true on today's pages, then add the new issues.
    - Optional Read Me notes go in `daily/cfg/cfg_<date>.json`.
 4. Build the workbooks: `PKT_DATE=<date> python daily/build_xlsx.py`. This makes the EXT, CNV and FRM workbooks in

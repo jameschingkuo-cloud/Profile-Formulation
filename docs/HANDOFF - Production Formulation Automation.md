@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.23 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.24 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1359,6 +1359,16 @@ matched all 21, accepted; schema check 0 problems. The High issue is now Info.
 
 **One High material issue left:** F1102K (PH401) is In-active on IWPFT062 yet in FUA151WB3 (SE43, RP26911-2).
 
+## 7.34 Q1203K closed; daily checks read known substitutions (29 Sep 2026)
+
+James: *"Correct this for me. Q1203K is replaced by F1203K"* and *"take it off the Open items list"*. The master already
+carried F1203K (Changes 8-12); the printed SE42 page comes from Tech's formula book, which the pipeline does not edit.
+So: the master's Issues row is now **Info, resolved**; the item is off the interface's Open items list (kept under
+`resolved` in `ui/open_items.json`); and `daily/checks.py` gains `REPLACED` (printed text -> what it is now, and
+James's decision): a page that still prints **Q1203K** or **Bergen XO-256** gets one **Info** row ("read as F1203K /
+X0-256"), so the hand-written Medium no longer has to be carried from day to day. Regression counts +2 on 23 and 24
+Sep (exactly those two Info rows). Add to `REPLACED` only on James's word, with the master change it refers to.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1487,6 +1497,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.24 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K closed (§7.34)**: master issue resolved, off Open items; `checks.REPLACED` notes known substitutions as Info each day. |
 | 1.23 | 2026-09-29 | Claude Code (local, with James Kuo) | **IWPFT062 Rev 18.0: PP YungSox 5050S = 50-1560-163 (§7.33)**: master Changes 24-44; `replace_material.py --create`. |
 | 1.22 | 2026-09-29 | Claude Code (local, with James Kuo) | **PP Virgin = F6502A (§7.32)**: master Changes 21-23; master passes the schema check with 0 problems. |
 | 1.21 | 2026-09-29 | Claude Code (local, with James Kuo) | **CF400 spelling X0-256 and White Reclaim = PP WB Reclaim (§7.31)**: master Changes 13-20; new `db/edit_master.py` for logged cell edits. |

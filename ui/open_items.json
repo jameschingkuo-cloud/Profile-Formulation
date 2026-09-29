@@ -5,67 +5,138 @@
       "owner": "Tech",
       "title": "Formulation",
       "items": [
-        {"sev": "High", "title": "F1102K is In-active but still in a current formula",
-         "detail": "IWPFT062 has F1102K (PH401) In-active, yet RP26911-2's new SE43 formula FUA151WB3 uses it in V7 (28 Sep), and SE42 used it on 25 Sep. Replace with F1203K, or reactivate F1102K on IWPFT062.",
-         "where": "SE43 · FUA151WB3", "source": "Master Issues"},
-        {"sev": "Medium", "title": "One formula code, several recipes",
-         "detail": "On 7 lines the same code is printed with different settings: FUA152WB4 (SE12, SE13, SE31, SE32), FU0021WB4 (SE23, SE25), FUA060WBA twice on SE22 with no note. Some are variants (sign blank, VOIDFORM, run-out); FUA060WBA and RP26512-1's FU0041WB4 / FU0031WB4 have nothing telling the floor which to run.",
-         "where": "SE12 · SE13 · SE21 · SE22 · SE23 · SE25 · SE31 · SE32", "source": "FRM Issues, every packet"},
-        {"sev": "Medium", "title": "Same code, different weight % on two lines",
-         "detail": "FU0151KS3: virgin 78 / KS 2 in V8 on SE42 (25 Sep), virgin 77 / KS 3 in V9 on SE43 (28 Sep). Is the recipe per line, or should one code mean one recipe?",
-         "where": "SE42 · SE43", "source": "Master Issues"},
-        {"sev": "Medium", "title": "Correct two FRM pages",
-         "detail": "SE42 V3 still prints Q1203K (replaced by F1203K) and SE24 prints Bergen XO-256 (is X0-256). The master is already corrected.",
-         "where": "SE42 · SE24", "source": "Master Changes 8-14"},
-        {"sev": "Medium", "title": "Premix wording on H68A127-1",
-         "detail": "SE23 prints \"WB EA Premix\" (FU0021GT4); SE25 printed \"WB GT Premix\" (FU001GTW4). The note names GT D26002M, which IWPFT062 lists as CR400EA. One name for one premix.",
-         "where": "SE23", "source": "FRM Issues 28 Sep"},
-        {"sev": "Low", "title": "Alternate sources and trade names not on IWPFT062",
-         "detail": "KS black: Spartech B60009 and PolyOne LD-250 are printed as alternates but not qualified; NPC grade printed PE90000F vs PE-B9000F on the list. \"BL-B26003A\" and \"HiTalc ZS\" are not named on the list. Add to IWPFT062 or drop from the pages.",
-         "where": "SE11 · SE21 · SE42 · SE43 · SE61", "source": "Master Issues"}
+        {
+          "sev": "High",
+          "title": "F1102K is In-active but still in a current formula",
+          "detail": "IWPFT062 has F1102K (PH401) In-active, yet RP26911-2's new SE43 formula FUA151WB3 uses it in V7 (28 Sep), and SE42 used it on 25 Sep. Replace with F1203K, or reactivate F1102K on IWPFT062.",
+          "where": "SE43 · FUA151WB3",
+          "source": "Master Issues"
+        },
+        {
+          "sev": "Medium",
+          "title": "One formula code, several recipes",
+          "detail": "On 7 lines the same code is printed with different settings: FUA152WB4 (SE12, SE13, SE31, SE32), FU0021WB4 (SE23, SE25), FUA060WBA twice on SE22 with no note. Some are variants (sign blank, VOIDFORM, run-out); FUA060WBA and RP26512-1's FU0041WB4 / FU0031WB4 have nothing telling the floor which to run.",
+          "where": "SE12 · SE13 · SE21 · SE22 · SE23 · SE25 · SE31 · SE32",
+          "source": "FRM Issues, every packet"
+        },
+        {
+          "sev": "Medium",
+          "title": "Same code, different weight % on two lines",
+          "detail": "FU0151KS3: virgin 78 / KS 2 in V8 on SE42 (25 Sep), virgin 77 / KS 3 in V9 on SE43 (28 Sep). Is the recipe per line, or should one code mean one recipe?",
+          "where": "SE42 · SE43",
+          "source": "Master Issues"
+        },
+        {
+          "sev": "Low",
+          "title": "Correct the SE24 page",
+          "detail": "SE24 prints Bergen XO-256; it is X0-256 (CF400). The master is corrected and the daily checks read the misprint correctly.",
+          "where": "SE24",
+          "source": "Master Changes 13-14"
+        },
+        {
+          "sev": "Medium",
+          "title": "Premix wording on H68A127-1",
+          "detail": "SE23 prints \"WB EA Premix\" (FU0021GT4); SE25 printed \"WB GT Premix\" (FU001GTW4). The note names GT D26002M, which IWPFT062 lists as CR400EA. One name for one premix.",
+          "where": "SE23",
+          "source": "FRM Issues 28 Sep"
+        },
+        {
+          "sev": "Low",
+          "title": "Alternate sources and trade names not on IWPFT062",
+          "detail": "KS black: Spartech B60009 and PolyOne LD-250 are printed as alternates but not qualified; NPC grade printed PE90000F vs PE-B9000F on the list. \"BL-B26003A\" and \"HiTalc ZS\" are not named on the list. Add to IWPFT062 or drop from the pages.",
+          "where": "SE11 · SE21 · SE42 · SE43 · SE61",
+          "source": "Master Issues"
+        }
       ]
     },
     {
       "owner": "Planning / scheduling",
       "title": "EXT and CNV schedules",
       "items": [
-        {"sev": "Medium", "title": "Printed GSM about 7% above the weight range, every VOIDFORM order",
-         "detail": "Every order with a range in its instructions prints a GSM about 7% above the range's middle (631 vs 582-600, 793 vs 729-751, 1052 vs 970-1000). Is the printed GSM a nominal figure and the range the real target?",
-         "where": "SE11 · SE23 · SE25 · SE43", "source": "EXT Issues, every packet"},
-        {"sev": "High", "title": "Converting sheet figures that don't add up",
-         "detail": "SD22 H64A244-1 prints 1,431,000 sheets vs 560 × 2,700 = 1,512,000; H65A163-1 prints 201.6 for 201,600. Semi sizes differ from the EXT order size on H64A244-1, H69A038-1 and H67A120-1 (two-up?).",
-         "where": "SD22", "source": "CNV Issues"},
-        {"sev": "Medium", "title": "# Plt stops at 999",
-         "detail": "The AS400 field caps at 999: 16 orders a day print 999; two are corrected by hand (1880, 1044). Any order above 999 pallets is understated in the schedule and the records.",
-         "where": "EXT, all lines", "source": "EXT Issues"},
-        {"sev": "Medium", "title": "Pallets: remaining or full order?",
-         "detail": "EXT # Plt is sometimes the remaining pallets, sometimes the full order, so the CNV \"X OF Y\" status can't be checked against it (H68A091-1 786 OF 1880 vs 999; H69A066-2 6 OF 6 vs 1). Also 145 OF 141, 53 OF 52 and board use 237 OF 200.",
-         "where": "EXT · CNV", "source": "EXT / CNV Issues"}
+        {
+          "sev": "Medium",
+          "title": "Printed GSM about 7% above the weight range, every VOIDFORM order",
+          "detail": "Every order with a range in its instructions prints a GSM about 7% above the range's middle (631 vs 582-600, 793 vs 729-751, 1052 vs 970-1000). Is the printed GSM a nominal figure and the range the real target?",
+          "where": "SE11 · SE23 · SE25 · SE43",
+          "source": "EXT Issues, every packet"
+        },
+        {
+          "sev": "High",
+          "title": "Converting sheet figures that don't add up",
+          "detail": "SD22 H64A244-1 prints 1,431,000 sheets vs 560 × 2,700 = 1,512,000; H65A163-1 prints 201.6 for 201,600. Semi sizes differ from the EXT order size on H64A244-1, H69A038-1 and H67A120-1 (two-up?).",
+          "where": "SD22",
+          "source": "CNV Issues"
+        },
+        {
+          "sev": "Medium",
+          "title": "# Plt stops at 999",
+          "detail": "The AS400 field caps at 999: 16 orders a day print 999; two are corrected by hand (1880, 1044). Any order above 999 pallets is understated in the schedule and the records.",
+          "where": "EXT, all lines",
+          "source": "EXT Issues"
+        },
+        {
+          "sev": "Medium",
+          "title": "Pallets: remaining or full order?",
+          "detail": "EXT # Plt is sometimes the remaining pallets, sometimes the full order, so the CNV \"X OF Y\" status can't be checked against it (H68A091-1 786 OF 1880 vs 999; H69A066-2 6 OF 6 vs 1). Also 145 OF 141, 53 OF 52 and board use 237 OF 200.",
+          "where": "EXT · CNV",
+          "source": "EXT / CNV Issues"
+        }
       ]
     },
     {
       "owner": "James",
       "title": "Decisions and documents",
       "items": [
-        {"sev": "High", "title": "Tech's calc workbooks into inputs\\calc",
-         "detail": "Blocks the auger-line recipes (weight %), the Auger Calibration master and one test. Also answers where they live (Q14), so the pipeline can read them where Tech saves them.",
-         "where": "Formulation Master", "source": "Handoff Q14"},
-        {"sev": "Medium", "title": "Auger rules and slopes",
-         "detail": "Is the draft hopper-role table right (Q13)? Which slope is current where two are in use (Q12)? SE22/SE21 H4 gearbox 1:100 or 1:70 (Q18, a one-minute catch test)? SE32's slopes 11-13% off the others (Q19)?",
-         "where": "Auger lines", "source": "Handoff Q12, Q13, Q18, Q19"},
-        {"sev": "Medium", "title": "FRM vs calc formula codes",
-         "detail": "The same settings carry different codes on the FRM and in the calc (FUA152WB4 vs FUA012WB4 / FUA062WB4). Which is the real code, and what decides the number (Q3, Q8, Q9)? Which source wins when calc, Word book and FRM disagree (Q15)?",
-         "where": "All lines", "source": "Handoff Q3, Q8, Q9, Q15"},
-        {"sev": "Low", "title": "IWPFT062 housekeeping",
-         "detail": "Rev 18.0's MOC cell is blank (earlier rows say NA or an MOC number). 50-7555-010 is listed twice (TPP40 In-active, PP/PC625 Active).",
-         "where": "IWPFT062", "source": "IWPFT062 Rev 18.0"},
-        {"sev": "Low", "title": "Interface direction",
-         "detail": "Who is it for first (Tech on the floor, engineers, managers)? Live SharePoint data or a copy refreshed after each run? Should Tech sign the day's draft on the page?",
-         "where": "Profile Formulation", "source": "Handoff §7.28"},
-        {"sev": "Low", "title": "Housekeeping",
-         "detail": "Delete the stale workspace copies (Product Master.xlsx, Daily\\, old Formulation Master.xlsx). Merge the branch into main when ready. Remaining background questions: Q2 codes, Q4 who makes the FRM and when, Q5 AC = 1 / 90, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
-         "where": "", "source": "Handoff §10"}
+        {
+          "sev": "High",
+          "title": "Tech's calc workbooks into inputs\\calc",
+          "detail": "Blocks the auger-line recipes (weight %), the Auger Calibration master and one test. Also answers where they live (Q14), so the pipeline can read them where Tech saves them.",
+          "where": "Formulation Master",
+          "source": "Handoff Q14"
+        },
+        {
+          "sev": "Medium",
+          "title": "Auger rules and slopes",
+          "detail": "Is the draft hopper-role table right (Q13)? Which slope is current where two are in use (Q12)? SE22/SE21 H4 gearbox 1:100 or 1:70 (Q18, a one-minute catch test)? SE32's slopes 11-13% off the others (Q19)?",
+          "where": "Auger lines",
+          "source": "Handoff Q12, Q13, Q18, Q19"
+        },
+        {
+          "sev": "Medium",
+          "title": "FRM vs calc formula codes",
+          "detail": "The same settings carry different codes on the FRM and in the calc (FUA152WB4 vs FUA012WB4 / FUA062WB4). Which is the real code, and what decides the number (Q3, Q8, Q9)? Which source wins when calc, Word book and FRM disagree (Q15)?",
+          "where": "All lines",
+          "source": "Handoff Q3, Q8, Q9, Q15"
+        },
+        {
+          "sev": "Low",
+          "title": "IWPFT062 housekeeping",
+          "detail": "Rev 18.0's MOC cell is blank (earlier rows say NA or an MOC number). 50-7555-010 is listed twice (TPP40 In-active, PP/PC625 Active).",
+          "where": "IWPFT062",
+          "source": "IWPFT062 Rev 18.0"
+        },
+        {
+          "sev": "Low",
+          "title": "Interface direction",
+          "detail": "Who is it for first (Tech on the floor, engineers, managers)? Live SharePoint data or a copy refreshed after each run? Should Tech sign the day's draft on the page?",
+          "where": "Profile Formulation",
+          "source": "Handoff §7.28"
+        },
+        {
+          "sev": "Low",
+          "title": "Housekeeping",
+          "detail": "Delete the stale workspace copies (Product Master.xlsx, Daily\\, old Formulation Master.xlsx). Merge the branch into main when ready. Remaining background questions: Q2 codes, Q4 who makes the FRM and when, Q5 AC = 1 / 90, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
+          "where": "",
+          "source": "Handoff §10"
+        }
       ]
+    }
+  ],
+  "resolved": [
+    {
+      "date": "2026-09-29",
+      "title": "Q1203K replaced by F1203K",
+      "detail": "Master Changes 8-12; daily checks read a printed Q1203K as F1203K (Info)."
     }
   ]
 }
