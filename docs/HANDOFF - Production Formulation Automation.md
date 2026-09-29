@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.25 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.26 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1377,6 +1377,17 @@ in the master rather than revise IWPFT062 (*"go with 1"*): **Change 45**, TL460 
 approved by James; issue now Info; off Open items. Interface: issue lists sort High -> Medium -> Low -> Info; Open
 items opens by severity (switch to "By owner").
 
+## 7.36 IWPFT062 is the authority; the master follows it (29 Sep 2026)
+
+James: *"doc T062 is correct. Master should match it"*. New `db/sync_iwpft062.py` compares every IWPFT062 row with the
+master's Materials (Material No., code, name, supplier, status, further approved sources) and, with `--apply`, makes the
+master match through Change Log rows under this standing rule; a row dropped from IWPFT062 becomes "Withdrawn", never
+deleted. Master-only columns (Role, FRM Text, Other Spellings) and INT-/NL- rows are left alone, so Change 45
+("HiTalc ZS" as a spelling of TL460) stands: TL460's Name stays IWPFT062's "Talc / N40109A". Daily run step 0 now runs it.
+
+IWPFT062 was locked (open in Word) on 29 Sep, so the live check could not run; a preview against the Rev 18.0 text read
+at 09:43 (file unchanged since) found **0 differences** across 67 rows. Run the live check once the file is closed.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1505,6 +1516,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.26 | 2026-09-29 | Claude Code (local, with James Kuo) | **Master follows IWPFT062 (§7.36)**: `db/sync_iwpft062.py` in daily step 0; preview 0 differences. |
 | 1.25 | 2026-09-29 | Claude Code (local, with James Kuo) | **HiTalc ZS = TL460 trade name (§7.35)**: master Change 45; interface sorts by severity. |
 | 1.24 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K closed (§7.34)**: master issue resolved, off Open items; `checks.REPLACED` notes known substitutions as Info each day. |
 | 1.23 | 2026-09-29 | Claude Code (local, with James Kuo) | **IWPFT062 Rev 18.0: PP YungSox 5050S = 50-1560-163 (§7.33)**: master Changes 24-44; `replace_material.py --create`. |

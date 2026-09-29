@@ -101,6 +101,9 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 0. **Pre-flight the masters:** `python db/preflight.py check "Formulation Master.xlsx"`. Exit 1 = someone changed the
    master without an approved Change Log row: **stop**, list the changes for James, build nothing. When every change
    is logged and approved, `python db/preflight.py accept "Formulation Master.xlsx"` and commit `data/snapshots/`.
+   Then `python db/sync_iwpft062.py`: **IWPFT062 is the authority for materials** (James, 29 Sep 2026: *"doc T062 is
+   correct. Master should match it"*). Any difference -> `--apply` (logged under James's standing rule), publish,
+   pre-flight, accept. If IWPFT062 is locked (open in Word), say so and run it again later.
 1. Put the scan in `SCAN_DIR`, then run `python scan_reader/render_pages.py <scan.pdf>`.
    - Read every page image (use the quarter tiles for small print).
    - Transcribe EXT, CNV and FRM into `data/packets/packet_YYYY-MM-DD.json`, using the previous day's file as the
