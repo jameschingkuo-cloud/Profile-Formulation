@@ -1,0 +1,457 @@
+{
+ "updated": "2026-09-29",
+ "items": [
+  {
+   "line": "SE23",
+   "code": "FU0021WB4",
+   "app": "Corn box",
+   "note": "(CORN BOX FORMULA)",
+   "orders": [
+    "RP26731-2",
+    "RP26902-1"
+   ],
+   "products": [
+    "DPP40WB1235"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 PP Virgin 45",
+    "Hopper 2 HiTalc ZS (or N40109A) 10",
+    "Hopper 3 PP WB Reclaim 60",
+    "Hopper 4 WB-W26038A 20"
+   ],
+   "also_plain": false,
+   "family": "FU0·WB4",
+   "taken": [
+    "001",
+    "011",
+    "014",
+    "021",
+    "031",
+    "041",
+    "151"
+   ]
+  },
+  {
+   "line": "SE23",
+   "code": "FU0021WB4",
+   "app": "Corn box",
+   "note": "(CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)",
+   "orders": [
+    "RP26731-2",
+    "RP26902-1"
+   ],
+   "products": [
+    "DPP40WB1235"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 PP Virgin 99",
+    "Hopper 2 HiTalc ZS (or N40109A) 14",
+    "Hopper 3 F1203K 32",
+    "Hopper 4 WB-W26038A 28"
+   ],
+   "also_plain": false,
+   "family": "FU0·WB4",
+   "taken": [
+    "001",
+    "011",
+    "014",
+    "021",
+    "031",
+    "041",
+    "151"
+   ]
+  },
+  {
+   "line": "SE25",
+   "code": "FU0001WB4",
+   "app": "Roll material",
+   "note": "(For roll material only) (Use this formula in case PP WB Reclaim is run out)",
+   "orders": [
+    "H68A111-4",
+    "H68A111-5"
+   ],
+   "products": [
+    "RPP40WB890"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 PP Virgin-silo 4 (F6502A) 45",
+    "Hopper 2 F1203K 22",
+    "Hopper 3 CaCO3 -Heritage HM-10MAX 17",
+    "Hopper 4 WB-W26038A 17",
+    "Hopper 5 HiTalc ZS (or N40109A) 28"
+   ],
+   "also_plain": false,
+   "family": "FU0·WB4",
+   "taken": [
+    "001",
+    "011",
+    "014",
+    "021",
+    "031",
+    "041",
+    "151"
+   ]
+  },
+  {
+   "line": "SE25",
+   "code": "FU0021WB4",
+   "app": "Roll material",
+   "note": "(For roll material only) Check weight",
+   "orders": [
+    "H68A111-4",
+    "H68A111-5"
+   ],
+   "products": [
+    "RPP40WB890"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 PP Virgin-silo 4 (6502A) 40",
+    "Hopper 2 PP WB Reclaim 60",
+    "Hopper 3 CaCO3 -Heritage HM-10MAX 20",
+    "Hopper 4 WB-W26038A 15",
+    "Hopper 5 HiTalc ZS (or N40109A) 28"
+   ],
+   "also_plain": true,
+   "family": "FU0·WB4",
+   "taken": [
+    "001",
+    "011",
+    "014",
+    "021",
+    "031",
+    "041",
+    "151"
+   ]
+  },
+  {
+   "line": "SE12",
+   "code": "FUA152WB4",
+   "app": "Sign blank",
+   "note": "(For sign blank orders only)",
+   "orders": [
+    "RP26511-1"
+   ],
+   "products": [
+    "SPA40WB772"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 WB-W26038A 50",
+    "Hopper 2 HiTalc ZS (or N40109A) 41",
+    "Hopper 3 F1203K 20",
+    "Hopper 4 PP Virgin-silo 3 (6502A) 71"
+   ],
+   "also_plain": true,
+   "family": "FUA·WB4",
+   "taken": [
+    "012",
+    "062",
+    "141",
+    "151",
+    "152"
+   ]
+  },
+  {
+   "line": "SE13",
+   "code": "FUA152WB4",
+   "app": "Sign blank",
+   "note": "(For sign blank orders only)",
+   "orders": [
+    "H69A237-1",
+    "RP25522-4",
+    "RP26327-1",
+    "RP26506-5",
+    "RP26618-2",
+    "RP26618-3",
+    "RP26717-1"
+   ],
+   "products": [
+    "RPA40WB3051",
+    "RPP40WB1856",
+    "SPA40WB772",
+    "SPA40WB934",
+    "SPA40WB937"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 2 HiTalc ZS (or N40109A) 60",
+    "Hopper 3 F1203K 33",
+    "Hopper 4 PP Virgin-silo 3 (F6502A) 45",
+    "Hopper 5 WB-W26038A 16"
+   ],
+   "also_plain": true,
+   "family": "FUA·WB4",
+   "taken": [
+    "012",
+    "062",
+    "141",
+    "151",
+    "152"
+   ]
+  },
+  {
+   "line": "SE31",
+   "code": "FUA152WB4",
+   "app": "Sign blank",
+   "note": "New formulation for sign blank",
+   "orders": [
+    "H69A105-4",
+    "RP26413-1"
+   ],
+   "products": [
+    "SPA40WB765",
+    "SPA40WB776"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "A V1 PP Virgin-silo 4 (6502A) 45",
+    "A V2 F1203K 33",
+    "A V3 HiTalc ZS (or N40109A) 11",
+    "A V4 WB-W26038A 18"
+   ],
+   "also_plain": true,
+   "family": "FUA·WB4",
+   "taken": [
+    "012",
+    "062",
+    "141",
+    "151",
+    "152"
+   ]
+  },
+  {
+   "line": "SE32",
+   "code": "FUA152WB4",
+   "app": "Sign blank",
+   "note": "SIGN BLANK",
+   "orders": [
+    "RP26525-3"
+   ],
+   "products": [
+    "SPA40WB755"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "A V1 PP Virgin-silo 4 (6502A) 40",
+    "A V2 F1203K 18",
+    "A V3 HiTalc ZS (or N40109A) 10",
+    "A V4 WB-W26038A 17"
+   ],
+   "also_plain": true,
+   "family": "FUA·WB4",
+   "taken": [
+    "012",
+    "062",
+    "141",
+    "151",
+    "152"
+   ]
+  },
+  {
+   "line": "SE11",
+   "code": "FU0022WB3",
+   "app": "VOIDFORM",
+   "note": "(For VOIDFORM order only)",
+   "orders": [
+    "H63A200-1",
+    "H68A088-1",
+    "H69A039-1"
+   ],
+   "products": [
+    "DPP30WB1021",
+    "DPP30WB1023",
+    "DPP30WB1025"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 WB-W26038A 50",
+    "Hopper 2 HiTalc ZS (or N40109A) 15",
+    "Hopper 3 F1203K 16",
+    "Hopper 4 PP Virgin-silo 3 (6502A) 45",
+    "Hopper 5 CaCO3 –Heritage HM-10MAX 6"
+   ],
+   "also_plain": false,
+   "family": "FU0·WB3",
+   "taken": [
+    "022",
+    "032",
+    "042",
+    "141",
+    "151"
+   ]
+  },
+  {
+   "line": "SE22",
+   "code": "FU0001WBD",
+   "app": "VOIDFORM",
+   "note": "For VOIDFORM order only",
+   "orders": [
+    "H68A053-1"
+   ],
+   "products": [
+    "RPPD0WB176"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 PP Virgin-silo 3 (6502A) 64",
+    "Hopper 2 HiTalc ZS (or N40109A) 4",
+    "Hopper 4 WB-W26038A 13",
+    "Hopper 5 CaCO3 -Heritage HM-10MAX 4"
+   ],
+   "also_plain": false,
+   "family": "FU0·WBD",
+   "taken": [
+    "001",
+    "010",
+    "061"
+   ]
+  },
+  {
+   "line": "SE23",
+   "code": "FU0021WB4",
+   "app": "VOIDFORM",
+   "note": "For VOIDFORM order only",
+   "orders": [
+    "H67A120-1",
+    "H68A091-1",
+    "H69A166-1"
+   ],
+   "products": [
+    "DPP40WB1669",
+    "DPP40WB1670",
+    "RPP40WB1847"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 PP Virgin-silo 4 (6502A) 85",
+    "Hopper 2 HiTalc ZS (or N40109A) 12",
+    "Hopper 3 F1203K 28",
+    "Hopper 4 WB-W26038A 24"
+   ],
+   "also_plain": false,
+   "family": "FU0·WB4",
+   "taken": [
+    "001",
+    "011",
+    "014",
+    "021",
+    "031",
+    "041",
+    "151"
+   ]
+  },
+  {
+   "line": "SE25",
+   "code": "FU0011WB5",
+   "app": "VOIDFORM",
+   "note": "(Foe VOIDFORM orders only)",
+   "orders": [
+    "H64A244-1",
+    "H66A116-1"
+   ],
+   "products": [
+    "DPP50WB305",
+    "DPP50WB308"
+   ],
+   "dates": [
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28"
+   ],
+   "settings": [
+    "Hopper 1 PP Virgin-silo 3 (F6502A) 40",
+    "Hopper 2 PP WB Reclaim 60",
+    "Hopper 3 CaCO3 -Heritage HM-10HP 3",
+    "Hopper 4 WB-W26038A 10",
+    "Hopper 5 HiTalc ZS (or N40109A) 10"
+   ],
+   "also_plain": false,
+   "family": "FU0·WB5",
+   "taken": [
+    "011",
+    "051"
+   ]
+  }
+ ],
+ "finding": {
+  "codes_known": 236,
+  "fit_9": 222,
+  "pattern": "[base][requirement][blend][sequence, 3 digits][colour, 2][thickness, 1]",
+  "not_fitting": [
+   "FH001KS4",
+   "FU001BGW3",
+   "FU001EAW4",
+   "FU001GTW4",
+   "FU001TLW4",
+   "FU001WB5",
+   "FU001WB6",
+   "FU062WB4",
+   "FUA102lY4",
+   "FUA3000YF7",
+   "FX020WB4",
+   "HU000WB4",
+   "HU000WB5",
+   "RO000WB4"
+  ]
+ }
+}

@@ -55,6 +55,12 @@ Change these only with James's explicit say-so, and log the change in the handof
   (§7.14, §7.16).
   - *Read the function, not the number*: hopper numbers mean different things on different lines.
   - The slope follows the material and the hopper together.
+- **Every formulation, in order (James, 29 Sep 2026).** When the pipeline gives an order its formulation (FRM Draft,
+  interface, any later renderer), it gives **all** of that order's formulas in the listed order: reclaim versions
+  first, the virgin-resin fallback last. Never just the primary. Test `test_draft_keeps_every_formulation`.
+- **Customer-specific formulas get their own codes (James, 29 Sep 2026)**, instead of a shared code plus a note
+  (VOIDFORM, sign blank, corn box, roll). The list is parked in `ui/customer_formulas.json` until James names them;
+  do not invent codes.
 - **Never auto-issue a formula the pipeline guessed.** Anything not matched exactly goes to an engineer. Every
   output is a draft until Tech signs it.
 

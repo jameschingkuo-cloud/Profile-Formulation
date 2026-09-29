@@ -165,7 +165,15 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
     <button role="tab" id="t-find" aria-selected="false" data-view="find">Look up</button>
     <button role="tab" id="t-master" aria-selected="false" data-view="master">Master health</button>
     <button role="tab" id="t-run" aria-selected="false" data-view="run">Daily run</button>
+    <button role="tab" id="t-cust" aria-selected="false" data-view="cust">Customer formulas</button>
   </nav>
+
+  <section id="v-cust" class="panel" hidden>
+    <div class="linehead"><div><div class="caps">Parked for James · nothing renamed</div><h2>Customer formulas to name</h2>
+      <p id="custsub"></p></div><span class="chip warn" id="custcount"></span></div>
+    <div class="tscroll"><table id="custtable"></table></div>
+    <div class="foot" id="custfoot"></div>
+  </section>
 
   <section id="v-open" hidden>
     <div class="openhead"><div><h2 style="font-size:26px">What needs an answer</h2><p class="muted" style="margin:4px 0 0" id="opensub"></p></div>
@@ -392,10 +400,26 @@ function renderOpen(mode){
 document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => renderOpen(b.dataset.mode)));
 renderOpen(localGet('openmode') === 'owner' ? 'owner' : 'sev');
 
+// ---- customer formulas (parked for naming)
+const CF = D.cust || {items: [], finding: {}};
+$('#custcount').textContent = `${CF.items.length} formulas`;
+$('#custsub').textContent = 'Formulas a past engineer marked for one customer or application only in the FRM note. Each will get its own code; '
+  + '“Same code used plainly” means the line also prints this code, with other settings, for ordinary orders.';
+$('#custtable').innerHTML = `<thead><tr><th>Application</th><th>Line</th><th>Current code</th><th>Note as printed</th><th>Products</th><th>Settings</th><th>Same code used plainly</th><th>Sequence numbers taken</th><th>New code</th></tr></thead><tbody>${
+  CF.items.map(i => `<tr><td><b>${esc(i.app)}</b></td><td class="mono">${esc(i.line)}</td><td class="mono">${esc(i.code)}</td>
+    <td>${esc(i.note)}</td><td class="mono" style="font-size:12px">${i.products.map(esc).join('<br>')}</td>
+    <td style="font-size:12px">${i.settings.map(esc).join('<br>')}</td><td>${i.also_plain ? '<span class="chip warn">Yes</span>' : 'No'}</td>
+    <td class="mono" style="font-size:12px">${i.family ? esc(i.family) + '<br>' + i.taken.map(esc).join(' ') : '—'}</td>
+    <td class="muted">to be named</td></tr>`).join('')}</tbody>`;
+const fd = CF.finding;
+$('#custfoot').innerHTML = fd.codes_known ? `Codes in use: ${fd.fit_9} of ${fd.codes_known} follow ${esc(fd.pattern)} (e.g. FUA152WB4 = F · U · A · 152 · WB · 4 mm). `
+  + `IWPFT057 Rev 4.0 describes a 7-digit monoextrusion code instead, so the new codes need IWPFT057 revised to the 9-character form. `
+  + `Codes that fit neither: ${fd.not_fitting.map(esc).join(', ')}.` : '';
+
 // ---- tabs
 function show(v){
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
-  ['open', 'board', 'find', 'master', 'run'].forEach(x => { $('#v-' + x).hidden = x !== v; });
+  ['open', 'board', 'find', 'master', 'run', 'cust'].forEach(x => { $('#v-' + x).hidden = x !== v; });
   localSet('view', v);
 }
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
@@ -403,5 +427,5 @@ function localGet(k){ try { return localStorage.getItem('pf-' + k); } catch { re
 function localSet(k, v){ try { localStorage.setItem('pf-' + k, v); } catch {} }
 if (!D.lines.some(l => l.code === current)) current = D.lines[0].code;
 renderRail(); renderLine();
-const hv = (location.hash || '').slice(1); show(['open', 'board', 'find', 'master', 'run'].includes(hv) ? hv : (localGet('view') || 'open'));
+const hv = (location.hash || '').slice(1); show(['open', 'board', 'find', 'master', 'run', 'cust'].includes(hv) ? hv : (localGet('view') || 'open'));
 </script>

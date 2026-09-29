@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.29 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.30 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1420,6 +1420,24 @@ or more formulation so if we have reclaim in the silo, we will use it up first b
 - The published 25 / 28 Sep workbooks keep their Medium rows as issued; the manual "two formulas with no note" rows are
   not carried forward (CLAUDE.md step 3). DATABASE.md §6.4 records the rule; off Open items.
 
+## 7.40 Customer-specific formulas get their own codes; every formulation is always given (29 Sep 2026)
+
+James: *"Some formula code as customer specific. which the past engineer add it into the notes like "void from" or sign
+blank"*; *"We should use this oppotunity to fix their mistake and create new fomulation code instead"*; *"put all
+customer specific list on the side and let me think so we can name these"*.
+
+- **Parked, nothing renamed:** `ui/customer_formulas.py` -> `ui/customer_formulas.json`, shown on the interface's
+  *Customer formulas* tab: 12 formulas (VOIDFORM x4: FU0022WB3 SE11, FU0001WBD SE22, FU0021WB4 SE23, FU0011WB5 SE25;
+  sign blank: FUA152WB4 on SE12/SE13/SE31/SE32; corn box FU0021WB4 SE23 and its run-out row; roll FU0021WB4 / FU0001WB4
+  SE25), with products, settings, whether the same code is also printed plainly on that line, and the sequence numbers
+  already taken in each code family (Calc Library + FRM codes).
+- **IWPFT057 vs practice:** IWPFT057 Rev 4.0 describes a 7-digit monoextrusion code; 222 of 236 codes in use have 9
+  characters: [base][requirement][blend][sequence, 3 digits][colour, 2][thickness, 1] (FUA152WB4 = F U A 152 WB 4 mm).
+  New codes should follow the 9-character form, with IWPFT057 revised to match (James's document). 14 codes fit neither.
+- James: *"for the reclaim to vigin, when the material is requested, make sure you provide both formulation"*. The FRM
+  Draft already copied every formula of the order in the listed order; now a rule in CLAUDE.md and a test
+  (`test_draft_keeps_every_formulation`: all 59 drafted orders match their last issue exactly, incl. the multi-formula ones).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1548,6 +1566,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.30 | 2026-09-29 | Claude Code (local, with James Kuo) | **Customer formulas parked for naming; every formulation always given (§7.40).** |
 | 1.29 | 2026-09-29 | Claude Code (local, with James Kuo) | **Reclaim first (§7.39)**: several recipes under one code are expected; the daily check marks them Info unless unexplained. |
 | 1.28 | 2026-09-29 | Claude Code (local, with James Kuo) | **F1102K replaced by F1203K (§7.38)**: master Changes 47-52; last High material issue closed. |
 | 1.27 | 2026-09-29 | Claude Code (local, with James Kuo) | **XO-256 disregarded (§7.37)**: master Change 46; no XO left in the master data. |

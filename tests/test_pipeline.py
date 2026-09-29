@@ -155,3 +155,30 @@ def test_master_change_control(tmp_path):
 def datetime_today():
     import datetime
     return datetime.date.today()
+
+
+def test_draft_keeps_every_formulation(tmp_path):
+    """James, 29 Sep 2026: reclaim first, then virgin -- when a formulation is given, give all of them, in order."""
+    from openpyxl import load_workbook
+    out = tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28')
+    r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    rows = list(load_workbook(out / 'FRM Draft 2026-09-28.xlsx', read_only=True)['Draft'].iter_rows(values_only=True))
+    h = list(rows[0])
+    got = {}
+    for x in rows[1:]:
+        d = dict(zip(h, x))
+        got.setdefault((d['Line Code'], d['Order']), {})[d['Formula Row']] = d['Formula Code']
+    issued = {}                                    # latest issue before 28 Sep wins, as in resolve.issued_history
+    for d in ('2026-09-23', '2026-09-24', '2026-09-25'):
+        pk = json.loads((ROOT / 'data' / 'packets' / f'packet_{d}.json').read_text(encoding='utf-8'))
+        issued.update({(pg['line_code'], o): [f['formula_code'] for f in g['formulas']]
+                       for pg in pk['frm'] for g in pg['groups'] for o in g['orders']})
+    multi = 0
+    for k, rowmap in got.items():
+        want = issued[k]
+        assert [rowmap[i] for i in sorted(rowmap)] == want, (k, rowmap, want)
+        multi += len(want) > 1
+    assert multi >= 5          # RP26311-1 (3 formulas), RP26512-1 (3), RP26731-2, RP26902-1, H68A111-4/-5, H69A097-1 ...

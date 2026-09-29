@@ -67,6 +67,13 @@
       "title": "Decisions and documents",
       "items": [
         {
+          "sev": "Medium",
+          "title": "Name the 12 customer-specific formulas",
+          "detail": "VOIDFORM, sign blank, corn box and roll formulas share codes with ordinary formulas (FUA152WB4 on SE12/13/31/32, FU0021WB4 on SE23/SE25) and are told apart only by the FRM note. Each gets its own code. The list, with the sequence numbers already taken, is on the Customer formulas tab. IWPFT057 describes a 7-digit code while 222 of 236 codes in use have 9 characters, so IWPFT057 needs revising alongside.",
+          "where": "Customer formulas tab",
+          "source": "James, 29 Sep 2026"
+        },
+        {
           "sev": "High",
           "title": "Tech's calc workbooks into inputs\\calc",
           "detail": "Blocks the auger-line recipes (weight %), the Auger Calibration master and one test. Also answers where they live (Q14), so the pipeline can read them where Tech saves them.",
