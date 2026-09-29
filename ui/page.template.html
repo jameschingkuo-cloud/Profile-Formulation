@@ -594,7 +594,7 @@ say('Connecting to Claude…', 'Connecting to Claude…');
   }
   const lim = await s.limits().catch(e => ({failed: e?.code || 'unknown'}));
   if (lim && !lim.failed && !lim.images) {
-    say('This viewer answers text but cannot send images to Claude (its limits list no images), so a scan cannot be read here. Try the page on claude.ai in a desktop browser, or in the Claude desktop app.',
+    say('Claude answers text here but this account cannot send it images (checked on claude.ai in Chrome and in the app, 29 Sep 2026), so a scan cannot be read in the page. Use the options below, or send the scan to the pipeline.',
         'This viewer cannot send images to Claude: see the note beside this box');
     return;
   }
