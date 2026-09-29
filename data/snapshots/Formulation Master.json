@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-29T09:17:27",
-"change_log_max_id": 12,
+"accepted_at": "2026-09-29T09:19:06",
+"change_log_max_id": 20,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -3772,7 +3772,7 @@
 "Feeder": "V7",
 "Formula Code": "FU0021WB4",
 "Line Code": "SE42",
-"Material ID": "INT-RCL-WHITE",
+"Material ID": "INT-RCL-PP-WB",
 "Recipe Weight %": "",
 "Set": "30",
 "Slope Used": "",
@@ -5397,12 +5397,12 @@
 "50-7002-430": {
 "Approved Substitutes": "",
 "Bulk Density (g/cm3)": "",
-"FRM Text": "FOAM – Bergen XO-256",
+"FRM Text": "FOAM – Bergen X0-256",
 "IWPFT062 Status": "Active",
 "Material Code": "CF400",
 "Material ID": "50-7002-430",
 "Name": "Foam agent X0-256",
-"Other Spellings": "",
+"Other Spellings": "FOAM – Bergen XO-256",
 "Role": "FOAM",
 "Status": "Draft",
 "Supplier": "Bergen"
@@ -5675,13 +5675,13 @@
 "Material Code": "",
 "Material ID": "INT-RCL-PP-WB",
 "Name": "PP WB Reclaim",
-"Other Spellings": "",
+"Other Spellings": "White Reclaim",
 "Role": "RECLAIM",
 "Status": "Draft",
 "Supplier": "Plant"
 },
 "INT-RCL-WHITE": {
-"Approved Substitutes": "Plant reclaim; same as PP WB Reclaim?",
+"Approved Substitutes": "Replaced by INT-RCL-PP-WB (James Kuo, 29 Sep 2026)",
 "Bulk Density (g/cm3)": "",
 "FRM Text": "White Reclaim",
 "IWPFT062 Status": "Not listed",
@@ -5690,7 +5690,7 @@
 "Name": "White Reclaim",
 "Other Spellings": "",
 "Role": "RECLAIM",
-"Status": "Draft",
+"Status": "Retired",
 "Supplier": "Plant"
 },
 "NL-HM-10HP": {
@@ -7341,11 +7341,11 @@
 "Variant": "Primary",
 "Weight %": "8"
 },
-"FU0021WB4|Primary||INT-RCL-WHITE": {
+"FU0021WB4|Primary||INT-RCL-PP-WB": {
 "Balance": "No",
 "Extruder": "",
 "Formula Code": "FU0021WB4",
-"Material ID": "INT-RCL-WHITE",
+"Material ID": "INT-RCL-PP-WB",
 "Note": "from SE42 FRM 2026-09-28 p11",
 "Variant": "Primary",
 "Weight %": "30"

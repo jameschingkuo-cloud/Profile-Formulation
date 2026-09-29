@@ -59,11 +59,13 @@ MAP = {
     'WM-W26329M': '50-7015-557', 'BD-B26004A': '50-7002-356', 'OF-PP-R34874 (New NPC orange color)': '50-7002-602',
     'OG-D26074A': '50-7002-372', 'BL-B26003A (OR NPC-B60387)': '50-7002-281', 'UV-N26177A': '50-7002-249',
     'Exxon - Vistamaxx 6102FL': '50-7100-610', 'Exxon – Vistamaxx 6102FL': '50-7100-610',
-    'Adsyl 5C30F': '50-8510-004', 'FOAM – Bergen XO-256': '50-7002-430',
+    'Adsyl 5C30F': '50-8510-004', 'FOAM – Bergen X0-256': '50-7002-430',
+    'FOAM – Bergen XO-256': '50-7002-430',   # misprint of X0-256 (James Kuo, 29 Sep 2026; master Changes 13-14)
     'KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)': KS, 'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F': KS,
     'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)': KS, 'KS-MDI PE-500 (or Spartech B60009)': KS,
     'PP Yungsox 5050S': 'NL-YUNGSOX-5050S',
-    'PP Mix Reclaim': 'INT-RCL-PP-MIX', 'PP WB Reclaim': 'INT-RCL-PP-WB', 'White Reclaim': 'INT-RCL-WHITE',
+    'PP Mix Reclaim': 'INT-RCL-PP-MIX', 'PP WB Reclaim': 'INT-RCL-PP-WB',
+    'White Reclaim': 'INT-RCL-PP-WB',   # same as PP WB Reclaim (James Kuo, 29 Sep 2026); INT-RCL-WHITE retired
     'WB EA Premix': 'INT-PREMIX-WB-EA', 'WB GT Premix': 'INT-PREMIX-WB-EA',
     'PP Virgin': None,   # resin not named on the page: an engineer names it
 }
@@ -86,12 +88,12 @@ MAP_ISSUES = [  # (severity, FRM text(s), check, detail)
      'Mapped to CR410BL (NPC PE-B60387). "BL-B26003A" is not on the list'),
     ('Low', ['HiTalc ZS (or N40109A)'], 'Trade name not on IWPFT062',
      'Mapped to TL460 (Amtopp N40109A). The list does not name "HiTalc ZS"'),
-    ('Low', ['FOAM – Bergen XO-256'], 'Spelling',
-     'FRM prints XO-256 (letter O); IWPFT062 CF400 is X0-256 (digit zero), corrected at Rev 16.0'),
+    ('Low', ['FOAM – Bergen XO-256'], 'FRM page misprint',
+     'SE24 FSA200WB4 prints Bergen XO-256 (letter O). James Kuo, 29 Sep 2026: it is X0-256 (digit zero), IWPFT062 CF400; master FRM Text corrected. Tech to correct the SE24 page'),
     ('Info', ['WB EA Premix', 'WB GT Premix'], 'One premix, two names',
      'SE25 (25 Sep) "WB GT Premix", SE23 (28 Sep) "WB EA Premix"; the note gives WB W26038A + GT D26002M = CR400EA "Sp. gray". Mapped to one internal material'),
     ('Info', ['PP Mix Reclaim', 'PP WB Reclaim', 'White Reclaim'], 'Plant materials have no IWPFT062 number',
-     'Given internal IDs INT-RCL-*. Is SE42\'s "White Reclaim" the same as "PP WB Reclaim"?'),
+     'Given internal IDs INT-RCL-*. SE42 "White Reclaim" = PP WB Reclaim (James Kuo, 29 Sep 2026; master Changes 15-20)'),
 ]
 
 

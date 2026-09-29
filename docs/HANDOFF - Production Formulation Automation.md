@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.20 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.21 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1324,6 +1324,18 @@ PH1203); the Recipe row re-keyed; Q1203K retired with "Replaced by 50-3963-019".
 accepted. The issue stays open as **Medium** until Tech corrects the SE42 FRM page (it still prints Q1203K).
 High material issues left: F1102K (In-active, SE43 FUA151WB3) and PP Yungsox 5050S (SE61, not on IWPFT062).
 
+## 7.31 Foam agent spelling and White Reclaim (29 Sep 2026)
+
+Two more master changes, each logged and approved by James Kuo, published, matched by pre-flight and accepted:
+- **CF400 is X0-256 (digit zero)**. James: *"yes please correct that"*, *"should be X0"*. **Changes 13-14** via the new
+  `db/edit_master.py` (logged cell edits): CF400's FRM Text -> "FOAM – Bergen X0-256"; the page's "XO-256" kept under
+  Other Spellings so today's pages still map. Issue stays Low until Tech corrects the SE24 page.
+- **White Reclaim = PP WB Reclaim**. James: *"yes same as PP WB Reclaim"*. **Changes 15-20** via
+  `db/replace_material.py INT-RCL-WHITE INT-RCL-PP-WB`: SE42 FU0021WB4 V7 and its Recipe row now PP WB Reclaim;
+  "White Reclaim" added as a spelling; INT-RCL-WHITE retired.
+
+`db/seed_master.py` MAP agrees with the master. Change Log now holds Changes 1-20.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1452,6 +1464,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.21 | 2026-09-29 | Claude Code (local, with James Kuo) | **CF400 spelling X0-256 and White Reclaim = PP WB Reclaim (§7.31)**: master Changes 13-20; new `db/edit_master.py` for logged cell edits. |
 | 1.20 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K replaced by F1203K (§7.30)**: master Changes 8-12 via the new `db/replace_material.py`; pre-flight accepted. |
 | 1.19 | 2026-09-29 | Claude Code (local, with James Kuo) | **HM-10HP mapped to CA410 (§7.29)**: the first master change through the Change Log (Changes 1-7, approved by James); pre-flight accepted it. |
 | 1.18 | 2026-09-28 | Claude Code (local, with James Kuo) | **Interface design started (§7.28):** Profile Formulation Artifact (prototype on the 28 Sep snapshot); source in `ui/`. |
