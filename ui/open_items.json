@@ -42,8 +42,8 @@
         },
         {
           "sev": "Low",
-          "title": "Alternate sources and trade names not on IWPFT062",
-          "detail": "KS black: Spartech B60009 and PolyOne LD-250 are printed as alternates but not qualified; NPC grade printed PE90000F vs PE-B9000F on the list. \"BL-B26003A\" and \"HiTalc ZS\" are not named on the list. Add to IWPFT062 or drop from the pages.",
+          "title": "Alternate sources and a colour name not on IWPFT062",
+          "detail": "KS black: Spartech B60009 and PolyOne LD-250 are printed as alternates but not qualified; NPC grade printed PE90000F vs PE-B9000F on the list. \"BL-B26003A\" is not named on the list. Add to IWPFT062 or drop from the pages.",
           "where": "SE11 · SE21 · SE42 · SE43 · SE61",
           "source": "Master Issues"
         }
@@ -137,6 +137,11 @@
       "date": "2026-09-29",
       "title": "Q1203K replaced by F1203K",
       "detail": "Master Changes 8-12; daily checks read a printed Q1203K as F1203K (Info)."
+    },
+    {
+      "date": "2026-09-29",
+      "title": "HiTalc ZS recorded as the trade name of TL460",
+      "detail": "James chose to record it in the master (Change 45); IWPFT062 unchanged."
     }
   ]
 }

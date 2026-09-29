@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.24 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.25 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1369,6 +1369,14 @@ James's decision): a page that still prints **Q1203K** or **Bergen XO-256** gets
 X0-256"), so the hand-written Medium no longer has to be carried from day to day. Regression counts +2 on 23 and 24
 Sep (exactly those two Info rows). Add to `REPLACED` only on James's word, with the master change it refers to.
 
+## 7.35 HiTalc ZS recorded as TL460's trade name (29 Sep 2026)
+
+James asked why the "HiTalc ZS" item was still Low when the mapping already worked: the data was right (every
+"HiTalc ZS (or N40109A)" row carries TL460, Active), only the name was missing from IWPFT062. James chose to record it
+in the master rather than revise IWPFT062 (*"go with 1"*): **Change 45**, TL460 Other Spellings = "HiTalc ZS",
+approved by James; issue now Info; off Open items. Interface: issue lists sort High -> Medium -> Low -> Info; Open
+items opens by severity (switch to "By owner").
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1497,6 +1505,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.25 | 2026-09-29 | Claude Code (local, with James Kuo) | **HiTalc ZS = TL460 trade name (§7.35)**: master Change 45; interface sorts by severity. |
 | 1.24 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K closed (§7.34)**: master issue resolved, off Open items; `checks.REPLACED` notes known substitutions as Info each day. |
 | 1.23 | 2026-09-29 | Claude Code (local, with James Kuo) | **IWPFT062 Rev 18.0: PP YungSox 5050S = 50-1560-163 (§7.33)**: master Changes 24-44; `replace_material.py --create`. |
 | 1.22 | 2026-09-29 | Claude Code (local, with James Kuo) | **PP Virgin = F6502A (§7.32)**: master Changes 21-23; master passes the schema check with 0 problems. |
