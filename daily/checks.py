@@ -158,7 +158,6 @@ for f in frm_rows:
 # known substitutions: the page still prints a material the master has replaced (James decides; master Change Log)
 REPLACED={  # printed text -> (what it is now, decision)
     'Q1203K':('F1203K (PH1203, 50-3963-019)','James Kuo, 29 Sep 2026: Q1203K withdrawn at IWPFT062 Rev 16.0, replaced by F1203K; master Changes 8-12'),
-    'FOAM – Bergen XO-256':('FOAM – Bergen X0-256 (CF400, 50-7002-430)','James Kuo, 29 Sep 2026: misprint of X0-256; master Changes 13-14'),
 }
 for f in frm_rows:
     for k,v in f['feeders'].items():

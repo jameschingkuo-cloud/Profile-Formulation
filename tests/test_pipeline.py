@@ -62,8 +62,8 @@ def test_superseded_copies():
 
 
 # ---- daily packet -> checks -------------------------------------------------------------------------------------
-# +2 each since 29 Sep 2026: Info notes for the replaced Q1203K and the XO-256 misprint (checks.REPLACED)
-@pytest.mark.parametrize('date,n_issues', [('2026-09-23', 84), ('2026-09-24', 73)])
+# +1 each since 29 Sep 2026: Info note for the replaced Q1203K (checks.REPLACED)
+@pytest.mark.parametrize('date,n_issues', [('2026-09-23', 83), ('2026-09-24', 72)])
 def test_daily_checks_regression(date, n_issues, tmp_path):
     run('daily/checks.py', {'PKT_DATE': date}, tmp_path)
     issues = json.loads((tmp_path / 'work' / 'issues.json').read_text(encoding='utf-8'))['issues']

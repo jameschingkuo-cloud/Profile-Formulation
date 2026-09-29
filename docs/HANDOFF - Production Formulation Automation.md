@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.26 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.27 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1388,6 +1388,14 @@ deleted. Master-only columns (Role, FRM Text, Other Spellings) and INT-/NL- rows
 IWPFT062 was locked (open in Word) on 29 Sep, so the live check could not run; a preview against the Rev 18.0 text read
 at 09:43 (file unchanged since) found **0 differences** across 67 rows. Run the live check once the file is closed.
 
+## 7.37 XO-256 disregarded (29 Sep 2026)
+
+James: *"disregard this issue. Unless you have more XO then change them to X0"*. The master had one XO left: CF400's
+Other Spellings "FOAM – Bergen XO-256" (added in Change 14 so the misprint mapped). **Change 46** clears it (the FRM
+Text is already X0-256); the Change Log's history rows keep their text. Issue closed (Info, "Disregarded by James"),
+off Open items; the daily checks no longer note XO-256 (`checks.REPLACED` keeps Q1203K only; regression counts 83 / 72).
+The code map in `db/seed_master.py` still links a printed XO-256 to CF400 but raises nothing.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1516,6 +1524,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.27 | 2026-09-29 | Claude Code (local, with James Kuo) | **XO-256 disregarded (§7.37)**: master Change 46; no XO left in the master data. |
 | 1.26 | 2026-09-29 | Claude Code (local, with James Kuo) | **Master follows IWPFT062 (§7.36)**: `db/sync_iwpft062.py` in daily step 0; preview 0 differences. |
 | 1.25 | 2026-09-29 | Claude Code (local, with James Kuo) | **HiTalc ZS = TL460 trade name (§7.35)**: master Change 45; interface sorts by severity. |
 | 1.24 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K closed (§7.34)**: master issue resolved, off Open items; `checks.REPLACED` notes known substitutions as Info each day. |

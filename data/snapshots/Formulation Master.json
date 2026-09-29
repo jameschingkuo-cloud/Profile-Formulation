@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-29T11:19:54",
-"change_log_max_id": 45,
+"accepted_at": "2026-09-29T11:21:58",
+"change_log_max_id": 46,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -5415,7 +5415,7 @@
 "Material Code": "CF400",
 "Material ID": "50-7002-430",
 "Name": "Foam agent X0-256",
-"Other Spellings": "FOAM – Bergen XO-256",
+"Other Spellings": "",
 "Role": "FOAM",
 "Status": "Draft",
 "Supplier": "Bergen"

@@ -60,7 +60,7 @@ MAP = {
     'OG-D26074A': '50-7002-372', 'BL-B26003A (OR NPC-B60387)': '50-7002-281', 'UV-N26177A': '50-7002-249',
     'Exxon - Vistamaxx 6102FL': '50-7100-610', 'Exxon – Vistamaxx 6102FL': '50-7100-610',
     'Adsyl 5C30F': '50-8510-004', 'FOAM – Bergen X0-256': '50-7002-430',
-    'FOAM – Bergen XO-256': '50-7002-430',   # misprint of X0-256 (James Kuo, 29 Sep 2026; master Changes 13-14)
+    'FOAM – Bergen XO-256': '50-7002-430',   # misprint of X0-256; James: disregard (29 Sep 2026; master Change 46)
     'KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)': KS, 'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F': KS,
     'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)': KS, 'KS-MDI PE-500 (or Spartech B60009)': KS,
     'PP Yungsox 5050S': '50-1560-163',   # PC5050, added to IWPFT062 at Rev 18.0 (James Kuo, 29 Sep 2026)
@@ -88,8 +88,6 @@ MAP_ISSUES = [  # (severity, FRM text(s), check, detail)
      'Mapped to CR410BL (NPC PE-B60387). "BL-B26003A" is not on the list'),
     ('Info', ['HiTalc ZS (or N40109A)'], 'Trade name recorded in the master',
      'TL460 (Amtopp N40109A). James Kuo, 29 Sep 2026: HiTalc ZS is its accepted trade name (Change 45); IWPFT062 unchanged'),
-    ('Low', ['FOAM – Bergen XO-256'], 'FRM page misprint',
-     'SE24 FSA200WB4 prints Bergen XO-256 (letter O). James Kuo, 29 Sep 2026: it is X0-256 (digit zero), IWPFT062 CF400; master FRM Text corrected. Tech to correct the SE24 page'),
     ('Info', ['WB EA Premix', 'WB GT Premix'], 'One premix, two names',
      'SE25 (25 Sep) "WB GT Premix", SE23 (28 Sep) "WB EA Premix"; the note gives WB W26038A + GT D26002M = CR400EA "Sp. gray". Mapped to one internal material'),
     ('Info', ['PP Mix Reclaim', 'PP WB Reclaim', 'White Reclaim'], 'Plant materials have no IWPFT062 number',

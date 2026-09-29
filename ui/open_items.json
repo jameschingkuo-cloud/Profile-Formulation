@@ -27,13 +27,6 @@
           "source": "Master Issues"
         },
         {
-          "sev": "Low",
-          "title": "Correct the SE24 page",
-          "detail": "SE24 prints Bergen XO-256; it is X0-256 (CF400). The master is corrected and the daily checks read the misprint correctly.",
-          "where": "SE24",
-          "source": "Master Changes 13-14"
-        },
-        {
           "sev": "Medium",
           "title": "Premix wording on H68A127-1",
           "detail": "SE23 prints \"WB EA Premix\" (FU0021GT4); SE25 printed \"WB GT Premix\" (FU001GTW4). The note names GT D26002M, which IWPFT062 lists as CR400EA. One name for one premix.",
@@ -142,6 +135,11 @@
       "date": "2026-09-29",
       "title": "HiTalc ZS recorded as the trade name of TL460",
       "detail": "James chose to record it in the master (Change 45); IWPFT062 unchanged."
+    },
+    {
+      "date": "2026-09-29",
+      "title": "XO-256 misprint disregarded",
+      "detail": "James: disregard. The master carries X0-256 only (Changes 13-14, 46); no other XO in the master."
     }
   ]
 }
