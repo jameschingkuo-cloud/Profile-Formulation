@@ -1,5 +1,5 @@
 {
- "ext_crosscheck": "The glyph reader was not run (Tesseract is not installed on this PC). Instead every printed line total was checked against the transcribed rows: all 12 printed totals match exactly; SE23's total is on the missing report page 9, and the handwritten 3,939,487# on its page equals the sum of its weights.",
+ "ext_crosscheck": "Key fields were also read independently by the glyph reader (Tesseract 5.4, installed 29 Sep) and compared by scan_reader/crosscheck.py: 67 of 76 orders identical. The rest were settled by eye on the page (600 dpi), in favour of the transcription: RPP63RF1 / colour RF on H67A164-2 (the reader read OF; the letter matches the R of R1R1R1, and RPP63RF1 is in Tech's calc workbooks), H68A080-1 under the handwritten '-PA205' (read as 'R61R046-1'), and the SE61 page (specs RMR6R6 / R6R6R6, GSM 1,003 / 2,006, RP26826-1 RBP50EB10 5.0 1,503), which the reader misreads. All 12 printed line totals also equal the rows.",
  "no_total_note": "No printed total: SE23 continues on report page 9, which is missing from the scan. Handwritten 3,939,487# on page 8 = sum of its weights. The main report's Final Total is not in the scan either.",
  "final_note": ". Not in today's scan: the main report's Final Total page is missing (SE25 and SE61 were printed as separate reports).",
  "weight_note": ".",

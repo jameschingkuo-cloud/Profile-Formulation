@@ -164,14 +164,25 @@ REF = {"Mfg": 274, "Prod": 500, "Die": 725, "Actual": 830, "Mat": 1161, "Thk": 1
        "Cut": 1696, "Total": 2040, "pack": 2178, "Weight": 2688, "Instr": 2827}
 
 
+# Header words that fix a column (lower-case, OCR variants). Tesseract 5.4 (installed 29 Sep 2026) reads 'Prod'
+# as 'ROD' on some pages, so any two of these on the header line will do, not just Prod and Weight.
+HDR_WORDS = {"prod": "Prod", "rod": "Prod", "die": "Die", "actual": "Actual", "thk": "Thk", "gsm": "GSM",
+             "total": "Total", "pack": "pack", "in-str": "Instr", "instr": "Instr"}
+
+
 def anchors(lines):
     for ln in lines:
-        words = {w.lower().strip(".:|"): x for x, y, _, _, w in ln}
-        prod = words.get("prod")
-        wt = next((x for w, x in words.items() if w.startswith("weigh")), None)
-        if prod and wt:
-            s = (wt - prod) / (REF["Weight"] - REF["Prod"])
-            return (lambda k: int(prod + (REF[k] - REF["Prod"]) * s)), min(t[1] for t in ln)
+        found = {}
+        for x, y, _, _, w in ln:
+            k = w.lower().strip(".:|")
+            key = "Weight" if k.startswith("weigh") else HDR_WORDS.get(k)
+            if key and key not in found:
+                found[key] = x
+        if len(found) >= 3 and ("Prod" in found or "Weight" in found):
+            a, b = min(found, key=lambda k: REF[k]), max(found, key=lambda k: REF[k])
+            s = (found[b] - found[a]) / (REF[b] - REF[a])
+            x0, r0 = found[a], REF[a]
+            return (lambda k: int(x0 + (REF[k] - r0) * s)), min(t[1] for t in ln)
     return None, None
 
 

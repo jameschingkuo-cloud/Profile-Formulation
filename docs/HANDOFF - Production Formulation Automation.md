@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.34 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.35 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1501,8 +1501,13 @@ formulation, update formulation record, extrusion record and converting record"*
 26 pages: EXT 15 (report pages 1-8, 10, 12-15, plus SE25 and SE61 printed as separate one-page reports), CNV 11, no
 FRM pages.
 - **Transcribed** to `data/packets/packet_2026-09-29.json`: 76 EXT orders, 62 CNV rows. All 12 printed line totals
-  equal their rows; SE23's total is on the missing report page 9 (handwritten 3,939,487# = its page weights). The glyph
-  reader did not run: Tesseract is not installed on James's PC (optional); line totals were the independent check.
+  equal their rows; SE23's total is on the missing report page 9 (handwritten 3,939,487# = its page weights).
+- **Glyph reader**: Tesseract was not installed on James's PC; James: *"do it"*. Installed Tesseract 5.4.0 (winget
+  UB-Mannheim.TesseractOCR, `C:\Program Files\Tesseract-OCR`). 5.4 reads the 'Prod' header as 'ROD' on pages 1, 5, 9, so
+  the reader found no columns there; `ext_scan_reader.anchors` now fixes the columns from any three header words (Prod
+  or Weight among them). Test `test_reader_header_anchor_survives_rod`. Crosscheck: 67 of 76 orders identical; the rest
+  settled by eye at 600 dpi for the transcription: H67A164-2 is RF (reader: OF; the letter matches the R of R1R1R1),
+  the SE61 page (reader misreads specs and GSM there, as before) and the handwriting over H68A080-1. No packet change.
 - **New today**: SE21 H69A203-1 RPP50BL1501, H67A164-1 RPP63KS1, H67A164-2 RPP63RF1 (colour **RF**, not seen before;
   asked James); SE24 RP26604-1 SPA40WB755 (handwritten "Run with RPA40WB3051"). Gone: H69A290-3, H69A291-10, H68A111-4.
 - **Product Master**: 0 missing; the three new SE21 products were known only from Tech's calc workbooks and now carry
@@ -1651,6 +1656,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.35 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tesseract 5.4 installed; glyph reader header anchor fixed (§7.44)**: 29 Sep crosscheck 67/76, rest settled for the transcription. |
 | 1.34 | 2026-09-29 | Claude Code (local, with James Kuo) | **First end-to-end run from a schedule-only scan (§7.44)**: 29 Sep packet, Product Master, FRM Draft + docx, `daily/auger_check.py`, EXT/CNV records; build_master syntax fix; no-FRM check fix. |
 | 1.33 | 2026-09-29 | Claude Code (local, with James Kuo) | **Exceptions completed in the database, re-run fills them (§7.43)**: resolve uses approved Product to Formula; `db/assign_formula.py`. |
 | 1.32 | 2026-09-29 | Claude Code (local, with James Kuo) | **Print-ready Word formulation (§7.42)**: `daily/render_frm.py`, IWPFO055 issue block, one page per line, every formulation. |

@@ -25,5 +25,5 @@ MANUAL = [
  ('Info','CNV','SD31','RP26731-2','Order listed twice','934 OF 999 and 0 OF 999, blank quantities; banner "RP26731-2 & RP26731-2"','scan p16-17'),
  ('Info','CNV','SD51','(all rows)','Excel overflow','Semi Start prints ####; Total Sheets ###### on RP26525-3 and RP26604-1 (RP26604-1 Semi Start is blank)','scan p25'),
  ('Info','EXT','(all)','','Line totals check','All 12 printed line totals equal their rows (SE11-SE22, SE24, SE25, SE31, SE32, SE42, SE43, SE61); SE23’s is on the missing report page 9','p1-15'),
- ('Info','EXT','(all)','','Glyph-reader crosscheck not run','Tesseract is not installed on this PC, so scan_reader/ext_scan_reader.py could not run. Independent check used instead: every printed line total equals the transcribed rows','p1-15'),
+ ('Info','Scan reader','(all)','','Glyph-reader crosscheck','Tesseract 5.4 installed 29 Sep. It read the "Prod" header as "ROD" on pages 1, 5 and 9, so the reader found no columns there; ext_scan_reader.anchors now fixes the columns from any three header words. Crosscheck: 67 of 76 orders identical; the rest settled by eye in favour of the transcription (H67A164-2 RF read as OF by the reader; SE61 page and the handwriting over H68A080-1 misread)','p1-15'),
 ]

@@ -245,3 +245,18 @@ def test_engineer_decision_fills_the_rerun(tmp_path):
     assert [c for c in dict.fromkeys((x[14], x[3], x[4]) for x in draft)] == \
         [(1, 'FUA060WBA', 'Primary'), (2, 'FUA060WBA', 'Other'), (3, 'FUA010WBA', 'Reclaim run-out')]
     assert all(x[11] == 'Product to Formula' for x in draft)
+
+
+def test_reader_header_anchor_survives_rod():
+    """Tesseract 5.4 (29 Sep 2026) reads the 'Prod' header as 'ROD' on some pages; the columns must still be found,
+    at the same x as when 'Prod' and 'Weight' are both read."""
+    sys.path.insert(0, str(ROOT / 'scan_reader'))
+    pytest.importorskip('cv2'); pytest.importorskip('pytesseract')
+    import ext_scan_reader as e
+    words = [('Mfg#', 274), ('Prod', 500), ('Die', 725), ('Thk', 1517), ('GSM', 1607), ('Total', 2040), ('Weight', 2688)]
+    line = lambda ws: [[(x, 300, 40, 20, w) for w, x in ws]]
+    good, _ = e.anchors(line(words))
+    rod, _ = e.anchors(line([('ROD' if w == 'Prod' else w, x) for w, x in words]))
+    no_weight, _ = e.anchors(line([(w, x) for w, x in words if w not in ('Prod', 'Weight')]))
+    assert good and rod and no_weight is None
+    assert all(abs(good(k) - rod(k)) <= 1 for k in e.REF)
