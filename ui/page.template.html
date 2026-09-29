@@ -134,6 +134,13 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 .genalt{display:grid;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
 .genaltrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .genalt textarea{width:100%;box-sizing:border-box;font:13px var(--f-mono);padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink)}
+.genfix{font:13px var(--f-mono);padding:4px 6px;border:1px solid var(--warn);border-radius:4px;background:var(--panel);color:var(--ink);width:12ch}
+.flagrow td{background:var(--warn-soft)}
+.genfixbar{margin-top:12px;display:grid;gap:6px}
+.unreadlist{display:grid;gap:6px;padding:8px;border:1px solid var(--warn);border-radius:var(--r);background:var(--warn-soft)}
+.unreadrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.unreadrow img{max-width:min(520px,100%);height:auto;border:1px solid var(--line);background:#fff}
+.genadd{font:13px var(--f-mono);padding:4px 6px;border:1px solid var(--warn);border-radius:4px;background:var(--panel);color:var(--ink);width:12ch}
 @media (max-width:860px){.genrow{grid-template-columns:1fr}}
 .drop strong{color:var(--ink);font-family:var(--f-display);font-size:20px;font-weight:600}
 .two{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
@@ -310,10 +317,10 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
     </div>
     <div class="panel" id="gen" style="margin-top:16px">
       <div><h2 style="font-size:24px">Generate the formulation from a schedule scan</h2>
-        <p class="muted" style="margin:4px 0 0">Drop the copier PDF of the extrusion schedule. Claude reads each extrusion page's line, order and product (only the left edge of each page is sent); the page then gives every order the formulation last issued for it on that line <b>before the schedule's date</b>, the same rule as the pipeline. Anything else is left for an engineer. A check, not an issue: the printed document still comes from the pipeline.</p></div>
+        <p class="muted" style="margin:4px 0 0">Drop the copier PDF of the extrusion schedule. The page reads each extrusion page's line, order and product with text recognition running in this page (nothing is uploaded; Claude reads it instead where your viewer allows images). It then gives every order the formulation last issued for it on that line <b>before the schedule's date</b>, the same rule as the pipeline; anything else is left for an engineer. Rows it cannot match to a schedule on file are boxed for you to check against the paper. A check, not an issue: the printed document still comes from the pipeline.</p></div>
       <div class="genrow">
         <label class="drop" id="drop" for="scanfile">
-          <strong>Drop a schedule scan here</strong>
+          <strong>Drop a schedule scan here, or click to choose it</strong>
           <span>PDF from the copier (or page images). CNV and FRM pages in the same file are skipped.</span>
           <span class="caps" id="dropnote"></span>
           <input id="scanfile" type="file" accept="application/pdf,image/jpeg,image/png" hidden>
@@ -578,38 +585,29 @@ $('#runsub').textContent = `One day's packet from scan to published records. Sho
 const drop = $('#drop'), gmsg = $('#genmsg'), gpages = $('#genpages'), gout = $('#genout'), gstop = $('#genstop');
 const PRODUCTS = new Set(D.products || []);
 const ORDER_RX = /^[A-Z0-9]{6,8}-\d{1,3}$/;
-let sampleFn = null, imgCaps = null, busy = false, ctl = null;
+let sampleFn = null, imgCaps = null, busy = false, ctl = null, mode = 'ocr', lastRun = null, lastPlan = null, lastSource = '';
 $('#gendate').value = new Date().toISOString().slice(0, 10);
-drop.classList.add('off');
 const dropNote = $('#dropnote');
-const say = (t, inBox) => { gmsg.textContent = t; dropNote.textContent = inBox || ''; };
-say('Connecting to Claude…', 'Connecting to Claude…');
+const say = (t, inBox) => { gmsg.textContent = t; if (inBox != null) dropNote.textContent = inBox; };
+// Two readers (James Kuo, 29 Sep 2026: "i prefer chrome. Since i want to share this in the future with other engineer"):
+// Claude reading page images where this viewer allows it, else text recognition (Tesseract) running inside the page.
+say('Ready: text recognition in this page reads the scan (no upload anywhere).', 'Ready · reads the scan inside this page');
 (async () => {
   const s = window.claude?.use ? await window.claude.use('sample') : null;
-  if (!s) {
-    say(window.claude?.use ? 'This view did not give the page access to Claude (claude.use("sample") answered null). Open the artifact from claude.ai or the Claude app, signed in, rather than a saved copy or a direct link in another browser.'
-                           : 'This copy of the page is not running inside a Claude viewer, so it cannot ask Claude to read a scan.',
-        'Not available in this view: see the note beside this box');
-    return;
+  const lim = s ? await s.limits().catch(() => null) : null;
+  if (s && lim?.images) {
+    sampleFn = s; imgCaps = lim.images; mode = 'claude';
+    say('Ready: Claude reads the scan (your own Claude usage; you are asked once).', 'Ready · Claude reads the scan');
   }
-  const lim = await s.limits().catch(e => ({failed: e?.code || 'unknown'}));
-  if (lim && !lim.failed && !lim.images) {
-    say('Claude answers text here but this account cannot send it images (checked on claude.ai in Chrome and in the app, 29 Sep 2026), so a scan cannot be read in the page. Use the options below, or send the scan to the pipeline.',
-        'This viewer cannot send images to Claude: see the note beside this box');
-    return;
-  }
-  // a failed limits() check is not a reason to block: the first real call says what is wrong
-  sampleFn = s; imgCaps = lim?.images || {maxCount: 1}; drop.classList.remove('off');
-  say('Ready. Reading a scan uses your own Claude usage; you are asked once before the first call.' + (lim?.failed ? ` (limits check: ${lim.failed})` : ''), 'Ready');
 })();
-['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); if (sampleFn && !busy) drop.classList.add('over'); }));
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); if (!busy) drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', e => generate(e.dataTransfer.files));
 $('#scanfile').addEventListener('change', e => { generate(e.target.files); e.target.value = ''; });
-drop.addEventListener('click', e => { if (!sampleFn || busy) e.preventDefault(); });
+drop.addEventListener('click', e => { if (busy) e.preventDefault(); });
 gstop.addEventListener('click', () => ctl?.abort());
-// Without reading a scan (a viewer that cannot send images to Claude): the transcribed schedule for the date, or rows
-// pasted from the EXT workbook. Same lookup and Tech comparison as a read scan.
+
+// ---- without reading a scan: the transcribed schedule for the date, or rows pasted from the EXT workbook
 function transNote(){
   const d = $('#gendate').value, t = (D.sched_by_date || {})[d];
   $('#gentrans').disabled = !t;
@@ -625,8 +623,9 @@ $('#gentrans').addEventListener('click', () => {
   const d = $('#gendate').value, t = (D.sched_by_date || {})[d];
   if (!t) return;
   gpages.innerHTML = '';
+  lastSource = `transcribed schedule for ${d}`;
   render(readsFrom(t, 'transcribed'), d, null);
-  gmsg.textContent = `Generated from the transcribed schedule for ${fmtDate(d)} (${t.length} orders). The scan itself was not read.`;
+  say(`Generated from the transcribed schedule for ${fmtDate(d)} (${t.length} orders). The scan itself was not read.`);
 });
 $('#genpastebtn').addEventListener('click', () => {
   const rows = [];
@@ -636,55 +635,125 @@ $('#genpastebtn').addEventListener('click', () => {
     const prod = (u.match(/\b[A-Z]{3}(?:\d{2}|[A-Z]0)[A-Z]{2}\d{1,5}\b/) || [])[0];
     if (line && order && prod) rows.push([line, order, prod]);
   });
-  if (!rows.length) { gmsg.textContent = 'No rows found: each pasted row needs a line (SE11), an order (H69A039-1) and a product code (DPP30WB1023).'; return; }
+  if (!rows.length) { say('No rows found: each pasted row needs a line (SE11), an order (H69A039-1) and a product code (DPP30WB1023).'); return; }
   gpages.innerHTML = '';
+  lastSource = 'rows pasted from the EXT workbook';
   render(readsFrom(rows, 'pasted'), $('#gendate').value, null);
-  gmsg.textContent = `Generated from ${rows.length} pasted row(s) for ${fmtDate($('#gendate').value)}.`;
+  say(`Generated from ${rows.length} pasted row(s) for ${fmtDate($('#gendate').value)}.`);
 });
 
+// ---- pages of the file, upright, about 300 dpi (the copier scans the landscape report sideways)
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('did not load: ' + src)); document.head.appendChild(s); });
 let pdfjs = null;
 function loadPdfJs(){
-  if (!pdfjs) pdfjs = new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-    s.onload = () => { const L = window['pdfjs-dist/build/pdf']; L.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(L); };
-    s.onerror = () => { pdfjs = null; rej(new Error('The PDF reader (pdf.js) did not load.')); };
-    document.head.appendChild(s);
-  });
+  // A worker from another site cannot start here, so the worker code is loaded as a script first: pdf.js then runs it
+  // in the page (globalThis.pdfjsWorker) instead of waiting for a worker that never comes.
+  if (!pdfjs) pdfjs = loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js')
+    .then(() => loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'))
+    .then(() => {
+      const L = window['pdfjs-dist/build/pdf']; L.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; return L;
+    }).catch(e => { pdfjs = null; throw e; });
   return pdfjs;
 }
-// The copier scans the landscape report sideways: turn a portrait page clockwise (as scan_reader/ext_scan_reader.upright),
-// then keep the left 30% (T, order, product, die columns and the LINE NO label) as a JPEG.
-async function leftStrip(src, w, h){
+function upright(src, w, h){
   const turn = h > w, W = turn ? h : w, H = turn ? w : h;
-  const full = document.createElement('canvas'); full.width = W; full.height = H;
-  const x = full.getContext('2d');
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d', {willReadFrequently: true}); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
   if (turn) { x.translate(W, 0); x.rotate(Math.PI / 2); }
   x.drawImage(src, 0, 0);
-  const c = document.createElement('canvas'); c.width = Math.round(W * 0.3); c.height = H;
-  const cx = c.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, c.width, c.height); cx.drawImage(full, 0, 0);
-  return new Promise(r => c.toBlob(r, 'image/jpeg', 0.88));
+  return c;
 }
-async function pagesOf(files){
-  const out = [];
+// A copier PDF is one full-page JPEG (DCTDecode image) per page. Taking those JPEGs out of the file directly is exact and
+// fast, and avoids drawing the page with pdf.js (which stalled on these scans in an artifact frame, 29 Sep 2026).
+// Returns null for any other kind of PDF (then pdf.js draws the pages).
+function copierJpegs(buf){
+  const dec = new TextDecoder('latin1'), text = dec.decode(buf);
+  const pages = (text.match(/\/Type\s*\/Page(?![s\w])/g) || []).length, out = [];
+  const re = /stream(\r\n|\n)/g; let m;
+  while ((m = re.exec(text))) {
+    const dictStart = text.lastIndexOf('<<', m.index), dict = text.slice(Math.max(dictStart, m.index - 1500), m.index);
+    if (!/\/Subtype\s*\/Image/.test(dict) || !/\/DCTDecode/.test(dict)) continue;
+    const start = m.index + m[0].length, end = text.indexOf('endstream', start);
+    if (end < 0) break;
+    let stop = end; while (stop > start && (buf[stop - 1] === 10 || buf[stop - 1] === 13)) stop--;
+    if (buf[start] === 0xFF && buf[start + 1] === 0xD8) out.push(buf.subarray(start, stop));
+    re.lastIndex = end;
+  }
+  return pages && out.length === pages ? out : null;
+}
+async function* pagesOf(files){
+  let n = 0;
   for (const f of files) {
     if (f.type === 'application/pdf' || /\.pdf$/i.test(f.name)) {
+      say('Opening the PDF…');
+      const buf = new Uint8Array(await f.arrayBuffer());
+      const jpgs = copierJpegs(buf);
+      if (jpgs) {                                         // copier scan: one JPEG per page, used as scanned (300 dpi)
+        for (const j of jpgs) {
+          const b = await createImageBitmap(new Blob([j], {type: 'image/jpeg'}));
+          yield {label: String(++n), canvas: upright(b, b.width, b.height), total: jpgs.length};
+          b.close?.();
+        }
+        continue;
+      }
       const L = await loadPdfJs();
-      const doc = await L.getDocument({data: await f.arrayBuffer()}).promise;
+      const doc = await L.getDocument({data: buf, isEvalSupported: false}).promise;
       for (let i = 1; i <= doc.numPages; i++) {
         const pg = await doc.getPage(i), v1 = pg.getViewport({scale: 1});
-        const vp = pg.getViewport({scale: 2200 / Math.max(v1.width, v1.height)});
+        const vp = pg.getViewport({scale: 3300 / Math.max(v1.width, v1.height)});
         const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
         await pg.render({canvasContext: c.getContext('2d'), viewport: vp}).promise;
-        out.push({label: `${out.length + 1}`, blob: await leftStrip(c, c.width, c.height)});
+        yield {label: String(++n), canvas: upright(c, c.width, c.height), total: doc.numPages};
       }
     } else if (/^image\//.test(f.type)) {
       const b = await createImageBitmap(f);
-      out.push({label: `${out.length + 1}`, blob: await leftStrip(b, b.width, b.height)});
+      yield {label: String(++n), canvas: upright(b, b.width, b.height), total: files.length};
     }
+  }
+}
+// Crops are made grey (ITU-R 601, as PIL 'L') and enlarged with Lanczos-3 (as PIL's LANCZOS): the reader was tuned that
+// way in work/ocr_parse.py, and the browser's own smoothing (close to bilinear) reads about 11 fewer orders of 76.
+function lanczosWeights(inSize, outSize){
+  const scale = inSize / outSize, fs = Math.max(scale, 1), support = 3 * fs, ss = 1 / fs, out = [];
+  const sinc = x => x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x);
+  const L = x => (x > -3 && x < 3) ? sinc(x) * sinc(x / 3) : 0;
+  for (let o = 0; o < outSize; o++) {
+    const center = (o + 0.5) * scale;
+    const x0 = Math.max(Math.floor(center - support + 0.5), 0), x1 = Math.min(Math.floor(center + support + 0.5), inSize);
+    const w = []; let sum = 0;
+    for (let x = x0; x < x1; x++) { const v = L((x - center + 0.5) * ss); w.push(v); sum += v; }
+    out.push([x0, Float32Array.from(w, v => sum ? v / sum : 0)]);
   }
   return out;
 }
+function resizeGray(g, w, h, W, H){
+  const wx = lanczosWeights(w, W), wy = lanczosWeights(h, H), tmp = new Float32Array(W * h), out = new Float32Array(W * H);
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let X = 0; X < W; X++) { const [x0, ws] = wx[X]; let s = 0; for (let k = 0; k < ws.length; k++) s += g[row + x0 + k] * ws[k]; tmp[y * W + X] = Math.min(255, Math.max(0, Math.round(s))); }
+  }
+  for (let Y = 0; Y < H; Y++) {
+    const [y0, ws] = wy[Y];
+    for (let X = 0; X < W; X++) { let s = 0; for (let k = 0; k < ws.length; k++) s += tmp[(y0 + k) * W + X] * ws[k]; out[Y * W + X] = s; }
+  }
+  return out;
+}
+function crop(src, fx0, fy0, fx1, fy1, scale = 1, pad = 0){
+  const SW = src.width, SH = src.height;
+  const x0 = Math.round(SW * fx0), y0 = Math.max(0, Math.round(fy0 * (fy0 > 1 ? 1 : SH)) - pad), x1 = Math.round(SW * fx1), y1 = Math.min(SH, Math.round(fy1 * (fy1 > 1 ? 1 : SH)) + pad);
+  const w = x1 - x0, h = y1 - y0, px = src.getContext('2d').getImageData(x0, y0, w, h).data, g = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) g[i] = 0.299 * px[4 * i] + 0.587 * px[4 * i + 1] + 0.114 * px[4 * i + 2];
+  let W = w, H = h, o = g;
+  if (scale !== 1) { W = Math.max(1, Math.round(w * scale)); H = Math.max(1, Math.round(h * scale)); o = resizeGray(g, w, h, W, H); }
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const cx = c.getContext('2d'), id = cx.createImageData(W, H);
+  for (let i = 0; i < W * H; i++) { const v = Math.min(255, Math.max(0, Math.round(o[i]))); id.data[4 * i] = id.data[4 * i + 1] = id.data[4 * i + 2] = v; id.data[4 * i + 3] = 255; }
+  cx.putImageData(id, 0, 0);
+  c.grey = Uint8Array.from(o, v => Math.min(255, Math.max(0, Math.round(v))));
+  return c;
+}
+
+// ---- reader 1: Claude reads the left strip of each page (viewers that can send images)
 const READ_PROMPT = n => `You are reading ${n} image(s). Each is the LEFT EDGE of one scanned page of a plastics plant's production packet, in order (image 1, image 2, ...).
 An EXTRUSION schedule page has "LINE NO: SE.." near its top (SE plus 2 digits, e.g. SE11) and a table whose first columns are "T", "Mfg# / Ord#", "Prod Code", "Die". Each order row starts with "Y |", then the order number printed like "H69A039 -   1", then the product code like "DPP30WB1023".
 Every other page is OTHER: converting sheets ("LINE NO: SD31 BOBST", "SC31", "SD41 & 42 GUILLOTINE"...), formulation pages titled "Line N (SExx) Formulations" with columns "Order #" and "Formula Code", and blank pages.
@@ -696,37 +765,230 @@ Reply with only a JSON array of these objects.`;
 const ERR = {not_granted: 'Claude was not allowed for this page, so the scan cannot be read.', rate_limited: 'Claude is busy or your usage limit was reached. Try again later.',
   sampling_disabled: 'Claude is not available for this account.', images_unavailable: 'This viewer cannot send images to Claude.', image_rejected: 'Claude could not take one of the page images.',
   invalid_json: 'Claude answered in a form the page could not read. Try again.', session_expired: 'Sign in again, then try again.', cancelled: 'Stopped.'};
+async function claudeRead(batch){
+  const blobs = await Promise.all(batch.map(p => new Promise(r => crop(p.canvas, 0, 0, 0.3, 1, 2200 / 3300).toBlob(r, 'image/jpeg', 0.88))));
+  const ans = await sampleFn.json(READ_PROMPT(batch.length), {images: blobs, signal: ctl.signal});
+  return batch.map((p, k) => {
+    const a = (Array.isArray(ans) ? ans : []).find(x => Number(x?.image) === k + 1) || (Array.isArray(ans) ? ans[k] : null) || {};
+    if (!(a.kind === 'EXT' && /^SE\d\d$/.test(String(a.line || '')))) return null;
+    return {page: p.label, line: String(a.line), orders: (a.orders || []).map(o => ({order: String(o.order || '').replace(/\s+/g, ''), prod: String(o.prod || '').trim(), status: 'read by Claude'})), unread: []};
+  });
+}
+
+// ---- reader 2: text recognition inside the page (Tesseract 5, LSTM; language data shipped with the page).
+// Tuned on the 28 and 29 Sep scans against their transcriptions (work/ocr_parse.py): a value is taken when it matches
+// an order + product already on a schedule (look-alike characters only), or, for a new order, when the product is a
+// Product Master code; everything else is shown for checking. It never guesses silently.
+const WL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:/.';
+let tessP = null;
+function loadTess(){
+  if (!tessP) tessP = (async () => {
+    say('Loading the text reader (about 8 MB, first time only)…');
+    await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/tesseract-core-simd-lstm.wasm.js')
+      .catch(() => loadScript('https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/tesseract-core-lstm.wasm.js'));
+    const TM = await window.TesseractCore();
+    if (!window.ENG_TRAINEDDATA_GZ_B64) await loadScript('eng-data.js');
+    const bin = atob(window.ENG_TRAINEDDATA_GZ_B64), gz = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) gz[i] = bin.charCodeAt(i);
+    const data = new Uint8Array(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
+    TM.FS.writeFile('./eng.traineddata', data);
+    const api = new TM.TessBaseAPI();
+    if (api.Init(null, 'eng', 1) !== 0) throw new Error('The text reader did not start.');
+    api.SetVariable('tessedit_char_whitelist', WL);
+    return {TM, api};
+  })().catch(e => { tessP = null; throw e; });
+  return tessP;
+}
+async function ocr(canvas, psm, tsv = false){
+  const {TM, api} = await loadTess();
+  api.SetVariable('tessedit_pageseg_mode', String(psm));
+  if (canvas.grey) {                         // grey pixels straight into the engine's memory
+    const n = canvas.width * canvas.height, ptr = TM._malloc(n);
+    try {
+      TM.HEAPU8.set(canvas.grey, ptr);
+      api.SetImage(ptr, canvas.width, canvas.height, 1, canvas.width);
+      api.Recognize(null);
+      return (tsv ? api.GetTSVText(0) : api.GetUTF8Text()) || '';
+    } finally { TM._free(ptr); }
+  }
+  const png = new Uint8Array(await (await new Promise(r => canvas.toBlob(r, 'image/png'))).arrayBuffer());
+  TM.FS.writeFile('/input', png);
+  api.SetImageFile(1, 0);
+  api.Recognize(null);
+  return api.GetUTF8Text() || '';
+}
+function rowBands(src){                   // order rows: dark-pixel runs in the core of the Mfg# / Ord# column, y in page pixels
+  const W = src.width, H = src.height, x0 = Math.round(W * 0.08), x1 = Math.round(W * 0.13), y0 = Math.round(H * 0.07);
+  const px = src.getContext('2d').getImageData(x0, y0, x1 - x0, H - y0).data, w = x1 - x0, out = [];
+  let start = null, last = null;
+  for (let r = 0; r < H - y0; r++) {
+    let ink = 0;
+    for (let c = 0; c < w; c++) { const i = (r * w + c) * 4; if (0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2] < 140) ink++; }
+    if (ink > 5) { if (start === null) start = r; last = r; }
+    else if (start !== null && r - last > 4) { if (last - start >= 12) out.push([y0 + start, y0 + last]); start = null; }
+  }
+  if (start !== null && last - start >= 12) out.push([y0 + start, y0 + last]);
+  return out;
+}
+const PAIRS = new Set(['0O', '0D', 'OD', '0Q', '1I', '1T', '1L', 'IT', 'IL', '1J', '5S', '8B', '4A', '4G', '6G', '6E', '2Z', '3S', '8S', 'BE', 'MN', '7/', '71', '3B', '8E'].flatMap(p => [p, p[1] + p[0]]));
+const SOFT = new Set('OSIZTE/:.-'), INS_SOFT = new Set('OSIZTE/:.-17J|');
+const TO_D = {O: '0', D: '0', Q: '0', I: '1', L: '1', T: '1', J: '1', Z: '2', S: '5', G: '6', E: '6', B: '8', A: '4', '/': '7'};
+const dig = s => [...s].map(c => TO_D[c] || c).join('');
+const sameish = (x, y) => x === y ? 0 : (PAIRS.has(x + y) ? 0.3 : null);
+function align(pat, txt){                 // cost of finding pat in txt, free leading / trailing text
+  const n = pat.length, m = txt.length; let prev = new Array(m + 1).fill(0);
+  for (let i = 1; i <= n; i++) {
+    const x = pat[i - 1], cur = [prev[0] + (x === '-' ? 0.3 : 1.5)];
+    for (let j = 1; j <= m; j++) {
+      const y = txt[j - 1], s = sameish(x, y);
+      cur[j] = Math.min(prev[j - 1] + (s === null ? 5 : s), prev[j] + (x === '-' ? 0.3 : 1.5), cur[j - 1] + (INS_SOFT.has(y) ? 0.5 : 1));
+    }
+    prev = cur;
+  }
+  return Math.min(...prev);
+}
+function ocrDist(a, b){
+  const n = a.length, m = b.length, D = [];
+  for (let i = 0; i <= n; i++) { D.push(new Array(m + 1).fill(0)); D[i][0] = i ? D[i - 1][0] + (SOFT.has(a[i - 1]) ? 0.5 : 1) : 0; }
+  for (let j = 1; j <= m; j++) D[0][j] = D[0][j - 1] + (SOFT.has(b[j - 1]) ? 0.5 : 1);
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) {
+    const s = sameish(a[i - 1], b[j - 1]);
+    D[i][j] = Math.min(D[i - 1][j - 1] + (s === null ? 1 : s), D[i - 1][j] + (SOFT.has(a[i - 1]) ? 0.5 : 1), D[i][j - 1] + (SOFT.has(b[j - 1]) ? 0.5 : 1));
+  }
+  return D[n][m];
+}
+function bestProduct(tok){
+  const sc = [];
+  for (const c of PRODUCTS) if (Math.abs(c.length - tok.length) <= 2) sc.push([ocrDist(tok, c), c]);
+  sc.sort((a, b) => a[0] - b[0]);
+  return sc.length && sc[0][0] <= 1 && (sc.length === 1 || sc[1][0] - sc[0][0] >= 0.5) ? sc[0][1] : null;
+}
+function fixOrder(base, suf){
+  let b;
+  if (base[0] === 'H') b = 'H' + dig(base.slice(1, 3)) + base[3] + dig(base.slice(4, 7));
+  else b = 'RP' + dig(base.slice(2, 4)) + (/[ABC]/.test(base[4]) ? base[4] : dig(base[4])) + dig(base.slice(5, 7));
+  const s = dig(suf);
+  return [`${b}-${s}`, /^(H\d\d[A-Z]\d{3}|RP\d\d[0-9A-C]\d\d)$/.test(b) && /^\d+$/.test(s)];
+}
+const ORD = /(H[0-9A-Z/]{6}|RP[0-9A-Z/]{5})[-.:]+([0-9ITLJ/]{1,2})/;
+function prodToken(tail){
+  const t = tail.replace(/^[-./:|17IT]*(?=[A-Z]{3})/, '');
+  const m = /[-.:|]|[1I7T]?(?:P[ABCR]|B[AB])/.exec(t.slice(7));
+  return (m ? t.slice(0, 7 + m.index) : t).slice(0, 12).replace(/^[-./:]+|[-./:]+$/g, '');
+}
+function readRow(s, pairs){
+  if (s.length < 12) return null;
+  const flat = s.replace(/-/g, '');
+  let b1 = [Infinity], b2 = Infinity;
+  for (const [o, p] of pairs) {
+    const c = align(o + p, flat);
+    if (c < b1[0]) { b2 = b1[0]; b1 = [c, o, p]; } else if (c < b2) b2 = c;
+  }
+  if (b1[0] <= 2 && b2 - b1[0] >= 1) return {order: b1[1], prod: b1[2], status: b1[0] === 0 ? 'read' : 'matched to schedule history', raw: s};
+  const m = ORD.exec(s);
+  if (!m) return null;
+  const [fo, ok] = fixOrder(m[1], m[2]), tok = prodToken(s.slice(m.index + m[0].length)), p = bestProduct(tok);
+  return {order: fo, prod: p || tok, status: p && ok ? 'new order' : 'check', raw: s};
+}
+const READRANK = {'read': 0, 'matched to schedule history': 1, 'new order': 2, 'check': 3};
+// Each row is read row by row (with fallbacks until it matches an order on file) and in one pass of the whole strip. Every
+// order row found in the image must be explained by a kept reading; a row that is not (empty or unreadable text, e.g.
+// under handwriting) is returned with its picture so it can be typed in. Tested on 28 and 29 Sep: no order missed
+// without a flag, no wrong order taken (work/ocr_parse.py evaluate9).
+const BAND_TRIES = [[2, 7, 14], [2, 13, 6], [3, 7, 10], [2, 6, 6]];
+const isMatched = r => r.status === 'read' || r.status === 'matched to schedule history';
+async function ocrPage(p, pairs){
+  const src = p.canvas, H = src.height;
+  const top = await ocr(crop(src, 0, 0, 0.30, 0.08), 6);
+  const mm = /LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})/.exec(top.toUpperCase());
+  if (!mm) return null;                                     // not an extrusion page (CNV, FRM, blank)
+  const line = 'SE' + dig(mm[1]);
+  const clean = t => t.toUpperCase().replace(/\s+/g, '');
+  const kept = [], add = r => { if (r && !kept.some(k => k.order === r.order)) kept.push(r); };
+  // whole strip in one pass: matched readings only, each with its height on the page (word boxes, 2x crop -> /2)
+  const lines = {}, stripY = [];
+  for (const row of (await ocr(crop(src, 0.05, 0, 0.25, 1, 2), 6, true)).split('\n')) {
+    const f = row.split('\t');
+    if (f[0] !== '5' || !(f[11] || '').trim()) continue;
+    const k = f[2] + '.' + f[3] + '.' + f[4], L = (lines[k] = lines[k] || {t: '', y0: 1e9, y1: 0});
+    L.t += f[11]; L.y0 = Math.min(L.y0, +f[7] / 2); L.y1 = Math.max(L.y1, (+f[7] + +f[9]) / 2);
+  }
+  for (const L of Object.values(lines)) {
+    const s = clean(L.t);
+    if (!/H\w{4}|RP\w{4}/.test(s)) continue;
+    const r = readRow(s, pairs);
+    if (r && isMatched(r)) { add(r); stripY.push((L.y0 + L.y1) / 2); }
+  }
+  const bands = [];
+  for (const [a, b] of rowBands(src)) {                   // each printed row: tries until it matches; its best reading
+    if (ctl.signal.aborted) throw {code: 'cancelled'};
+    if (stripY.some(y => y >= a - 15 && y <= b + 15)) continue;          // this row was already read in the strip pass
+    const texts = []; let best = null;
+    for (const [scale, psm, pad] of BAND_TRIES) {
+      const s = clean(await ocr(crop(src, 0.05, a, 0.25, b, scale, pad), psm));
+      texts.push(s);
+      const r = /H\w{4}|RP\w{4}/.test(s) ? readRow(s, pairs) : null;
+      if (r && (!best || READRANK[r.status] < READRANK[best.status])) best = r;
+      if (r && isMatched(r)) break;
+    }
+    if (best && isMatched(best)) add(best);
+    bands.push({a, b, texts, best});
+  }
+  const unread = [];
+  for (const bd of bands) {                               // every printed row must be explained by a kept reading
+    if (bd.a < H * 0.10 || /LINE|TOTAL|ENDOF|REPORT/.test(bd.texts.join(' '))) continue;   // column header, line total
+    if (bd.best && isMatched(bd.best)) continue;
+    if (kept.some(k => bd.texts.some(t => t && align(k.order.replace(/-/g, '') + k.prod, t.replace(/-/g, '')) <= 4))) continue;
+    if (bd.best) add(bd.best);
+    else unread.push({text: bd.texts.find(t => t) || '', img: crop(src, 0.05, bd.a, 0.30, bd.b, 1, 14).toDataURL('image/png')});
+  }
+  return {page: p.label, line, orders: kept, unread};
+}
+function historyPairs(date){
+  const seen = new Map();
+  Object.entries(D.sched_by_date || {}).filter(([d]) => d < date).sort().slice(-30).forEach(([, rows]) => rows.forEach(([, o, p]) => seen.set(o + '|' + p, [o, p])));
+  return [...seen.values()];
+}
 
 async function generate(files){
-  if (!sampleFn || busy || !files?.length) return;
+  files = [...(files || [])];                                   // copy now: the input is cleared right after the pick
+  if (busy || !files.length) return;
   const m = /(20\d{2})(\d{2})(\d{2})\d{6}/.exec(files[0].name || '');
-  if (m) $('#gendate').value = `${m[1]}-${m[2]}-${m[3]}`;          // copier file names carry the scan date
+  if (m) { $('#gendate').value = `${m[1]}-${m[2]}-${m[3]}`; transNote(); }          // copier file names carry the scan date
+  const date = $('#gendate').value, pairs = historyPairs(date);
+  lastSource = files.map(f => f.name).join(', ');
   busy = true; drop.classList.add('off'); gstop.hidden = false; gout.innerHTML = ''; gpages.innerHTML = '';
   ctl = new AbortController();
-  const reads = [];
+  const reads = [], t0 = performance.now();
+  let nPages = 0;
   try {
-    gmsg.textContent = 'Rendering the pages…';
-    const pages = await pagesOf([...files]);
-    gpages.innerHTML = pages.map(p => `<span id="gp${p.label}">p${p.label}</span>`).join('');
-    const per = Math.max(1, Math.min(imgCaps.maxCount || 1, 4));
-    for (let i = 0; i < pages.length; i += per) {
-      const batch = pages.slice(i, i + per);
-      batch.forEach(p => { $('#gp' + p.label).className = 'busy'; });
-      gmsg.textContent = `Claude is reading pages ${batch[0].label}–${batch[batch.length - 1].label} of ${pages.length}…`;
-      const ans = await sampleFn.json(READ_PROMPT(batch.length), {images: batch.map(p => p.blob), signal: ctl.signal});
-      batch.forEach((p, k) => {
-        const a = (Array.isArray(ans) ? ans : []).find(x => Number(x?.image) === k + 1) || (Array.isArray(ans) ? ans[k] : null) || {};
-        const ext = a.kind === 'EXT' && /^SE\d\d$/.test(String(a.line || ''));
-        $('#gp' + p.label).className = ext ? 'ext' : '';
-        $('#gp' + p.label).textContent = ext ? `p${p.label} ${a.line}` : `p${p.label}`;
-        if (ext) reads.push({page: p.label, line: String(a.line), orders: (a.orders || []).map(o => ({order: String(o.order || '').replace(/\s+/g, ''), prod: String(o.prod || '').trim()}))});
+    say(mode === 'claude' ? 'Rendering the pages…' : 'Rendering the pages and starting the text reader…');
+    if (mode === 'ocr') await loadTess();
+    let batch = [];
+    const per = mode === 'claude' ? Math.max(1, Math.min(imgCaps?.maxCount || 1, 4)) : 1;
+    const flush = async () => {
+      batch.forEach(p => { gpages.insertAdjacentHTML('beforeend', `<span id="gp${p.label}" class="busy">p${p.label}</span>`); });
+      say(`${mode === 'claude' ? 'Claude is reading' : 'Reading'} page${batch.length > 1 ? 's' : ''} ${batch[0].label}${batch.length > 1 ? '–' + batch[batch.length - 1].label : ''} of ${batch[0].total}…`);
+      const got = mode === 'claude' ? await claudeRead(batch) : [await ocrPage(batch[0], pairs)];
+      got.forEach((r, k) => {
+        const el = $('#gp' + batch[k].label);
+        el.className = r ? 'ext' : ''; el.textContent = r ? `p${batch[k].label} ${r.line}` : `p${batch[k].label}`;
+        if (r) reads.push(r);
       });
+      batch.forEach(p => { p.canvas.width = 0; });          // free the page image
+      batch = [];
+    };
+    for await (const p of pagesOf(files)) {
+      if (ctl.signal.aborted) throw {code: 'cancelled'};
+      nPages++; batch.push(p);
+      if (batch.length >= per) await flush();
     }
-    render(reads, $('#gendate').value, pages.length);
-    gmsg.textContent = `Done: ${reads.length} extrusion page(s) of ${pages.length} read.`;
+    if (batch.length) await flush();
+    render(reads, date, nPages);
+    say(`Done in ${Math.round((performance.now() - t0) / 1000)} s: ${reads.length} extrusion page(s) of ${nPages} read${mode === 'ocr' ? ' by the text reader in this page' : ' by Claude'}.`);
   } catch (e) {
-    gmsg.textContent = e?.code ? (ERR[e.code] || `Claude could not finish (${e.code}).`) : (e?.message || 'Something went wrong reading the file.');
-    if (reads.length) render(reads, $('#gendate').value, null);
+    say(e?.code ? (ERR[e.code] || `Could not finish (${e.code}).`) : (e?.message || 'Something went wrong reading the file.'));
+    if (reads.length) render(reads, date, null);
   } finally {
     busy = false; drop.classList.remove('off'); gstop.hidden = true;
   }
@@ -745,24 +1007,37 @@ function lookup(line, order, prod, date){
   }
   return {how: 'exception', why: 'New order on this line: no formula issued for it before'};
 }
+const STATUS_CHIP = {
+  'matched to schedule history': o => `<span class="chip var" title="Read as ${esc(o.raw || '')}">matched to history</span>`,
+  'new order': o => `<span class="chip warn" title="Read as ${esc(o.raw || '')}">new order: check the number</span>`,
+  'check': o => `<span class="chip crit" title="Read as ${esc(o.raw || '')}">check</span>`,
+  'corrected by you': () => '<span class="chip ok">corrected</span>',
+};
+let editRefs = [];
 function render(reads, date, nPages){
+  lastRun = {reads, date, nPages};
+  editRefs = [];
   const byLine = {};
   reads.forEach(r => r.orders.forEach(o => {
     const L = (byLine[r.line] = byLine[r.line] || []);
-    if (!L.some(x => x.order === o.order)) L.push({...o, page: r.page});
+    if (!L.some(x => x.order === o.order)) L.push({...o, page: r.page, _ref: o});
   }));
   const lines = Object.keys(byLine).sort((a, b) => (D.linemeta[a]?.no || 99) - (D.linemeta[b]?.no || 99));
   const tech = (D.issued || {})[date];
   const trans = (D.sched_by_date || {})[date];
-  let n = 0, filled = 0, exc = 0, cmp = 0, match = 0, badRead = 0;
+  let n = 0, filled = 0, exc = 0, cmp = 0, match = 0, toCheck = 0;
+  const plan = {date, lines: [], source: lastSource};
   const html = lines.map(line => {
     const meta = D.linemeta[line] || {no: '?', dosing: 'AUGER'}, weight = meta.dosing === 'WEIGHT';
+    const pl = {line, meta, rows: []}; plan.lines.push(pl);
     const rows = byLine[line].map((o, i) => {
       n++;
       const okOrder = ORDER_RX.test(o.order), okProd = PRODUCTS.has(o.prod);
-      if (!okOrder || !okProd) badRead++;
+      const flagged = !okOrder || !okProd || o.status === 'new order' || o.status === 'check';
+      if (flagged) toCheck++;
       const r = okOrder ? lookup(line, o.order, o.prod, date) : {how: 'exception', why: 'Order number not read cleanly: check the page'};
       if (r.how === 'exception') exc++; else filled++;
+      pl.rows.push({order: o.order, prod: o.prod, r, flagged});
       let vs = '<span class="muted">No Tech issue on file for this date</span>';
       if (tech) {
         const tg = (tech[line] || []).find(g => g.orders.includes(o.order));
@@ -775,8 +1050,15 @@ function render(reads, date, nPages){
         ? `<span class="noform">ENGINEER TO COMPLETE</span><div class="muted" style="font-size:13px">${esc(r.why)}</div>`
         : `<div class="fl">${r.formulas.map((f, k, all) => `<details><summary>${esc(whenLabel(f, k, all))} · ${esc(f.code)}</summary>${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></details>`).join('')}
            <div class="muted" style="font-size:12px">${r.how === 'last' ? `As issued ${fmtDate(r.date)}` : 'Engineer decision (approved in the master)'}</div></div>`;
-      return `<tr><td class="mono">${i + 1}</td><td><b class="mono">${esc(o.order)}</b>${okOrder ? '' : ' <span class="chip crit">check</span>'}<div class="muted" style="font-size:12px">${/^\d+$/.test(o.page) ? 'scan p' + esc(o.page) : esc(o.page)}</div></td>
-        <td class="mono">${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}</td><td>${form}</td><td>${vs}</td></tr>`;
+      const chip = (STATUS_CHIP[o.status] || (() => ''))(o);
+      let orderCell = `<b class="mono">${esc(o.order)}</b> ${chip}`, prodCell = `${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
+      if (flagged) {
+        const k = editRefs.push(o._ref) - 1;
+        orderCell = `<input class="genfix mono" data-k="${k}" data-f="order" value="${esc(o.order)}" aria-label="Order number"> ${chip}${o.raw ? `<div class="muted" style="font-size:12px">read as <span class="mono">${esc(o.raw)}</span></div>` : ''}`;
+        prodCell = `<input class="genfix mono" data-k="${k}" data-f="prod" value="${esc(o.prod)}" aria-label="Product code">${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
+      }
+      return `<tr${flagged ? ' class="flagrow"' : ''}><td class="mono">${i + 1}</td><td>${orderCell}<div class="muted" style="font-size:12px">${/^\d+$/.test(o.page) ? 'scan p' + esc(o.page) : esc(o.page)}</div></td>
+        <td class="mono">${prodCell}</td><td>${form}</td><td>${vs}</td></tr>`;
     }).join('');
     return `<div class="genline"><h3>Line ${meta.no} · ${line} <span class="chip ${weight ? 'weight' : 'auger'}">${weight ? 'Weight %' : 'Auger speed'}</span></h3>
       <div class="tscroll"><table class="gentable"><thead><tr><th>#</th><th>Order</th><th>Product</th><th>Formulation (run order)</th><th>Against Tech</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
@@ -788,11 +1070,190 @@ function render(reads, date, nPages){
     check = `<div class="${miss.length || extra.length ? 'warn' : 'ok'}"><span class="caps">reading vs the transcribed packet</span><b>${want.size - miss.length}/${want.size}</b><small>${
       miss.length || extra.length ? `Missed: ${miss.map(esc).join(', ') || 'none'}. Read differently: ${extra.map(esc).join(', ') || 'none'}` : 'every line, order and product as transcribed'}</small></div>`;
   }
+  const unread = reads.flatMap(r => (r.unread || []).map(u => ({r, u})));
+  plan.toCheck = toCheck + unread.length; plan.unread = unread.length; lastPlan = plan;
   gout.innerHTML = `<section class="strip" style="margin-top:14px">
-      <div class="acc"><span class="caps">orders read</span><b>${n}</b><small>${lines.length} lines${nPages ? ` · ${reads.length} of ${nPages} pages were extrusion` : ''}${badRead ? ` · ${badRead} to check` : ''}</small></div>
+      <div class="acc"><span class="caps">orders read</span><b>${n}</b><small>${lines.length} lines${nPages ? ` · ${reads.length} of ${nPages} pages were extrusion` : ''}</small></div>
+      <div class="${toCheck + unread.length ? 'warn' : 'ok'}"><span class="caps">to check against the paper</span><b>${toCheck + unread.length}</b><small>${toCheck + unread.length ? 'boxed below: correct or type them, then Apply' : 'every row read and matched'}${unread.length ? ` · ${unread.length} row(s) the reader could not read` : ''}</small></div>
       <div class="${exc ? 'warn' : 'ok'}"><span class="caps">formulation found</span><b>${filled}/${n}</b><small>${exc} for an engineer · schedule date ${esc(date)}</small></div>
       ${tech ? `<div class="${match === cmp ? 'ok' : 'crit'}"><span class="caps">same as Tech’s issue</span><b>${match}/${cmp}</b><small>Tech’s FRM for ${fmtDate(date)} is on file</small></div>` : ''}
-      ${check}</section>${html}`;
+      ${check}</section>
+    <div class="genfixbar"><div><button type="button" class="btn" id="gendoc">Download the Word formulation</button> <span class="muted" id="gendocmsg">Same layout as the pipeline's printed document: one page per line, every formulation in run order.</span></div></div>
+    ${toCheck || unread.length ? `<div class="genfixbar">
+      ${unread.length ? `<div class="unreadlist"><div class="caps">Rows the reader could not read: type the order and product from the picture, or tick “not an order”</div>${unread.map(({r, u}, k) => `<div class="unreadrow"><span class="mono muted">p${esc(r.page)} ${esc(r.line)}</span><img src="${u.img}" alt="Row on scan page ${esc(r.page)} that could not be read">
+          <input class="genadd mono" data-u="${k}" data-f="order" placeholder="Order #" aria-label="Order number"><input class="genadd mono" data-u="${k}" data-f="prod" placeholder="Product" aria-label="Product code">
+          <label class="muted" style="font-size:13px"><input type="checkbox" class="gennot" data-u="${k}"> not an order</label></div>`).join('')}</div>` : ''}
+      ${toCheck || unread.length ? '<div><button type="button" class="btn" id="genapply">Apply corrections</button> <span class="muted">Fix the boxed order / product codes from the paper, then apply: the formulation is looked up again.</span></div>' : ''}
+    </div>` : ''}${html}`;
+  $('#gendoc').addEventListener('click', () => downloadDocx(lastPlan));
+  $('#genapply')?.addEventListener('click', () => {
+    const adds = {};
+    document.querySelectorAll('.genadd').forEach(inp => { (adds[inp.dataset.u] = adds[inp.dataset.u] || {})[inp.dataset.f] = inp.value.toUpperCase().replace(/\s+/g, ''); });
+    Object.entries(adds).forEach(([k, v]) => {
+      const {r, u} = unread[+k];
+      if (v.order && v.prod) { r.orders.push({order: v.order, prod: v.prod, status: 'corrected by you', raw: u.text}); r.unread = r.unread.filter(x => x !== u); }
+    });
+    document.querySelectorAll('.gennot:checked').forEach(cb => { const {r, u} = unread[+cb.dataset.u]; r.unread = r.unread.filter(x => x !== u); });
+    document.querySelectorAll('.genfix').forEach(inp => {
+      const ref = editRefs[+inp.dataset.k], v = inp.value.toUpperCase().replace(/\s+/g, '');
+      if (ref && v && ref[inp.dataset.f] !== v) { ref[inp.dataset.f] = v; ref.status = 'corrected by you'; }
+    });
+    document.querySelectorAll('.genfix').forEach(inp => { const ref = editRefs[+inp.dataset.k]; if (ref && ref.status !== 'corrected by you' && ORDER_RX.test(ref.order) && PRODUCTS.has(ref.prod)) ref.status = 'corrected by you'; });
+    render(lastRun.reads, lastRun.date, lastRun.nPages);
+  });
+}
+
+// ---- the Word formulation, built in the page from what it just resolved (layout of daily/render_frm.py; James Kuo,
+// 29 Sep 2026: "operator will use the paper copy"). Downloaded through the artifact's downloads capability.
+const PRINT_AS = {'FOAM – Bergen XO-256': 'FOAM – Bergen X0-256', 'PP Virgin': 'PP Virgin (F6502A)', 'White Reclaim': 'PP WB Reclaim (White Reclaim)'};
+let docxLib = null;
+const loadDocx = () => docxLib || (docxLib = loadScript('https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js').then(() => window.docx).catch(e => { docxLib = null; throw e; }));
+const colKey = c => { const m = /^(?:Extruder )?([A-D]) (.+)$/.exec(String(c).trim()); return m ? m[1] + '|' + m[2] : '|' + String(c).trim(); };
+const colHead = k => { const [e, f] = k.split('|'); return e ? `Extruder ${e} · ${f}` : f; };
+function docWhen(forms, i){
+  const f = forms[i], reclaim = f.feeders.some(x => /reclaim/i.test(x.mat || '') && (num(x.set) || 0) > 0);
+  if (/run\s*out/i.test(f.note || '')) return 'If reclaim runs out';
+  if (forms.length === 1) return '';
+  if (i === 0) return 'Run first';
+  return reclaim ? 'Next' : 'Alternative';
+}
+async function buildDocx(plan){
+  const X = await loadDocx();
+  const {Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, PageOrientation, ShadingType,
+         VerticalAlign, Header, Footer, PageNumber, TableLayoutType} = X;
+  const GREY = '555F6B', AMBER = '9A6212', RED = 'B3261E', GREEN = '2A7248', FONT = 'Times New Roman';
+  const dd = new Date(plan.date + 'T12:00:00'), us = `${dd.getMonth() + 1}/${dd.getDate()}/${String(dd.getFullYear()).slice(2)}`;
+  const T = (text, o = {}) => new TextRun({text: String(text ?? ''), font: FONT, size: Math.round((o.size || 10) * 2), bold: !!o.bold, italics: !!o.italic, color: o.color});
+  const P = (runs, o = {}) => new Paragraph({children: (Array.isArray(runs) ? runs : [runs]), alignment: o.align || AlignmentType.LEFT,
+    spacing: {after: Math.round((o.after ?? 0) * 20), before: 0}, pageBreakBefore: !!o.pageBreak});
+  const C = (paras, o = {}) => new TableCell({children: paras.length ? paras : [P(T(''))], width: {size: o.w, type: WidthType.DXA}, columnSpan: o.span, rowSpan: o.rowSpan,
+    verticalAlign: VerticalAlign.CENTER, shading: o.fill ? {fill: o.fill, type: ShadingType.CLEAR, color: 'auto'} : undefined,
+    margins: {top: 40, bottom: 40, left: 70, right: 70}});
+  const IN = x => Math.round(x * 1440), USABLE = 10.1;
+  const tbl = (widthsIn, rows) => new Table({rows, width: {size: IN(widthsIn.reduce((a, b) => a + b, 0)), type: WidthType.DXA},
+    columnWidths: widthsIn.map(IN), layout: TableLayoutType.FIXED});
+
+  // groups per line: orders with the same formulation share one block (as the pipeline and Tech's pages do)
+  const lines = plan.lines.map(pl => {
+    const meta = pl.meta, weight = meta.dosing === 'WEIGHT', groups = [], bySig = {};
+    pl.rows.forEach(row => {
+      const forms = row.r.how === 'exception' ? null : row.r.formulas;
+      const sig = forms ? JSON.stringify(forms.map(f => [f.code, f.note, f.feeders.map(x => [colKey(x.col), x.mat, x.set]).sort()])) : 'EXC:' + row.order;
+      if (!bySig[sig]) { bySig[sig] = {orders: [], forms, why: row.r.why || ''}; groups.push(bySig[sig]); }
+      bySig[sig].orders.push(row);
+    });
+    const used = new Set(groups.flatMap(g => (g.forms || []).flatMap(f => f.feeders.map(x => colKey(x.col)))));
+    let cols = (meta.cols || []).map(colKey);
+    if (!cols.length) cols = [...used].sort();
+    else if (cols.length > 6) cols = cols.filter(c => used.has(c)).length ? cols.filter(c => used.has(c)) : cols.slice(0, 4);
+    return {...pl, weight, groups, cols};
+  });
+  const nOrders = plan.lines.reduce((a, l) => a + l.rows.length, 0);
+  const excRows = plan.lines.flatMap(l => l.rows.filter(r => r.r.how === 'exception').map(r => [l.line, r]));
+  const draft = excRows.length > 0 || plan.toCheck > 0;
+  const status = draft ? 'DRAFT' : 'READY TO ISSUE';
+
+  const cover = [
+    P(T('Inteplast Profile Plant · WPJK · Technical', {color: GREY})),
+    P(T(`Extrusion Formulations · ${us}`, {size: 26, bold: true}), {after: 2}),
+    P(T(`${lines.length} lines · ${nOrders} orders · from ${plan.source || 'the schedule'}`, {size: 12}), {after: 8}),
+    tbl([10.1], [new TableRow({children: [C([
+      P(T(status, {size: 16, bold: true, color: draft ? RED : GREEN})),
+      P(T(draft ? [excRows.length ? `${excRows.length} order${excRows.length === 1 ? '' : 's'} have no formulation yet: an engineer completes them (table below).` : '',
+                   plan.toCheck ? `${plan.toCheck} row${plan.toCheck === 1 ? ' was' : 's were'} read from the scan without a match on file: check ${plan.toCheck === 1 ? 'it' : 'them'} against the paper.` : '',
+                   'Technical signs the issue block before this copy is used.'].filter(Boolean).join(' ')
+                 : 'Every order has its formulation. Technical checks and signs the issue block, then it goes to the floor.', {size: 11}))], {w: IN(10.1), fill: draft ? 'F8E0DE' : 'DFF1E6'})]})]),
+    P(T(''), {after: 4}),
+    P(T('How to read the line pages', {size: 12, bold: true}), {after: 2}),
+    ...['Auger lines: Set is the auger motor speed, 0 to 100. It is not a percentage.',
+        'Weight blender lines (Line 7, 12, 13, 16): Set is weight %; each extruder adds to 100; Auto takes the balance.',
+        'Where an order lists more than one formulation, run the first while there is reclaim in the silo, then move down the list (James Kuo, 29 Sep 2026).',
+        'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.'].map(t => P(T('•  ' + t, {size: 10.5}), {after: 1})),
+  ];
+  if (excRows.length) {
+    const w = [0.7, 1.2, 1.4, 3.8, 3.0];
+    cover.push(P(T(''), {after: 4}), P(T('Orders an engineer must complete', {size: 12, bold: true}), {after: 2}),
+      tbl(w, [new TableRow({tableHeader: true, children: ['Line', 'Order', 'Product', 'Why', 'Formula decided / by'].map((h, i) => C([P(T(h, {size: 9.5, bold: true}))], {w: IN(w[i]), fill: 'E9EDF1'}))}),
+        ...excRows.map(([ln, r]) => new TableRow({cantSplit: true, children: [ln, r.order, r.prod, r.r.why || 'No formulation found', ''].map((v, i) => C([P(T(v, {size: 9.5, bold: i === 1}))], {w: IN(w[i])}))}))]));
+  }
+  const iw = [2.6, 2.6, 2.0, 2.9];
+  cover.push(P(T(''), {after: 6}), P(T('Issue (IWPFO055 §5.3 – §5.5)', {size: 12, bold: true}), {after: 2}),
+    tbl(iw, [new TableRow({children: ['Issued by (Technical)', 'Signature', 'Date / time', 'Copy in "Schedule" binder (§5.4)'].map((h, i) => C([P(T(h, {size: 9.5, bold: true}), {align: AlignmentType.CENTER})], {w: IN(iw[i]), fill: 'E9EDF1'}))}),
+             new TableRow({height: {value: IN(0.45), rule: 'atLeast'}, children: iw.map((x, i) => C([P(T(i === 3 ? '☐' : '', {size: 14}), {align: AlignmentType.CENTER})], {w: IN(x)}))})]),
+    P(T(`Generated in the Profile Formulation page on ${new Date().toLocaleString()} from ${plan.source || 'the schedule'}. Formulation as last issued by Tech for each order on its line before ${us}.`, {size: 9, color: GREY}), {after: 0}));
+
+  const pages = lines.flatMap(ln => {
+    const cols = ln.cols, ncol = 3 + cols.length, wOrder = 1.55, wCode = 1.25, wNote = 1.45, wFeed = (USABLE - wOrder - wCode - wNote) / Math.max(1, cols.length);
+    const widths = [wOrder, wCode, ...cols.map(() => wFeed), wNote], small = cols.length > 6;
+    const head = new TableRow({tableHeader: true, children: ['Order #', 'Formula Code', ...cols.map(colHead), 'Note'].map((h, i) => C([P(T(h, {size: small ? 9.5 : 11, bold: true}), {align: AlignmentType.CENTER})], {w: IN(widths[i]), fill: 'E9EDF1'}))});
+    const rows = [head];
+    ln.groups.forEach(g => {
+      const orderParas = g.orders.flatMap(o => [P(T(o.order, {size: 10.5, bold: true}), {align: AlignmentType.CENTER}), P(T(o.prod, {size: 7.5, color: GREY}), {align: AlignmentType.CENTER, after: 1})]);
+      const forms = g.forms || [null];
+      forms.forEach((f, i) => {
+        const cells = [];
+        if (i === 0) cells.push(C(orderParas, {w: IN(wOrder), rowSpan: forms.length > 1 ? forms.length : undefined}));
+        if (!f) {
+          cells.push(C([P(T('ENGINEER TO COMPLETE: formula code and settings', {size: 10, bold: true, color: AMBER}))], {w: IN(wCode + wFeed * cols.length), span: 1 + cols.length, fill: 'FBF0DB'}),
+                     C([P(T(g.why, {size: 8.5, color: AMBER}))], {w: IN(wNote), fill: 'FBF0DB'}));
+          rows.push(new TableRow({cantSplit: true, height: {value: IN(0.55), rule: 'atLeast'}, children: cells}));
+          return;
+        }
+        const lab = docWhen(forms, i);
+        cells.push(C([P(T(f.code, {size: 11}), {align: AlignmentType.CENTER}), ...(lab ? [P(T(lab, {size: 8.5, bold: true, color: /runs out/.test(lab) ? RED : GREY}), {align: AlignmentType.CENTER})] : [])], {w: IN(wCode)}));
+        const by = {}; f.feeders.forEach(x => { by[colKey(x.col)] = x; });
+        cols.forEach(k => {
+          const x = by[k];
+          if (!x) { cells.push(C([], {w: IN(wFeed)})); return; }
+          const rp = REPL[x.mat], shown = rp ? rp.now.replace(/ \(.*\)$/, '') : (PRINT_AS[x.mat] || x.mat || '');
+          let sv = String(x.set ?? '');
+          if (ln.weight && sv.toLowerCase() === 'auto') {
+            const e = k.split('|')[0];
+            const fixed = f.feeders.filter(y => colKey(y.col).split('|')[0] === e && String(y.set).toLowerCase() !== 'auto').reduce((a, y) => a + (num(y.set) || 0), 0);
+            sv = `Auto (${Math.round((100 - fixed) * 10) / 10})`;
+          }
+          cells.push(C([P(T(shown, {size: small ? 9 : 10, bold: !!rp}), {align: AlignmentType.CENTER}),
+                        ...(rp ? [P(T(`(replaces ${x.mat})`, {size: 7.5, italic: true, color: AMBER}), {align: AlignmentType.CENTER})] : []),
+                        P(T(sv, {size: 12, bold: true}), {align: AlignmentType.CENTER})], {w: IN(wFeed)}));
+        });
+        cells.push(C([P(T(f.note || '', {size: 8.5}))], {w: IN(wNote)}));
+        rows.push(new TableRow({cantSplit: true, children: cells}));
+      });
+    });
+    return [
+      P(T(`Line ${ln.meta.no} (${ln.line})  Formulations`, {size: 22, bold: true}), {align: AlignmentType.CENTER, pageBreak: true}),
+      P(T((ln.meta.ac ? ln.meta.ac + '    ' : '') + us, {size: 11, bold: true}), {align: AlignmentType.RIGHT}),
+      P(T((ln.weight ? 'Weight blender: Set = weight %. Each extruder adds to 100; Auto = the balance.' : 'Auger feeders: Set = auger speed, 0 to 100 (not %).') +
+          '  Several formulations: run the first while reclaim lasts, then the next.', {size: 9.5, italic: true, color: GREY}), {align: AlignmentType.CENTER, after: 4}),
+      tbl(widths, rows),
+      ...(ln.meta.notes || []).map(n => P(T(n, {size: 10}))),
+      P([T('Tech. Department', {size: 10}), T(ln.meta.effective ? `        Effective Date: ${ln.meta.effective}` : '', {size: 10})]),
+    ];
+  });
+  const doc = new Document({sections: [{
+    properties: {page: {size: {width: 12240, height: 15840, orientation: PageOrientation.LANDSCAPE}, margin: {top: IN(0.45), bottom: IN(0.5), left: IN(0.45), right: IN(0.45)}}},
+    headers: {default: new Header({children: [P(T(draft ? `${status} · not for production until issued by Technical (IWPFO055 §5.3)` : 'Prepared in the Profile Formulation page · issued only when signed by Technical (IWPFO055 §5.3)', {size: 8, color: draft ? RED : GREY}), {align: AlignmentType.RIGHT})]})},
+    footers: {default: new Footer({children: [new Paragraph({children: [T(`From ${plan.source || 'the schedule'} · schedule date ${plan.date} · formulation as last issued by Tech for each order on its line · page `, {size: 8, color: GREY}),
+      new TextRun({children: [PageNumber.CURRENT], font: FONT, size: 16, color: GREY})]})]})},
+    children: [...cover, ...pages],
+  }]});
+  return Packer.toBlob(doc);
+}
+async function downloadDocx(plan){
+  const msg = $('#gendocmsg');
+  if (!plan) return;
+  try {
+    msg.textContent = 'Building the Word document…';
+    const blob = await buildDocx(plan), name = `FRM Formulation ${plan.date}.docx`;
+    const dl = window.claude?.use ? await window.claude.use('downloads') : null;
+    if (dl) { await dl.save({filename: name, data: blob}); msg.textContent = `Saved ${name} (${Math.round(blob.size / 1024)} KB).`; }
+    else {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove(); msg.textContent = `Downloaded ${name}.`;
+    }
+  } catch (e) {
+    msg.textContent = e?.code === 'declined' ? 'Download cancelled.' : `Could not build or save the document (${e?.code || e?.message || e}).`;
+  }
 }
 
 // ---- tabs

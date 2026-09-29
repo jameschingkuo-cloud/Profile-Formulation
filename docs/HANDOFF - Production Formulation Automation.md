@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.36 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.37 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1555,6 +1555,33 @@ missing data. Review to see if there is anything wrong. also update your data ba
   published to **Daily Formulation Report/Interface Copy** (new `schema.Book`, daily, kept as issued). The "Tech signs"
   step is off the page. Artifact republished (version 16).
 
+## 7.46 The interface reads a schedule scan and downloads the Word formulation (29 Sep 2026)
+
+James: *"let me put the same production file in the artifact. see if it generate the right formulation"*; the page could
+not send images to Claude on his account (claude.ai in Chrome and the app); James: *"i prefer chrome. Since i want to
+share this in the future with other engineer"*, then *"run a load test using chrome with PDF file. and make sure you
+receive the word by via download"*.
+- **Reader in the page** (Daily run tab): Claude reads the page images where the viewer allows it; otherwise Tesseract
+  5 runs inside the page (tesseract.js-core 5.1.1 from jsDelivr; English *fast* model shipped with the artifact as
+  `eng-data.js`, because an artifact page may load CDN scripts but cannot fetch data). A copier PDF is one JPEG per page:
+  the page takes the JPEGs straight out of the file (pdf.js stalled drawing these scans in an artifact frame).
+- **How a row is read** (tuned against the 28 and 29 Sep transcriptions; harness `ui/ocr_eval.py`, `evaluate11`): left
+  strip of each page, grey, Lanczos 2x; line code from the title strip; the whole strip in one pass plus each printed
+  order row (found from ink in the Mfg#/Ord# column) with up to four settings; a reading is taken only when it matches an
+  order + product already on a schedule (look-alike characters: 0/O, 1/I/T, 4/A, 5/S, 8/B ...). New orders are boxed
+  "check the number"; rows it cannot read are shown as pictures to type in; every printed row must be explained.
+  Result: 29 Sep 71/76 right, 28 Sep 64/75 right, **no wrong order taken and no row missed without a flag** on either day.
+- **Chrome test** (Claude in Chrome, the page served from 127.0.0.1 because the artifact frame blocks automated uploads):
+  the 29 Sep PDF (26 pages, 9.9 MB) read in 86 s; 15 extrusion pages found with the right line codes, 11 CNV pages
+  skipped; 71 rows matched, 4 boxed, 3 pictures (2 orders under handwriting, the SE25 "Final Total"). After typing
+  those in: 76/76 as transcribed, 72 with a formulation, 71 the same as Tech (RP26810-1: Tech added FU0041KS4), 4 for
+  an engineer.
+- **Word download**: the page builds `FRM Formulation <date>.docx` itself (docx 8.5.0 from jsDelivr), the layout of
+  `daily/render_frm.py`, and saves it through the artifact's `downloads` capability (declared). The file the page built
+  in Chrome opened in Word: 15 pages, same pages as the pipeline's. Chrome would not save a download started by the
+  automation (not even a test .txt), so James has not yet had the file through the Save prompt: first real use is his.
+- Interface copy republished; artifact version 22.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1683,6 +1710,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.37 | 2026-09-29 | Claude Code (local, with James Kuo) | **Interface reads a schedule scan in the page and downloads the Word formulation (§7.46)**: Tesseract in the page, tuned on 28/29 Sep (no wrong order, none missed silently); Chrome load test 86 s; docx built in the page. |
 | 1.36 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tech's 29 Sep FRM reviewed and loaded; interface copy folder (§7.45)**: draft = Tech on 71/72; `db/import_frm.py` (master Changes 53-82); Formulation Report Record +441; Interface Copy folder, no Tech sign-off. |
 | 1.35 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tesseract 5.4 installed; glyph reader header anchor fixed (§7.44)**: 29 Sep crosscheck 67/76, rest settled for the transcription. |
 | 1.34 | 2026-09-29 | Claude Code (local, with James Kuo) | **First end-to-end run from a schedule-only scan (§7.44)**: 29 Sep packet, Product Master, FRM Draft + docx, `daily/auger_check.py`, EXT/CNV records; build_master syntax fix; no-FRM check fix. |

@@ -92,6 +92,41 @@ def record_rows():
     return out
 
 
+ENG_URL = 'https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata'
+
+
+def eng_data():
+    """out/eng-data.js: Tesseract's English 'fast' LSTM model (tesseract-ocr/tessdata_fast, Apache-2.0; the same file the
+    Tesseract 5.4 install on James's PC uses), gzipped and base64'd as a script published next to the page (Artifact
+    `files`). The page cannot download it itself: an artifact page may load scripts from the CDN but not fetch data
+    (tested 29 Sep 2026). 'fast' reads these schedules better than 'best_int' (61 vs 49 of 76 orders on 29 Sep)."""
+    import base64
+    import gzip
+    import urllib.request
+    out = config.OUTPUT_DIR / 'eng-data.js'
+    tag = '/* tessdata_fast eng */'
+    if out.exists() and out.read_text(encoding='ascii', errors='ignore')[:len(tag)] == tag:
+        return out
+    raw = config.WORK_DIR / 'eng_fast.traineddata'
+    if not raw.exists():
+        urllib.request.urlretrieve(ENG_URL, raw)
+    gz = gzip.compress(raw.read_bytes(), 9)
+    out.write_text(tag + 'window.ENG_TRAINEDDATA_GZ_B64="' + base64.b64encode(gz).decode() + '";', encoding='ascii')
+    return out
+
+
+def line_layout(pk):
+    """Per line: number, dosing, and the layout of Tech's latest issued page (feeder columns, AC, footnotes, effective
+    date), for the Word formulation the page generates (same layout as daily/render_frm.py)."""
+    out = {c: {'no': n, 'dosing': DOS.get(c, 'AUGER'), 'cols': [], 'ac': '', 'notes': [], 'effective': ''} for c, n in LN.items()}
+    for d in sorted(pk):
+        for pg in pk[d]['frm']:
+            if pg['line_code'] in out:
+                out[pg['line_code']].update(cols=pg['feeder_columns'], ac=pg.get('header_note', ''), notes=pg.get('footnotes', []),
+                                            effective=pg.get('effective_date', ''))
+    return out
+
+
 def product_codes():
     """Product codes in the published Product Master (to flag a code the page read that the plant does not know)."""
     p = config.published_path('Product Master.xlsx')
@@ -192,12 +227,17 @@ def main():
             'sched_by_date': {d: [[e['line'], r['order'], r['prod_code']] for e in p['ext'] for r in e['rows']] for d, p in pk.items()},
             'products': product_codes(),
             'approved': approved_decisions(sheet),
-            'linemeta': {c: {'no': n, 'dosing': DOS.get(c, 'AUGER')} for c, n in LN.items()}}
+            'linemeta': line_layout(pk)}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     page = t.replace('__DATA__', blob)
-    for out in (config.OUTPUT_DIR / f'Profile Formulation {day}.html', config.OUTPUT_DIR / 'profile-formulation.html'):
-        out.write_text(page, encoding='utf-8')
+    eng_data()
+    # the artifact source is the page fragment (the Artifact tool adds the document skeleton); the dated copy kept in
+    # SharePoint is opened as a file, so it carries its own skeleton and charset
+    full = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            '</head><body>' + page + '</body></html>')
+    for out, text in ((config.OUTPUT_DIR / f'Profile Formulation {day}.html', full), (config.OUTPUT_DIR / 'profile-formulation.html', page)):
+        out.write_text(text, encoding='utf-8')
         print(out)
 
 
