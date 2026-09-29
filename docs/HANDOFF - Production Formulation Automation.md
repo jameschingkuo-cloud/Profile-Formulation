@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.27 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.28 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1396,6 +1396,17 @@ Text is already X0-256); the Change Log's history rows keep their text. Issue cl
 off Open items; the daily checks no longer note XO-256 (`checks.REPLACED` keeps Q1203K only; regression counts 83 / 72).
 The code map in `db/seed_master.py` still links a printed XO-256 to CF400 but raises nothing.
 
+## 7.38 F1102K replaced by F1203K (29 Sep 2026)
+
+James looked at the 28 Sep SE43 page (scan p12: RP26911-2 FUA151WB3 V7 F1102K 15) and decided: *"F1102k is obsolete
+and replaced by F1203K by formosa. Change all 1102 to 1203 and close out the issue"*. **Changes 47-52** (approved by
+James) via `db/replace_material.py`: Line Settings SE43 FUA151WB3 V7 and SE42 FU0151KS3 V7 -> 50-3963-019; FUA151WB3's
+Recipe row re-keyed; FU0151KS3's F1102K Recipe row removed (the seed had already added F1203K 15 from SE43, the same %);
+F1102K's master Status Retired. Its IWPFT062 row (PH401, In-active) and Approved Substitutes are untouched: IWPFT062
+owns those (§7.36). `replace_material.py` now (a) drops the old Recipe row when the new material is already there at the
+same %, stopping if it differs, and (b) leaves Approved Substitutes alone on IWPFT062 rows. `checks.REPLACED` gains
+F1102K (every packet prints it: Info note; regression counts 84 / 73). **No High material issue is left.**
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1524,6 +1535,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.28 | 2026-09-29 | Claude Code (local, with James Kuo) | **F1102K replaced by F1203K (§7.38)**: master Changes 47-52; last High material issue closed. |
 | 1.27 | 2026-09-29 | Claude Code (local, with James Kuo) | **XO-256 disregarded (§7.37)**: master Change 46; no XO left in the master data. |
 | 1.26 | 2026-09-29 | Claude Code (local, with James Kuo) | **Master follows IWPFT062 (§7.36)**: `db/sync_iwpft062.py` in daily step 0; preview 0 differences. |
 | 1.25 | 2026-09-29 | Claude Code (local, with James Kuo) | **HiTalc ZS = TL460 trade name (§7.35)**: master Change 45; interface sorts by severity. |

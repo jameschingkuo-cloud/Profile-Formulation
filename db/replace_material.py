@@ -87,16 +87,24 @@ def main(argv):
 
     ws = wb['Recipe']; h = cols(ws)
     k = ['Formula Code', 'Variant', 'Extruder', 'Material ID']
-    existing = {key(ws, r, k) for r in range(2, ws.max_row + 1)}
+    existing = {key(ws, r, k): r for r in range(2, ws.max_row + 1)}
+    drop = []
     for r in range(2, ws.max_row + 1):
         if ws.cell(r, h['Material ID']).value == a.old:
             old_rk = key(ws, r, k)
             new_rk = old_rk.rsplit('|', 1)[0] + '|' + a.new
             if new_rk in existing:
-                raise SystemExit(f'STOP: Recipe already has {new_rk}; merging two rows needs an engineer. Nothing written.')
+                same = all(ws.cell(r, h[c]).value == ws.cell(existing[new_rk], h[c]).value for c in ('Weight %', 'Balance'))
+                if not same:
+                    raise SystemExit(f'STOP: Recipe already has {new_rk} with a different weight %; merging needs an engineer. Nothing written.')
+                drop.append(r)                                  # the same % is already there under the new material
+                logrow('Recipe', old_rk, '(row removed)', a.old, None)
+                continue
             ws.cell(r, h['Material ID']).value = a.new
             logrow('Recipe', old_rk, '(row removed)', a.old, None)
             logrow('Recipe', new_rk, '(new row)', None, a.new)
+    for r in sorted(drop, reverse=True):
+        ws.delete_rows(r)
 
     ws = wb['Materials']; h = cols(ws)
     for r in range(2, ws.max_row + 1):
@@ -108,8 +116,11 @@ def main(argv):
                 ws.cell(r, h['Other Spellings']).value = new
                 logrow('Materials', a.new, 'Other Spellings', old, new)
         if mid == a.old:
-            for field, new in (('Status', 'Retired'),
-                               ('Approved Substitutes', f'Replaced by {a.new} ({a.by}, {today:%d %b %Y})')):
+            on_iwpft062 = ws.cell(r, h['IWPFT062 Status']).value in ('Active', 'In-active')
+            fields = [('Status', 'Retired')]
+            if not on_iwpft062:   # IWPFT062 owns Approved Substitutes for its own rows (db/sync_iwpft062.py)
+                fields.append(('Approved Substitutes', f'Replaced by {a.new} ({a.by}, {today:%d %b %Y})'))
+            for field, new in fields:
                 old = ws.cell(r, h[field]).value
                 if old != new:
                     ws.cell(r, h[field]).value = new

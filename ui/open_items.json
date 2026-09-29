@@ -6,13 +6,6 @@
       "title": "Formulation",
       "items": [
         {
-          "sev": "High",
-          "title": "F1102K is In-active but still in a current formula",
-          "detail": "IWPFT062 has F1102K (PH401) In-active, yet RP26911-2's new SE43 formula FUA151WB3 uses it in V7 (28 Sep), and SE42 used it on 25 Sep. Replace with F1203K, or reactivate F1102K on IWPFT062.",
-          "where": "SE43 · FUA151WB3",
-          "source": "Master Issues"
-        },
-        {
           "sev": "Medium",
           "title": "One formula code, several recipes",
           "detail": "On 7 lines the same code is printed with different settings: FUA152WB4 (SE12, SE13, SE31, SE32), FU0021WB4 (SE23, SE25), FUA060WBA twice on SE22 with no note. Some are variants (sign blank, VOIDFORM, run-out); FUA060WBA and RP26512-1's FU0041WB4 / FU0031WB4 have nothing telling the floor which to run.",
@@ -140,6 +133,11 @@
       "date": "2026-09-29",
       "title": "XO-256 misprint disregarded",
       "detail": "James: disregard. The master carries X0-256 only (Changes 13-14, 46); no other XO in the master."
+    },
+    {
+      "date": "2026-09-29",
+      "title": "F1102K replaced by F1203K",
+      "detail": "Obsolete, replaced by Formosa. Master Changes 47-52 (SE43 FUA151WB3, SE42 FU0151KS3); daily checks read a printed F1102K as F1203K (Info)."
     }
   ]
 }

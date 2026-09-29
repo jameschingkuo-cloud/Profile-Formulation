@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-29T11:21:58",
-"change_log_max_id": 46,
+"accepted_at": "2026-09-29T11:26:01",
+"change_log_max_id": 52,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -3832,7 +3832,7 @@
 "Feeder": "V7",
 "Formula Code": "FU0151KS3",
 "Line Code": "SE42",
-"Material ID": "50-3963-002",
+"Material ID": "50-3963-019",
 "Recipe Weight %": "",
 "Set": "15",
 "Slope Used": "",
@@ -4012,7 +4012,7 @@
 "Feeder": "V7",
 "Formula Code": "FUA151WB3",
 "Line Code": "SE43",
-"Material ID": "50-3963-002",
+"Material ID": "50-3963-019",
 "Recipe Weight %": "",
 "Set": "15",
 "Slope Used": "",
@@ -4949,7 +4949,7 @@
 "Name": "F1102K",
 "Other Spellings": "",
 "Role": "HOMO",
-"Status": "Draft",
+"Status": "Retired",
 "Supplier": "Formosa"
 },
 "50-3963-007": {
@@ -7372,15 +7372,6 @@
 "Variant": "Primary",
 "Weight %": "78"
 },
-"FU0151KS3|Primary||50-3963-002": {
-"Balance": "No",
-"Extruder": "",
-"Formula Code": "FU0151KS3",
-"Material ID": "50-3963-002",
-"Note": "from SE42 FRM 2026-09-25 p39",
-"Variant": "Primary",
-"Weight %": "15"
-},
 "FU0151KS3|Primary||50-3963-019": {
 "Balance": "No",
 "Extruder": "",
@@ -7453,11 +7444,11 @@
 "Variant": "Primary",
 "Weight %": "76.3"
 },
-"FUA151WB3|Primary||50-3963-002": {
+"FUA151WB3|Primary||50-3963-019": {
 "Balance": "No",
 "Extruder": "",
 "Formula Code": "FUA151WB3",
-"Material ID": "50-3963-002",
+"Material ID": "50-3963-019",
 "Note": "from SE43 FRM 2026-09-28 p12",
 "Variant": "Primary",
 "Weight %": "15"
