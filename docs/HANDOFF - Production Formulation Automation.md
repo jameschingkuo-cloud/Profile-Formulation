@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.21 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.22 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1336,6 +1336,16 @@ Two more master changes, each logged and approved by James Kuo, published, match
 
 `db/seed_master.py` MAP agrees with the master. Change Log now holds Changes 1-20.
 
+## 7.32 "PP Virgin" is F6502A (29 Sep 2026)
+
+James: *"PP Virgin is F6502A"*. **Changes 21-23** (approved by James Kuo) via `db/edit_master.py`: SE23 FU0021WB4 corn
+box and its reclaim run-out row, Hopper 1, Material ID -> 50-1560-050 (PC416 F6502A); "PP Virgin" added to F6502A's
+spellings. Published, pre-flight matched all 3, accepted. The master now passes `db/schema.py check` with **0 problems**.
+
+Master issues still open for Tech: **High** F1102K In-active (SE43 FUA151WB3) and PP Yungsox 5050S not on IWPFT062
+(SE61); **Medium** SE42 page still prints Q1203K, KS alternate sources not on IWPFT062, FU0151KS3 weight % differs on
+SE42 vs SE43; **Low** SE24 page prints XO-256, BL-B26003A and "HiTalc ZS" names not on IWPFT062.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1464,6 +1474,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.22 | 2026-09-29 | Claude Code (local, with James Kuo) | **PP Virgin = F6502A (§7.32)**: master Changes 21-23; master passes the schema check with 0 problems. |
 | 1.21 | 2026-09-29 | Claude Code (local, with James Kuo) | **CF400 spelling X0-256 and White Reclaim = PP WB Reclaim (§7.31)**: master Changes 13-20; new `db/edit_master.py` for logged cell edits. |
 | 1.20 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K replaced by F1203K (§7.30)**: master Changes 8-12 via the new `db/replace_material.py`; pre-flight accepted. |
 | 1.19 | 2026-09-29 | Claude Code (local, with James Kuo) | **HM-10HP mapped to CA410 (§7.29)**: the first master change through the Change Log (Changes 1-7, approved by James); pre-flight accepted it. |

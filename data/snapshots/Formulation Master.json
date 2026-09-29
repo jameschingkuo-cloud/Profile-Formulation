@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-29T09:19:06",
-"change_log_max_id": 20,
+"accepted_at": "2026-09-29T09:20:03",
+"change_log_max_id": 23,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -2407,7 +2407,7 @@
 "Feeder": "Hopper 1",
 "Formula Code": "FU0021WB4",
 "Line Code": "SE23",
-"Material ID": "",
+"Material ID": "50-1560-050",
 "Recipe Weight %": "",
 "Set": "45",
 "Slope Used": "",
@@ -2467,7 +2467,7 @@
 "Feeder": "Hopper 1",
 "Formula Code": "FU0021WB4",
 "Line Code": "SE23",
-"Material ID": "",
+"Material ID": "50-1560-050",
 "Recipe Weight %": "",
 "Set": "99",
 "Slope Used": "",
@@ -4830,7 +4830,7 @@
 "Material Code": "PC416",
 "Material ID": "50-1560-050",
 "Name": "F6502A",
-"Other Spellings": "PP Virgin-silo 3 (F6502A) | PP Virgin-silo 3 (F-6502A) | PP Virgin-silo 4 (6502A) | PP Virgin-silo 4 (F6502A) | PP Virgin (F6502A) | F6502A",
+"Other Spellings": "PP Virgin-silo 3 (F6502A) | PP Virgin-silo 3 (F-6502A) | PP Virgin-silo 4 (6502A) | PP Virgin-silo 4 (F6502A) | PP Virgin (F6502A) | F6502A | PP Virgin",
 "Role": "VIRGIN",
 "Status": "Draft",
 "Supplier": "Formosa"

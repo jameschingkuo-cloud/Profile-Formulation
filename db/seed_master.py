@@ -67,7 +67,7 @@ MAP = {
     'PP Mix Reclaim': 'INT-RCL-PP-MIX', 'PP WB Reclaim': 'INT-RCL-PP-WB',
     'White Reclaim': 'INT-RCL-PP-WB',   # same as PP WB Reclaim (James Kuo, 29 Sep 2026); INT-RCL-WHITE retired
     'WB EA Premix': 'INT-PREMIX-WB-EA', 'WB GT Premix': 'INT-PREMIX-WB-EA',
-    'PP Virgin': None,   # resin not named on the page: an engineer names it
+    'PP Virgin': V,   # James Kuo, 29 Sep 2026: PP Virgin is F6502A (master Changes 21-23)
 }
 MAP_ISSUES = [  # (severity, FRM text(s), check, detail)
     ('Medium', ['Q1203K'], 'FRM page still prints a withdrawn material',
@@ -78,8 +78,8 @@ MAP_ISSUES = [  # (severity, FRM text(s), check, detail)
      'PP Yungsox 5050S (SE61 extruders B and D) is not on the qualified list. Add it to IWPFT062 or name the listed resin'),
     ('Info', ['CaCO3 -Heritage HM-10HP'], 'Grade name differs from IWPFT062',
      'FRM prints "Heritage HM-10HP" (SE24, FU0011WB5 on SE25); IWPFT062 CA410 reads "HM10 MAX". James Kuo, 29 Sep 2026: same CaCO3 -> 50-7002-034'),
-    ('Medium', ['PP Virgin'], 'Resin not named',
-     'SE23 corn box formulas print just "PP Virgin"; the other rows name F6502A (silo 3 or 4). Material ID left blank for an engineer'),
+    ('Info', ['PP Virgin'], 'Resin named by James',
+     'SE23 corn box formulas print just "PP Virgin". James Kuo, 29 Sep 2026: PP Virgin is F6502A (50-1560-050)'),
     ('Medium', ['KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)', 'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F',
                 'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)', 'KS-MDI PE-500 (or Spartech B60009)'],
      'Alternate sources not on IWPFT062',
