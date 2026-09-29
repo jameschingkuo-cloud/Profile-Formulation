@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-29T09:20:03",
-"change_log_max_id": 23,
+"accepted_at": "2026-09-29T10:25:12",
+"change_log_max_id": 44,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -4297,7 +4297,7 @@
 "Feeder": "1",
 "Formula Code": "BF0000EB5",
 "Line Code": "SE61",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Recipe Weight %": "",
 "Set": "100",
 "Slope Used": "",
@@ -4357,7 +4357,7 @@
 "Feeder": "1",
 "Formula Code": "BF0000EB5",
 "Line Code": "SE61",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Recipe Weight %": "",
 "Set": "100",
 "Slope Used": "",
@@ -4432,7 +4432,7 @@
 "Feeder": "1",
 "Formula Code": "BF0000EBA",
 "Line Code": "SE61",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Recipe Weight %": "",
 "Set": "100",
 "Slope Used": "",
@@ -4492,7 +4492,7 @@
 "Feeder": "1",
 "Formula Code": "BF0000EBA",
 "Line Code": "SE61",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Recipe Weight %": "",
 "Set": "100",
 "Slope Used": "",
@@ -4567,7 +4567,7 @@
 "Feeder": "1",
 "Formula Code": "BF0000KSA",
 "Line Code": "SE61",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Recipe Weight %": "",
 "Set": "100",
 "Slope Used": "",
@@ -4627,7 +4627,7 @@
 "Feeder": "1",
 "Formula Code": "BF0000KSA",
 "Line Code": "SE61",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Recipe Weight %": "",
 "Set": "100",
 "Slope Used": "",
@@ -4847,6 +4847,19 @@
 "Role": "VIRGIN",
 "Status": "Draft",
 "Supplier": "Various vendors"
+},
+"50-1560-163": {
+"Approved Substitutes": "",
+"Bulk Density (g/cm3)": "",
+"FRM Text": "PP Yungsox 5050S",
+"IWPFT062 Status": "Active",
+"Material Code": "PC5050",
+"Material ID": "50-1560-163",
+"Name": "Formosa PP YungSox 5050S",
+"Other Spellings": "",
+"Role": "SKIN",
+"Status": "Draft",
+"Supplier": "Formosa"
 },
 "50-1560-381": {
 "Approved Substitutes": "",
@@ -5707,7 +5720,7 @@
 "Supplier": "Heritage"
 },
 "NL-YUNGSOX-5050S": {
-"Approved Substitutes": "Not on IWPFT062",
+"Approved Substitutes": "Replaced by 50-1560-163 (James Kuo, 29 Sep 2026)",
 "Bulk Density (g/cm3)": "",
 "FRM Text": "PP Yungsox 5050S",
 "IWPFT062 Status": "Not listed",
@@ -5716,7 +5729,7 @@
 "Name": "PP Yungsox 5050S",
 "Other Spellings": "",
 "Role": "SKIN",
-"Status": "Draft",
+"Status": "Retired",
 "Supplier": ""
 }
 },
@@ -7017,11 +7030,11 @@
 "Variant": "Primary",
 "Weight %": "50"
 },
-"BF0000EB5|Primary|B|NL-YUNGSOX-5050S": {
+"BF0000EB5|Primary|B|50-1560-163": {
 "Balance": "No",
 "Extruder": "B",
 "Formula Code": "BF0000EB5",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Note": "from SE61 FRM 2026-09-28 p13",
 "Variant": "Primary",
 "Weight %": "100"
@@ -7053,11 +7066,11 @@
 "Variant": "Primary",
 "Weight %": "5"
 },
-"BF0000EB5|Primary|D|NL-YUNGSOX-5050S": {
+"BF0000EB5|Primary|D|50-1560-163": {
 "Balance": "No",
 "Extruder": "D",
 "Formula Code": "BF0000EB5",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Note": "from SE61 FRM 2026-09-28 p13",
 "Variant": "Primary",
 "Weight %": "100"
@@ -7098,11 +7111,11 @@
 "Variant": "Primary",
 "Weight %": "50"
 },
-"BF0000EBA|Primary|B|NL-YUNGSOX-5050S": {
+"BF0000EBA|Primary|B|50-1560-163": {
 "Balance": "No",
 "Extruder": "B",
 "Formula Code": "BF0000EBA",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Note": "from SE61 FRM 2026-09-23 p39",
 "Variant": "Primary",
 "Weight %": "100"
@@ -7134,11 +7147,11 @@
 "Variant": "Primary",
 "Weight %": "5"
 },
-"BF0000EBA|Primary|D|NL-YUNGSOX-5050S": {
+"BF0000EBA|Primary|D|50-1560-163": {
 "Balance": "No",
 "Extruder": "D",
 "Formula Code": "BF0000EBA",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Note": "from SE61 FRM 2026-09-23 p39",
 "Variant": "Primary",
 "Weight %": "100"
@@ -7179,11 +7192,11 @@
 "Variant": "Primary",
 "Weight %": "50"
 },
-"BF0000KSA|Primary|B|NL-YUNGSOX-5050S": {
+"BF0000KSA|Primary|B|50-1560-163": {
 "Balance": "No",
 "Extruder": "B",
 "Formula Code": "BF0000KSA",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Note": "from SE61 FRM 2026-09-28 p13",
 "Variant": "Primary",
 "Weight %": "100"
@@ -7215,11 +7228,11 @@
 "Variant": "Primary",
 "Weight %": "5"
 },
-"BF0000KSA|Primary|D|NL-YUNGSOX-5050S": {
+"BF0000KSA|Primary|D|50-1560-163": {
 "Balance": "No",
 "Extruder": "D",
 "Formula Code": "BF0000KSA",
-"Material ID": "NL-YUNGSOX-5050S",
+"Material ID": "50-1560-163",
 "Note": "from SE61 FRM 2026-09-28 p13",
 "Variant": "Primary",
 "Weight %": "100"

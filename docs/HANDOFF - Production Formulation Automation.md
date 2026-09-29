@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.22 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.23 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1346,6 +1346,19 @@ Master issues still open for Tech: **High** F1102K In-active (SE43 FUA151WB3) an
 (SE61); **Medium** SE42 page still prints Q1203K, KS alternate sources not on IWPFT062, FU0151KS3 weight % differs on
 SE42 vs SE43; **Low** SE24 page prints XO-256, BL-B26003A and "HiTalc ZS" names not on IWPFT062.
 
+## 7.33 IWPFT062 Rev 18.0 adds PP YungSox 5050S (29 Sep 2026)
+
+James revised IWPFT062: *"Doc T062 revised. Take a look and update accordingly for 5050S"*. Read (read only): **Rev 18.0,
+9.29.2026, James Kuo, "Add PP YungSox to the list"**; new row **50-1560-163 | PC5050 | Formosa PP YungSox 5050S |
+Formosa | Active**. The Rev 18.0 row's MOC cell is blank (every earlier row has NA or an MOC number).
+
+Master **Changes 24-44** (approved by James Kuo) via `db/replace_material.py ... --create` (new option: adds the material
+row first, logged as "(new row)"): Materials gains 50-1560-163; SE61 extruders B and D on BF0000EB5, BF0000EBA and
+BF0000KSA (6 Line Settings) move to it; 6 Recipe rows re-keyed; NL-YUNGSOX-5050S retired. Published, pre-flight
+matched all 21, accepted; schema check 0 problems. The High issue is now Info.
+
+**One High material issue left:** F1102K (PH401) is In-active on IWPFT062 yet in FUA151WB3 (SE43, RP26911-2).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1474,6 +1487,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.23 | 2026-09-29 | Claude Code (local, with James Kuo) | **IWPFT062 Rev 18.0: PP YungSox 5050S = 50-1560-163 (§7.33)**: master Changes 24-44; `replace_material.py --create`. |
 | 1.22 | 2026-09-29 | Claude Code (local, with James Kuo) | **PP Virgin = F6502A (§7.32)**: master Changes 21-23; master passes the schema check with 0 problems. |
 | 1.21 | 2026-09-29 | Claude Code (local, with James Kuo) | **CF400 spelling X0-256 and White Reclaim = PP WB Reclaim (§7.31)**: master Changes 13-20; new `db/edit_master.py` for logged cell edits. |
 | 1.20 | 2026-09-29 | Claude Code (local, with James Kuo) | **Q1203K replaced by F1203K (§7.30)**: master Changes 8-12 via the new `db/replace_material.py`; pre-flight accepted. |

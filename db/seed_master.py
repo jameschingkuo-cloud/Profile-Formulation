@@ -37,7 +37,7 @@ EXTRA_MATERIALS = [
     ('50-3963-301', 'Q1203K', 'Q1203K', 'Formosa', 'Withdrawn', 'HOMO',
      'Withdrawn from IWPFT062 at Rev 16.0 (Kevin Sung, 9.9.2026; "IWPFT062 Rev 16 - vendor list revision.md")'),
     # NL-HM-10HP was seeded on 28 Sep and retired on 29 Sep (same material as CA410; master Changes 6-7)
-    ('NL-YUNGSOX-5050S', '', 'PP Yungsox 5050S', '', 'Not listed', 'SKIN', 'Not on IWPFT062'),
+    # NL-YUNGSOX-5050S was seeded on 28 Sep and retired on 29 Sep: IWPFT062 Rev 18.0 lists it as 50-1560-163 (Changes 24-44)
     ('INT-RCL-PP-MIX', '', 'PP Mix Reclaim', 'Plant', 'Not listed', 'RECLAIM', 'Plant reclaim (boxes / silo 8)'),
     ('INT-RCL-PP-WB', '', 'PP WB Reclaim', 'Plant', 'Not listed', 'RECLAIM', 'Plant reclaim, WB colour'),
     ('INT-RCL-WHITE', '', 'White Reclaim', 'Plant', 'Not listed', 'RECLAIM', 'Plant reclaim; same as PP WB Reclaim?'),
@@ -63,7 +63,7 @@ MAP = {
     'FOAM – Bergen XO-256': '50-7002-430',   # misprint of X0-256 (James Kuo, 29 Sep 2026; master Changes 13-14)
     'KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)': KS, 'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F': KS,
     'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)': KS, 'KS-MDI PE-500 (or Spartech B60009)': KS,
-    'PP Yungsox 5050S': 'NL-YUNGSOX-5050S',
+    'PP Yungsox 5050S': '50-1560-163',   # PC5050, added to IWPFT062 at Rev 18.0 (James Kuo, 29 Sep 2026)
     'PP Mix Reclaim': 'INT-RCL-PP-MIX', 'PP WB Reclaim': 'INT-RCL-PP-WB',
     'White Reclaim': 'INT-RCL-PP-WB',   # same as PP WB Reclaim (James Kuo, 29 Sep 2026); INT-RCL-WHITE retired
     'WB EA Premix': 'INT-PREMIX-WB-EA', 'WB GT Premix': 'INT-PREMIX-WB-EA',
@@ -74,8 +74,8 @@ MAP_ISSUES = [  # (severity, FRM text(s), check, detail)
      'SE42 FU0021WB4 V3 prints Q1203K (withdrawn at IWPFT062 Rev 16.0). James Kuo, 29 Sep 2026: replaced by F1203K (50-3963-019); master Changes 8-12. Tech to correct the SE42 page'),
     ('High', ['F1102K'], 'In-active material in a current formula',
      'F1102K (PH401, 50-3963-002) is In-active on IWPFT062 Rev 16.0, yet FUA151WB3 (SE43, RP26911-2, 28 Sep) and SE42 (25 Sep) use it'),
-    ('High', ['PP Yungsox 5050S'], 'Material not on IWPFT062',
-     'PP Yungsox 5050S (SE61 extruders B and D) is not on the qualified list. Add it to IWPFT062 or name the listed resin'),
+    ('Info', ['PP Yungsox 5050S'], 'Added to IWPFT062 at Rev 18.0',
+     'PP Yungsox 5050S (SE61 extruders B and D): IWPFT062 Rev 18.0 (James Kuo, 29 Sep 2026) lists it as 50-1560-163, PC5050, Formosa, Active'),
     ('Info', ['CaCO3 -Heritage HM-10HP'], 'Grade name differs from IWPFT062',
      'FRM prints "Heritage HM-10HP" (SE24, FU0011WB5 on SE25); IWPFT062 CA410 reads "HM10 MAX". James Kuo, 29 Sep 2026: same CaCO3 -> 50-7002-034'),
     ('Info', ['PP Virgin'], 'Resin named by James',

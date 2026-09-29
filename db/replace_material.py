@@ -30,6 +30,8 @@ def main(argv):
     ap.add_argument('old'); ap.add_argument('new')
     ap.add_argument('--by', required=True); ap.add_argument('--why', required=True)
     ap.add_argument('--spelling'); ap.add_argument('--source', default='')
+    ap.add_argument('--create', nargs=5, metavar=('CODE', 'NAME', 'SUPPLIER', 'IWPFT062_STATUS', 'ROLE'),
+                    help='add NEW to Materials first (e.g. a material just added to IWPFT062); logged as (new row)')
     ap.add_argument('--issue'); ap.add_argument('--issue-sev'); ap.add_argument('--issue-detail'); ap.add_argument('--issue-check')
     a = ap.parse_args(argv)
 
@@ -59,6 +61,19 @@ def main(argv):
         state['next'] += 1
 
     mats = {r[0] for r in wb['Materials'].iter_rows(min_row=2, values_only=True)}
+    if a.create:
+        if a.new in mats:
+            raise SystemExit(f'--create: {a.new} is already in Materials')
+        ws = wb['Materials']; h = cols(ws)
+        code, name, sup, st, role = a.create
+        row = [None] * len(h)
+        for col, v in (('Material ID', a.new), ('Material Code', code), ('Name', name), ('Supplier', sup),
+                       ('IWPFT062 Status', st), ('Role', role), ('FRM Text', a.spelling), ('Status', 'Draft')):
+            row[h[col] - 1] = v
+        ws.append(row)
+        logrow('Materials', a.new, '(new row)', None, f'{code} {name} ({sup}, {st})')
+        mats.add(a.new)
+        a.spelling = None   # it is the new row's FRM Text already
     if a.old not in mats or a.new not in mats:
         raise SystemExit(f'Both materials must be in Materials: {a.old} {"ok" if a.old in mats else "MISSING"}, '
                          f'{a.new} {"ok" if a.new in mats else "MISSING"}')
