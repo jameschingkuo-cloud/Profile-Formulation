@@ -889,6 +889,7 @@ function lookup(line, order, prod, date){
 const STATUS_CHIP = {
   'matched to schedule history': o => `<span class="chip var" title="Read as ${esc(o.raw || '')}">matched to history</span>`,
   'read by both readers': o => `<span class="chip var" title="Read as ${esc(o.raw || '')}">new: both readers agree</span>`,
+  'new product: both readers agree': o => `<span class="chip warn" title="Read as ${esc(o.raw || '')}">new product: both readers agree</span>`,
   'new order': o => `<span class="chip warn" title="Read as ${esc(o.raw || '')}">new order: check the number</span>`,
   'check': o => `<span class="chip crit" title="Read as ${esc(o.raw || '')}">check</span>`,
   'corrected by you': () => '<span class="chip ok">corrected</span>',
@@ -912,7 +913,8 @@ function render(reads, date, nPages){
     const pl = {line, meta, rows: []}; plan.lines.push(pl);
     const rows = byLine[line].map((o, i) => {
       n++;
-      const okOrder = !orderProblems(o.order, date).length, okProd = PRODUCTS.has(o.prod) && !codeProblems(o.prod).length;
+      const newProd = o.status === 'new product: both readers agree' || o.newProduct;
+      const okOrder = !orderProblems(o.order, date).length, okProd = (PRODUCTS.has(o.prod) || newProd) && !codeProblems(o.prod).length;
       const okLine = !o.lineCheck || LINES.includes(line);
       const flagged = !okOrder || !okProd || !okLine || o.status === 'new order' || o.status === 'check';
       if (flagged) toCheck++;
@@ -980,7 +982,7 @@ function render(reads, date, nPages){
     document.querySelectorAll('.genadd').forEach(inp => { (adds[inp.dataset.u] = adds[inp.dataset.u] || {})[inp.dataset.f] = inp.value.toUpperCase().replace(/\s+/g, ''); });
     Object.entries(adds).forEach(([k, v]) => {
       const {r, u} = unread[+k];
-      if (v.order && v.prod) { r.orders.push({order: v.order, prod: v.prod, status: !orderProblems(v.order, lastRun.date).length && PRODUCTS.has(v.prod) ? 'corrected by you' : 'check', raw: u.text, img: u.img}); r.unread = r.unread.filter(x => x !== u); }
+      if (v.order && v.prod) { r.orders.push({order: v.order, prod: v.prod, status: !orderProblems(v.order, lastRun.date).length && !codeProblems(v.prod).length ? 'corrected by you' : 'check', newProduct: !PRODUCTS.has(v.prod), raw: u.text, img: u.img}); r.unread = r.unread.filter(x => x !== u); }
     });
     document.querySelectorAll('.gennot:checked').forEach(cb => { const {r, u} = unread[+cb.dataset.u]; r.unread = r.unread.filter(x => x !== u); });
     document.querySelectorAll('.genfix').forEach(inp => {
@@ -991,7 +993,8 @@ function render(reads, date, nPages){
       if (!ref) return;
       const lineOk = !ref.lineCheck || LINES.includes(ref.line);
       if (ref.lineCheck && lineOk) ref.lineCheck = false;
-      ref.status = !orderProblems(ref.order, lastRun.date).length && PRODUCTS.has(ref.prod) && lineOk ? 'corrected by you' : 'check';
+      ref.newProduct = !PRODUCTS.has(ref.prod);        // a new product you confirm from the paper (it keeps the code rule)
+      ref.status = !orderProblems(ref.order, lastRun.date).length && !codeProblems(ref.prod).length && lineOk ? 'corrected by you' : 'check';
     });
     render(lastRun.reads, lastRun.date, lastRun.nPages);
   });

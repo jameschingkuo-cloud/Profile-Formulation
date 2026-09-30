@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.43 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.44 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1763,6 +1763,30 @@ the log instead"*. Pages read by eye (`history/frm_scans.py`): the 28 Oct 2022 i
 - **Formulation Report Record** (`record.py --history-frm`): all four issues as printed, obsolete formulas included
   (the record is the log of what Tech issued): 431 rows. HW7A188-1 (5 Aug 2021) left out: no product on any schedule.
 
+## 7.53 The page reader on the 30 Sep schedule: a tilted border and new products (30 Sep 2026)
+
+James tested the page on the 30 Sep schedule (doc05268320260930114819.pdf, 27 pages, 16 extrusion): *"it read 11 not 1"*
+(H69A330-11 shown as -1), *"it should be 1793 not 179'"* (RPP40BL1793), and the H69A330-x rows with RPP30WB1065,
+RPP30BL816, 817, 815, 818 read wrong: *"still a lot of fail read"*. Then: *"test it with the production schedule. Also
+remember to test it with chrome"*.
+- **Tilted border** (`clean_cell` / `cleanCell`): a border printed on a slant is no full ruled row, so it stayed in the cell
+  and hid the first '1' of the suffix. Every dark run of 30 px or more is now erased, taken within one row either side so
+  no stub is left where the line steps (a stub over the dash first read RP26918-1 as -4 on 28 Sep).
+- **New products** (not yet in the Product Master): the text reader takes any code that keeps the code rule
+  (`take_prod_rule`), the glyph reader reads position by position under the rule without snapping to the master
+  (`decode_product_free`). Taken only when the two read the same code **and** the order is read the same by both: status
+  *new product: both readers agree* (the page shows it with its own chip; the engineer completes the formula). Otherwise
+  boxed, and the box shows what the paper shows - never the nearest code on file. A correction that keeps the code rule is
+  accepted for a product not yet in the master.
+- **Look-alike agreement**: when the text reader's code differs from a code on file only by look-alikes (S/5, B/8, O/0 ...)
+  and the glyph reader reads that code both with and without the master, it is taken as *read by both readers*
+  (RPA50WB56 read RPAS0WB56).
+- **Result**: 30 Sep 87/87 rows taken, every one checked by eye against the paper; 25, 28 and 29 Sep still 100% taken,
+  0 wrong. Page reader = reference reader on 309 rows (`tests/js/reader_parity.js`, four scans). **Chrome**: the built page
+  read the 30 Sep PDF in 88 s, 87/87, the same rows as the reference. The Chrome test also caught a page error in v28
+  (a variable used before it was set) - fixed in version 29.
+- Tests: `tests/test_product_code.py` (new product and look-alike rules); `OCR_TESTS=1` real-scan tests.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1891,6 +1915,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.44 | 2026-09-30 | Claude Code (local, with James Kuo) | **Page reader on the 30 Sep schedule (§7.53)**: tilted border erased (H69A330-11); new products taken only when both readers agree without the master; S/5-type look-alike agreement; 87/87 on 30 Sep, tested in Chrome; artifact v29. |
 | 1.43 | 2026-09-30 | Claude Code (local, with James Kuo) | **Tech's past formulation pages, 2021 on (§7.52)**: 28 Oct 2022 (12 lines), 3 Sep 2025, 15 Sep 2021, 5 Aug 2021; obsolete formulas to the Change Log only; 11 formulas added as Draft; Formulation Report Record +431. |
 | 1.42 | 2026-09-30 | Claude Code (local, with James Kuo) | **Every production schedule on the PC (§7.51)**: misnamed and rotated schedules read; every line of every day adds up to its printed total; 3 image-scan days turned upright and read; 2 Nov 2022 (EXT + CNV) and 24 Apr 2014 (SE25) found in copier scans; EXT record 63,231 rows, CNV record +28; PM 2,659. |
 | 1.41 | 2026-09-30 | Claude Code (local, with James Kuo) | **The system's own past schedules (§7.50)**: 1,162 days of Production Instruction PDFs read as text (62,662 rows); order-number rule fixed (month A-C, SH orders, dates); Product Master 2,652 (+568, 1,464 rows filled, Last Scheduled); Extrusion Production Record +1,152 days; page order history. |

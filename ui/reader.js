@@ -123,8 +123,17 @@ function nearestOnFile(o, p, pairs){      // a hint for a boxed row: the closest
   }
   return bc <= 11 ? best : null;
 }
-const READRANK = {'read': 0, 'read by both readers': 1, 'matched to schedule history': 1, 'new order': 2, 'check': 3};
-const isMatched = r => r.status === 'read' || r.status === 'matched to schedule history' || r.status === 'read by both readers';
+const READRANK = {'read': 0, 'read by both readers': 1, 'matched to schedule history': 1, 'new product: both readers agree': 1, 'new order': 2, 'check': 3};
+const isMatched = r => ['read', 'matched to schedule history', 'read by both readers', 'new product: both readers agree'].includes(r.status);
+function takeProdRule(t2){               // a code keeping the rule, in the Product Master or not (new products, 30 Sep 2026)
+  const tok = (t2 || '').replace(/[^A-Z0-9/]/g, '');
+  for (const c of [tok, tok.slice(1), tok.slice(0, -1), tok.slice(1, -1)]) {
+    if (c && CODE_RULE.test(c) && !codeProblems(c).length) return c;
+    const r = repairCode(c);
+    if (r && !codeProblems(r).length) return r;
+  }
+  return null;
+}
 // one reading from Claude (viewers that can send images) through the same hard rules
 function judge(oText, pText, pairs, raw){
   const oRaw = (oText || '').replace(/[^A-Z0-9-]/g, '').replace(/^-+|-+$/g, ''), pRaw = (pText || '').replace(/[^A-Z0-9]/g, '');
@@ -310,6 +319,12 @@ function cleanCell(P, x0, x1, y0, y1, scale, pad = 10, thr = 150, margin = 12){
   const rowDark = y => { let c = 0; for (let x = 0; x < w; x++) if (a[y * w + x] < thr) c++; return c; };
   const ruled = []; for (let y = 0; y < h; y++) if (w && rowDark(y) / w > 0.5) ruled.push(y);
   for (const y of ruled) a.fill(255, y * w, y * w + w);
+  {                                       // a border printed on a tilt: erase every dark run of 30 px or more (H69A330-11),
+    const m = new Uint8Array(w * h); for (let i = 0; i < w * h; i++) m[i] = a[i] < thr ? 1 : 0;
+    const mv = m.slice();                 // runs taken within one row either side, so no stub is left where it steps
+    for (let i = 0; i < w * h; i++) if ((i >= w && m[i - w]) || (i < w * h - w && m[i + w])) mv[i] = 1;
+    const lr = openH(mv, w, h, 30); for (let i = 0; i < w * h; i++) if (lr[i] && m[i]) a[i] = 255;
+  }
   if (ruled.length) {
     const cuts = [0, ...ruled, h], parts = [];
     for (let i = 0; i < cuts.length - 1; i++) if (cuts[i + 1] - cuts[i] > 4) parts.push([cuts[i], cuts[i + 1]]);
@@ -536,6 +551,18 @@ function decodeOrder(cells){              // base of 7 characters, a dash (a sho
   for (const c of suf) sfx += pick(gdists(c.f), DIG)[0][1];
   return `${best[0]}-${sfx}`;
 }
+function decodeProductFree(cells){       // position by position under the code rule, not snapped to the Product Master
+  if (cells.length < 8) return null;
+  const ds = cells.map(c => gdists(c.f)), g = (d, ch) => d[ch] ?? 9.0;
+  const best = (opts, cost) => { let b = null, bc = Infinity; for (const o of [...opts].sort()) { const c = cost(o); if (c < bc) { bc = c; b = o; } } return b; };
+  const fam = best(FAMILIES, f => g(ds[0], f[0]) + g(ds[1], f[1]) + g(ds[2], f[2]));
+  const t1 = best('123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), ch => g(ds[3], ch));
+  const t2 = best(DIG.split(''), ch => g(ds[4], ch));
+  const col = best(COLOURS, c => g(ds[5], c[0]) + g(ds[6], c[1]));
+  const num = ds.slice(7).map(d => best(DIG.split(''), ch => g(d, ch))).join('');
+  const code = fam + t1 + t2 + col + num;
+  return CODE_RULE.test(code) && !codeProblems(code).length ? code : null;
+}
 let BYLEN = null;
 function decodeProduct(cells){            // the nearest Product Master code with the same number of characters
   if (!BYLEN) { BYLEN = {}; for (const c of PRODUCTS) (BYLEN[c.length] = BYLEN[c.length] || []).push(c); }
@@ -562,8 +589,10 @@ async function readRow(P, pitch, y0, y1, bars){
     if (tp === null) tp = takeProd(t2);
     if (to && tp) break;
   }
-  const go = decodeOrder(glyphCells(P, ox0, ox1, y0, y1, pitch)), gp = decodeProduct(glyphCells(P, px0, px1, y0, y1, pitch));
-  return {to, tp, go, gp, raws};
+  const pcells = glyphCells(P, px0, px1, y0, y1, pitch);
+  const go = decodeOrder(glyphCells(P, ox0, ox1, y0, y1, pitch)), gp = decodeProduct(pcells);
+  const tpr = raws.map(x => takeProdRule(x[1])).find(Boolean) || null;
+  return {to, tp, go, gp, raws, tpr, gpf: decodeProductFree(pcells)};
 }
 const LOOK_MONTH = {B: '8', 8: 'B', A: '4', 4: 'A'};
 function monthFix(o, on){                 // a reading the schedule date rules out is no reading, unless its month is a look-alike
@@ -572,12 +601,18 @@ function monthFix(o, on){                 // a reading the schedule date rules o
   const alt = base.slice(0, k) + (LOOK_MONTH[base[k]] || base[k]) + base.slice(k + 1) + '-' + suf;
   return alt !== o && !orderProblems(alt, on).length ? alt : null;
 }
-function decide(to, tp, go, gp, pairSet, on){ // taken: an order + product on file, or both readers agree; else boxed
+const LOOK = {"0": "OD", "O": "0D", "D": "0O", "1": "IT", "I": "1T", "T": "1I", "5": "S", "S": "5", "8": "B", "B": "8", "4": "AG", "A": "4", "2": "Z", "Z": "2", "6": "G", "G": "64", "M": "N", "N": "M", "/": "71", "7": "/"};   // = ui/ocr_eval.py LOOK
+const lookalike = (x, y) => x.length === y.length && [...x].every((a, i) => a === y[i] || (LOOK[a] || '').includes(y[i]));
+function decide(to, tp, go, gp, pairSet, on, tpr, gpf){ // taken: an order + product on file, or both readers agree; else boxed
   let bothFixed = false;                  // two look-alike fixes agreeing is no agreement
   if (on) { const t2 = monthFix(to, on), g2 = monthFix(go, on); bothFixed = !!(to && go && t2 !== to && g2 !== go); to = t2; go = g2; }
   for (const [o, p] of [[to, tp], [go, gp], [to, gp], [go, tp]]) if (o && p && pairSet.has(o + '|' + p)) return {order: o, prod: p, status: 'read'};
   if (to && to === go && tp && tp === gp && !bothFixed) return {order: to, prod: tp, status: 'read by both readers'};
-  return {order: to === go ? to : (to || go), prod: tp === gp ? tp : (tp || gp), status: 'check'};
+  // a product not in the Product Master: both readers (glyphs not snapped to the master) read the same rule-keeping code
+  if (to && to === go && !bothFixed && tpr && tpr === gpf && !PRODUCTS.has(tpr)) return {order: to, prod: tpr, status: 'new product: both readers agree'};
+  // the text reading differs from a code on file only by look-alikes, and the glyph reader reads it with and without the master
+  if (to && to === go && !bothFixed && !tp && tpr && gp && gp === gpf && lookalike(tpr, gp)) return {order: to, prod: gp, status: 'read by both readers'};
+  return {order: to === go ? to : (to || go), prod: tp && tp === gp ? tp : (tp || tpr || gpf || ''), status: 'check'};   // never a code on file the paper does not show
 }
 
 // ---- the line code: a known line, read two independent ways (header word, footer, glyph bank), else the page is boxed
@@ -666,8 +701,8 @@ async function ocrPage(p, pairs, pairSet, on){
     if (ctl.signal.aborted) throw {code: 'cancelled'};
     const r = await readRow(P, pitch, y0, y1, bars), txt = r.raws.map(x => x.join('')).join('');
     if (/LINE|TOTAL|REPORT/.test(txt)) { const f = footerRead(txt); if (f) lineReads.push(f); continue; }
-    const d = decide(r.to, r.tp, r.go, r.gp, pairSet, on);
-    const o = {...d, raw: `${r.to || '?'} | ${r.tp || '?'} (text) · ${r.go || '?'} | ${r.gp || '?'} (glyphs)`};
+    const d = decide(r.to, r.tp, r.go, r.gp, pairSet, on, r.tpr, r.gpf);
+    const o = {...d, raw: `${r.to || '?'} | ${r.tp || r.tpr || '?'} (text) · ${r.go || '?'} | ${r.gpf || r.gp || '?'} (glyphs)`};
     if (d.status === 'check') {
       o.hint = nearestOnFile(d.order, d.prod, pairs);
       o.img = cropPx(src, bars[0] - 20, y0, bars[2] + src.width * 0.05, y1, 1, 12).toDataURL('image/png');

@@ -79,6 +79,13 @@ console.log(JSON.stringify({
   futureNotTaken: decide('H6BA001-1', 'DPP30WB1023', 'H6BA001-1', 'DPP30WB1023', new Set(), '2026-09-29').status,
   lookOnFile: decide('H6BA020-1', 'RBPA0KS70', null, null, new Set(['H68A020-1|RBPA0KS70']), '2026-09-28'),
   lookAgree: decide('H6BA020-1', 'RBPA0KS70', 'H68A020-1', 'RBPA0KS70', new Set(), '2026-09-28').status,
+  // 30 Sep 2026: a product not in the Product Master (RPP40BL1793, RPP30BL815-818) and an S/5 look-alike (RPA50WB56)
+  newProd: decide('H69A330-11', null, 'H69A330-11', 'RPP40BL1501', new Set(), '2026-09-30', 'RPP40BL9793', 'RPP40BL9793'),
+  newProdGlyphOther: decide('H69A330-11', null, 'H69A330-11', 'RPP40BL1501', new Set(), '2026-09-30', 'RPP40BL9793', 'RPP40BL9798'),
+  newProdOrderOther: decide('H69A330-11', null, 'H69A330-1', 'RPP40BL1501', new Set(), '2026-09-30', 'RPP40BL9793', 'RPP40BL9793').status,
+  lookProd: decide('RP25523-2', null, 'RP25523-2', 'RPA50WB56', new Set(), '2026-09-30', 'RPAS0WB56', 'RPA50WB56'),
+  lookProdGlyphOther: decide('RP25523-2', null, 'RP25523-2', 'RPA50WB56', new Set(), '2026-09-30', 'RPAS0WB56', 'RPA50WB58').status,
+  lookalike: [lookalike('RPAS0WB56', 'RPA50WB56'), lookalike('RPA60WB56', 'RPA50WB56')],
   lineOf: [lineOf([['header', 'SE13'], ['glyph', null]]), lineOf([['header', 'SE13'], ['glyph', 'SE13']]), lineOf([['header', 'SE13'], ['glyph', 'SE12'], ['footer', 'SE13']])],
   settle: settleLines([
     {line: null, lineReads: [['header', 'SE13'], ['glyph', null]]}, {line: 'SE13', lineReads: [['header', 'SE13'], ['glyph', 'SE13'], ['footer', 'SE13']]},
@@ -120,3 +127,9 @@ def test_page_reader_rules(tmp_path):
     assert out['lookOnFile'] == {'order': 'H68A020-1', 'prod': 'RBPA0KS70', 'status': 'read'}   # B/8 look-alike, on file
     assert out['lookAgree'] == 'read by both readers' # the glyph reader read the 8 itself
     assert out['settle'] == ['SE13', 'SE13', None, 'SE22']      # p3 has a footer: it does not continue onto SE22
+    # a new product is taken only when both readers read the same rule-keeping code, the glyph reader without the master
+    assert out['newProd'] == {'order': 'H69A330-11', 'prod': 'RPP40BL9793', 'status': 'new product: both readers agree'}
+    assert out['newProdGlyphOther']['status'] == 'check' and out['newProdGlyphOther']['prod'] == 'RPP40BL9793'  # never the master's guess
+    assert out['newProdOrderOther'] == 'check'
+    assert out['lookProd'] == {'order': 'RP25523-2', 'prod': 'RPA50WB56', 'status': 'read by both readers'}
+    assert out['lookProdGlyphOther'] == 'check' and out['lookalike'] == [True, False]

@@ -4,6 +4,7 @@
 Tested against transcribed packets. Rule: a value is taken only when it is certain (exact, or exactly one Product
 Master code among the look-alike variants); anything else is returned flagged, never guessed."""
 import datetime, itertools, json, os, re, sys
+import cv2
 from pathlib import Path
 import pytesseract
 from PIL import Image
@@ -1377,6 +1378,14 @@ def clean_cell(im, x0, x1, y0, y1, scale, pad=10, thr=150, margin=12):
     dark = a < thr
     ruled = np.where(dark.mean(axis=1) > 0.5)[0]
     a[ruled, :] = 255
+    # a border printed on a tilt is no full row, but its runs are long: erase every dark run of 30 px or more (a
+    # character is under 16 px wide). 30 Sep 2026 H69A330-11: the tilted border touched the first '1' and hid it. The
+    # line steps from row to row, so runs are taken within one row either side: no stub is left where it steps (a stub
+    # over the dash of RP26918-1 read as '-4', 28 Sep).
+    m = (a < thr).astype(np.uint8)
+    mv = m.copy(); mv[1:] |= m[:-1]; mv[:-1] |= m[1:]
+    long_runs = cv2.morphologyEx(mv, cv2.MORPH_OPEN, np.ones((1, 30), np.uint8)).astype(bool) & m.astype(bool)
+    a[long_runs] = 255
     if len(ruled):                                            # parts between ruled lines: keep the lowest one with ink
         cuts = [0] + [int(r) for r in ruled] + [a.shape[0]]
         parts = [(cuts[i], cuts[i + 1]) for i in range(len(cuts) - 1) if cuts[i + 1] - cuts[i] > 4]
@@ -1504,7 +1513,7 @@ def evaluate_both(date, scan, show=False):
             if bars: rows.append((y0, y1, bars))
         pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
         for y0, y1, bars in rows:
-            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            to, tp, go, gp, raws, tpr, gpf = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
             if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
             stats['rows'] += 1
             if to and to == go:
@@ -1537,7 +1546,12 @@ def month_fix(o, on):
     return alt if alt != o and not ONUM.problems(alt, on) else None
 
 
-def decide(to, tp, go, gp, pairs, on=None):
+def lookalike(x, y):
+    """y is x with look-alike characters swapped (LOOK), same length."""
+    return len(x) == len(y) and all(a == b or b in LOOK.get(a, '') for a, b in zip(x, y))
+
+
+def decide(to, tp, go, gp, pairs, on=None, tpr=None, gpf=None):
     """-> (order, product, status). Taken: matches an order + product on file, or both readers agree (0 wrong on 28/29 Sep
     in 227 agreements). Otherwise boxed with the best reading. `on` = the schedule date: an order reading dated after it
     (or an H/SH order two years or more before it) is no reading at all (order_number.py)."""
@@ -1552,7 +1566,16 @@ def decide(to, tp, go, gp, pairs, on=None):
     m = match_pair(to or '', tp or '', pairs) if to and tp else None
     if m and m[0] in (to, go) and m[1] in (tp, gp): return m[0], m[1], 'matched to schedule history'
     if to and to == go and tp and tp == gp and not both_fixed: return to, tp, 'read by both readers'
-    o = to if to == go else (to or go); p = tp if tp == gp else (tp or gp)
+    # a product not in the Product Master: taken only when the text reader and the glyph reader (not snapped to the master)
+    # read the same code, it keeps the code rule, and the order is read the same by both (30 Sep 2026, H69A330-x)
+    if to and to == go and not both_fixed and tpr and tpr == gpf and tpr not in PRODS:
+        return to, tpr, 'new product: both readers agree'
+    # the text reader's code differs from a code on file only by look-alikes, and the glyph reader reads that code with
+    # and without the master (30 Sep 2026: RPA50WB56 read RPAS0WB56 by the text reader)
+    if to and to == go and not both_fixed and not tp and tpr and gp and gp == gpf and lookalike(tpr, gp):
+        return to, gp, 'read by both readers'
+    o = to if to == go else (to or go)
+    p = tp if tp and tp == gp else (tp or tpr or gpf or '')      # never a code on file the paper does not show
     return o, p, 'check'
 
 
@@ -1583,7 +1606,7 @@ def audit(date, scan, history='before'):
             if bars: rows.append((y0, y1, bars))
         pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
         for y0, y1, bars in rows:
-            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            to, tp, go, gp, raws, tpr, gpf = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
             if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
             o, p, st = decide(to, tp, go, gp, pairs)
             res.append((png.name, line, o, p, st, to, tp, go, gp))
@@ -1748,7 +1771,7 @@ def audit2(date, scan, history='before', show=True):
             if bars: rows.append((y0, y1, bars))
         pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
         for y0, y1, bars in rows:
-            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            to, tp, go, gp, raws, tpr, gpf = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
             if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
             o, p, st = decide(to, tp, go, gp, pairs)
             if line is None: st = 'check'                                     # line code not certain: the page is boxed
@@ -1882,8 +1905,41 @@ def read_row_both(im, a, line_pitch, y0, y1, bars, codes_by_len, w):
         if tp is None: tp = take_prod(t2)
         if to and tp: break
     go, _, _ = decode_order(glyph_cells(a, ox0, ox1, y0, y1, line_pitch))
-    gp, _, _ = decode_product(glyph_cells(a, px0, px1, y0, y1, line_pitch), codes_by_len)
-    return to, tp, go, gp, raws
+    pcells = glyph_cells(a, px0, px1, y0, y1, line_pitch)
+    gp, _, _ = decode_product(pcells, codes_by_len)
+    tpr = next((x for x in (take_prod_rule(t2) for _, t2 in raws) if x), None)
+    return to, tp, go, gp, raws, tpr, decode_product_free(pcells)
+
+
+def take_prod_rule(t2):
+    """A product code from a cell that keeps the code rule (known family and colour, digits after), in the Product Master
+    or not (30 Sep 2026: new products RPP40BL1793, RPP30BL815..818). Else None."""
+    tok = re.sub(r'[^A-Z0-9/]', '', t2 or '')
+    for cand in [tok, tok[1:], tok[:-1], tok[1:-1]]:
+        if cand and PCODE.CODE_RX.match(cand) and not PCODE.problems(cand):
+            return cand
+        fixed, _ = PCODE.repair(cand)
+        if fixed and not PCODE.problems(fixed):
+            return fixed
+    return None
+
+
+def decode_product_free(cells):
+    """The glyph reader's product code, position by position under the code rule (a known family, thickness digit 1-9 or
+    letter then a digit, a known colour, digits) - not snapped to the Product Master, so a new product reads as printed."""
+    if len(cells) < 8:
+        return None
+    B = bank()
+    ds = [B.dists(c[1]) for c in cells]
+    g = lambda d, ch: d.get(ch, 9.0)
+    best = lambda opts, cost: min(sorted(opts), key=cost)
+    fam = best(PCODE.FAMILIES, lambda f: sum(g(ds[k], f[k]) for k in range(3)))
+    t1 = best('123456789' + LET, lambda ch: g(ds[3], ch))
+    t2 = best(DIG, lambda ch: g(ds[4], ch))
+    col = best(PCODE.COLOURS, lambda c: g(ds[5], c[0]) + g(ds[6], c[1]))
+    num = ''.join(best(DIG, lambda ch, d=d: g(d, ch)) for d in ds[7:])
+    code = fam + t1 + t2 + col + num
+    return code if PCODE.CODE_RX.match(code) and not PCODE.problems(code) else None
 
 
 # ---- v22: a line's pages run on until its 'LINE NO. SExx Total' footer, so a page without a footer continues on the next --
@@ -1932,9 +1988,9 @@ def audit3(date, scan, history='before', show=True):
         pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
         got = []
         for y0, y1, bars in rows:
-            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            to, tp, go, gp, raws, tpr, gpf = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
             if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
-            got.append(decide(to, tp, go, gp, pairs, datetime.date.fromisoformat(date)))
+            got.append(decide(to, tp, go, gp, pairs, datetime.date.fromisoformat(date), tpr, gpf))
         pages.append({'png': png.name, 'line': line, 'reads': lreads, 'rows': got})
     settle_lines(pages)
     res = [(p['png'], p['line'], o, pr, st if p['line'] else 'check') for p in pages for o, pr, st in p['rows']]
@@ -1965,9 +2021,9 @@ def dump_parity(out_dir, scans=SCANS):
     codes_by_len = {}
     for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
     n = 0
-    for date, scan in scans:
-        pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
-        for sp in sorted({e['scan_page'] for e in pk['ext']}):
+    for date, scan, *pages in scans:             # pages: the extrusion pages of a scan with no packet yet
+        pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8')) if not pages else None
+        for sp in pages[0] if pages else sorted({e['scan_page'] for e in pk['ext']}):
             pg = f'p{sp:02d}'
             im = Image.open(Path('work/pages') / scan / f'{pg}.png').convert('L')
             if im.height > im.width: im = im.rotate(-90, expand=True)
@@ -1984,10 +2040,11 @@ def dump_parity(out_dir, scans=SCANS):
                 a2, ny0, ny1 = isolate_row(a, b, y0, y1)
                 im2 = Image.fromarray(a2) if a2 is not a else im
                 go, _, _ = decode_order(glyph_cells(a2, ox0, ox1, ny0, ny1, pitch))
-                gp, _, _ = decode_product(glyph_cells(a2, px0, px1, ny0, ny1, pitch), codes_by_len)
+                pc = glyph_cells(a2, px0, px1, ny0, ny1, pitch)
+                gp, _, _ = decode_product(pc, codes_by_len)
                 cc = np.asarray(clean_cell(im2, ox0, ox1, ny0, ny1, 3))
                 res.append({'y0': y0, 'y1': y1, 'bars': b, 'iso': [int(ny0), int(ny1)], 'marks': suffix_marks(im2, ox0, ox1, ny0, ny1),
-                            'go': go, 'gp': gp, 'clean_shape': list(cc.shape), 'clean_dark': int((cc < 128).sum())})
+                            'go': go, 'gp': gp, 'gpf': decode_product_free(pc), 'clean_shape': list(cc.shape), 'clean_dark': int((cc < 128).sum())})
                 n += 1
             a.tofile(out_dir / f'{scan}_{pg}.bin')
             json.dump({'W': w, 'H': h, 'bands': rows, 'pitch': pitch, 'rows': res}, open(out_dir / f'{scan}_{pg}.json', 'w'))

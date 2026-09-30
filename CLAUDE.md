@@ -78,13 +78,17 @@ Change these only with James's explicit say-so, and log the change in the handof
   a zero is repaired and merged, as DPPAOKS27 -> DPPA0KS27). *"these need to be hard rule. If anything odd is spotted,
   recheck the OCR again"*: a reader re-reads an odd cell with other settings; what stays odd is never taken, it is boxed
   for a person, and the interface's Word download stays locked until every boxed row is confirmed (a correction must keep
-  the rules and the product must be in the Product Master). Tests `test_product_code.py`; the real-scan reader test
+  the rules; a product not yet in the Product Master is accepted as a new product). Tests `test_product_code.py`; the real-scan reader test
   `OCR_TESTS=1 python -m pytest tests/test_scan_reader_page.py` (run it whenever the reader changes).
 - **Scan reader: two readers must agree, border lines isolate the row, handwriting is ignored (James, 30 Sep 2026)**.
   `ui/ocr_eval.py` (`audit3`) is the reference; the page runs the same reader (`ui/reader.js`, inlined by `ui/build.py`;
   glyph bank shipped as `glyph-bank.js`). A row band holding a solid border line with notes above it is cut along the
   line and only the printed side (the one with the '|' bars) is read. Each cell is read by Tesseract (cleaned cell) and
   by the glyph bank; a row is taken only when an order + product on file matches or both readers agree on both values.
+  A product not in the Product Master (a new product) is taken only when both readers read the same rule-keeping code with
+  the glyph reader NOT snapped to the master, and both read the same order; a boxed row never shows a master code the
+  paper does not show. A border printed on a tilt is erased as long runs (30 Sep 2026, H69A330-11). After a reader change,
+  test the built page in Chrome on the day's real PDF as well (James, 30 Sep 2026: "remember to test it with chrome").
   The line code needs two independent readings (header, footer, glyph) or the page continues its neighbour's line (no
   footer); else the page's rows are boxed. Change the reference first, then the page, and keep the parity test (page =
   reference on every row) at 0 differences. Publish `glyph-bank.js` and `eng-data.js` with the page.

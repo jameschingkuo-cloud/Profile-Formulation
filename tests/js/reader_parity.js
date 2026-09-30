@@ -26,9 +26,10 @@ for (const f of fs.readdirSync(DUMP).filter(f => f.endsWith('.json'))) {
     const [[ox0, ox1], [px0, px1]] = cellsX(r.bars, P.W);
     const iso = isolateRow(P, r.bars, r.y0, r.y1);
     const marks = suffixMarks(iso.P, ox0, ox1, iso.y0, iso.y1);
-    const go = decodeOrder(glyphCells(iso.P, ox0, ox1, iso.y0, iso.y1, pitch)), gp = decodeProduct(glyphCells(iso.P, px0, px1, iso.y0, iso.y1, pitch));
+    const pc = glyphCells(iso.P, px0, px1, iso.y0, iso.y1, pitch);
+    const go = decodeOrder(glyphCells(iso.P, ox0, ox1, iso.y0, iso.y1, pitch)), gp = decodeProduct(pc), gpf = decodeProductFree(pc);
     const cc = cleanCell(iso.P, ox0, ox1, iso.y0, iso.y1, 3); let dark = 0; for (const v of cc.grey) if (v < 128) dark++;
-    const got = {iso: [iso.y0, iso.y1], marks, go, gp, clean_shape: [cc.height, cc.width]}, want = {iso: r.iso, marks: r.marks, go: r.go, gp: r.gp, clean_shape: r.clean_shape};
+    const got = {iso: [iso.y0, iso.y1], marks, go, gp, gpf, clean_shape: [cc.height, cc.width]}, want = {iso: r.iso, marks: r.marks, go: r.go, gp: r.gp, gpf: r.gpf, clean_shape: r.clean_shape};
     const same = JSON.stringify(got) === JSON.stringify(want);
     if (!same) bad++;
     console.log(same ? 'same' : 'DIFF', f, i, JSON.stringify(got), same ? '' : 'python ' + JSON.stringify(want), `dark ${dark} vs ${r.clean_dark}`);
