@@ -1,8 +1,9 @@
 """The three history records: Formulation Report Record, Extrusion Production Record, Converting Production Record.
 
     python daily/record.py 2026-09-23 2026-09-24 ...      (append these packet dates, in the order given)
-    python daily/record.py --history work/history/ext_history.csv   (Extrusion Production Record: the system's own
-                                                                     past schedules, history/prod_instr.py)
+    python daily/record.py --history work/history/ext_history.csv [more.csv ...] [--replace-history]
+        (Extrusion Production Record: the system's own past schedules, history/prod_instr.py; --replace-history first
+         takes out the rows an earlier --history run added - never a row from a daily scan)
 
 Append-only (db/schema.py kind 'record'; James Kuo, 28 Sep 2026). Each record starts from the published copy in
 PUBLISH_DIR (read and recorded, per the hard rule) or, if none is published yet, from nothing. For every date:
@@ -174,15 +175,16 @@ def cnv_rows(pk):
 BUILD = {'FRM': frm_rows, 'EXT': ext_rows, 'CNV': cnv_rows}
 
 
-def history_rows(csv_path):
+def history_rows(csv_paths):
     """Extrusion Production Record rows from the system's own past schedules (history/prod_instr.py; James Kuo,
     30 Sep 2026: "i got the past production schedule ... refine your data base"). A line printed again later the same
     day (061620-2.pdf ...) is a revision: per day and line, the latest print is the day's schedule."""
     import csv
-    config.record_read(csv_path, 'system schedule history (Production Instruction PDFs)')
     by = {}
-    for r in csv.DictReader(open(csv_path, encoding='utf-8')):
-        by.setdefault((r['date'], r['line']), {}).setdefault((r['run_time'], r['file']), []).append(r)
+    for csv_path in csv_paths:
+        config.record_read(csv_path, 'system schedule history (Production Instruction PDFs)')
+        for r in csv.DictReader(open(csv_path, encoding='utf-8')):
+            by.setdefault((r['date'], r['line']), {}).setdefault((r['run_time'], r['file']), []).append(r)
     out = {}
     for (d, line), prints in sorted(by.items()):
         for r in prints[max(prints)]:
@@ -192,21 +194,32 @@ def history_rows(csv_path):
                 'Schedule Date': datetime.date.fromisoformat(d), 'Line Code': line, 'Order': r['order'],
                 'Product Code': r['prod_code'], 'Total Sheets': num(r['total_sheets']), 'Weight (LBs)': num(r['weight_lbs']),
                 'Plts Done (EXT)': num(m.group(1)) if m else None, 'Plts Ordered': as_int_or_text(r['plts']),
-                'Special Instructions': si or None, 'Handwritten': None,
-                'Source Scan': f"Production Instruction/{r['file']} p{r['page']} (system PDF, run {r['run_date']} {r['run_time']})"})
+                'Special Instructions': si or None, 'Handwritten': r.get('handwritten') or None,
+                'Source Scan': f"Production Instruction/{r['file']} p{r['page']} " + (
+                    f"({r['source']})" if r.get('source') else f"(system PDF, run {r['run_date']} {r['run_time']})")})
     return out
 
 
-def main_history(csv_path):
+HIST_SRC = 'Production Instruction/'
+
+
+def main_history(csv_paths, replace=False):
     """Append the system's past schedules to the Extrusion Production Record: days not recorded yet are added; a day
-    already recorded (from the daily scan) stays as issued, and its line/order/product rows are compared and reported."""
+    already recorded (from the daily scan) stays as issued, and its line/order/product rows are compared and reported.
+    replace: the rows an earlier history run added (Source Scan 'Production Instruction/...') are taken out first and
+    built again from the CSVs (30 Sep 2026: the first run counted only the first cut row's sheets and lost instructions
+    that run on to the next page). Rows from the daily scans are never touched."""
     name, sheet = RECORDS['EXT']
     header = cols(name, sheet)
     existing, pub = load_existing(name, sheet)
+    n_before, replaced = len(existing), 0
+    if replace:
+        keep = [r for r in existing if not str(r.get('Source Scan') or '').startswith(HIST_SRC)]
+        replaced, existing = len(existing) - len(keep), keep
     have = {}
     for r in existing:
         have.setdefault(norm(r.get(header[0])), []).append(r)
-    hist = history_rows(csv_path)
+    hist = history_rows(csv_paths)
     added, log, rows = 0, [], []
     for d, new in sorted(hist.items()):
         if d in have:
@@ -220,16 +233,21 @@ def main_history(csv_path):
     rows = sorted(rows + existing, key=lambda r: norm(r.get(header[0])))
     days = sorted(set(hist) - set(have))
     log.insert(0, f'{len(days)} days appended from the system history ({days[0]} to {days[-1]}), {added} rows' if days else 'no new days')
+    if replace:
+        log.insert(1, f'{replaced} rows added by the earlier history run taken out and built again (Total Sheets = every cut row, '
+                      'as printed in the line totals; instructions that run on to the next page kept)')
     notes = [['Workbook', f'{name}: {schema.BY_NAME[name].purpose}.'],
              ['Rule', 'Append-only. Rows are added, never edited (db/schema.py). Values as printed.'],
-             ['Based on', f'{pub} ({len(existing)} rows)' if pub else 'nothing published yet: started empty'],
+             ['Based on', f'{pub} ({n_before} rows)' if pub else 'nothing published yet: started empty'],
              ['Rows', len(rows)],
              ['Days in record', f"{len({norm(r[header[0]]) for r in rows})} ({norm(rows[0][header[0]])} to {norm(rows[-1][header[0]])})"],
              ['System history', "Days before the pipeline's first daily scan come from the system's own schedules "
                                 '(Technical Engineering Team/Production Instruction PDFs, read as text: '
                                 'history/prod_instr.py). Source Scan names the PDF, page and print time. A line printed '
                                 'again later the same day is the revision: the latest print of each line is recorded. '
-                                'Not in the folder: 5 May 2020, 13-14 Nov 2023 (image scans), 17 Nov 2023 (rotated print).'],
+                                'Total Sheets = all the order\'s cut rows; every line agrees with the line total printed '
+                                'on the report. Days kept only as image scans (8 May 2020, 13-14 Nov 2023) were read by '
+                                'the scan reader and checked; Source Scan says so.'],
              ['Plts Ordered', '# Plt as printed. The field caps at 999; a hand-corrected count is in Handwritten.']]
     notes += [['This run', x] for x in log]
     notes += [['Run', datetime.date.today().isoformat()]]
@@ -364,8 +382,43 @@ def main(dates):
         print(out, '-', '; '.join(log))
 
 
+def main_history_cnv(json_path):
+    """Append converting schedules read from scans (history/cnv_scans.py: days in the daily packet's CNV layout) to the
+    Converting Production Record: days not recorded yet are added with cnv_rows(); a recorded day stays as issued."""
+    name, sheet = RECORDS['CNV']
+    header = cols(name, sheet)
+    existing, pub = load_existing(name, sheet)
+    have = {norm(r.get(header[0])) for r in existing}
+    config.record_read(json_path, 'converting schedules read from scans')
+    days = json.loads(Path(json_path).read_text(encoding='utf-8'))
+    rows, log = list(existing), []
+    for pk in days:
+        d = pk['packet_date']
+        if d in have:
+            log.append(f'{d}: already recorded - kept as issued')
+            continue
+        new = cnv_rows(pk)
+        for r in new:
+            r['Source Scan'] += ' (scan read by eye; checked against the same day\'s extrusion schedule)'
+        rows += new
+        log.append(f'{d}: {len(new)} rows appended from {pk["source_scan"]}')
+    rows.sort(key=lambda r: norm(r.get(header[0])))
+    notes = [['Workbook', f'{name}: {schema.BY_NAME[name].purpose}.'],
+             ['Rule', 'Append-only. Rows are added, never edited (db/schema.py). Values as printed on the scan.'],
+             ['Based on', f'{pub} ({len(existing)} rows)' if pub else 'nothing published yet: started empty'],
+             ['Rows', len(rows)],
+             ['Dates in record', ', '.join(sorted({norm(r[header[0]]) for r in rows}))],
+             ['Older days', 'Days before the daily scans come from converting sheets kept in older copier scans, read by eye '
+                            '(history/cnv_scans.py); every order and product matches an extrusion schedule.']]
+    notes += [['This run', x] for x in log] + [['Run', datetime.date.today().isoformat()]]
+    out = write(name, sheet, header, rows, notes)
+    print(out, '-', '; '.join(log))
+
+
 if __name__ == '__main__':
-    if sys.argv[1:2] == ['--history']:
-        main_history(sys.argv[2])
+    if sys.argv[1:2] == ['--history-cnv']:
+        main_history_cnv(sys.argv[2])
+    elif sys.argv[1:2] == ['--history']:
+        main_history([a for a in sys.argv[2:] if not a.startswith('--')], replace='--replace-history' in sys.argv)
     else:
         main(sys.argv[1:])

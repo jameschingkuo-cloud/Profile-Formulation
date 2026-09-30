@@ -141,15 +141,16 @@ for r in ext_rows:                                   # packet products were sche
 # ---- the system's own past schedules (history/prod_instr.py: the "PP PROFILE PRODUCTION INSTRUCTION - EXTRUSION" PDFs,
 # 2020-2026; James Kuo, 30 Sep 2026: "i got the past production schedule ... Go through and refine your data base").
 # Each product's values on its latest run fill what the master leaves empty; a different value is noted in Check.
-HIST_CSV = os.environ.get('HIST_CSV')
+HIST_CSV = os.environ.get('HIST_CSV')        # one file, or several separated by ';' (the text PDFs, then the scanned days)
 HIST = {}
 if HIST_CSV:
     import csv as _csv
-    config.record_read(HIST_CSV, 'system schedule history (Production Instruction PDFs)')
-    for _r in _csv.DictReader(open(HIST_CSV, encoding='utf-8')):
-        _h = HIST.get(_r['prod_code'])
-        if _h is None or (_r['date'], _r['run_time']) >= (_h['date'], _h['run_time']):
-            HIST[_r['prod_code']] = _r
+    for _f in HIST_CSV.split(';'):
+        config.record_read(_f, 'system schedule history (Production Instruction PDFs and scanned days)')
+        for _r in _csv.DictReader(open(_f, encoding='utf-8')):
+            _h = HIST.get(_r['prod_code'])
+            if _h is None or (_r['date'], _r['run_time']) >= (_h['date'], _h['run_time']):
+                HIST[_r['prod_code']] = _r
 MULTI_OK = {'tags', 'formula', 'source'}   # lists, not conflicts
 QUIET = {'formula', 'formula_last', 'source', 'end_use', 'last_sched'}   # filling these is not worth a Check note
 def nk(v):                                 # comparison key: 3 == 3.0 == '3.0'; text trimmed

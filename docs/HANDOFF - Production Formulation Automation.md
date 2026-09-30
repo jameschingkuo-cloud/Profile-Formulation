@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.41 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.42 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1711,6 +1711,40 @@ James: *"i got the past production schedule and put it into this folder. Go thro
   `tests/test_product_code.py` (page: October/December/SH orders, dates, look-alike month), `OCR_TESTS=1` all 3 scans
   right and page = reference (pass).
 
+## 7.51 Every production schedule on the PC: missed days, the rotated print, scans OCR'd and read (30 Sep 2026)
+
+James: *"Do it for all"* (the three schedules saved under other names, the rotated print and the three image scans), *"except
+the HR fies and other business document"*, *"if it needs to be rotated, rotate them"*, *"if its scan, OCR them"*, *"any
+production schedule you can get your hands on, go through and update your data base"*.
+- **Parser** (`history/prod_instr.py`): a file is dated by its Run Date, so the schedules saved as `0422524.pdf`,
+  `BPN9PFR$_Xs7tuhwc.PDF` and `BPN9PFR$_YQuWBVBj.PDF` are 25 Apr 2024, 14 Oct 2024 and 12 Jun 2025; a print laid on its
+  side (111723, 17 Nov 2023) is rebuilt from each character's origin and writing direction (`grid_any`). The pages are read
+  as one stream, so a block that runs on to the next page keeps its cut rows and instructions; Total Sheets is now every
+  cut row of an order (the first run counted only the first); instruction lines printed without the label are kept.
+  **Every line of every day now adds up to the line total the report prints** (1,166 schedules, 1,158 days, 0 mismatches).
+- **Image scans turned upright and read** (050820, 111323, 111423 = 8 May 2020, 13 and 14 Nov 2023; every page needed a
+  quarter turn, saved in `work/history/scans/`). OCR (two readers) confirmed only 35 of 163 rows, so every row was read by
+  eye against the system text of the days either side (`history/image_days_manual.py`: a row equal to a neighbouring day
+  takes its values; what differs on the scan is written in). **Every line and each day's final total adds up to what the
+  scan prints.** 8 May 2020 is the 10:32 print with SE13 reprinted at 10:38 (the reprint is the day's SE13).
+- **Copier scans on the PC** (`history/scan_inventory.py`: 165 scans in Downloads and OneDrive, 3,535 pages, each page
+  turned upright and its title read): besides the daily packets already on file, one older schedule day was found - **2 Nov
+  2022** (Downloads/doc05067520260827113931.pdf pages 85-116: extrusion, converting and 6 formulation pages) - and a single
+  extrusion page of **24 Apr 2014** (SE25, report page 16). Both read by eye and checked against the printed totals; on
+  2 Nov 2022 report page 10 (SE32) is missing from the scan and is not recorded (the final total says it is RP22630-1's
+  11,000 PCs). The rest are QC pallet tags, QC forms, resin data sheets, material-system and inventory reports.
+- **Converting Production Record**: 2 Nov 2022 added (28 rows: SD31, SD11/SD12, SD41/SD42, SD51, SC31; `history/cnv_scans.py`,
+  `daily/record.py --history-cnv`); every order + product matches an extrusion schedule. A cell printed cut off by its
+  neighbour is completed only from the same order on another sheet the same day (H2AA266-1 ink 3005Blue).
+- **Extrusion Production Record** rebuilt (`--replace-history`: the rows the first history run added are taken out and built
+  again; daily-scan rows untouched): 63,231 rows, 1,166 days, 24 Apr 2014 and 1 Apr 2020 to 29 Sep 2026.
+- **Product Master**: 2,659 products (+7 from the 2014 page); 11 rows' Last Scheduled moved later; nothing overwritten.
+- **Not read (James: not wanted)**: HR forms, photos, quotes, bills of lading, customer sheets. **Found, not loaded**:
+  formulation pages - the 6 lines on 2 Nov 2022 and loose FRM pages (SE43 3 Sep 2025, SE23 15 Sep 2021 x2, SE21 17 Jan 2018,
+  SE31 5 Aug 2021) and 1998 Formosa production-tracing summaries; they are formulation records, not schedules, and loading
+  formulas goes through the Formulation Master's Change Log - James to say.
+- Tests `tests/test_history.py`. Artifact version 27 (the page's product list and order history).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1839,6 +1873,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.42 | 2026-09-30 | Claude Code (local, with James Kuo) | **Every production schedule on the PC (§7.51)**: misnamed and rotated schedules read; every line of every day adds up to its printed total; 3 image-scan days turned upright and read; 2 Nov 2022 (EXT + CNV) and 24 Apr 2014 (SE25) found in copier scans; EXT record 63,231 rows, CNV record +28; PM 2,659. |
 | 1.41 | 2026-09-30 | Claude Code (local, with James Kuo) | **The system's own past schedules (§7.50)**: 1,162 days of Production Instruction PDFs read as text (62,662 rows); order-number rule fixed (month A-C, SH orders, dates); Product Master 2,652 (+568, 1,464 rows filled, Last Scheduled); Extrusion Production Record +1,152 days; page order history. |
 | 1.40 | 2026-09-30 | Claude Code (local, with James Kuo) | **Two readers, border lines, handwriting ignored (§7.49)**: row cut at the sheet border line; Tesseract + glyph bank must agree; line code two ways + page continuation; page reader = reference on 222/222 rows; 25/28/29 Sep all rows right, 0 boxed; Chrome 29 Sep 76/76 same as Tech, Word file = pipeline's. |
 | 1.39 | 2026-09-30 | Claude Code (local, with James Kuo) | **Scan reader and product codes made hard rules (§7.48)**: `product_code.py`; Product Master letter-O codes fixed (2,084); reader cells at the bars, no wrong take on 28/29 Sep; Word download locked until boxed rows are confirmed. |

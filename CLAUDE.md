@@ -95,7 +95,13 @@ Change these only with James's explicit say-so, and log the change in the handof
   `build_master.py`: latest run fills blanks, a difference is a Check note, never an overwrite; column Last Scheduled),
   the Extrusion Production Record (`python daily/record.py --history <csv>`: days not recorded yet; recorded days stay
   as issued), and the page's order history (`hist_pairs`, last 2 years of the record). A line printed again later the
-  same day is the revision. When new PDFs land in the folder, parse again and rerun both.
+  same day is the revision. Every line must add up to the line total the report prints (`footer_check`; a file is dated
+  by its Run Date; rotated prints are read by `grid_any`). Days kept only as scans are read by eye against the days either
+  side and must add up to the printed totals (`history/image_days_manual.py`, converting sheets `history/cnv_scans.py` ->
+  `record.py --history-cnv`). The HR forms, photos and other business documents in that folder are not opened (James).
+  When new PDFs land: `prod_instr.py parse`, then
+  `record.py --history work/history/ext_history.csv work/history/ext_history_scans.csv --replace-history` and
+  `HIST_CSV="work/history/ext_history.csv;work/history/ext_history_scans.csv"` for `build_master.py`.
 - **Never auto-issue a formula the pipeline guessed.** Anything not matched exactly goes to an engineer. Every
   output is a draft until Tech signs it.
 
