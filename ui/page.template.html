@@ -523,7 +523,8 @@ const APPS = [[/void\s*form/i, 'VOIDFORM'], [/sign\s*blank/i, 'Sign blank'], [/c
 function whenLabel(f, i, all){
   if (/run\s*out/i.test(f.note)) return 'If PP WB Reclaim runs out';
   if (i === 0) return all.length > 1 ? (isReclaim(f) ? 'Run first · uses reclaim' : 'Run first') : 'Formulation';
-  return isReclaim(f) ? 'Next · less reclaim' : 'Alternative';
+  if (isReclaim(f)) return 'Next · less reclaim';
+  return all.slice(0, i).some(isReclaim) ? 'If reclaim runs out' : 'Alternative';
 }
 function setRows(f, weight){
   const byExt = {};
@@ -546,7 +547,7 @@ function renderOp(){
   const watch = /watch|weight|range|void\s*form|corn\s*box|roll|check/i;
   $('#opline').innerHTML = `<div class="ophead"><div><div class="caps">Line ${l.no}${l.ac ? ' · ' + esc(l.ac) : ''} · ${fmtDate(D.day)}</div><h2>${l.code} · ${l.sched.length} order${l.sched.length === 1 ? '' : 's'}</h2>
       <p>${weight ? 'Weight blender: every setting is <b>weight %</b>. Each extruder adds up to 100; Auto takes the rest.' : 'Auger feeders: every setting is <b>motor speed, 0 to 100</b>. It is not a percentage.'}
-      Where an order has more than one formulation, run the first one while there is reclaim in the silo, then move down the list.</p></div>
+      Where an order has more than one formulation, they are shown in run order: reclaim first (use up the scrap before virgin PP), then down the list.</p></div>
       <span class="chip ${weight ? 'weight' : 'auger'}" style="font-size:13px">${weight ? 'Weight blender' : 'Auger dosing'}</span></div>
     <div class="opcards">${l.sched.map((o, n) => {
       const g = o.g == null ? null : l.groups[o.g];
@@ -874,10 +875,15 @@ async function generate(files){
 
 const fkey = f => f.code + '|' + f.feeders.map(x => `${x.col}=${x.mat}=${x.set}`).sort().join(';');
 const same = (a, b) => a.length === b.length && a.every((f, i) => fkey(f) === fkey(b[i]));
+// run order: reclaim formulas first, then without reclaim, a 'run out' note last (James Kuo, 30 Sep 2026: "we always want to
+// use up our scrap first before using Virgin PP"); Tech's page order otherwise
+const usesReclaim = f => f.feeders.some(x => /reclaim/i.test(x.mat || '') && (parseFloat(String(x.set ?? '').replace(/,/g, '')) || 0) > 0);
+const runOrder = fs => fs.map((f, i) => [f, i]).sort(([a, i], [b, j]) =>
+  (/run\s*out/i.test(a.note || '') - /run\s*out/i.test(b.note || '')) || (!usesReclaim(a) - !usesReclaim(b)) || (i - j)).map(([f]) => f);
 function lookup(line, order, prod, date){
   // the latest formulation on file, whatever the schedule's date (James Kuo, 30 Sep 2026: "Always provide up to date formulation")
   const dates = Object.keys(D.issued || {}).sort().reverse();
-  for (const d of dates) { const g = (D.issued[d][line] || []).find(g => g.orders.includes(order)); if (g) return {how: 'last', date: d, formulas: g.formulas}; }
+  for (const d of dates) { const g = (D.issued[d][line] || []).find(g => g.orders.includes(order)); if (g) return {how: 'last', date: d, formulas: runOrder(g.formulas)}; }
   const ap = (D.approved || {})[line + '|' + prod];
   if (ap?.length) return {how: 'approved', formulas: ap};
   for (const d of dates) {
@@ -1012,7 +1018,8 @@ function docWhen(forms, i){
   if (/run\s*out/i.test(f.note || '')) return 'If reclaim runs out';
   if (forms.length === 1) return '';
   if (i === 0) return 'Run first';
-  return reclaim ? 'Next' : 'Alternative';
+  if (reclaim) return 'Next';
+  return forms.slice(0, i).some(x => x.feeders.some(y => /reclaim/i.test(y.mat || '') && (num(y.set) || 0) > 0)) ? 'If reclaim runs out' : 'Alternative';
 }
 async function buildDocx(plan){
   const X = await loadDocx();
@@ -1064,7 +1071,7 @@ async function buildDocx(plan){
     P(T('How to read the line pages', {size: 12, bold: true}), {after: 2}),
     ...['Auger lines: Set is the auger motor speed, 0 to 100. It is not a percentage.',
         'Weight blender lines (Line 7, 12, 13, 16): Set is weight %; each extruder adds to 100; Auto takes the balance.',
-        'Where an order lists more than one formulation, run the first while there is reclaim in the silo, then move down the list (James Kuo, 29 Sep 2026).',
+        'Where an order lists more than one formulation, they are printed in run order: reclaim first (use up the scrap before virgin PP), then down the list (James Kuo, 29 and 30 Sep 2026).',
         'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.'].map(t => P(T('•  ' + t, {size: 10.5}), {after: 1})),
   ];
   if (excRows.length) {

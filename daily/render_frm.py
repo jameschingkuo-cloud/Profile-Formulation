@@ -202,15 +202,19 @@ def page_field(p):
 
 # ---- the document --------------------------------------------------------------------------------------------------
 def when_label(forms, i):
+    """Forms are in run order (resolve.run_order: reclaim first). A formula without reclaim after one with reclaim runs when
+    the reclaim runs out (James Kuo, 30 Sep 2026: "we always want to use up our scrap first before using Virgin PP")."""
+    uses = lambda f: any('reclaim' in (m or '').lower() and (num(s) or 0) > 0 for (m, s, _) in f['feeders'].values())
     f = forms[i]
-    reclaim = any('reclaim' in (m or '').lower() and (num(s) or 0) > 0 for (m, s, _) in f['feeders'].values())
     if re.search(r'run\s*out', f['note'], re.I):
         return 'If reclaim runs out'
     if len(forms) == 1:
         return ''
     if i == 0:
         return 'Run first'
-    return 'Next' if reclaim else 'Alternative'
+    if uses(f):
+        return 'Next'
+    return 'If reclaim runs out' if any(uses(x) for x in forms[:i]) else 'Alternative'
 
 
 def render(today, lines, exc, out):
@@ -250,7 +254,7 @@ def render(today, lines, exc, out):
     para(doc, 'How to read the line pages', 12, bold=True, space_after=2)
     for t in ('Auger lines: Set is the auger motor speed, 0 to 100. It is not a percentage.',
               'Weight blender lines (Line 7, 12, 13, 16): Set is weight %; each extruder adds to 100; Auto takes the balance.',
-              'Where an order lists more than one formulation, run the first while there is reclaim in the silo, then move down the list (James Kuo, 29 Sep 2026).',
+              'Where an order lists more than one formulation, they are printed in run order: reclaim first (use up the scrap before virgin PP), then down the list (James Kuo, 29 and 30 Sep 2026).',
               'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.'):
         para(doc, '•  ' + t, 10.5, space_after=1)
     if n_exc:

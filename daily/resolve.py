@@ -82,8 +82,25 @@ def issued_history(packets, before=None):
     return by_order, by_product
 
 
+def uses_reclaim(f):
+    return any("reclaim" in (v.get("material") or "").lower() and _num(v.get("set")) > 0 for v in f["feeders"].values())
+
+
+def _num(s):
+    try:
+        return float(str(s).replace(",", ""))
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def run_order(formulas):
+    """Reclaim formulas first, then the ones without reclaim, a note saying 'run out' last; page order otherwise (James Kuo, 30 Sep 2026: 'the one with reclaim first. we always want to use up our scrap first before using Virgin PP')."""
+    return sorted(formulas, key=lambda f: (bool(re.search(r"run\s*out", f.get("note") or "", re.I)), not uses_reclaim(f)))
+
+
 def draft_rows(line, order, product, rec):
     date, page, formulas = rec
+    formulas = run_order(formulas)
     rows = []
     for i, f in enumerate(formulas):
         var = variant(f.get("note", ""), i == 0)

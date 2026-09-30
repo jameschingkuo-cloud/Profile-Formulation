@@ -212,6 +212,9 @@ schedule. you will product a word formulation document for us to print out"*.
    - It is a **DRAFT** while any order is an Exception: that row prints "ENGINEER TO COMPLETE", never a suggestion.
    - IWPFO055 §5.3: Technical issues it (cover issue block); a copy goes in the Schedule binder (§5.4).
    - Every formulation of an order, in run order (reclaim first); replaced materials printed as what to load.
+     Reclaim first whatever order Tech's page lists them (`resolve.run_order`, the page's `runOrder`); a formula without
+     reclaim after one with reclaim prints "If reclaim runs out" (James Kuo, 30 Sep 2026: *"the one with reclaim first.
+     we always want to use up our scrap first before using Virgin PP"*). Not an issue to raise when a page lists virgin first.
 4. The engineer completes each Exception **in the database** (James, 29 Sep 2026: *"this allow the engineer to update
    the data base and trigger a re run"*): approved Product to Formula rows in the Formulation Master, in Excel with a
    Change Log row, or through `python db/assign_formula.py --line .. --product .. --by .. --why .. --formula CODE VARIANT ...`

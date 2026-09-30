@@ -1812,6 +1812,13 @@ date. Your data is correct with F1203K"* (CLAUDE.md, memory). Then *"yes continu
 - **DOW-C104 = F6502A** (James Kuo, 30 Sep 2026: *"thats F6502A. just old formulation where we used to use Dow plastic"*):
   "PP Virgin-silo 3 (DOW-C104)" added to F6502A's (50-1560-050) Other Spellings (Change 264); FU0012BL5 Hopper 1 (63) then
   written from Tech's 29 Sep issue (Change 265). FU0012BL5 is now complete in the master (Draft).
+- **Reclaim first, always** (James Kuo, 30 Sep 2026, on RP26810-1: *"the one with reclaim first. we always want to use up
+  our scrap first before using Virgin PP"*): the draft, the Word file and the page now put an order's reclaim formulas
+  first whatever order Tech's page lists them (`resolve.run_order`; page `runOrder`), a 'run out' note last; a formula
+  without reclaim after one with reclaim reads "If reclaim runs out" (was "Alternative"). On 30 Sep this reorders
+  RP26810-1 (FU0041KS4 first) and H68A053-1 (FU0061WBD, reclaim 99, before FU0001WBD "For VOIDFORM order only" - asked
+  James whether VOIDFORM is an exception); H66A116-1 / H64A244-1 FUA011WB5 now "If reclaim runs out". The records keep
+  Tech's page order (as issued). Artifact v31; tests `test_draft_keeps_every_formulation`.
 
 ## 8. Automation plan: one step at a time
 

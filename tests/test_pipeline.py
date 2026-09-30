@@ -158,7 +158,9 @@ def datetime_today():
 
 
 def test_draft_keeps_every_formulation(tmp_path):
-    """James, 29 Sep 2026: reclaim first, then virgin -- when a formulation is given, give all of them, in order."""
+    """James, 29 Sep 2026: reclaim first, then virgin -- when a formulation is given, give all of them, in run order. James,
+    30 Sep 2026: "the one with reclaim first. we always want to use up our scrap first before using Virgin PP" -- a formula
+    with reclaim runs before one without, whatever order the page lists them (H68A053-1: FU0061WBD before FU0001WBD)."""
     from openpyxl import load_workbook
     out = tmp_path / 'out'
     out.mkdir()
@@ -174,7 +176,7 @@ def test_draft_keeps_every_formulation(tmp_path):
     issued = {}                                    # latest issue before 28 Sep wins, as in resolve.issued_history
     for d in ('2026-09-23', '2026-09-24', '2026-09-25'):
         pk = json.loads((ROOT / 'data' / 'packets' / f'packet_{d}.json').read_text(encoding='utf-8'))
-        issued.update({(pg['line_code'], o): [f['formula_code'] for f in g['formulas']]
+        issued.update({(pg['line_code'], o): [f['formula_code'] for f in run_order(g['formulas'])]
                        for pg in pk['frm'] for g in pg['groups'] for o in g['orders']})
     multi = 0
     for k, rowmap in got.items():
@@ -182,6 +184,15 @@ def test_draft_keeps_every_formulation(tmp_path):
         assert [rowmap[i] for i in sorted(rowmap)] == want, (k, rowmap, want)
         multi += len(want) > 1
     assert multi >= 5          # RP26311-1 (3 formulas), RP26512-1 (3), RP26731-2, RP26902-1, H68A111-4/-5, H69A097-1 ...
+    assert [got[('SE22', 'H68A053-1')][i] for i in sorted(got[('SE22', 'H68A053-1')])] == ['FU0061WBD', 'FU0001WBD']   # reclaim 99 first
+
+
+def run_order(formulas):
+    """Independent of daily/resolve.py: reclaim (set > 0) first, a 'run out' note last, page order otherwise."""
+    rec = lambda f: any('reclaim' in (v.get('material') or '').lower() and float(str(v.get('set') or 0).replace(',', '') or 0) > 0
+                        for v in f['feeders'].values())
+    out = lambda f: 'run out' in (f.get('note') or '').lower()
+    return sorted(formulas, key=lambda f: (out(f), not rec(f)))
 
 
 def test_print_formulation_docx(tmp_path):
@@ -281,8 +292,9 @@ def test_import_frm_adds_only_what_is_missing(tmp_path):
     r = py(str(ROOT / 'db' / 'import_frm.py'), '--date', '2026-09-29', '--by', 'test', '--why', 'test', '--dry-run')
     assert r.returncode == 0, r.stderr
     assert 'DIFFERS' not in r.stdout                                   # retired spellings do not shadow active ones
-    assert [l for l in r.stdout.splitlines() if l.startswith('NOT WRITTEN')] == \
-        ['NOT WRITTEN (material not mapped): SE21 FU0012BL5 Primary  Hopper 1: "PP Virgin-silo 3 (DOW-C104)" 63 (orders H69A203-1)']
+    # "PP Virgin-silo 3 (DOW-C104)" is F6502A (James Kuo, 30 Sep 2026: "thats F6502A. just old formulation where we used to use
+    # Dow plastic"; master Change 264), so every material on Tech's 29 Sep pages is mapped and FU0012BL5 is complete (Change 265)
+    assert [l for l in r.stdout.splitlines() if l.startswith('NOT WRITTEN')] == []
 
 
 def test_past_schedule_gets_the_latest_formulation(tmp_path):
