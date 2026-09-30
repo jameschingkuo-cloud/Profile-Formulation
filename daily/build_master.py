@@ -1,5 +1,5 @@
 """Product Master (material master). Product Code is the key. Each run merges one day's packet into the prior master
-(PRIOR_MASTER env). Usage: PKT_DATE=YYYY-MM-DD [PRIOR_MASTER=<Product Master.xlsx>] [CALC_JSON=work/calc_products.json] [RUN_DATE=YYYY-MM-DD] python daily/build_master.py"""
+(PRIOR_MASTER env). Usage: PKT_DATE=YYYY-MM-DD [PRIOR_MASTER=<Product Master.xlsx>] [CALC_JSON=work/calc_products.json] [HIST_CSV=work/history/ext_history.csv] [RUN_DATE=YYYY-MM-DD] python daily/build_master.py"""
 import sys as _sys, pathlib as _pl; _sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[1])); import config  # repo root config
 import re, json
 from collections import defaultdict, OrderedDict
@@ -117,6 +117,7 @@ cols = [  # (header, group, key, width)
  ('Pc/Plt (finished)', 'cnv', 'pc_plt', 9), ('Piece Wt Target', 'cnv', 'wt_t', 9), ('Piece Wt Min', 'cnv', 'wt_lo', 9), ('Piece Wt Max', 'cnv', 'wt_hi', 9),
  ('Marking', 'cnv', 'mark', 22),
  ('Formula Code(s)', 'frm', 'formula', 22), ('Formula Last Run', 'frm', 'formula_last', 11),
+ ('Last Scheduled', 'hist', 'last_sched', 11),
  ('Source', 'ctl', 'source', 16), ('Check', 'ctl', None, 36), ('Status', 'ctl', None, 11), ('Last Updated', 'ctl', None, 12)]
 
 # piece weight as three numeric columns
@@ -135,8 +136,22 @@ for r in ext_rows:                                   # packet: formula from the 
 for c in cnv_rows:
     P[c['product_code']]['source'].append(('Packet', c['order']))
 CALC = json.load(open(CALC_JSON, encoding='utf-8')) if CALC_JSON else {}
+for r in ext_rows:                                   # packet products were scheduled on the packet's day
+    P[r['prod_code']]['last_sched'].append((PKT_DATE, r['order']))
+# ---- the system's own past schedules (history/prod_instr.py: the "PP PROFILE PRODUCTION INSTRUCTION - EXTRUSION" PDFs,
+# 2020-2026; James Kuo, 30 Sep 2026: "i got the past production schedule ... Go through and refine your data base").
+# Each product's values on its latest run fill what the master leaves empty; a different value is noted in Check.
+HIST_CSV = os.environ.get('HIST_CSV')
+HIST = {}
+if HIST_CSV:
+    import csv as _csv
+    config.record_read(HIST_CSV, 'system schedule history (Production Instruction PDFs)')
+    for _r in _csv.DictReader(open(HIST_CSV, encoding='utf-8')):
+        _h = HIST.get(_r['prod_code'])
+        if _h is None or (_r['date'], _r['run_time']) >= (_h['date'], _h['run_time']):
+            HIST[_r['prod_code']] = _r
 MULTI_OK = {'tags', 'formula', 'source'}   # lists, not conflicts
-QUIET = {'formula', 'formula_last', 'source', 'end_use'}   # filling these is not worth a Check note
+QUIET = {'formula', 'formula_last', 'source', 'end_use', 'last_sched'}   # filling these is not worth a Check note
 def nk(v):                                 # comparison key: 3 == 3.0 == '3.0'; text trimmed
     try: return f"{float(str(v).replace(',', '')):g}"
     except ValueError: return str(v).strip()
@@ -186,7 +201,7 @@ def _fix_key(src, name):
         else:
             REFUSED.append((code, name, '; '.join(product_code.problems(code))))
             del src[code]
-for _src, _name in ((P, 'packet'), (old, 'prior Product Master'), (CALC, 'calc workbooks')):
+for _src, _name in ((P, 'packet'), (old, 'prior Product Master'), (CALC, 'calc workbooks'), (HIST, 'system history')):
     _fix_key(_src, _name)
 old_meta = {RENAMED.get(k, k): v for k, v in old_meta.items() if RENAMED.get(k, k) in old or k in old}
 if REFUSED:
@@ -194,8 +209,8 @@ if REFUSED:
 if RENAMED:
     print('Letter O in the thickness repaired to 0 and merged:', RENAMED)
 
-rows, nchk, n_new, n_changed, n_calc_new = [], 0, 0, 0, 0
-for pc in sorted(set(P) | set(old) | set(CALC)):
+rows, nchk, n_new, n_changed, n_calc_new, n_hist_new = [], 0, 0, 0, 0, 0
+for pc in sorted(set(P) | set(old) | set(CALC) | set(HIST)):
     d = P.get(pc, {})
     o = old.get(pc)
     code_ok = not product_code.problems(pc)
@@ -221,6 +236,8 @@ for pc in sorted(set(P) | set(old) | set(CALC)):
     # ---- Tech's formulation calc workbooks: fill what is empty, note what disagrees
     if not CALC and pc in old_meta:   # no calc data this run: keep the calc notes the prior master had (28 Sep 2026)
         chk += [x for x in old_meta[pc]['check'].split('; ') if x.startswith('calc ')]
+    if not HIST and pc in old_meta:   # likewise the system-history notes
+        chk += [x for x in old_meta[pc]['check'].split('; ') if x.startswith('system ')]
     C = CALC.get(pc)
     if C:
         def fill(k, v, label, conflict=True):
@@ -238,6 +255,31 @@ for pc in sorted(set(P) | set(old) | set(CALC)):
         if 'Formulation calc' not in M.get('source', []): M['source'] = M.get('source', []) + ['Formulation calc']
         if any(x == 'filled' for x in (r1, r2, r3, r4)) or codes: quiet = True
         if C['formula_last']: M['formula_last'] = M.get('formula_last', []) + [C['formula_last']]
+    Hh = HIST.get(pc)
+    if Hh:
+        def hfill(k, v, label):
+            if v in (None, ''):
+                return None
+            if not M.get(k):
+                M[k] = [v]
+                return 'filled'
+            if nk(v) not in {nk(x) for x in M[k]}:
+                chk.append(f"system {Hh['date']} {label} {fnum_(v)}")
+        _mat, _grade = (Hh['mat'].split() + ['', ''])[:2]
+        _f = [hfill(k, v, lab) for k, v, lab in [
+            ('mat', _mat, 'material'), ('grade', _grade, 'grade'), ('spec', Hh['mat_spec'], 'spec'), ('colors', Hh['colour'], 'colours'),
+            ('thk', float(Hh['thk']) if Hh['thk'] else None, 'Thk'), ('gsm', num(Hh['gsm']), 'GSM'),
+            ('width', Hh['width'], 'width'), ('length', Hh['length'], 'length'),
+            ('cut', f"{Hh['cut_width']} x {Hh['cut_length']}" if Hh['cut_width'] else None, 'cut'),
+            ('pack_ext', Hh['pack'], 'EXT pack'), ('pcs_stack', num(Hh['pcs_stack']), 'PCs/stack'), ('stk_plt', num(Hh['stk_plt']), 'Stk/plt')]]
+        if 'System history' not in M.get('source', []):
+            M['source'] = M.get('source', []) + ['System history']
+        M['last_sched'] = M.get('last_sched', []) + [datetime.date.fromisoformat(Hh['date'])]
+        if 'filled' in _f:
+            quiet = True
+    lss = [asdate(x) for x in M.get('last_sched', []) if asdate(x)]
+    M['last_sched'] = [max(lss)] if lss else []
+    if o is not None and asdate((o.get('last_sched') or [None])[0]) != (M['last_sched'] or [None])[0]: quiet = True
     fls = [asdate(x) for x in M.get('formula_last', []) if asdate(x)]
     M['formula_last'] = [max(fls)] if fls else []
     if o is not None and asdate((o.get('formula_last') or [None])[0]) != (M['formula_last'] or [None])[0]: quiet = True
@@ -273,7 +315,8 @@ for pc in sorted(set(P) | set(old) | set(CALC)):
     nchk += bool(chk)
     if o is None:
         status, last = 'Draft', LAST_UPDATE; n_new += 1
-        if pc not in P: n_calc_new += 1
+        if pc not in P and pc in CALC: n_calc_new += 1
+        elif pc not in P and pc in HIST: n_hist_new += 1
     else:
         status, last = old_meta[pc]['status'], old_meta[pc]['last']
         if changed or quiet:
@@ -298,7 +341,7 @@ for i in range(2, n + 2):
     for j in range(1, len(cols) + 1):
         cell = ws.cell(i, j); cell.font = BODY; cell.alignment = Alignment(vertical='top', wrap_text=j in WRAP)
     ws.cell(i, 1).font = Font(name=F, size=10, bold=True)
-    ws.cell(i, ci['Last Updated']).number_format = 'yyyy-mm-dd'; ws.cell(i, ci['Formula Last Run']).number_format = 'yyyy-mm-dd'
+    for h in ('Last Updated', 'Formula Last Run', 'Last Scheduled'): ws.cell(i, ci[h]).number_format = 'yyyy-mm-dd'
     for h in ('Piece Wt Target', 'Piece Wt Min', 'Piece Wt Max'):
         if isinstance(ws.cell(i, ci[h]).value, float): ws.cell(i, ci[h]).number_format = '0.0000'
     for h in ('PCs/Stack', 'Semi pc/plt', 'Pc/Plt (finished)'):
@@ -313,6 +356,7 @@ ws.add_data_validation(dv); dv.add(f"{get_column_letter(ci['Status'])}2:{get_col
 ws.cell(1, 1).comment = Comment('Product Code = material master number (James Kuo, 24 Sep 2026). One row per code - never duplicate.', 'Claude')
 ws.cell(1, ci['Last Updated']).comment = Comment('Date of the source (daily packet, or Tech formulation calc workbooks) that last added or changed a value on this row.', 'Claude')
 ws.cell(1, ci['Formula Code(s)']).comment = Comment('Formula codes this product ran with: the daily FRM page (primary formula) and Tech formulation calc workbooks (codes used within a year of the latest run), most recent first. Line-by-line recipes are in Formulation Master.xlsx (approved) and Formulation Calc Library.xlsx (Tech’s calcs).', 'Claude')
+ws.cell(1, ci['Last Scheduled']).comment = Comment("Latest day this product was on the extrusion schedule: the system's own schedules (Production Instruction PDFs, 2020 on) and the daily packets.", 'Claude')
 ws.cell(1, ci['Formula Last Run']).comment = Comment('Latest run date of this product in the formulation calc workbooks (Prod. Period, else estimated from the order number) or the daily packet.', 'Claude')
 
 # summary counts under Read Me (formulas)
@@ -322,7 +366,7 @@ lines = ['Product Master - material master list for Profile Plant sheet products
          '',
          'Key: Product Code = material master number. One row per code; the code is always column A.',
          'Green headers = extrusion data (Extrusion Production Schedule). Brown headers = converting data (Converting Production Schedule). Olive headers = formulation (daily FRM page and Tech\'s SExx Formulation.xls calc workbooks).',
-         'Source says where a row came from: Packet (daily extrusion/converting schedules) and/or Formulation calc. Products found only in the calc workbooks carry the basic data the calc holds: Thk, GSM, cut size and end use (taken only from calc blocks that name that product alone), and formula codes. Where the calc disagrees with the packet on Thk or GSM, Check says "calc ...".',
+         'Source says where a row came from: Packet (daily extrusion/converting schedules), System history (the system\'s own extrusion schedules, Technical Engineering Team/Production Instruction PDFs, 2020 on: each product\'s values on its latest run fill what is empty; a different value is noted in Check as "system <date> ...") and/or Formulation calc. Products found only in the calc workbooks carry the basic data the calc holds: Thk, GSM, cut size and end use (taken only from calc blocks that name that product alone), and formula codes. Where the calc disagrees with the packet on Thk or GSM, Check says "calc ...".',
          'No order history and no line assignments are kept here - only the product\'s own attributes.',
          'Blank = the packet did not show that value for this product. Values read from scans; Status stays "Draft" until Tech verifies the row.',
          'If one product showed different values on different orders, the cell lists them (A | B) and the Check column says so (orange). Check also flags code vs data mismatches.',
@@ -347,4 +391,4 @@ for k, (a, f) in enumerate(summ, len(lines) + 1):
 rm.column_dimensions['A'].width = 120; rm.column_dimensions['B'].width = 14
 wb.active = 1
 wb.save(MASTER)
-print(n, 'products;', n_new, 'new (', n_calc_new, 'from calc only);', n_changed, 'changed;', nchk, 'rows with a check')
+print(n, 'products;', n_new, 'new (', n_calc_new, 'from calc,', n_hist_new, 'from system history);', n_changed, 'changed;', nchk, 'rows with a check')

@@ -3,7 +3,7 @@
 """Parser for Tesseract text of the EXT page's left strip (to be mirrored in the interface page's JavaScript).
 Tested against transcribed packets. Rule: a value is taken only when it is certain (exact, or exactly one Product
 Master code among the look-alike variants); anything else is returned flagged, never guessed."""
-import itertools, json, os, re, sys
+import datetime, itertools, json, os, re, sys
 from pathlib import Path
 import pytesseract
 from PIL import Image
@@ -20,14 +20,22 @@ LOOK = {'0': 'OD', 'O': '0D', 'D': '0O', '1': 'IT', 'I': '1T', 'T': '1I', '5': '
 d = lambda s: ''.join(TO_D.get(c, c) for c in s)
 
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import order_number as ONUM                   # the order-number rule (order_number.py, from the system's own schedules)
+mon = lambda c: c if c in ONUM.MONTHS else TO_D.get(c, c)          # month: 1-9, A, B, C (a B stays a B: November)
+
+
 def fix_order(base, suf):
-    if base[0] == 'H':                   # H69A039: H + 2 digits + letter + 3 digits
-        b = 'H' + d(base[1:3]) + base[3] + d(base[4:7])
-    else:                                # RP26811 / RP24C18 / RP25A08: RP + 2 digits + (digit|A-C) + 2 digits
-        c4 = base[4] if base[4] in 'ABC' else d(base[4])
-        b = 'RP' + d(base[2:4]) + c4 + d(base[5:7])
+    """Positional repair of an order cell's reading (order_number.py): digits where digits belong, the month as read
+    when it is a month, the letter A after an H/SH month."""
+    if base[:2] == 'SH':                 # SH69A04: SH + year digit + month + A + 2 digits
+        b = 'SH' + d(base[2]) + mon(base[3]) + ('A' if base[4] in 'A4' else base[4]) + d(base[5:7])
+    elif base[0] == 'H':                 # H69A039: H + year digit + month + A + 3 digits
+        b = 'H' + d(base[1]) + mon(base[2]) + ('A' if base[3] in 'A4' else base[3]) + d(base[4:7])
+    else:                                # RP26811 / RP24C18 / RP25A08: RP + 2-digit year + month + 2 digits
+        b = 'RP' + d(base[2:4]) + mon(base[4]) + d(base[5:7])
     s = d(suf)
-    ok = bool(re.fullmatch(r'H\d\d[A-Z]\d{3}|RP\d\d[0-9A-C]\d\d', b)) and s.isdigit()
+    ok = bool(ONUM.BASE_RX.match(b)) and s.isdigit()
     return f'{b}-{s}', ok
 
 
@@ -849,7 +857,7 @@ def ocr_cell(im, x0, x1, y0, y1, scale, psm, wl=ORDER_WL, pad=8):
     return re.sub(r'\s+', '', pytesseract.image_to_string(c, config=f'--psm {psm} -c tessedit_char_whitelist={wl}').upper())
 
 
-ORD_CELL = re.compile(r'^[^A-Z0-9]*(H[0-9A-Z]{6}|RP[0-9A-Z]{5})-*([0-9ITLJZSOD]{1,2})[^A-Z0-9]*$')
+ORD_CELL = re.compile(r'^[^A-Z0-9]*(H[0-9A-Z]{6}|SH[0-9A-Z]{5}|RP[0-9A-Z]{5})-*([0-9ITLJZSOD]{1,2})[^A-Z0-9]*$')
 
 
 def parse_order_cell(t):
@@ -1301,7 +1309,8 @@ def decode_order(cells):
     base, suf = cells[:i], cells[i + 1:]
     if len(base) != 7 or not (1 <= len(suf) <= 2): return None, 0.0, f'{len(base)} + {len(suf)} characters'
     best = None
-    for pat in (['H', DIG, DIG, LET, DIG, DIG, DIG], ['R', 'P', DIG, DIG, DIG + 'ABC', DIG, DIG]):
+    for pat in (['H', DIG, ONUM.MONTHS, 'A', DIG, DIG, DIG], ['S', 'H', DIG, ONUM.MONTHS, 'A', DIG, DIG],
+                ['R', 'P', DIG, DIG, ONUM.MONTHS, DIG, DIG]):             # order_number.py
         s, tot, mg = '', 0.0, 9.0
         for c, allowed in zip(base, pat):
             d = B.dists(c[1]); r = sorted((d.get(ch, 9.0), ch) for ch in allowed)
@@ -1513,14 +1522,36 @@ def evaluate_both(date, scan, show=False):
 
 
 # ---- v20: the decision the page makes, and an audit of every scan on file -------------------------------------------
-def decide(to, tp, go, gp, pairs):
+LOOK_MONTH = {'B': '8', '8': 'B', 'A': '4', '4': 'A'}
+
+
+def month_fix(o, on):
+    """An order reading that the schedule date rules out (order_number.py) is no reading - unless its month is a
+    look-alike (B/8, A/4) and the look-alike is possible: then that is the reading (28 Sep p14: 'H6BA020-1', November
+    on a September schedule, printed H68A020-1). It is still taken only on file or when the other reader agrees."""
+    if not o or not ONUM.problems(o, on):
+        return o
+    base, suf = o.split('-')
+    k = 4 if base.startswith('RP') else 3 if base.startswith('SH') else 2
+    alt = base[:k] + LOOK_MONTH.get(base[k], base[k]) + base[k + 1:] + '-' + suf
+    return alt if alt != o and not ONUM.problems(alt, on) else None
+
+
+def decide(to, tp, go, gp, pairs, on=None):
     """-> (order, product, status). Taken: matches an order + product on file, or both readers agree (0 wrong on 28/29 Sep
-    in 227 agreements). Otherwise boxed with the best reading."""
+    in 227 agreements). Otherwise boxed with the best reading. `on` = the schedule date: an order reading dated after it
+    (or an H/SH order two years or more before it) is no reading at all (order_number.py)."""
+    if on:
+        t2, g2 = month_fix(to, on), month_fix(go, on)
+        both_fixed = bool(to and go and t2 != to and g2 != go)   # two look-alike fixes agreeing is no agreement
+        to, go = t2, g2
+    else:
+        both_fixed = False
     for o, p in [(to, tp), (go, gp), (to, gp), (go, tp)]:
         if o and p and (o, p) in pairs: return o, p, 'read'
     m = match_pair(to or '', tp or '', pairs) if to and tp else None
     if m and m[0] in (to, go) and m[1] in (tp, gp): return m[0], m[1], 'matched to schedule history'
-    if to and to == go and tp and tp == gp: return to, tp, 'read by both readers'
+    if to and to == go and tp and tp == gp and not both_fixed: return to, tp, 'read by both readers'
     o = to if to == go else (to or go); p = tp if tp == gp else (tp or gp)
     return o, p, 'check'
 
@@ -1737,6 +1768,32 @@ def audit2(date, scan, history='before', show=True):
 
 
 # ---- v21: the sheet's solid border lines isolate the printed row (handwriting sits between blocks); ruling scraps -------
+def line_groups(st, n, W):
+    """The sheet's solid lines in a row band, from the pieces of long horizontal runs: a line broken where notes cross
+    it (28 Sep p14 under '-BB510': two pieces 15 px apart, one step lower across the tilt) is joined again. Pieces
+    (under 18 px high, at least 40 px long) that follow on (gap under 60 px, centres within 8 px) form one line; a line
+    spans more than 0.6 of the row. -> [[label, ...], ...] top to bottom."""
+    fr = sorted((i for i in range(1, n) if st[i][3] < 18 and st[i][2] >= 40), key=lambda i: st[i][0])
+    grp = {i: [i] for i in fr}
+    for a_ in fr:
+        for b_ in fr:
+            if a_ >= b_ or grp[a_] is grp[b_]:
+                continue
+            gap = max(st[b_][0] - (st[a_][0] + st[a_][2]), st[a_][0] - (st[b_][0] + st[b_][2]))
+            ca, cb = st[a_][1] + st[a_][3] / 2, st[b_][1] + st[b_][3] / 2
+            if gap < 60 and abs(ca - cb) <= 8:
+                g = grp[a_] + grp[b_]
+                for k in g:
+                    grp[k] = g
+    out = []
+    for g in {id(g): g for g in grp.values()}.values():
+        x0 = min(st[i][0] for i in g); x1 = max(st[i][0] + st[i][2] for i in g)
+        top = min(st[i][1] for i in g); bot = max(st[i][1] + st[i][3] for i in g)
+        if x1 - x0 > 0.6 * W and bot - top < 24:
+            out.append(sorted(g))
+    return sorted(out, key=lambda g: min(st[i][1] for i in g))
+
+
 def isolate_row(a, bars, y0, y1, pad=10, thr=150):
     """-> (page array, y0, y1). A row band holding a solid ruled line with ink on both sides (production notes written above
     a block's top border, James Kuo 30 Sep: "ignore hand writing") is cut along the line - column by column, so a page
@@ -1750,13 +1807,13 @@ def isolate_row(a, bars, y0, y1, pad=10, thr=150):
     op = cv2.morphologyEx(reg, cv2.MORPH_OPEN, np.ones((1, 60), np.uint8))
     cl = cv2.morphologyEx(op, cv2.MORPH_CLOSE, np.ones((5, 25), np.uint8))
     n, lab, st, _ = cv2.connectedComponentsWithStats(cl, 8)
-    lines = sorted([i for i in range(1, n) if st[i][2] > 0.6 * W and st[i][3] < 18], key=lambda i: st[i][1])
+    lines = line_groups(st, n, W)
     if not lines: return a, y0, y1
     H = reg.shape[0]
     yy = np.arange(H)[:, None]
     edges = []                                                   # per line: top and bottom row per column
-    for i in lines:
-        m = (lab == i) & (op > 0)
+    for grp in lines:
+        m = np.isin(lab, grp) & (op > 0)
         cols = np.where(m.any(axis=0))[0]
         top = np.full(W, np.nan); bot = np.full(W, np.nan)
         for x in cols:
@@ -1877,7 +1934,7 @@ def audit3(date, scan, history='before', show=True):
         for y0, y1, bars in rows:
             to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
             if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
-            got.append(decide(to, tp, go, gp, pairs))
+            got.append(decide(to, tp, go, gp, pairs, datetime.date.fromisoformat(date)))
         pages.append({'png': png.name, 'line': line, 'reads': lreads, 'rows': got})
     settle_lines(pages)
     res = [(p['png'], p['line'], o, pr, st if p['line'] else 'check') for p in pages for o, pr, st in p['rows']]

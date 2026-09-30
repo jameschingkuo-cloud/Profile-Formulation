@@ -144,7 +144,7 @@ def glyph_bank_js():
     z = np.load(config.GLYPH_BANK)
     X, y = z['X'].astype(np.float32), [str(v) for v in z['y']]
     assert X.shape[1] == 563 and all(len(v) == 1 for v in y)
-    gz = gzip.compress(quantize_bank(X).tobytes(), 9)
+    gz = gzip.compress(quantize_bank(X).tobytes(), 9, mtime=0)   # same bytes every build
     out.write_text('/* glyph bank */window.GLYPH_BANK=' + json.dumps({'n': int(X.shape[0]), 'd': 563, 'q': GLYPH_Q, 'labels': ''.join(y),
                    'data': base64.b64encode(gz).decode()}) + ';', encoding='ascii')
     return out
@@ -170,6 +170,21 @@ def product_codes():
     config.record_read(p, 'Product Master (interface copy)')
     ws = load_workbook(p, read_only=True)['Product Master']
     return sorted({r[0] for r in ws.iter_rows(min_row=2, max_col=1, values_only=True) if r[0]})
+
+
+def history_pairs(days=730):
+    """Order + product pairs on the extrusion schedule in the last two years, from the published Extrusion Production
+    Record (the system's own schedules since 2020 + the daily scans): the page's reader takes a row that matches one
+    exactly. H/SH orders are always under two years old on a schedule (order_number.py)."""
+    import datetime
+    p = config.published_path('Extrusion Production Record.xlsx')
+    if not (p and p.exists()):
+        return []
+    config.record_read(p, 'record (interface copy: order history)')
+    rows = [r for r in load_workbook(p, read_only=True)['Orders by Day'].iter_rows(min_row=2, max_col=4, values_only=True) if r[0]]
+    as_d = lambda v: v.date() if hasattr(v, 'date') else datetime.date.fromisoformat(str(v)[:10])
+    last = max(as_d(r[0]) for r in rows)
+    return sorted({f'{r[2]}|{r[3]}' for r in rows if as_d(r[0]) >= last - datetime.timedelta(days=days) and r[2] and r[3]})
 
 
 def approved_decisions(sheet):
@@ -261,6 +276,7 @@ def main():
                            for pg in p['frm']} for d, p in pk.items() if p['frm']},
             'sched_by_date': {d: [[e['line'], r['order'], r['prod_code']] for e in p['ext'] for r in e['rows']] for d, p in pk.items()},
             'products': product_codes(),
+            'hist_pairs': history_pairs(),
             'approved': approved_decisions(sheet),
             'linemeta': line_layout(pk),
             'code_rule': {'colours': sorted(product_code.COLOURS), 'families': sorted(product_code.FAMILIES)}}

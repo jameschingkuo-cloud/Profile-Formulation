@@ -71,6 +71,14 @@ console.log(JSON.stringify({
   oneReader: decide('H70A001-1', 'DPP30WB1023', null, 'DPP30WB1023', new Set()).status,
   fit: [fitLine('SE13'), fitLine('SEI3'), fitLine('SE1'), fitLine('SD31')],
   footer: footerRead('LINENO.SE22TOTAL'),
+  // order numbers as the system prints them (order_number.py): month A-C, the letter A after an H month, SH orders, dates
+  oct: parseOrderCell('H6AA001-1'), dec: parseOrderCell('H5CA049-1'), sh: parseOrderCell('SH69A04-1'), rpc: parseOrderCell('RP24C18-4'),
+  aAs4: parseOrderCell('H6A4001-1'), badA: parseOrderCell('H69B039-1'),
+  future: orderProblems('H6BA001-1', '2026-09-29').length > 0, octOk: orderProblems('H6AA001-1', '2026-10-01'),
+  tooOld: orderProblems('H3CA288-1', '2026-09-29').length > 0, stockOk: orderProblems('RP20624-1', '2026-09-09'),
+  futureNotTaken: decide('H6BA001-1', 'DPP30WB1023', 'H6BA001-1', 'DPP30WB1023', new Set(), '2026-09-29').status,
+  lookOnFile: decide('H6BA020-1', 'RBPA0KS70', null, null, new Set(['H68A020-1|RBPA0KS70']), '2026-09-28'),
+  lookAgree: decide('H6BA020-1', 'RBPA0KS70', 'H68A020-1', 'RBPA0KS70', new Set(), '2026-09-28').status,
   lineOf: [lineOf([['header', 'SE13'], ['glyph', null]]), lineOf([['header', 'SE13'], ['glyph', 'SE13']]), lineOf([['header', 'SE13'], ['glyph', 'SE12'], ['footer', 'SE13']])],
   settle: settleLines([
     {line: null, lineReads: [['header', 'SE13'], ['glyph', null]]}, {line: 'SE13', lineReads: [['header', 'SE13'], ['glyph', 'SE13'], ['footer', 'SE13']]},
@@ -104,4 +112,11 @@ def test_page_reader_rules(tmp_path):
     # the line code: a known line, two independent readings (or the page continues its neighbour's line), else boxed
     assert out['fit'] == ['SE13', 'SE13', None, None] and out['footer'][:2] == ['footer', 'SE22']
     assert out['lineOf'] == [None, 'SE13', None]
+    # the order rule from the system's own schedules: October-December and SH orders are real; dates must make sense
+    assert (out['oct'], out['dec'], out['sh'], out['rpc']) == ('H6AA001-1', 'H5CA049-1', 'SH69A04-1', 'RP24C18-4')
+    assert out['aAs4'] == 'H6AA001-1' and out['badA'] is None
+    assert out['future'] and out['octOk'] == [] and out['tooOld'] and out['stockOk'] == []
+    assert out['futureNotTaken'] == 'check'           # both readers saw an impossible month: boxed, never guessed
+    assert out['lookOnFile'] == {'order': 'H68A020-1', 'prod': 'RBPA0KS70', 'status': 'read'}   # B/8 look-alike, on file
+    assert out['lookAgree'] == 'read by both readers' # the glyph reader read the 8 itself
     assert out['settle'] == ['SE13', 'SE13', None, 'SE22']      # p3 has a footer: it does not continue onto SE22

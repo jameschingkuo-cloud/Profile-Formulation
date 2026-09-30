@@ -46,14 +46,31 @@ function matchPair(oRaw, pRaw, pairs){
   }
   return b1[0] <= 2.5 && b2 - b1[0] >= 1 ? {order: b1[1], prod: b1[2], cost: b1[0]} : null;
 }
-// ---- the order number and the product code, as hard rules (product_code.py; James Kuo, 30 Sep 2026)
-const ORDER_RULE = /^(H\d\d[A-Z]\d{3}|RP\d\d[0-9A-C]\d\d)-\d{1,2}$/;
-const ORD_CELL = /^[^A-Z0-9]*(H[0-9A-Z]{6}|RP[0-9A-Z]{5})-*([0-9ITLJZSOD]{1,2})[^A-Z0-9]*$/;
+// ---- the order number and the product code, as hard rules (order_number.py, product_code.py; James Kuo, 30 Sep 2026).
+// Order: H + year digit + month + A + 3 digits (H69A039), SH + year digit + month + A + 2 digits (SH69A04), RP + 2-digit
+// year + month + 2 digits (RP26821); month 1-9, A, B, C; suffix 1-2 digits. Read from the system's own schedules
+// 2020-2026: never dated after the schedule; H/SH always under 2 years old.
+const MONTHS = '123456789ABC';
+const ORDER_RULE = /^(H\d[1-9A-C]A\d{3}|SH\d[1-9A-C]A\d\d|RP\d\d[1-9A-C]\d\d)-\d{1,2}$/;
+const ORD_CELL = /^[^A-Z0-9]*(H[0-9A-Z]{6}|SH[0-9A-Z]{5}|RP[0-9A-Z]{5})-*([0-9ITLJZSOD]{1,2})[^A-Z0-9]*$/;
+const mon = c => MONTHS.includes(c) ? c : (TO_D[c] || c);          // a B stays a B: November
 function fixOrder(base, suf){
-  const b = base[0] === 'H' ? 'H' + dig(base.slice(1, 3)) + base[3] + dig(base.slice(4, 7))
-                            : 'RP' + dig(base.slice(2, 4)) + (/[ABC]/.test(base[4]) ? base[4] : dig(base[4])) + dig(base.slice(5, 7));
+  const A = c => c === '4' ? 'A' : c;
+  const b = base.startsWith('SH') ? 'SH' + dig(base[2]) + mon(base[3]) + A(base[4]) + dig(base.slice(5, 7))
+          : base[0] === 'H' ? 'H' + dig(base[1]) + mon(base[2]) + A(base[3]) + dig(base.slice(4, 7))
+          : 'RP' + dig(base.slice(2, 4)) + mon(base[4]) + dig(base.slice(5, 7));
   const o = `${b}-${dig(suf)}`;
   return ORDER_RULE.test(o) ? o : null;
+}
+function orderProblems(o, on){            // on: the schedule date 'YYYY-MM-DD' (order_number.problems)
+  if (!ORDER_RULE.test(o || '')) return ['order number does not fit H + year + month + A + 3 digits, SH + year + month + A + 2 digits, or RP + 2-digit year + month + 2 digits (month 1-9, A, B, C), then -suffix'];
+  if (!on) return [];
+  const [Y, M] = on.split('-').map(Number), k = o.startsWith('SH') ? 2 : 1;
+  const y = o.startsWith('RP') ? 2000 + +o.slice(2, 4) : Y - (((Y - +o[k]) % 10) + 10) % 10;
+  const m = MONTHS.indexOf(o.startsWith('RP') ? o[4] : o[k + 1]) + 1;
+  if (y * 12 + m > Y * 12 + M) return [`order dated ${y}-${String(m).padStart(2, '0')}, after the schedule date ${on}`];
+  if (!o.startsWith('RP') && (Y - y) * 12 + M - m >= 24) return [`order dated ${y}-${String(m).padStart(2, '0')}: an H/SH order two years or more before the schedule (${on})`];
+  return [];
 }
 function parseOrderCell(t){
   const m = ORD_CELL.exec(t);
@@ -117,9 +134,10 @@ function judge(oText, pText, pairs, raw){
   if (o && p) return {order: o, prod: p, status: 'new order', raw, hint: nearestOnFile(o, p, pairs)};
   return {order: o || oRaw, prod: p || pRaw, status: 'check', raw, hint: nearestOnFile(o || oRaw, p || pRaw, pairs)};
 }
-function historyPairs(){                  // every order + product on file (all dates: the up-to-date rule)
-  const seen = new Map();
+function historyPairs(){                  // every order + product on file: the daily packets and the last two years of the
+  const seen = new Map();                 // system's own schedules (Extrusion Production Record)
   Object.values(D.sched_by_date || {}).forEach(rows => rows.forEach(([, o, p]) => seen.set(o + '|' + p, [o, p])));
+  (D.hist_pairs || []).forEach(k => { if (!seen.has(k)) seen.set(k, k.split('|')); });
   return [...seen.values()];
 }
 
@@ -216,6 +234,24 @@ function interpNaN(a){                    // np.interp over the known points; th
   }
   return o;
 }
+function lineGroups(st, W){               // the sheet's solid lines from pieces of long runs; a line broken where notes cross
+  const fr = [];                          // it is joined again (ui/ocr_eval.py line_groups)
+  for (let i = 1; i < st.length; i++) if (st[i] && st[i].h < 18 && st[i].w >= 40) fr.push(i);
+  fr.sort((a, b) => st[a].x - st[b].x || a - b);
+  const grp = new Map(fr.map(i => [i, [i]]));
+  for (const a of fr) for (const b of fr) {
+    if (a >= b || grp.get(a) === grp.get(b)) continue;
+    const A = st[a], B = st[b], gap = Math.max(B.x - (A.x + A.w), A.x - (B.x + B.w));
+    if (gap < 60 && Math.abs((A.y + A.h / 2) - (B.y + B.h / 2)) <= 8) { const g = [...grp.get(a), ...grp.get(b)]; for (const k of g) grp.set(k, g); }
+  }
+  const out = [];
+  for (const g of new Set(grp.values())) {
+    const x0 = Math.min(...g.map(i => st[i].x)), x1 = Math.max(...g.map(i => st[i].x + st[i].w));
+    const top = Math.min(...g.map(i => st[i].y)), bot = Math.max(...g.map(i => st[i].y + st[i].h));
+    if (x1 - x0 > 0.6 * W && bot - top < 24) out.push(g.slice().sort((a, b) => a - b));
+  }
+  return out.sort((a, b) => Math.min(...a.map(i => st[i].y)) - Math.min(...b.map(i => st[i].y)));
+}
 function isolateRow(P, bars, y0, y1, pad = 10, thr = 150){
   // A band holding a solid border line with ink on both sides (notes written above a block's top border) is cut along the
   // line, column by column (a page tilted on the glass still cuts cleanly), and only the side holding the printed '|' bars
@@ -225,11 +261,11 @@ function isolateRow(P, bars, y0, y1, pad = 10, thr = 150){
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) reg[y * w + x] = g[(ya + y) * W + xa + x] < thr ? 1 : 0;
   const op = openH(reg, w, h, 60), cl = morph(morph(op, w, h, 5, 25, false), w, h, 5, 25, true);
   const {lab, st} = components(cl, w, h);
-  const lines = st.map((s, i) => [s, i]).filter(([s]) => s && s.w > 0.6 * w && s.h < 18).sort((a, b) => a[0].y - b[0].y);
+  const lines = lineGroups(st, w);
   if (!lines.length) return {P, y0, y1};
-  const edges = lines.map(([, id]) => {
-    const top = new Float64Array(w).fill(NaN), bot = new Float64Array(w).fill(NaN);
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (lab[y * w + x] === id && op[y * w + x]) { if (Number.isNaN(top[x])) top[x] = y; bot[x] = y; }
+  const edges = lines.map(grp => {
+    const top = new Float64Array(w).fill(NaN), bot = new Float64Array(w).fill(NaN), ids = new Set(grp);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (ids.has(lab[y * w + x]) && op[y * w + x]) { if (Number.isNaN(top[x])) top[x] = y; bot[x] = y; }
     return [interpNaN(top), interpNaN(bot)];
   });
   const onLine = new Uint8Array(w * h);
@@ -482,7 +518,7 @@ function glyphCells(P, x0, x1, y0, y1, pitch, pad = 6){
   }
   return cells.map(c => ({k: c.k, f: featureG(c), box: c.box}));
 }
-const DIG = '0123456789', LET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const DIG = '0123456789';
 const pick = (d, allowed) => [...allowed].map(ch => [d[ch] ?? 9.0, ch]).sort((p, q) => p[0] - q[0] || (p[1] < q[1] ? -1 : p[1] > q[1] ? 1 : 0));
 function decodeOrder(cells){              // base of 7 characters, a dash (a short mark), 1-2 suffix digits
   if (cells.length < 9) return null;
@@ -491,7 +527,7 @@ function decodeOrder(cells){              // base of 7 characters, a dash (a sho
   const i = dash[0][1], base = cells.slice(0, i), suf = cells.slice(i + 1);
   if (base.length !== 7 || suf.length < 1 || suf.length > 2) return null;
   let best = null;
-  for (const pat of [['H', DIG, DIG, LET, DIG, DIG, DIG], ['R', 'P', DIG, DIG, DIG + 'ABC', DIG, DIG]]) {
+  for (const pat of [['H', DIG, MONTHS, 'A', DIG, DIG, DIG], ['S', 'H', DIG, MONTHS, 'A', DIG, DIG], ['R', 'P', DIG, DIG, MONTHS, DIG, DIG]]) {
     let s = '', tot = 0;
     base.forEach((c, k) => { const r = pick(gdists(c.f), pat[k]); s += r[0][1]; tot += r[0][0]; });
     if (!best || tot < best[1]) best = [s, tot];
@@ -529,9 +565,18 @@ async function readRow(P, pitch, y0, y1, bars){
   const go = decodeOrder(glyphCells(P, ox0, ox1, y0, y1, pitch)), gp = decodeProduct(glyphCells(P, px0, px1, y0, y1, pitch));
   return {to, tp, go, gp, raws};
 }
-function decide(to, tp, go, gp, pairSet){ // taken: an order + product on file, or both readers agree; else boxed
+const LOOK_MONTH = {B: '8', 8: 'B', A: '4', 4: 'A'};
+function monthFix(o, on){                 // a reading the schedule date rules out is no reading, unless its month is a look-alike
+  if (!o || !orderProblems(o, on).length) return o;           // (B/8, A/4) and the look-alike is possible (ui/ocr_eval.py month_fix)
+  const [base, suf] = o.split('-'), k = base.startsWith('RP') ? 4 : base.startsWith('SH') ? 3 : 2;
+  const alt = base.slice(0, k) + (LOOK_MONTH[base[k]] || base[k]) + base.slice(k + 1) + '-' + suf;
+  return alt !== o && !orderProblems(alt, on).length ? alt : null;
+}
+function decide(to, tp, go, gp, pairSet, on){ // taken: an order + product on file, or both readers agree; else boxed
+  let bothFixed = false;                  // two look-alike fixes agreeing is no agreement
+  if (on) { const t2 = monthFix(to, on), g2 = monthFix(go, on); bothFixed = !!(to && go && t2 !== to && g2 !== go); to = t2; go = g2; }
   for (const [o, p] of [[to, tp], [go, gp], [to, gp], [go, tp]]) if (o && p && pairSet.has(o + '|' + p)) return {order: o, prod: p, status: 'read'};
-  if (to && to === go && tp && tp === gp) return {order: to, prod: tp, status: 'read by both readers'};
+  if (to && to === go && tp && tp === gp && !bothFixed) return {order: to, prod: tp, status: 'read by both readers'};
   return {order: to === go ? to : (to || go), prod: tp === gp ? tp : (tp || gp), status: 'check'};
 }
 
@@ -601,7 +646,7 @@ function settleLines(pages){              // a line's pages run on until its foo
   });
   return pages;
 }
-async function ocrPage(p, pairs, pairSet){
+async function ocrPage(p, pairs, pairSet, on){
   const src = p.canvas, P = greyOf(src);
   await glyphBank();
   const head = await pageHead(P);
@@ -621,7 +666,7 @@ async function ocrPage(p, pairs, pairSet){
     if (ctl.signal.aborted) throw {code: 'cancelled'};
     const r = await readRow(P, pitch, y0, y1, bars), txt = r.raws.map(x => x.join('')).join('');
     if (/LINE|TOTAL|REPORT/.test(txt)) { const f = footerRead(txt); if (f) lineReads.push(f); continue; }
-    const d = decide(r.to, r.tp, r.go, r.gp, pairSet);
+    const d = decide(r.to, r.tp, r.go, r.gp, pairSet, on);
     const o = {...d, raw: `${r.to || '?'} | ${r.tp || '?'} (text) · ${r.go || '?'} | ${r.gp || '?'} (glyphs)`};
     if (d.status === 'check') {
       o.hint = nearestOnFile(d.order, d.prod, pairs);

@@ -70,8 +70,11 @@ Change these only with James's explicit say-so, and log the change in the handof
   the Product Master build, the scan readers and the interface. Product code = family (3 letters) + thickness (digit 1-9
   or letter, then a digit: 10 = 1 mm, 90 = 9 mm, 63 = 6.3 mm, A0 = 10 mm, B0 = 11 mm; *"AQ is incorrect from the
   start"*) + colour (2 letters from the colour list; *"WB. WR dont exist"*) + product number (*"just number ... No english
-  characters"*). Order number = H + 2 digits + letter + 3 digits, or RP + 2 digits + (digit or A-C) + 2 digits, then
-  -suffix. A code breaking the rule never enters the Product Master (`build_master.py` refuses it; a letter O read for
+  characters"*). Order number (`order_number.py`, read from the system's own schedules 2020-2026, 30 Sep 2026) = H +
+  year digit + month (1-9, A, B, C) + A + 3 digits (H69A039, H6AA001), SH + year digit + month + A + 2 digits (SH69A04),
+  or RP + 2-digit year + month + 2 digits (RP26821, RP24C18), then -suffix (1-2 digits); never dated after its schedule;
+  H/SH under 2 years old. A reading dated impossibly is no reading, unless its month has a possible look-alike (B/8,
+  A/4), which is then taken only on file or when the other reader read it. A code breaking the rule never enters the Product Master (`build_master.py` refuses it; a letter O read for
   a zero is repaired and merged, as DPPAOKS27 -> DPPA0KS27). *"these need to be hard rule. If anything odd is spotted,
   recheck the OCR again"*: a reader re-reads an odd cell with other settings; what stays odd is never taken, it is boxed
   for a person, and the interface's Word download stays locked until every boxed row is confirmed (a correction must keep
@@ -85,6 +88,14 @@ Change these only with James's explicit say-so, and log the change in the handof
   The line code needs two independent readings (header, footer, glyph) or the page continues its neighbour's line (no
   footer); else the page's rows are boxed. Change the reference first, then the page, and keep the parity test (page =
   reference on every row) at 0 differences. Publish `glyph-bank.js` and `eng-data.js` with the page.
+- **The system's own past schedules (James, 30 Sep 2026: "i got the past production schedule ... refine your data
+  base")**: `Profile Process Control - Documents/Technical Engineering Team/Production Instruction/MMDDYY.pdf` are the
+  AIX report as text (no OCR): `python history/prod_instr.py parse` -> `work/history/ext_history.csv`;
+  `python history/analyze.py` (rules and master vs history, read-only). They feed the Product Master (`HIST_CSV=` in
+  `build_master.py`: latest run fills blanks, a difference is a Check note, never an overwrite; column Last Scheduled),
+  the Extrusion Production Record (`python daily/record.py --history <csv>`: days not recorded yet; recorded days stay
+  as issued), and the page's order history (`hist_pairs`, last 2 years of the record). A line printed again later the
+  same day is the revision. When new PDFs land in the folder, parse again and rerun both.
 - **Never auto-issue a formula the pipeline guessed.** Anything not matched exactly goes to an engineer. Every
   output is a draft until Tech signs it.
 
@@ -117,6 +128,8 @@ Change these only with James's explicit say-so, and log the change in the handof
 | `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. `preflight.py`: master change control (`check` / `accept`; accepted versions in `data/snapshots/`). `seed_master.py`: one-time Draft seed. Flow and maintenance in `docs/DATABASE.md` (§3, §7) |
 | `product_master/` | `prepare.py`: Product Master → `Product Master - Prepared <date>.xlsx` (code-derived columns, Issues, Verify First, Colour Codes, Import Map; §7.18). A working file, not published |
 | `scan_reader/` | `ext_scan_reader.py` (EXT scan reader, R1/R2 hardcoded, `glyph_bank.npz`); `render_pages.py` (page PNGs + quarter tiles for reading) |
+| `history/` | The system's own past extrusion schedules (Production Instruction PDFs): `prod_instr.py` (parse), `analyze.py` (findings) |
+| `order_number.py`, `product_code.py` | The order-number and product-code hard rules (used by checks, readers, masters) |
 | `ui/` | The interface page: `build.py` (data + `page.template.html` + `reader.js` → `out/profile-formulation.html`, `eng-data.js`, `glyph-bank.js`); `reader.js` (the page's scan reader); `ocr_eval.py` (the reference reader, `audit3`, `dump_parity`) |
 | `data/packets/` | Transcribed daily packets `packet_YYYY-MM-DD.json` (`packet_date`, `source_scan`, `ext`, `cnv`, `frm`) |
 | `data/` | `ext_truth_2026-09-23.csv` (82 verified EXT rows), `published_manifest.json` |

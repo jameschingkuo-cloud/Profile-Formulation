@@ -95,6 +95,14 @@ for r in ext_rows:
 for c in cnv_rows:
     for why in _pcode.problems(c['product_code']):
         add('High', 'CNV', c.get('cnv_line', ''), c['order'], 'Product code breaks the code rule', f"{c['product_code']}: {why}. Look at the page again", f"scan p{c['scan_page']}")
+# order number hard rule (order_number.py, read from the system's own schedules 2020-2026): format, not dated after the day
+import order_number as _onum
+for r in ext_rows:
+    for why in _onum.problems(r['order'], PKT):
+        add('High', 'EXT', r['line'], r['order'], 'Order number breaks the order rule', f"{r['order']}: {why}. Look at the page again", f"scan p{r['scan_page']}")
+for c in cnv_rows:
+    for why in _onum.problems(c['order'], PKT):
+        add('High', 'CNV', c.get('cnv_line', ''), c['order'], 'Order number breaks the order rule', f"{c['order']}: {why}. Look at the page again", f"scan p{c['scan_page']}")
 
 # 2. EXT vs FRM
 frm_orders=defaultdict(set)

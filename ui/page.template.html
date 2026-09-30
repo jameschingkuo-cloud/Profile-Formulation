@@ -843,7 +843,7 @@ async function generate(files){
     const flush = async () => {
       batch.forEach(p => { gpages.insertAdjacentHTML('beforeend', `<span id="gp${p.label}" class="busy">p${p.label}</span>`); });
       say(`${mode === 'claude' ? 'Claude is reading' : 'Reading'} page${batch.length > 1 ? 's' : ''} ${batch[0].label}${batch.length > 1 ? '–' + batch[batch.length - 1].label : ''} of ${batch[0].total}…`);
-      const got = mode === 'claude' ? await claudeRead(batch) : [await ocrPage(batch[0], pairs, pairSet)];
+      const got = mode === 'claude' ? await claudeRead(batch) : [await ocrPage(batch[0], pairs, pairSet, date)];
       got.forEach((r, k) => {
         const el = $('#gp' + batch[k].label);
         el.className = r ? 'ext' : ''; el.textContent = r ? `p${batch[k].label} ${r.line || '?'}` : `p${batch[k].label}`;
@@ -912,7 +912,7 @@ function render(reads, date, nPages){
     const pl = {line, meta, rows: []}; plan.lines.push(pl);
     const rows = byLine[line].map((o, i) => {
       n++;
-      const okOrder = ORDER_RULE.test(o.order), okProd = PRODUCTS.has(o.prod) && !codeProblems(o.prod).length;
+      const okOrder = !orderProblems(o.order, date).length, okProd = PRODUCTS.has(o.prod) && !codeProblems(o.prod).length;
       const okLine = !o.lineCheck || LINES.includes(line);
       const flagged = !okOrder || !okProd || !okLine || o.status === 'new order' || o.status === 'check';
       if (flagged) toCheck++;
@@ -935,7 +935,7 @@ function render(reads, date, nPages){
       let orderCell = `<b class="mono">${esc(o.order)}</b> ${chip}`, prodCell = `${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
       if (flagged) {
         const k = editRefs.push(o._ref) - 1;
-        const why = [o.lineCheck ? 'the line code on this page was not read the same two ways: check the line on the paper' : '', okOrder ? '' : 'order number does not keep the rule (H69A039-1 / RP26811-1)', okProd ? '' : (codeProblems(o.prod).length ? 'product: ' + codeProblems(o.prod).join('; ') : 'product not in the Product Master')].filter(Boolean);
+        const why = [o.lineCheck ? 'the line code on this page was not read the same two ways: check the line on the paper' : '', okOrder ? '' : orderProblems(o.order, date).join('; '), okProd ? '' : (codeProblems(o.prod).length ? 'product: ' + codeProblems(o.prod).join('; ') : 'product not in the Product Master')].filter(Boolean);
         orderCell = `<input class="genfix mono" data-k="${k}" data-f="order" value="${esc(o.order)}" aria-label="Order number"> ${chip}
           ${o.img ? `<div><img src="${o.img}" alt="The row on the scan" style="max-width:min(420px,100%);border:1px solid var(--line);background:#fff;margin-top:4px"></div>` : ''}
           ${o.raw ? `<div class="muted" style="font-size:12px">read as <span class="mono">${esc(o.raw)}</span></div>` : ''}
@@ -980,7 +980,7 @@ function render(reads, date, nPages){
     document.querySelectorAll('.genadd').forEach(inp => { (adds[inp.dataset.u] = adds[inp.dataset.u] || {})[inp.dataset.f] = inp.value.toUpperCase().replace(/\s+/g, ''); });
     Object.entries(adds).forEach(([k, v]) => {
       const {r, u} = unread[+k];
-      if (v.order && v.prod) { r.orders.push({order: v.order, prod: v.prod, status: ORDER_RULE.test(v.order) && PRODUCTS.has(v.prod) ? 'corrected by you' : 'check', raw: u.text, img: u.img}); r.unread = r.unread.filter(x => x !== u); }
+      if (v.order && v.prod) { r.orders.push({order: v.order, prod: v.prod, status: !orderProblems(v.order, lastRun.date).length && PRODUCTS.has(v.prod) ? 'corrected by you' : 'check', raw: u.text, img: u.img}); r.unread = r.unread.filter(x => x !== u); }
     });
     document.querySelectorAll('.gennot:checked').forEach(cb => { const {r, u} = unread[+cb.dataset.u]; r.unread = r.unread.filter(x => x !== u); });
     document.querySelectorAll('.genfix').forEach(inp => {
@@ -991,7 +991,7 @@ function render(reads, date, nPages){
       if (!ref) return;
       const lineOk = !ref.lineCheck || LINES.includes(ref.line);
       if (ref.lineCheck && lineOk) ref.lineCheck = false;
-      ref.status = ORDER_RULE.test(ref.order) && PRODUCTS.has(ref.prod) && lineOk ? 'corrected by you' : 'check';
+      ref.status = !orderProblems(ref.order, lastRun.date).length && PRODUCTS.has(ref.prod) && lineOk ? 'corrected by you' : 'check';
     });
     render(lastRun.reads, lastRun.date, lastRun.nPages);
   });

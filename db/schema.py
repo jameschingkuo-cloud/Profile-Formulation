@@ -100,10 +100,13 @@ BOOKS: list[Book] = [
          [Sheet("Product Master", "One row per Product Code. Columns as built by daily/build_master.py (38 columns); "
                 "only the ones the flow depends on are listed here", [
              Col("Product Code", key=True, required=True, note="material master number; never duplicated"),
-             Col("Material", "enum", values=("PPP", "BBB")), Col("Grade", "enum", values=("P", "A")),
+             Col("Material", "enum", values=("PPP", "BBB", "EEE"),
+                 note="EEE: in the system's own schedules 2020-2026 (423 rows, mostly RPP50.. on SE21); meaning to confirm"),
+             Col("Grade", "enum", values=("P", "A")),
              Col("Spec"), Col("Colours (3 layers)"),
              Col("Thk (mm)", "number", note="the spec decides; the code's thickness is nominal (James, 28 Sep 2026)"),
              Col("GSM", "number"), Col("Formula Code(s)"), Col("Formula Last Run", "date"),
+             Col("Last Scheduled", "date", note="latest day on the extrusion schedule: system history (2020 on) and packets"),
              Col("Source"), Col("Check"),
              Col("Status", "enum", required=True, values=("Draft", "Verified", "Needs Review", "Obsolete")),
              Col("Last Updated", "date", required=True)]),

@@ -1,6 +1,8 @@
 """The three history records: Formulation Report Record, Extrusion Production Record, Converting Production Record.
 
     python daily/record.py 2026-09-23 2026-09-24 ...      (append these packet dates, in the order given)
+    python daily/record.py --history work/history/ext_history.csv   (Extrusion Production Record: the system's own
+                                                                     past schedules, history/prod_instr.py)
 
 Append-only (db/schema.py kind 'record'; James Kuo, 28 Sep 2026). Each record starts from the published copy in
 PUBLISH_DIR (read and recorded, per the hard rule) or, if none is published yet, from nothing. For every date:
@@ -172,6 +174,71 @@ def cnv_rows(pk):
 BUILD = {'FRM': frm_rows, 'EXT': ext_rows, 'CNV': cnv_rows}
 
 
+def history_rows(csv_path):
+    """Extrusion Production Record rows from the system's own past schedules (history/prod_instr.py; James Kuo,
+    30 Sep 2026: "i got the past production schedule ... refine your data base"). A line printed again later the same
+    day (061620-2.pdf ...) is a revision: per day and line, the latest print is the day's schedule."""
+    import csv
+    config.record_read(csv_path, 'system schedule history (Production Instruction PDFs)')
+    by = {}
+    for r in csv.DictReader(open(csv_path, encoding='utf-8')):
+        by.setdefault((r['date'], r['line']), {}).setdefault((r['run_time'], r['file']), []).append(r)
+    out = {}
+    for (d, line), prints in sorted(by.items()):
+        for r in prints[max(prints)]:
+            si = r['special'] or ''
+            m = PLTS_DONE.search(si)
+            out.setdefault(d, []).append({
+                'Schedule Date': datetime.date.fromisoformat(d), 'Line Code': line, 'Order': r['order'],
+                'Product Code': r['prod_code'], 'Total Sheets': num(r['total_sheets']), 'Weight (LBs)': num(r['weight_lbs']),
+                'Plts Done (EXT)': num(m.group(1)) if m else None, 'Plts Ordered': as_int_or_text(r['plts']),
+                'Special Instructions': si or None, 'Handwritten': None,
+                'Source Scan': f"Production Instruction/{r['file']} p{r['page']} (system PDF, run {r['run_date']} {r['run_time']})"})
+    return out
+
+
+def main_history(csv_path):
+    """Append the system's past schedules to the Extrusion Production Record: days not recorded yet are added; a day
+    already recorded (from the daily scan) stays as issued, and its line/order/product rows are compared and reported."""
+    name, sheet = RECORDS['EXT']
+    header = cols(name, sheet)
+    existing, pub = load_existing(name, sheet)
+    have = {}
+    for r in existing:
+        have.setdefault(norm(r.get(header[0])), []).append(r)
+    hist = history_rows(csv_path)
+    added, log, rows = 0, [], []
+    for d, new in sorted(hist.items()):
+        if d in have:
+            k = lambda rs: sorted((norm(r['Line Code']), norm(r['Order']), norm(r['Product Code'])) for r in rs)
+            same = k(have[d]) == k(new)
+            log.append(f"{d}: already recorded from the daily scan ({len(have[d])} rows) - kept as issued; the system's "
+                       f"schedule has {'the same' if same else 'DIFFERENT'} lines, orders and products")
+            continue
+        rows += new
+        added += len(new)
+    rows = sorted(rows + existing, key=lambda r: norm(r.get(header[0])))
+    days = sorted(set(hist) - set(have))
+    log.insert(0, f'{len(days)} days appended from the system history ({days[0]} to {days[-1]}), {added} rows' if days else 'no new days')
+    notes = [['Workbook', f'{name}: {schema.BY_NAME[name].purpose}.'],
+             ['Rule', 'Append-only. Rows are added, never edited (db/schema.py). Values as printed.'],
+             ['Based on', f'{pub} ({len(existing)} rows)' if pub else 'nothing published yet: started empty'],
+             ['Rows', len(rows)],
+             ['Days in record', f"{len({norm(r[header[0]]) for r in rows})} ({norm(rows[0][header[0]])} to {norm(rows[-1][header[0]])})"],
+             ['System history', "Days before the pipeline's first daily scan come from the system's own schedules "
+                                '(Technical Engineering Team/Production Instruction PDFs, read as text: '
+                                'history/prod_instr.py). Source Scan names the PDF, page and print time. A line printed '
+                                'again later the same day is the revision: the latest print of each line is recorded. '
+                                'Not in the folder: 5 May 2020, 13-14 Nov 2023 (image scans), 17 Nov 2023 (rotated print).'],
+             ['Plts Ordered', '# Plt as printed. The field caps at 999; a hand-corrected count is in Handwritten.']]
+    notes += [['This run', x] for x in log]
+    notes += [['Run', datetime.date.today().isoformat()]]
+    out = write(name, sheet, header, rows, notes)
+    print(out, '-', log[0], '|', sum('DIFFERENT' in x for x in log), 'recorded day(s) differ from the system')
+    for x in log[1:]:
+        print('  ', x)
+
+
 # ---- workbook in / out ----------------------------------------------------------------------------------------
 def cols(name, sheet):
     return [c.name for c in next(s for s in schema.BY_NAME[name].sheets if s.name == sheet).cols]
@@ -298,4 +365,7 @@ def main(dates):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    if sys.argv[1:2] == ['--history']:
+        main_history(sys.argv[2])
+    else:
+        main(sys.argv[1:])

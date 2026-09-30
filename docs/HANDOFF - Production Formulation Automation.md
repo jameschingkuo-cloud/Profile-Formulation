@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.40 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.41 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1662,6 +1662,55 @@ this opportunity to check every scan file you currently have. see if anything el
   reference on every row), `tests/test_product_code.py` (the page's decision, suffix, line-code and continuation rules).
 - Artifact republished: version 25, with `glyph-bank.js` beside the page (and `eng-data.js`, unchanged).
 
+## 7.50 The system's own past schedules: order rule fixed, masters refined (30 Sep 2026)
+
+James: *"i got the past production schedule and put it into this folder. Go through and refine your data base"* (SharePoint
+`Profile Process Control - Documents/Technical Engineering Team/Production Instruction`, synced on James's PC).
+- **What the folder holds**: 1,204 files; 1,167 named MMDDYY(.pdf) are the AIX report "PP PROFILE PRODUCTION INSTRUCTION -
+  EXTRUSION" (WPPPOPRC) printed straight to PDF: the text itself, Courier, so no OCR is needed. `history/prod_instr.py`
+  rebuilds each page as its line-printer text and reads it by its '|' columns: **1,162 days, 2020-04-01 to 2026-09-24,
+  62,662 order rows**, no parse errors. Not read: `405323.PDF` (a Braskem bill of lading), 050820 / 111323 / 111423 (image
+  scans), 111723 (printed rotated by another mail system). A line printed again later the same day (061620-2.pdf ...) is
+  that line's revision. The other files in the folder (forms, photos, customer sheets, six "Production Formula Item"
+  shift logs) were not used.
+- **Check of my transcriptions**: the 23 and 24 Sep packets (read from scans) equal the system's text exactly: all 82 +
+  80 rows, die, thickness, GSM, weight, pack, web width and sizes.
+- **Order number rule fixed** (`order_number.py`, new): H + year digit + month (1-9, A, B, C) + **A** + 3 digits; SH + year
+  digit + month + A + 2 digits (sample orders, about 60 a year, still current); RP + 2-digit year + month + 2 digits;
+  suffix 1-2 digits. The first rule (H + 2 digits + letter + 3 digits) had the month and the A the wrong way round: it
+  refused every October-December H order (30% of H orders; H5CA... all this year) and the reader could turn a month A
+  into a 4 - it would have boxed every October order from 1 Oct. Also from the history: no order is ever dated after its
+  schedule (0 of 62,662), H/SH orders are always under 2 years old, RP stock orders can be old (RP20624-1 on 9 Sep 2026,
+  75 months). The readers, the page (corrections too) and the daily checks use it; a reading dated impossibly is no
+  reading unless its month has a possible look-alike (B/8, A/4), which is then taken only when on file or read by the
+  other reader (28 Sep p14 'H6BA020-1' -> H68A020-1). 2020-21 H orders used a year letter (V, W); the last left the
+  schedule on 27 Jul 2022.
+- **Product code rule confirmed**: all 62,662 system codes keep it; code thickness = the Thk column on every row (A0 = 10 mm
+  ...); the code colour is always one of the three layer colours; 10 families (APA not in the history), 27 colours, all
+  on the lists.
+- **Findings for James/Tech**: material **EEE P** (423 rows, 2020 to 3 Sep 2026, mostly RPP50.. on SE21) - added to the
+  schema's list, meaning to confirm. Letter+letter spec tokens (RD, OP, RM, RS, PI, AM, DM) are in 6,826 rows (RD, OP, RM
+  in 2026): rule R2 of `scan_reader/ext_scan_reader.py` flags them for confirmation - not changed (James's say-so). SE42
+  first appears in 2026.
+- **Product Master** (published): `build_master.py` with `HIST_CSV=`: each product's values on its latest system run fill
+  what was blank, a different value is a Check note ("system <date> ..."), nothing overwritten. 2,084 -> **2,652 products**
+  (568 added as Draft, Source "System history"); blanks filled in 1,464 rows (material, grade, spec, colours, width,
+  length, pack, PCs/stack, Stk/plt on 1,385; GSM 731; cut 756; Thk 140); 174 Check notes (Thk 94, e.g. DBP33BL1 3 vs system
+  3.3; GSM 44; cut 35; PCs/stack 1). New column **Last Scheduled**. Schema check: only the Read Me layout note the
+  published copy already had.
+- **Extrusion Production Record** (published): `daily/record.py --history`: 1,152 days appended (2020-04-01 to
+  2026-09-21, 62,454 rows); 23 and 24 Sep stay as recorded from the scans (the system has the same lines, orders and
+  products); 62,838 rows. Source Scan names the PDF, page and print time.
+- **Formula coverage** (read-only): of the 805 product + line pairs scheduled in the last 12 months, 92 have a Product to
+  Formula row in the Formulation Master (43% of schedule rows). The PDFs carry no formulas; Tech's past FRM pages would.
+- **Page**: the reader also takes an order + product on the schedule in the last two years (3,328 pairs from the
+  record); corrections must keep the order rule and the schedule date. Chrome load test again (29 Sep as a user runs it: 76 read, 0 to
+  check, 76/76 same as Tech; with history before the day only: 29 / 25 / 28 Sep 76/76, 71/71, 75/75, 0 to check). Artifact version 26.
+- **Reader**: a sheet line broken where notes cross it is joined again (`line_groups`: 28 Sep p14 under "-BB510").
+  Tests: `tests/test_order_number.py` (rule, dates, every system order since Aug 2022, every packet),
+  `tests/test_product_code.py` (page: October/December/SH orders, dates, look-alike month), `OCR_TESTS=1` all 3 scans
+  right and page = reference (pass).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1790,6 +1839,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.41 | 2026-09-30 | Claude Code (local, with James Kuo) | **The system's own past schedules (§7.50)**: 1,162 days of Production Instruction PDFs read as text (62,662 rows); order-number rule fixed (month A-C, SH orders, dates); Product Master 2,652 (+568, 1,464 rows filled, Last Scheduled); Extrusion Production Record +1,152 days; page order history. |
 | 1.40 | 2026-09-30 | Claude Code (local, with James Kuo) | **Two readers, border lines, handwriting ignored (§7.49)**: row cut at the sheet border line; Tesseract + glyph bank must agree; line code two ways + page continuation; page reader = reference on 222/222 rows; 25/28/29 Sep all rows right, 0 boxed; Chrome 29 Sep 76/76 same as Tech, Word file = pipeline's. |
 | 1.39 | 2026-09-30 | Claude Code (local, with James Kuo) | **Scan reader and product codes made hard rules (§7.48)**: `product_code.py`; Product Master letter-O codes fixed (2,084); reader cells at the bars, no wrong take on 28/29 Sep; Word download locked until boxed rows are confirmed. |
 | 1.38 | 2026-09-30 | Claude Code (local, with James Kuo) | **Always the latest formulation, even for a past schedule (§7.47)**. |

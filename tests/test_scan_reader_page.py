@@ -37,11 +37,11 @@ def test_reference_reader_reads_every_row_right(date, scan, monkeypatch):
     P = _reader(monkeypatch)
     import json
     pk = json.loads((ROOT / 'data' / 'packets' / f'packet_{date}.json').read_text(encoding='utf-8'))
-    truth = sorted((e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows'])
+    truth = sorted(((e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']), key=str)
     res = P.audit3(date, scan, 'before', show=False)
     taken = [r for r in res if r[4] != 'check']
     assert [r for r in taken if (r[1], r[2], r[3]) not in set(truth)] == []      # never a wrong line, order or product
-    assert sorted((r[1], r[2], r[3]) for r in res) == truth                        # every printed row, nothing extra
+    assert sorted(((r[1], r[2], r[3]) for r in res), key=str) == truth           # every printed row, nothing extra
     assert len(taken) == len(truth)                                                # and nothing left for a person
     assert not any(r[2] == 'H69A203-17' for r in res)
 
