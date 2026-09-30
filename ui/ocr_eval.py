@@ -1,5 +1,5 @@
-# Reference and evaluation harness for the in-page scan reader (ui/page.template.html, ocrPage). evaluate11 is the
-# version the page mirrors; earlier evaluateN are kept as the record of what was tried (29 Sep 2026). Run from the repo root.
+# Reference and evaluation harness for the in-page scan reader (ui/page.template.html, ocrPage). read_page15 / evaluate15 is
+# the version the page mirrors (30 Sep 2026); earlier versions are the record of what was tried. Run from the repo root.
 """Parser for Tesseract text of the EXT page's left strip (to be mirrored in the interface page's JavaScript).
 Tested against transcribed packets. Rule: a value is taken only when it is certain (exact, or exactly one Product
 Master code among the look-alike variants); anything else is returned flagged, never guessed."""
@@ -818,3 +818,338 @@ def evaluate11(date, scan):
           f'| boxed {len(boxed)} (right {sum(1 for x in boxed if x[:3] in set(truth))}) | unread rows {len(unex)} | SILENT MISSES {silent}')
     for x in boxed: print('   BOXED', x[:4])
     return res, unex
+
+
+# ---- v12: cells between the printed bars -------------------------------------------------------------------------
+import numpy as np
+BAR_NEAR = {'y': 0.081, 'suf': 0.1545, 'die': 0.2185}
+
+
+def find_bars(a, bands, w):
+    """x of the bar after 'Y', after the order suffix, and before the die, from ink just below each row's text
+    (bars run below the baseline, letters and digits do not). One x per page (monospace print)."""
+    out = {}
+    for k, fx in BAR_NEAR.items():
+        x0, x1 = int(w * (fx - 0.012)), int(w * (fx + 0.012))
+        score = np.zeros(x1 - x0)
+        for (y0, y1) in bands:
+            win = a[y1 + 1:y1 + 7, x0:x1] < 140
+            if win.size: score += win.mean(axis=0)
+        out[k] = x0 + int(np.argmax(score)) if score.max() > 0 else int(w * fx)
+    return out
+
+
+ORDER_WL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-'
+CELL_TRIES = [(3, 7), (2, 7), (3, 13), (4, 8)]
+
+
+def ocr_cell(im, x0, x1, y0, y1, scale, psm, wl=ORDER_WL, pad=8):
+    c = im.crop((x0, max(0, y0 - pad), x1, y1 + pad))
+    c = c.resize((int(c.width * scale), int(c.height * scale)), Image.LANCZOS)
+    return re.sub(r'\s+', '', pytesseract.image_to_string(c, config=f'--psm {psm} -c tessedit_char_whitelist={wl}').upper())
+
+
+ORD_CELL = re.compile(r'^[^A-Z0-9]*(H[0-9A-Z]{6}|RP[0-9A-Z]{5})-*([0-9ITLJZSOD]{1,2})[^A-Z0-9]*$')
+
+
+def parse_order_cell(t):
+    m = ORD_CELL.match(t)
+    if not m: return None
+    o, ok = fix_order(m.group(1), m.group(2))
+    return o if ok else None
+
+
+PROD_CELL = re.compile(r'^[^A-Z0-9]*([A-Z0-9]{6,12})[^A-Z0-9]*$')
+
+
+def parse_prod_cell(t):
+    m = PROD_CELL.match(t)
+    if not m: return None, 'unread'
+    tok = m.group(1)
+    if tok in PRODS: return tok, 'exact'
+    p, _ = best(tok, PRODS, 1.0)
+    return (p, 'corrected') if p else (tok, 'unknown')
+
+
+def read_rows_cells(im):
+    """[(order or None, prod or None, prod_how, raw)] per printed order row, from the cells alone (no history)."""
+    a = np.asarray(im); h, w = a.shape
+    bands = [b for b in row_bands(im) if b[0] > h * 0.10]
+    bars = find_bars(a, bands, w)
+    out = []
+    for (y0, y1) in bands:
+        o = p = None; how = 'unread'; raws = []
+        for scale, psm in CELL_TRIES:
+            if o is None:
+                t = ocr_cell(im, bars['y'] + 4, bars['suf'] - 3, y0, y1, scale, psm); raws.append(t)
+                o = parse_order_cell(t)
+            if p is None or how == 'unknown':
+                t2 = ocr_cell(im, bars['suf'] + 4, bars['die'] - 3, y0, y1, scale, psm); raws.append(t2)
+                pp, hh = parse_prod_cell(t2)
+                if hh in ('exact', 'corrected') or p is None: p, how = pp, hh
+            if o and how in ('exact', 'corrected'): break
+        out.append((o, p, how, raws))
+    return out
+
+
+def evaluate12(date, scan):
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
+    tset = set(truth)
+    got = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        w, h = im.size
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        for o, p, how, raws in read_rows_cells(im):
+            got.append((line, o, p, how, png.name, raws))
+    rows = [(l, o, p) for l, o, p, how, *_ in got if o and p]
+    ords = {(l, o) for l, o, p, *_ in got if o}
+    print(f'{date}: truth {len(truth)} | printed rows found {len(got)} | order right {len(ords & {(l, o) for l, o, _ in truth})} '
+          f'| order+product right {len(set(rows) & tset)} | wrong (taken but not in truth) {sum(1 for r in rows if r not in tset)} '
+          f'| order unread {sum(1 for g in got if not g[1])}')
+    for g in got:
+        if (g[0], g[1], g[2]) not in tset: print('   ', g[0], g[1], g[2], g[3], g[4], g[5][:4])
+    return got
+
+
+def row_bars(a, y0, y1, w):
+    """Per row: x of the bar after 'Y', after the suffix, before the die (strokes that run below the text)."""
+    below = (a[y1 + 2:y1 + 8, :] < 140).mean(axis=0)
+    xs = [x for x in range(int(w * 0.06), int(w * 0.24)) if below[x] >= 0.8]
+    suf = next((x for x in xs if w * 0.145 <= x <= w * 0.162), None)
+    if suf is None: return None
+    die = min((x for x in xs if abs(x - (suf + w * 0.064)) <= w * 0.006), key=lambda x: abs(x - (suf + w * 0.064)), default=int(suf + w * 0.064))
+    ybar = min((x for x in xs if abs(x - (suf - w * 0.073)) <= w * 0.006), key=lambda x: abs(x - (suf - w * 0.073)), default=int(suf - w * 0.073))
+    return ybar, suf, die
+
+
+def read_rows_cells2(im):
+    a = np.asarray(im); h, w = a.shape
+    out = []
+    for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+        bars = row_bars(a, y0, y1, w)
+        if not bars: continue                                   # not an order row (no bar after the suffix)
+        yb, sb, db = bars
+        o = p = None; how = 'unread'; raws = []
+        for scale, psm in CELL_TRIES:
+            if o is None:
+                t = ocr_cell(im, yb + 5, sb - 3, y0, y1, scale, psm); raws.append(t)
+                o = parse_order_cell(t)
+            if p is None or how == 'unknown':
+                t2 = ocr_cell(im, sb + 5, db - 3, y0, y1, scale, psm); raws.append(t2)
+                pp, hh = parse_prod_cell(t2)
+                if hh in ('exact', 'corrected') or p is None: p, how = pp, hh
+            if o and how in ('exact', 'corrected'): break
+        out.append((o, p, how, raws))
+    return out
+
+
+def evaluate13(date, scan, show=True):
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
+    tset = set(truth)
+    got = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        w, h = im.size
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        for o, p, how, raws in read_rows_cells2(im):
+            got.append((line, o, p, how, png.name, raws))
+    ords = [(l, o) for l, o, *_ in got if o]
+    tords = {(l, o) for l, o, _ in truth}
+    both = [(l, o, p) for l, o, p, how, *_ in got if o and how in ('exact', 'corrected')]
+    print(f'{date}: truth {len(truth)} | order rows found {len(got)} | order right {sum(1 for x in ords if x in tords)} WRONG {sum(1 for x in ords if x not in tords)} unread {sum(1 for g in got if not g[1])} '
+          f'| order+product taken {len(both)} right {sum(1 for x in both if x in tset)}')
+    if show:
+        for g in got:
+            if (g[0], g[1], g[2]) not in tset: print('   ', g[0], g[1], g[2], g[3], g[4], g[5][:4])
+    return got
+
+
+# ---- v14 (final): cells between the bars + match to orders on file; nothing unconfirmed is taken ----------------------
+PAIRS |= {frozenset(p) for p in ['4Z', '2Z', '6G', '3S', '0Q', 'MN', 'WN', '8R', 'BR', 'EF']}
+
+
+def match_pair(o_raw, p_raw, pairs):
+    """Best (order, product) on file for what the cells read; accepted only when clearly closest."""
+    sc = sorted((ocr_dist(o_raw, o) + ocr_dist(p_raw, p), o, p) for o, p in pairs)
+    if sc and sc[0][0] <= 2.5 and (len(sc) == 1 or sc[1][0] - sc[0][0] >= 1.0):
+        return sc[0][1], sc[0][2], sc[0][0]
+    return None
+
+
+def read_page14(im, pairs):
+    a = np.asarray(im); h, w = a.shape
+    top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+    mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+    if not mm: return None, []
+    line = 'SE' + d(mm.group(1))
+    rows = []
+    for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+        bars = row_bars(a, y0, y1, w)
+        if not bars: continue
+        yb, sb, db = bars
+        best_r = None
+        for scale, psm in CELL_TRIES:
+            t = ocr_cell(im, yb + 5, sb - 3, y0, y1, scale, psm)
+            t2 = ocr_cell(im, sb + 5, db - 3, y0, y1, scale, psm)
+            if re.search(r'LINE|TOTAL|REPORT', t + t2): best_r = ('skip',); break
+            o_raw = re.sub(r'[^A-Z0-9-]', '', t).strip('-'); p_raw = re.sub(r'[^A-Z0-9]', '', t2)
+            m = match_pair(o_raw, p_raw, pairs) if o_raw and p_raw else None
+            if m:
+                best_r = (m[0], m[1], 'read' if m[2] == 0 else 'matched to schedule history', f'{t} | {t2}'); break
+            o = parse_order_cell(t); p, how = parse_prod_cell(t2)
+            if o and how in ('exact', 'corrected'):
+                if not best_r or best_r[2] == 'check': best_r = (o, p, 'new order', f'{t} | {t2}')
+            elif not best_r:
+                best_r = (o or o_raw, p or p_raw, 'check', f'{t} | {t2}')
+        if best_r and best_r[0] != 'skip': rows.append(best_r)
+    return line, rows
+
+
+def evaluate14(date, scan, use_history=True, show=True):
+    pairs = set()
+    if use_history:
+        for f in sorted(Path('data/packets').glob('packet_*.json')):
+            if f.stem.split('_')[1] >= date: continue
+            q = json.load(open(f, encoding='utf-8'))
+            pairs |= {(r['order'], r['prod_code']) for e in q['ext'] for r in e['rows']}
+    pairs = sorted(pairs)
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
+    tset = set(truth)
+    res = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        line, rows = read_page14(im, pairs)
+        if line: res += [(line,) + r + (png.name,) for r in rows]
+    taken = [x for x in res if x[3] in ('read', 'matched to schedule history')]
+    new = [x for x in res if x[3] == 'new order']
+    chk = [x for x in res if x[3] == 'check']
+    print(f'{date} history={use_history}: truth {len(truth)} | rows {len(res)} | taken {len(taken)} WRONG {sum(1 for x in taken if x[:3] not in tset)} '
+          f'| new-order boxed {len(new)} (right {sum(1 for x in new if x[:3] in tset)}) | check boxed {len(chk)} | truth rows not found {len(tset - {x[:3] for x in res}) - len(chk) - sum(1 for x in new if x[:3] not in tset)}')
+    if show:
+        for x in taken:
+            if x[:3] not in tset: print('   TAKEN WRONG', x)
+        for x in new + chk: print('   BOXED', x[:4], x[4][:50])
+    return res
+
+
+def row_bars(a, y0, y1, w):
+    """Per row: bars that run below the text. The suffix bar and the die bar are 0.064 of the page width apart and the
+    'Y' bar 0.073 before the suffix bar; found by that spacing, so a page shifted on the copier glass still works."""
+    below = (a[y1 + 2:y1 + 8, :] < 140).mean(axis=0)
+    xs = [x for x in range(int(w * 0.03), int(w * 0.26)) if below[x] >= 0.8]
+    near = lambda t, tol: min((x for x in xs if abs(x - t) <= tol), key=lambda x: abs(x - t), default=None)
+    for suf in xs:
+        if not (w * 0.11 <= suf <= w * 0.19): continue
+        die = near(suf + w * 0.064, w * 0.005)
+        if die is None: continue
+        yb = near(suf - w * 0.073, w * 0.006)
+        return (yb if yb is not None else int(suf - w * 0.073)), suf, die
+    return None
+
+
+def strict_dist(a, b):
+    """As ocr_dist, but a substitution that is not a look-alike costs 10: history may only differ by OCR look-alikes."""
+    n, m = len(a), len(b)
+    D = [[0.0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1): D[i][0] = D[i - 1][0] + (0.5 if a[i - 1] in SOFT else 1.5)
+    for j in range(1, m + 1): D[0][j] = D[0][j - 1] + (0.5 if b[j - 1] in SOFT else 1.5)
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            x, y = a[i - 1], b[j - 1]
+            sub = 0 if x == y else (0.3 if frozenset((x, y)) in PAIRS else 10)
+            D[i][j] = min(D[i - 1][j - 1] + sub, D[i - 1][j] + (0.5 if x in SOFT else 1.5), D[i][j - 1] + (0.5 if y in SOFT else 1.5))
+    return D[n][m]
+
+
+def match_pair(o_raw, p_raw, pairs):
+    sc = sorted((strict_dist(o_raw, o) + strict_dist(p_raw, p), o, p) for o, p in pairs)
+    if sc and sc[0][0] <= 2.5 and (len(sc) == 1 or sc[1][0] - sc[0][0] >= 1.0):
+        return sc[0][1], sc[0][2], sc[0][0]
+    return None
+
+
+# ---- v15: product code hard rule in the reader ---------------------------------------------------------------------
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import product_code as PCODE
+
+
+def take_prod(t2):
+    """Product from a cell: exact in the Product Master, or its rule-based repair in the Product Master. Else None."""
+    tok = re.sub(r'[^A-Z0-9/]', '', t2)
+    for cand in [tok, tok[1:], tok[:-1], tok[1:-1]]:
+        if cand in PRODS: return cand
+        fixed, _ = PCODE.repair(cand)
+        if fixed and fixed in PRODS: return fixed
+    return None
+
+
+def read_page15(im, pairs):
+    a = np.asarray(im); h, w = a.shape
+    top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+    mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+    if not mm: return None, [], []
+    line = 'SE' + d(mm.group(1))
+    rows, unread = [], []
+    for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+        bars = row_bars(a, y0, y1, w)
+        if not bars:
+            t = ocr_cell(im, int(w * 0.06), int(w * 0.24), y0, y1, 2, 7, WL)
+            if re.search(r'LINE|TOTAL|REPORT|SI:|SPECIAL', t) or not re.search(r'\d{3}', t): continue
+            unread.append(((y0, y1), t)); continue
+        yb, sb, db = bars
+        best_r = None
+        for scale, psm in CELL_TRIES:
+            t = ocr_cell(im, yb + 5, sb - 3, y0, y1, scale, psm)
+            t2 = ocr_cell(im, sb + 5, db - 3, y0, y1, scale, psm)
+            if re.search(r'LINE|TOTAL|REPORT', t + t2): best_r = ('skip',); break
+            o_raw = re.sub(r'[^A-Z0-9-]', '', t).strip('-'); p_raw = re.sub(r'[^A-Z0-9]', '', t2)
+            m = match_pair(o_raw, p_raw, pairs) if o_raw and p_raw else None
+            if m: best_r = (m[0], m[1], 'read' if m[2] == 0 else 'matched to schedule history', f'{t} | {t2}'); break
+            o = parse_order_cell(t); p = take_prod(t2)
+            if o and p:                                   # keeps the rules but is not on file: read on, it may still match
+                if not best_r or best_r[2] == 'check': best_r = (o, p, 'new order', f'{t} | {t2}')
+            elif not best_r: best_r = (o or o_raw, p or p_raw, 'check', f'{t} | {t2}')   # odd: read again with the next setting
+        if best_r and best_r[0] != 'skip': rows.append(best_r)
+    return line, rows, unread
+
+
+def evaluate15(date, scan, show=True):
+    pairs = set()
+    for f in sorted(Path('data/packets').glob('packet_*.json')):
+        if f.stem.split('_')[1] >= date: continue
+        q = json.load(open(f, encoding='utf-8'))
+        pairs |= {(r['order'], r['prod_code']) for e in q['ext'] for r in e['rows']}
+    pairs = sorted(pairs)
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
+    tset = set(truth)
+    res, un = [], []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        line, rows, unread = read_page15(im, pairs)
+        if line:
+            res += [(line,) + r + (png.name,) for r in rows]; un += [(png.name, line, u) for u in unread]
+    taken = [x for x in res if x[3] in ('read', 'matched to schedule history')]
+    new = [x for x in res if x[3] == 'new order']; chk = [x for x in res if x[3] == 'check']
+    silent = tset - {x[:3] for x in res}
+    silent = {t for t in silent if not any(c[0] == t[0] for c in chk) or True}
+    print(f'{date}: truth {len(truth)} | taken {len(taken)} WRONG {sum(1 for x in taken if x[:3] not in tset)} | new-order boxed {len(new)} '
+          f'(right {sum(1 for x in new if x[:3] in tset)}) | check boxed {len(chk)} | unread pictures {len(un)} | truth not in any row {len(tset - {x[:3] for x in res})}')
+    if show:
+        for x in new + chk: print('   BOXED', x[:4], x[4][:50])
+        for u in un: print('   UNREAD', u)
+    return res, un

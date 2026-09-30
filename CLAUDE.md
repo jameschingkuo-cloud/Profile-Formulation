@@ -66,6 +66,17 @@ Change these only with James's explicit say-so, and log the change in the handof
   weekend, friday schedule)"*. The draft, the Word document and the interface use the **latest** issued formulation on
   file for each order on its line, whatever the schedule's date (`resolve.issued_history` with no cut-off).
   `HISTORY_BEFORE` is for backtests only. Test `test_past_schedule_gets_the_latest_formulation`.
+- **Product code and order number are hard rules (James, 30 Sep 2026)**, in `product_code.py`, used by the checks,
+  the Product Master build, the scan readers and the interface. Product code = family (3 letters) + thickness (digit 1-9
+  or letter, then a digit: 10 = 1 mm, 90 = 9 mm, 63 = 6.3 mm, A0 = 10 mm, B0 = 11 mm; *"AQ is incorrect from the
+  start"*) + colour (2 letters from the colour list; *"WB. WR dont exist"*) + product number (*"just number ... No english
+  characters"*). Order number = H + 2 digits + letter + 3 digits, or RP + 2 digits + (digit or A-C) + 2 digits, then
+  -suffix. A code breaking the rule never enters the Product Master (`build_master.py` refuses it; a letter O read for
+  a zero is repaired and merged, as DPPAOKS27 -> DPPA0KS27). *"these need to be hard rule. If anything odd is spotted,
+  recheck the OCR again"*: a reader re-reads an odd cell with other settings; what stays odd is never taken, it is boxed
+  for a person, and the interface's Word download stays locked until every boxed row is confirmed (a correction must keep
+  the rules and the product must be in the Product Master). Tests `test_product_code.py`; the real-scan reader test
+  `OCR_TESTS=1 python -m pytest tests/test_scan_reader_page.py` (run it whenever the reader changes).
 - **Never auto-issue a formula the pipeline guessed.** Anything not matched exactly goes to an engineer. Every
   output is a draft until Tech signs it.
 

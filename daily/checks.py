@@ -84,6 +84,18 @@ for r in ext_rows:
 for p in EXT:
     if p.get('page_notes'): pass
 
+# product code hard rule (product_code.py; James Kuo, 30 Sep 2026): family + thickness + colour + digits
+import product_code as _pcode
+for r in ext_rows:
+    for why in _pcode.problems(r['prod_code']):
+        add('High', 'EXT', r['line'], r['order'], 'Product code breaks the code rule', f"{r['prod_code']}: {why}. Look at the page again", f"scan p{r['scan_page']}")
+    t = _pcode.thickness_mm(r['prod_code'])
+    if t is not None and num(r.get('thk')) is not None and abs(t - num(r['thk'])) > 0.01 and not (t == int(t) and abs(t - num(r['thk'])) < 1):
+        add('Medium', 'EXT', r['line'], r['order'], 'Code thickness vs Thk column', f"{r['prod_code']} means {t:g} mm; Thk prints {r['thk']}", f"scan p{r['scan_page']}")
+for c in cnv_rows:
+    for why in _pcode.problems(c['product_code']):
+        add('High', 'CNV', c.get('cnv_line', ''), c['order'], 'Product code breaks the code rule', f"{c['product_code']}: {why}. Look at the page again", f"scan p{c['scan_page']}")
+
 # 2. EXT vs FRM
 frm_orders=defaultdict(set)
 for f in frm_rows:

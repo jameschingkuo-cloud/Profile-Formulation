@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.38 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.39 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1592,6 +1592,33 @@ schedule now resolves 76/76 (H69A203-1 FU0012BL5, H67A164-2 FU0001RF6, H67A164-1
 an engineer. `HISTORY_BEFORE=<date>` keeps the old view for the backtests only (`test_resolve.py`, the 28 Sep tests).
 New test `test_past_schedule_gets_the_latest_formulation`. Interface republished (version 23).
 
+## 7.48 Scan reader and product codes made hard rules (30 Sep 2026)
+
+James found two misreads in the page's Word document: H69A203-1 read as **H69A203-17** (the printed bar after the suffix
+read as a 7) and RP26826-3's product printed as **RPAQWRAN72**. James: *"OCR check process needs to improve"*, *"make sure
+all these improvement are code in so we dont make the same mistake again"*, *"make sure these mistake does not make it
+into Product master"*, then the code rules (*"10 means 1mm and 90 means 9mm. A0 is 10mm and B0 is 11mm"*, *"AQ is
+incorrect from the start"*, *"the color code is WB. WR dont exist"*, *"after that is just number for the product. No
+english characters"*, *"these need to be hard rule. If anything odd is spotted, recheck the OCR again"*, *"DPPAOKS27 is A0
+instead of AO"*).
+- **`product_code.py`** (new): the product-code rule (family, thickness, colour, number; families and colours in use),
+  `thickness_mm`, `problems`, `repair` (letters where letters belong, digits where digits belong, a listed colour).
+- **Product Master**: `build_master.py` refuses a code breaking the rule and repairs only letter O for zero: DPPAOKS27 ->
+  DPPA0KS27 (formula kept), RBPAOKS14/37/40 merged into RBPA0KS14/37/40 (all four came from Tech's calc workbooks; Rev 1.5
+  had already confirmed they are A0). 2,087 -> 2,084 products, none breaking the rule; published.
+- **Daily checks**: a packet product code breaking the rule is High; code thickness vs the Thk column is Medium.
+- **Interface reader** (mirrors `ui/ocr_eval.py` `read_page15`): each order row is cut into cells at the printed bars
+  (found by their spacing, so a page shifted on the copier glass works); each cell is read with up to four settings; a
+  row is taken only when it matches an order + product on file by look-alike characters only (8 vs 9 is not a
+  look-alike: 28 Sep H69A038-1 was wrongly matched to H69A039-1 before); a new order is boxed; anything odd is boxed with
+  its picture, what was read and the closest order on file. The Word download is locked while a row is boxed; a
+  correction must keep the rules. Result on the scans, history before the day only: 29 Sep 66 taken / 0 wrong / 10
+  boxed; 28 Sep 54 / 0 / 21; every printed row shown. Chrome test (29 Sep on file): 76 rows, 69 taken, 7 boxed with the
+  right hints, a wrong correction stayed boxed, the right ones unlocked the download; the Word file holds exactly the 76
+  scheduled orders and 53 real products.
+- Tests `tests/test_product_code.py` (rules in Python and in the page's JavaScript) and `tests/test_scan_reader_page.py`
+  (real scans, `OCR_TESTS=1`).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1720,6 +1747,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.39 | 2026-09-30 | Claude Code (local, with James Kuo) | **Scan reader and product codes made hard rules (§7.48)**: `product_code.py`; Product Master letter-O codes fixed (2,084); reader cells at the bars, no wrong take on 28/29 Sep; Word download locked until boxed rows are confirmed. |
 | 1.38 | 2026-09-30 | Claude Code (local, with James Kuo) | **Always the latest formulation, even for a past schedule (§7.47)**. |
 | 1.37 | 2026-09-29 | Claude Code (local, with James Kuo) | **Interface reads a schedule scan in the page and downloads the Word formulation (§7.46)**: Tesseract in the page, tuned on 28/29 Sep (no wrong order, none missed silently); Chrome load test 86 s; docx built in the page. |
 | 1.36 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tech's 29 Sep FRM reviewed and loaded; interface copy folder (§7.45)**: draft = Tech on 71/72; `db/import_frm.py` (master Changes 53-82); Formulation Report Record +441; Interface Copy folder, no Tech sign-off. |

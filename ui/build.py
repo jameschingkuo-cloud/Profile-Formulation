@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'daily'))
 sys.path.insert(0, str(ROOT / 'calc'))
 import config  # noqa: E402
+import product_code  # noqa: E402
 from openpyxl import load_workbook  # noqa: E402
 from db.seed_master import MAP  # noqa: E402
 
@@ -227,7 +228,8 @@ def main():
             'sched_by_date': {d: [[e['line'], r['order'], r['prod_code']] for e in p['ext'] for r in e['rows']] for d, p in pk.items()},
             'products': product_codes(),
             'approved': approved_decisions(sheet),
-            'linemeta': line_layout(pk)}
+            'linemeta': line_layout(pk),
+            'code_rule': {'colours': sorted(product_code.COLOURS), 'families': sorted(product_code.FAMILIES)}}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     page = t.replace('__DATA__', blob)

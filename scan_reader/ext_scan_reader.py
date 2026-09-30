@@ -79,6 +79,7 @@ GRADES = ["P", "A"]
 #   letter.  A colour that doesn't look like any of these gets flagged: each colour is also read letter by
 #   letter and any difference is flagged (colour_word; added 28 Sep 2026 after BD was read as BL unflagged).
 COLORS = ["WB", "KS", "BL", "WM", "GT", "EB", "NS", "OF", "BD"]   # OF = fade-resistant orange, BD = dark blue (James Kuo, 28 Sep 2026)
+COLORS += [c for c in ("RF", "EA", "YF", "GS", "JG", "OG", "SS", "NC", "PK", "TS", "LY") if c not in COLORS]   # in use in the Product Master (30 Sep 2026)
 
 # R8: thickness in the product code must equal the Thk column.  "30" = 3.0 mm, "A0" = 10 mm,
 #   "D0" = 13 mm (letter = 10 + n; same rule as the Void Form pipeline).

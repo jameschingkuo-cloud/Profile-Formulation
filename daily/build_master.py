@@ -167,12 +167,41 @@ def asdate(v):
     if isinstance(v, datetime.date): return v
     try: return datetime.date.fromisoformat(str(v)[:10])
     except ValueError: return None
+# ---- product code hard rule (product_code.py; James Kuo, 30 Sep 2026): a code that breaks the rule is never added.
+# The letter O read where the thickness digit belongs is repaired to 0 and merged into the real product (James confirmed
+# on 28 Sep that the letter-O codes are A0); anything else that breaks the rule is refused and listed.
+import product_code
+REFUSED, RENAMED = [], {}
+def _fix_key(src, name):
+    for code in [c for c in list(src) if product_code.problems(c)]:
+        fixed, _ = product_code.repair(code)
+        if fixed and not product_code.problems(fixed) and fixed.replace('0', 'O') == code.replace('0', 'O'):
+            RENAMED[code] = fixed
+            if fixed in src and isinstance(src[fixed], dict) and isinstance(src[code], dict):
+                for k, v in src[code].items():
+                    if isinstance(v, list): src[fixed].setdefault(k, []).extend(x for x in v if x not in src[fixed].get(k, []))
+                del src[code]
+            else:
+                src[fixed] = src.pop(code)
+        else:
+            REFUSED.append((code, name, '; '.join(product_code.problems(code))))
+            del src[code]
+for _src, _name in ((P, 'packet'), (old, 'prior Product Master'), (CALC, 'calc workbooks')):
+    _fix_key(_src, _name)
+old_meta = {RENAMED.get(k, k): v for k, v in old_meta.items() if RENAMED.get(k, k) in old or k in old}
+if REFUSED:
+    print('REFUSED (product code breaks the rule):', REFUSED)
+if RENAMED:
+    print('Letter O in the thickness repaired to 0 and merged:', RENAMED)
+
 rows, nchk, n_new, n_changed, n_calc_new = [], 0, 0, 0, 0
 for pc in sorted(set(P) | set(old) | set(CALC)):
     d = P.get(pc, {})
     o = old.get(pc)
-    code_ok = bool(re.fullmatch(r'[A-Z]{3}([0-9]{2}|[A-Z]0)[A-Z]{2}\d{1,5}', pc))
+    code_ok = not product_code.problems(pc)
     chk, changed, quiet = [], [], False
+    for _bad, _good in RENAMED.items():
+        if _good == pc: chk.append(f'2026-09-30: {_bad} (letter O in the thickness) merged here')
     M = {}                                          # merged values per key
     for h, g, k, w in cols[1:-3]:
         new_v = vals(d, k) if d else []
