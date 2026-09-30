@@ -415,8 +415,45 @@ def main_history_cnv(json_path):
     print(out, '-', '; '.join(log))
 
 
+def main_history_frm(json_path):
+    """Append Tech's past FRM pages read from scans (history/frm_scans.py) to the Formulation Report Record, as issued (an
+    obsolete formula is recorded too: this record is the log of what Tech issued). Days recorded already stay as issued;
+    a row whose order has no product on any extrusion schedule is left out and listed."""
+    name, sheet = RECORDS['FRM']
+    header = cols(name, sheet)
+    existing, pub = load_existing(name, sheet)
+    have = {norm(r.get(header[0])) for r in existing}
+    config.record_read(json_path, 'Tech formulation pages read from scans')
+    rows, log = list(existing), []
+    for pk in json.loads(Path(json_path).read_text(encoding='utf-8')):
+        d = pk['packet_date']
+        if d in have:
+            log.append(f'{d}: already recorded - kept as issued')
+            continue
+        new = frm_rows(pk)
+        miss = sorted({r['Order'] for r in new if not r['Product Code']})
+        new = [r for r in new if r['Product Code']]
+        for r in new:
+            r['Source Scan'] += ' (scan read by eye)'
+        rows += new
+        log.append(f'{d}: {len(new)} rows appended' + (f'; left out (no product on any schedule): {", ".join(miss)}' if miss else ''))
+    rows.sort(key=lambda r: norm(r.get(header[0])))
+    notes = [['Workbook', f'{name}: {schema.BY_NAME[name].purpose}.'],
+             ['Rule', 'Append-only. Rows are added, never edited (db/schema.py). Values as printed.'],
+             ['Based on', f'{pub} ({len(existing)} rows)' if pub else 'nothing published yet: started empty'],
+             ['Rows', len(rows)],
+             ['Dates in record', ', '.join(sorted({norm(r[header[0]]) for r in rows}))],
+             ['Older issues', "Issues before the daily scans are Tech's FRM pages kept in older copier scans (history/frm_scans.py), "
+                              'recorded as printed, obsolete formulas included (the master holds the current ones).']]
+    notes += [['This run', x] for x in log] + [['Run', datetime.date.today().isoformat()]]
+    out = write(name, sheet, header, rows, notes)
+    print(out, '-', '; '.join(log))
+
+
 if __name__ == '__main__':
-    if sys.argv[1:2] == ['--history-cnv']:
+    if sys.argv[1:2] == ['--history-frm']:
+        main_history_frm(sys.argv[2])
+    elif sys.argv[1:2] == ['--history-cnv']:
         main_history_cnv(sys.argv[2])
     elif sys.argv[1:2] == ['--history']:
         main_history([a for a in sys.argv[2:] if not a.startswith('--')], replace='--replace-history' in sys.argv)

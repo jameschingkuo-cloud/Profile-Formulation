@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.42 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.43 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1745,6 +1745,24 @@ production schedule you can get your hands on, go through and update your data b
   formulas goes through the Formulation Master's Change Log - James to say.
 - Tests `tests/test_history.py`. Artifact version 27 (the page's product list and order history).
 
+## 7.52 Tech's past formulation pages, 2021 on (30 Sep 2026)
+
+James: *"go ahead and add everything after 2020"*, *"if the fomulation is obsolete one (replaced by something newer) put it in
+the log instead"*. Pages read by eye (`history/frm_scans.py`): the 28 Oct 2022 issue (12 lines, in the 2 Nov 2022 packet),
+3 Sep 2025 (SE43, SE61), 15 Sep 2021 (SE23; two copies, one with "EXXON" written over F6502A - handwriting, not data) and
+5 Aug 2021 (SE31). Left out as asked: the 17 Jan 2018 SE21 page and the 1998 Formosa tracing summaries.
+- **Formulation Master** (`db/import_frm_history.py`, newest issue first; Changes 83-223, approved James Kuo; published,
+  pre-flight clean, accepted): a formula the master already has on that line with other settings, or a product that
+  already has a later formula on that line, is **obsolete: Change Log only** (Field "(superseded - history only)", 25
+  rows); SE32's first FUA152WB4 row, replaced on the same page by the row marked "(New Formula)", likewise. Added as Draft:
+  11 formulas (BFR000EB3, FUA151BL4, FUA001WB6 + reclaim run-out, FUA021WB6, FU0041WBA, FU0001WBA, FU0061WBD, FU0001WBD,
+  FU0110WB7), their line settings, and product-to-formula rows (Last Run = the issue date); 6 formulas were already in the
+  master as printed. Materials: spellings "FR-GPP30003 MP" (50-7002-361) and "WB-NPC PE-W22151" (50-7002-393) added;
+  "Vistamaxx 3588FL Pre-mix" not mapped (a pre-mix, not the pure 3588FL) - only on formulas that were obsolete anyway.
+  A "run out" note about a colour (NPC PE-W22151) is not the reclaim variant.
+- **Formulation Report Record** (`record.py --history-frm`): all four issues as printed, obsolete formulas included
+  (the record is the log of what Tech issued): 431 rows. HW7A188-1 (5 Aug 2021) left out: no product on any schedule.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1873,6 +1891,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.43 | 2026-09-30 | Claude Code (local, with James Kuo) | **Tech's past formulation pages, 2021 on (§7.52)**: 28 Oct 2022 (12 lines), 3 Sep 2025, 15 Sep 2021, 5 Aug 2021; obsolete formulas to the Change Log only; 11 formulas added as Draft; Formulation Report Record +431. |
 | 1.42 | 2026-09-30 | Claude Code (local, with James Kuo) | **Every production schedule on the PC (§7.51)**: misnamed and rotated schedules read; every line of every day adds up to its printed total; 3 image-scan days turned upright and read; 2 Nov 2022 (EXT + CNV) and 24 Apr 2014 (SE25) found in copier scans; EXT record 63,231 rows, CNV record +28; PM 2,659. |
 | 1.41 | 2026-09-30 | Claude Code (local, with James Kuo) | **The system's own past schedules (§7.50)**: 1,162 days of Production Instruction PDFs read as text (62,662 rows); order-number rule fixed (month A-C, SH orders, dates); Product Master 2,652 (+568, 1,464 rows filled, Last Scheduled); Extrusion Production Record +1,152 days; page order history. |
 | 1.40 | 2026-09-30 | Claude Code (local, with James Kuo) | **Two readers, border lines, handwriting ignored (§7.49)**: row cut at the sheet border line; Tesseract + glyph bank must agree; line code two ways + page continuation; page reader = reference on 222/222 rows; 25/28/29 Sep all rows right, 0 boxed; Chrome 29 Sep 76/76 same as Tech, Word file = pipeline's. |
