@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-30T15:41:01",
-"change_log_max_id": 263,
+"accepted_at": "2026-09-30T15:48:43",
+"change_log_max_id": 265,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -1738,6 +1738,21 @@
 "Source": "FRM",
 "Status": "Draft",
 "Variant": "Reclaim run-out",
+"Weight % (from Set)": ""
+},
+"SE21|FU0012BL5|Primary||Hopper 1": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 1",
+"Formula Code": "FU0012BL5",
+"Line Code": "SE21",
+"Material ID": "50-1560-050",
+"Recipe Weight %": "",
+"Set": "63",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
 "Weight % (from Set)": ""
 },
 "SE21|FU0012BL5|Primary||Hopper 2": {
@@ -6374,7 +6389,7 @@
 "Material Code": "PC416",
 "Material ID": "50-1560-050",
 "Name": "F6502A",
-"Other Spellings": "PP Virgin-silo 3 (F6502A) | PP Virgin-silo 3 (F-6502A) | PP Virgin-silo 4 (6502A) | PP Virgin-silo 4 (F6502A) | PP Virgin (F6502A) | F6502A | PP Virgin",
+"Other Spellings": "PP Virgin-silo 3 (F6502A) | PP Virgin-silo 3 (F-6502A) | PP Virgin-silo 4 (6502A) | PP Virgin-silo 4 (F6502A) | PP Virgin (F6502A) | F6502A | PP Virgin | PP Virgin-silo 3 (DOW-C104)",
 "Role": "VIRGIN",
 "Status": "Draft",
 "Supplier": "Formosa"

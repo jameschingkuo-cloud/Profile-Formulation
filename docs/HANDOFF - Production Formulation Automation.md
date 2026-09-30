@@ -1809,6 +1809,9 @@ date. Your data is correct with F1203K"* (CLAUDE.md, memory). Then *"yes continu
   records (+87 EXT, +62 CNV, +487 FRM rows), Formulation Master (Changes 224-263, Draft, pre-flight accepted; FU0012BL5 still
   not written until DOW-C104 is named), interface copy and artifact (v30). Same six High issues as 29 Sep (partition orders
   on SD22), none new.
+- **DOW-C104 = F6502A** (James Kuo, 30 Sep 2026: *"thats F6502A. just old formulation where we used to use Dow plastic"*):
+  "PP Virgin-silo 3 (DOW-C104)" added to F6502A's (50-1560-050) Other Spellings (Change 264); FU0012BL5 Hopper 1 (63) then
+  written from Tech's 29 Sep issue (Change 265). FU0012BL5 is now complete in the master (Draft).
 
 ## 8. Automation plan: one step at a time
 
