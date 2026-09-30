@@ -171,6 +171,8 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 3. Hand-found issues:
    - Copy yesterday's `daily/manual/manual_issues_<date>.py` to today's date.
    - Do not carry forward issues for materials in `checks.REPLACED` (Q1203K, F1102K): the checks note them as Info.
+     F1203K is the material in use; Tech's FRM pages still print F1102K / Q1203K because the engineer database is out
+     of date (James, 30 Sep 2026: "ignore that ... Your data is correct with F1203K"). Not a difference to report.
    - Do not add manual issues for one code with several recipes ("two formulas with no note"): reclaim first, then
      the next listed, is the plant's rule (James, 29 Sep 2026); `checks.py` marks these Info.
    - Keep only what is still true on today's pages, then add the new issues.
