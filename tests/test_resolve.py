@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_draft_matches_issued_25_sep(tmp_path):
-    env = dict(os.environ, PYTHONUTF8="1", PKT_DATE="2026-09-25", RUN_DATE="2026-09-28",
+    env = dict(os.environ, PYTHONUTF8="1", PKT_DATE="2026-09-25", RUN_DATE="2026-09-28", HISTORY_BEFORE="2026-09-25",
                OUTPUT_DIR=str(tmp_path / "out"), WORK_DIR=str(tmp_path / "work"))
     r = subprocess.run([sys.executable, str(ROOT / "daily/resolve.py")], env=env, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stderr[-2000:]

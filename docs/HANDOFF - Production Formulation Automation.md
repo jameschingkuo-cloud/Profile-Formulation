@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.37 (29 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.38 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1582,6 +1582,16 @@ receive the word by via download"*.
   automation (not even a test .txt), so James has not yet had the file through the Save prompt: first real use is his.
 - Interface copy republished; artifact version 22.
 
+## 7.47 Always the latest formulation, even for a past schedule (30 Sep 2026)
+
+James, on the 29 Sep test that left the four new orders blank: *"ok dont do that in the future. Always provide up to date
+formulation. even if someone give you an past schedule. If someone need an revision, they will put in an old schedule
+(usually previous day or if weekend, friday schedule)"*. Before, `resolve.py` and the interface looked only at FRMs issued
+**before** the schedule's date (a blind backtest). Now both use every issue on file, the latest winning. The 29 Sep
+schedule now resolves 76/76 (H69A203-1 FU0012BL5, H67A164-2 FU0001RF6, H67A164-1 FU0070KS6, RP26604-1 FUA152WB4), 0 for
+an engineer. `HISTORY_BEFORE=<date>` keeps the old view for the backtests only (`test_resolve.py`, the 28 Sep tests).
+New test `test_past_schedule_gets_the_latest_formulation`. Interface republished (version 23).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1710,6 +1720,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.38 | 2026-09-30 | Claude Code (local, with James Kuo) | **Always the latest formulation, even for a past schedule (§7.47)**. |
 | 1.37 | 2026-09-29 | Claude Code (local, with James Kuo) | **Interface reads a schedule scan in the page and downloads the Word formulation (§7.46)**: Tesseract in the page, tuned on 28/29 Sep (no wrong order, none missed silently); Chrome load test 86 s; docx built in the page. |
 | 1.36 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tech's 29 Sep FRM reviewed and loaded; interface copy folder (§7.45)**: draft = Tech on 71/72; `db/import_frm.py` (master Changes 53-82); Formulation Report Record +441; Interface Copy folder, no Tech sign-off. |
 | 1.35 | 2026-09-29 | Claude Code (local, with James Kuo) | **Tesseract 5.4 installed; glyph reader header anchor fixed (§7.44)**: 29 Sep crosscheck 67/76, rest settled for the transcription. |

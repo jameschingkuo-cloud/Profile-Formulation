@@ -61,6 +61,11 @@ Change these only with James's explicit say-so, and log the change in the handof
 - **Customer-specific formulas get their own codes (James, 29 Sep 2026)**, instead of a shared code plus a note
   (VOIDFORM, sign blank, corn box, roll). The list is parked in `ui/customer_formulas.json` until James names them;
   do not invent codes.
+- **Always the up-to-date formulation (James, 30 Sep 2026).** *"Always provide up to date formulation. even if someone
+  give you an past schedule. If someone need an revision, they will put in an old schedule (usually previous day or if
+  weekend, friday schedule)"*. The draft, the Word document and the interface use the **latest** issued formulation on
+  file for each order on its line, whatever the schedule's date (`resolve.issued_history` with no cut-off).
+  `HISTORY_BEFORE` is for backtests only. Test `test_past_schedule_gets_the_latest_formulation`.
 - **Never auto-issue a formula the pipeline guessed.** Anything not matched exactly goes to an engineer. Every
   output is a draft until Tech signs it.
 

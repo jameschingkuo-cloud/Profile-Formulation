@@ -317,7 +317,7 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
     </div>
     <div class="panel" id="gen" style="margin-top:16px">
       <div><h2 style="font-size:24px">Generate the formulation from a schedule scan</h2>
-        <p class="muted" style="margin:4px 0 0">Drop the copier PDF of the extrusion schedule. The page reads each extrusion page's line, order and product with text recognition running in this page (nothing is uploaded; Claude reads it instead where your viewer allows images). It then gives every order the formulation last issued for it on that line <b>before the schedule's date</b>, the same rule as the pipeline; anything else is left for an engineer. Rows it cannot match to a schedule on file are boxed for you to check against the paper. A check, not an issue: the printed document still comes from the pipeline.</p></div>
+        <p class="muted" style="margin:4px 0 0">Drop the copier PDF of the extrusion schedule. The page reads each extrusion page's line, order and product with text recognition running in this page (nothing is uploaded; Claude reads it instead where your viewer allows images). It then gives every order the latest formulation issued for it on that line (whatever the schedule's date), the same rule as the pipeline; anything else is left for an engineer. Rows it cannot match to a schedule on file are boxed for you to check against the paper. A check, not an issue: the printed document still comes from the pipeline.</p></div>
       <div class="genrow">
         <label class="drop" id="drop" for="scanfile">
           <strong>Drop a schedule scan here, or click to choose it</strong>
@@ -997,7 +997,8 @@ async function generate(files){
 const fkey = f => f.code + '|' + f.feeders.map(x => `${x.col}=${x.mat}=${x.set}`).sort().join(';');
 const same = (a, b) => a.length === b.length && a.every((f, i) => fkey(f) === fkey(b[i]));
 function lookup(line, order, prod, date){
-  const dates = Object.keys(D.issued || {}).filter(d => d < date).sort().reverse();
+  // the latest formulation on file, whatever the schedule's date (James Kuo, 30 Sep 2026: "Always provide up to date formulation")
+  const dates = Object.keys(D.issued || {}).sort().reverse();
   for (const d of dates) { const g = (D.issued[d][line] || []).find(g => g.orders.includes(order)); if (g) return {how: 'last', date: d, formulas: g.formulas}; }
   const ap = (D.approved || {})[line + '|' + prod];
   if (ap?.length) return {how: 'approved', formulas: ap};
@@ -1180,7 +1181,7 @@ async function buildDocx(plan){
   cover.push(P(T(''), {after: 6}), P(T('Issue (IWPFO055 §5.3 – §5.5)', {size: 12, bold: true}), {after: 2}),
     tbl(iw, [new TableRow({children: ['Issued by (Technical)', 'Signature', 'Date / time', 'Copy in "Schedule" binder (§5.4)'].map((h, i) => C([P(T(h, {size: 9.5, bold: true}), {align: AlignmentType.CENTER})], {w: IN(iw[i]), fill: 'E9EDF1'}))}),
              new TableRow({height: {value: IN(0.45), rule: 'atLeast'}, children: iw.map((x, i) => C([P(T(i === 3 ? '☐' : '', {size: 14}), {align: AlignmentType.CENTER})], {w: IN(x)}))})]),
-    P(T(`Generated in the Profile Formulation page on ${new Date().toLocaleString()} from ${plan.source || 'the schedule'}. Formulation as last issued by Tech for each order on its line before ${us}.`, {size: 9, color: GREY}), {after: 0}));
+    P(T(`Generated in the Profile Formulation page on ${new Date().toLocaleString()} from ${plan.source || 'the schedule'}. Formulation: the latest issued by Tech for each order on its line.`, {size: 9, color: GREY}), {after: 0}));
 
   const pages = lines.flatMap(ln => {
     const cols = ln.cols, ncol = 3 + cols.length, wOrder = 1.55, wCode = 1.25, wNote = 1.45, wFeed = (USABLE - wOrder - wCode - wNote) / Math.max(1, cols.length);

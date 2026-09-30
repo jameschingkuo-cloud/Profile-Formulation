@@ -64,10 +64,12 @@ def load_packets():
     return out
 
 
-def issued_history(packets, before):
-    """(line, order) -> (issue date, scan page, [formula dicts]); product -> same, keyed (line, product)."""
+def issued_history(packets, before=None):
+    """(line, order) -> (issue date, scan page, [formula dicts]); product -> same, keyed (line, product).
+    Every issued FRM on file, whatever the schedule's date (James Kuo, 30 Sep 2026: "Always provide up to date
+    formulation. even if someone give you an past schedule"); `before` only for callers that need an earlier view."""
     by_order, by_product = {}, {}
-    for date in sorted(d for d in packets if d < before):
+    for date in sorted(d for d in packets if before is None or d < before):
         pk = packets[date]
         prod_of = {r["order"]: r["prod_code"] for pg in pk["ext"] for r in pg["rows"]}
         for pg in pk["frm"]:
@@ -152,8 +154,10 @@ def main():
     if PKT not in packets:
         raise SystemExit(f"No packet for {PKT} in {config.PACKETS_DIR}")
     today = packets[PKT]
-    by_order, by_product = issued_history(packets, PKT)
-    history_dates = sorted(d for d in packets if d < PKT and packets[d]["frm"])
+    # HISTORY_BEFORE is for backtests only ("as that morning, before Tech issued"); normal runs use every issue on file
+    cut = os.environ.get("HISTORY_BEFORE") or None
+    by_order, by_product = issued_history(packets, cut)                  # latest issue on file, any date
+    history_dates = sorted(d for d in packets if packets[d]["frm"] and (cut is None or d < cut))
     approved, _ = approved_master()
 
     draft, exceptions = [], []
@@ -185,7 +189,7 @@ def main():
                                r.get("gsm", ""), (r.get("special_instructions") or "")[:160], reason, hint, None, None])
 
     today_orders = {(pg["line"], r["order"]) for pg in today["ext"] for r in pg["rows"]}
-    last = history_dates[-1] if history_dates else None
+    last = max((d for d in history_dates if d < PKT), default=None)     # "dropped since" = vs the previous issue
     dropped = sorted({(pg["line_code"], o) for pg in packets[last]["frm"] for g in pg["groups"] for o in g["orders"]}
                      - today_orders) if last else []
 

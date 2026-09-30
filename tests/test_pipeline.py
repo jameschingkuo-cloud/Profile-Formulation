@@ -162,7 +162,7 @@ def test_draft_keeps_every_formulation(tmp_path):
     from openpyxl import load_workbook
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28')
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28')
     r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
     rows = list(load_workbook(out / 'FRM Draft 2026-09-28.xlsx', read_only=True)['Draft'].iter_rows(values_only=True))
@@ -190,7 +190,7 @@ def test_print_formulation_docx(tmp_path):
     from docx import Document
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28')
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28')
     for script in ('resolve.py', 'render_frm.py'):
         r = subprocess.run([sys.executable, str(ROOT / 'daily' / script)], env=env, capture_output=True, text=True, cwd=ROOT)
         assert r.returncode == 0, r.stdout + r.stderr
@@ -217,7 +217,7 @@ def test_engineer_decision_fills_the_rerun(tmp_path):
     pub, out = tmp_path / 'pub', tmp_path / 'out'
     out.mkdir()
     env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
-               SNAP_DIR=str(tmp_path / 'snap'), PKT_DATE='2026-09-28')
+               SNAP_DIR=str(tmp_path / 'snap'), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28')
     py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
     name = 'Formulation Master.xlsx'
     live = config.published_path(name)                       # a copy of the published master (read only)
@@ -283,3 +283,21 @@ def test_import_frm_adds_only_what_is_missing(tmp_path):
     assert 'DIFFERS' not in r.stdout                                   # retired spellings do not shadow active ones
     assert [l for l in r.stdout.splitlines() if l.startswith('NOT WRITTEN')] == \
         ['NOT WRITTEN (material not mapped): SE21 FU0012BL5 Primary  Hopper 1: "PP Virgin-silo 3 (DOW-C104)" 63 (orders H69A203-1)']
+
+
+def test_past_schedule_gets_the_latest_formulation(tmp_path):
+    """James, 30 Sep 2026: "Always provide up to date formulation. even if someone give you an past schedule." The 29 Sep
+    schedule, run again after Tech's 29 Sep FRM is on file, gets that formulation for the four new orders."""
+    from openpyxl import load_workbook
+    out = tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-29')
+    env.pop('HISTORY_BEFORE', None)
+    r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    wb = load_workbook(out / 'FRM Draft 2026-09-29.xlsx', read_only=True)
+    exc = [x[1] for x in list(wb['Exceptions'].iter_rows(values_only=True))[1:]]
+    got = {x[1]: x[3] for x in list(wb['Draft'].iter_rows(values_only=True))[1:]}
+    assert exc == []
+    assert got['H69A203-1'] == 'FU0012BL5' and got['H67A164-2'] == 'FU0001RF6' and got['H67A164-1'] == 'FU0070KS6'
+    assert got['RP26604-1'] == 'FUA152WB4'
