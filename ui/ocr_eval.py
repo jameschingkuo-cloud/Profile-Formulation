@@ -3,7 +3,7 @@
 """Parser for Tesseract text of the EXT page's left strip (to be mirrored in the interface page's JavaScript).
 Tested against transcribed packets. Rule: a value is taken only when it is certain (exact, or exactly one Product
 Master code among the look-alike variants); anything else is returned flagged, never guessed."""
-import itertools, json, re, sys
+import itertools, json, os, re, sys
 from pathlib import Path
 import pytesseract
 from PIL import Image
@@ -1153,3 +1153,785 @@ def evaluate15(date, scan, show=True):
         for x in new + chk: print('   BOXED', x[:4], x[4][:50])
         for u in un: print('   UNREAD', u)
     return res, un
+
+
+# ---- v16: clean cells (ruled lines erased, trimmed to the text, white margin, black and white) ------------------------
+def clean_cell(im, x0, x1, y0, y1, scale, pad=10, thr=150, margin=12):
+    """Crop, erase ruled lines (a row of the crop more than half dark), trim to the text rows, binarize, enlarge, border."""
+    a = np.asarray(im.crop((int(x0), max(0, int(y0) - pad), int(x1), int(y1) + pad))).copy()
+    dark = a < thr
+    rows = dark.mean(axis=1)
+    a[rows > 0.5, :] = 255                                   # horizontal ruled lines
+    dark = a < thr
+    cols = dark.mean(axis=0)
+    a[:, cols > 0.85] = 255                                   # a bar caught at the edge
+    dark = a < thr
+    ink_rows = np.where(dark.sum(axis=1) > 1)[0]
+    if len(ink_rows):
+        a = a[max(0, ink_rows[0] - 2):ink_rows[-1] + 3, :]
+    ink_cols = np.where((a < thr).sum(axis=0) > 0)[0]
+    if len(ink_cols):
+        a = a[:, max(0, ink_cols[0] - 2):ink_cols[-1] + 3]
+    c = Image.fromarray(a)
+    if scale != 1:
+        c = c.resize((max(1, int(c.width * scale)), max(1, int(c.height * scale))), Image.LANCZOS)
+    c = c.point(lambda v: 0 if v < 160 else 255)
+    out = Image.new('L', (c.width + 2 * margin, c.height + 2 * margin), 255)
+    out.paste(c, (margin, margin))
+    return out
+
+
+def ocr_clean(im, x0, x1, y0, y1, scale, psm, wl=ORDER_WL):
+    c = clean_cell(im, x0, x1, y0, y1, scale)
+    return re.sub(r'\s+', '', pytesseract.image_to_string(c, config=f'--psm {psm} -c tessedit_char_whitelist={wl}').upper())
+
+
+def evaluate_raw(date, scan, reader='clean', tries=None, show=False):
+    """Raw reading, no history: for each printed order row, does some try give the exact order and product?"""
+    tries = tries or CELL_TRIES
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = {(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']}
+    tord = {(l, o) for l, o, _ in truth}
+    n = ok_o = ok_p = ok_both = wrong_o = wrong_p = 0
+    misses = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if not bars: continue
+            yb, sb, db = bars
+            o = p = None; raws = []
+            for scale, psm in tries:
+                f = ocr_clean if reader == 'clean' else ocr_cell
+                t = f(im, yb + 5, sb - 3, y0, y1, scale, psm) if o is None else ''
+                t2 = f(im, sb + 5, db - 3, y0, y1, scale, psm) if p is None else ''
+                raws.append((t, t2))
+                if o is None: o = parse_order_cell(t)
+                if p is None: p = take_prod(t2)
+                if o and p: break
+            if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            n += 1
+            ok_o += (line, o) in tord; ok_p += any(pp == p for _, _, pp in truth if _ == line) if p else 0
+            ok_both += (line, o, p) in truth
+            wrong_o += bool(o) and (line, o) not in tord
+            if (line, o, p) not in truth: misses.append((png.name, line, o, p, raws[:2]))
+    print(f'{date} [{reader}]: rows {n} / truth {len(truth)} | order right {ok_o} (wrong {wrong_o}) | product right {ok_p} | both right {ok_both}')
+    if show:
+        for m in misses: print('   ', m)
+    return misses
+
+
+def cells_x(yb, sb, db, w):
+    """Cell edges well clear of the bars (they lean with the page skew): order cell, product cell."""
+    g = int(w * 0.003)                                        # about 10 px at 300 dpi
+    return (yb + g, sb - g), (sb + g, db - g)
+
+
+def evaluate_raw2(date, scan, show=False, tries=None):
+    tries = tries or CELL_TRIES
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = {(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']}
+    tord = {(l, o) for l, o, _ in truth}
+    n = ok_o = ok_both = wrong_o = 0; misses = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if not bars: continue
+            (ox0, ox1), (px0, px1) = cells_x(*bars, w)
+            o = p = None; raws = []
+            for scale, psm in tries:
+                t = ocr_clean(im, ox0, ox1, y0, y1, scale, psm) if o is None else ''
+                t2 = ocr_clean(im, px0, px1, y0, y1, scale, psm) if p is None else ''
+                raws.append((t, t2))
+                if o is None: o = parse_order_cell(t)
+                if p is None: p = take_prod(t2)
+                if o and p: break
+            if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            n += 1; ok_o += (line, o) in tord; ok_both += (line, o, p) in truth; wrong_o += bool(o) and (line, o) not in tord
+            if (line, o, p) not in truth: misses.append((png.name, line, o, p, raws[:2]))
+    print(f'{date}: rows {n} / truth {len(truth)} | order right {ok_o} (wrong {wrong_o}) | both right {ok_both}')
+    if show:
+        for m in misses: print('   ', m)
+    return misses
+
+
+# ---- v17: glyph reading of each cell (the plant's own glyph bank, scan_reader/glyph_bank.npz), position rules --------
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scan_reader'))
+import ext_scan_reader as XR
+_BANK = None
+def bank():
+    global _BANK
+    if _BANK is None:
+        _BANK = XR.Bank.load(str(Path(__file__).resolve().parents[1] / 'scan_reader' / 'glyph_bank.npz'))
+        if os.environ.get('GLYPH_Q'):                       # the page's copy of the bank (quantized as ui/build.py ships it)
+            sys.path.insert(0, str(Path(__file__).resolve().parent)); import build as _B
+            _BANK = XR.Bank(_B.dequantize_bank(_B.quantize_bank(_BANK.A)), _BANK.labels).fit()
+    return _BANK
+
+DIG = '0123456789'; LET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+
+def glyph_cells(a, x0, x1, y0, y1, pitch, pad=6):
+    crop = a[max(0, y0 - pad):y1 + pad, int(x0):int(x1)]
+    cells = XR.segment(crop, pitch)
+    return [(k, XR.feature(c), box) for (k, g, box), c in zip(cells, cells)]
+
+
+def decode_order(cells):
+    """cells: [(slot, feature, box)]. Base of 7 characters, a dash, 1-2 suffix digits (right of the dash)."""
+    B = bank()
+    if len(cells) < 9: return None, 0.0, 'too few characters'
+    hs = [c[2][3] for c in cells]; hmax = max(hs)
+    dash = [i for i, c in enumerate(cells) if c[2][3] < 0.45 * hmax]      # the dash is a short mark
+    if len(dash) != 1: return None, 0.0, f'{len(dash)} dash(es)'
+    i = dash[0]
+    base, suf = cells[:i], cells[i + 1:]
+    if len(base) != 7 or not (1 <= len(suf) <= 2): return None, 0.0, f'{len(base)} + {len(suf)} characters'
+    best = None
+    for pat in (['H', DIG, DIG, LET, DIG, DIG, DIG], ['R', 'P', DIG, DIG, DIG + 'ABC', DIG, DIG]):
+        s, tot, mg = '', 0.0, 9.0
+        for c, allowed in zip(base, pat):
+            d = B.dists(c[1]); r = sorted((d.get(ch, 9.0), ch) for ch in allowed)
+            s += r[0][1]; tot += r[0][0]; mg = min(mg, (r[1][0] - r[0][0]) if len(r) > 1 else 1.0)
+        if best is None or tot < best[1]: best = (s, tot, mg)
+    sfx, mg2 = '', 9.0
+    for c in suf:
+        d = B.dists(c[1]); r = sorted((d.get(ch, 9.0), ch) for ch in DIG)
+        sfx += r[0][1]; mg2 = min(mg2, r[1][0] - r[0][0])
+    return f'{best[0]}-{sfx}', min(best[2], mg2), ''
+
+
+def decode_product(cells, codes_by_len):
+    """Nearest Product Master code with the same number of characters (the code rule is built into the list)."""
+    B = bank()
+    n = len(cells)
+    opts = codes_by_len.get(n, [])
+    if not opts: return None, 0.0, f'{n} characters'
+    ds = [B.dists(c[1]) for c in cells]
+    sc = sorted((sum(d.get(ch, 9.0) for d, ch in zip(ds, o)), o) for o in opts)
+    return sc[0][1], (sc[1][0] - sc[0][0]) if len(sc) > 1 else 1.0, ''
+
+
+def evaluate_glyph(date, scan, show=False):
+    codes_by_len = {}
+    for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = {(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']}
+    tord = {(l, o) for l, o, _ in truth}; tprod = {(l, p) for l, _, p in truth}
+    n = ok_o = ok_p = ok_both = wrong_o = wrong_p = 0; misses = []; margins = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        rows = []
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if bars: rows.append((y0, y1) + bars)
+        crops = [a[max(0, y0 - 6):y1 + 6, yb + 4:db - 4] for (y0, y1, yb, sb, db) in rows]
+        pitch = XR.estimate_pitch(crops) if crops else 15.0
+        for (y0, y1, yb, sb, db) in rows:
+            (ox0, ox1), (px0, px1) = cells_x(yb, sb, db, w)
+            oc = glyph_cells(a, ox0, ox1, y0, y1, pitch); pcl = glyph_cells(a, px0, px1, y0, y1, pitch)
+            o, om, oe = decode_order(oc); p, pm, pe = decode_product(pcl, codes_by_len)
+            n += 1; ok_o += (line, o) in tord; ok_p += (line, p) in tprod; ok_both += (line, o, p) in truth
+            wrong_o += bool(o) and (line, o) not in tord; wrong_p += bool(p) and (line, p) not in tprod
+            margins.append((om, (line, o) in tord, pm, (line, p) in tprod))
+            if (line, o, p) not in truth: misses.append((png.name, line, o, round(om, 2), oe, p, round(pm, 2), pe))
+    print(f'{date} [glyph]: rows {n} / truth {len(truth)} | order right {ok_o} wrong {wrong_o} | product right {ok_p} wrong {wrong_p} | both right {ok_both}')
+    if show:
+        for m in misses: print('   ', m)
+    return margins
+
+
+def clean_cell(im, x0, x1, y0, y1, scale, pad=10, thr=150, margin=12):
+    """Crop; split at the sheet's ruled lines and keep the part holding the printed text (the lowest part with ink: the
+    band ends at the printed text, handwriting sits above the ruled line); erase ruled lines and edge bars; trim; binarize;
+    enlarge; white border."""
+    a = np.asarray(im.crop((int(x0), max(0, int(y0) - pad), int(x1), int(y1) + pad))).copy()
+    dark = a < thr
+    ruled = np.where(dark.mean(axis=1) > 0.5)[0]
+    a[ruled, :] = 255
+    if len(ruled):                                            # parts between ruled lines: keep the lowest one with ink
+        cuts = [0] + [int(r) for r in ruled] + [a.shape[0]]
+        parts = [(cuts[i], cuts[i + 1]) for i in range(len(cuts) - 1) if cuts[i + 1] - cuts[i] > 4]
+        def ink_h(s, e):
+            r = np.where((a[s:e] < thr).sum(axis=1) > 1)[0]
+            return (r[-1] - r[0] + 1) if len(r) else 0
+        texty = [(s, e) for s, e in parts if 16 <= ink_h(s, e) <= 34]      # printed characters are ~22-30 px tall
+        if len(texty) >= 1 and len(parts) > 1 and len([1 for s, e in parts if ink_h(s, e) > 6]) > 1:
+            s, e = texty[-1]; a = a[s:e]
+    cols = (a < thr).mean(axis=0)
+    a[:, cols > 0.85] = 255
+    ink_rows = np.where((a < thr).sum(axis=1) > 1)[0]
+    if len(ink_rows): a = a[max(0, ink_rows[0] - 2):ink_rows[-1] + 3, :]
+    ink_cols = np.where((a < thr).sum(axis=0) > 0)[0]
+    if len(ink_cols): a = a[:, max(0, ink_cols[0] - 2):ink_cols[-1] + 3]
+    c = Image.fromarray(a)
+    if scale != 1: c = c.resize((max(1, int(c.width * scale)), max(1, int(c.height * scale))), Image.LANCZOS)
+    c = c.point(lambda v: 0 if v < 160 else 255)
+    out = Image.new('L', (c.width + 2 * margin, c.height + 2 * margin), 255); out.paste(c, (margin, margin))
+    return out
+
+
+import cv2
+def suffix_marks(im, x0, x1, y0, y1):
+    """Number of printed characters after the dash in an order cell (marks grouped by horizontal overlap)."""
+    c = np.asarray(clean_cell(im, x0, x1, y0, y1, 1, margin=4))
+    bw = (c < 128).astype(np.uint8)
+    n, lab, st, cen = cv2.connectedComponentsWithStats(bw, 8)
+    comps = [st[i] for i in range(1, n) if st[i][4] >= 8]
+    if not comps: return None
+    hmax = max(s[3] for s in comps)
+    dashes = [s for s in comps if s[3] < 0.45 * hmax and s[2] >= s[3]]
+    if not dashes: return None
+    dx = max(s[0] + s[2] for s in dashes)                  # right end of the (last) dash
+    right = sorted([s for s in comps if s[0] > dx and s[3] >= 0.45 * hmax], key=lambda s: s[0])
+    groups = []
+    for s in right:
+        if groups and s[0] <= groups[-1][1] + 1: groups[-1][1] = max(groups[-1][1], s[0] + s[2])
+        else: groups.append([s[0], s[0] + s[2]])
+    return len(groups)
+
+
+def parse_order_cell2(t, marks):
+    m = ORD_CELL.match(t)
+    if not m: return None
+    suf = m.group(2)
+    if marks and len(suf) > marks: suf = suf[:marks]           # a bar or a split '1' read as an extra character
+    if marks and len(suf) < marks: return None
+    o, ok = fix_order(m.group(1), suf)
+    return o if ok else None
+
+
+def evaluate_raw3(date, scan, show=False, tries=None):
+    tries = tries or CELL_TRIES
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = {(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']}
+    tord = {(l, o) for l, o, _ in truth}
+    n = ok_o = ok_both = wrong_o = 0; misses = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if not bars: continue
+            (ox0, ox1), (px0, px1) = cells_x(*bars, w)
+            marks = suffix_marks(im, ox0, ox1, y0, y1)
+            o = p = None; raws = []
+            for scale, psm in tries:
+                t = ocr_clean(im, ox0, ox1, y0, y1, scale, psm) if o is None else ''
+                t2 = ocr_clean(im, px0, px1, y0, y1, scale, psm) if p is None else ''
+                raws.append((t, t2))
+                if o is None: o = parse_order_cell2(t, marks)
+                if p is None: p = take_prod(t2)
+                if o and p: break
+            if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            n += 1; ok_o += (line, o) in tord; ok_both += (line, o, p) in truth; wrong_o += bool(o) and (line, o) not in tord
+            if (line, o, p) not in truth: misses.append((png.name, line, o, p, marks, raws[:2]))
+    print(f'{date}: rows {n} / truth {len(truth)} | order right {ok_o} (wrong {wrong_o}) | both right {ok_both}')
+    if show:
+        for m_ in misses: print('   ', m_)
+    return misses
+
+
+# ---- v19: two independent readers (Tesseract on clean cells + the plant glyph bank); a value is taken when they agree --
+def read_row_both(im, a, line_pitch, y0, y1, bars, codes_by_len, w):
+    (ox0, ox1), (px0, px1) = cells_x(*bars, w)
+    marks = suffix_marks(im, ox0, ox1, y0, y1)
+    to = tp = None; raws = []
+    for scale, psm in CELL_TRIES:
+        t = ocr_clean(im, ox0, ox1, y0, y1, scale, psm) if to is None else ''
+        t2 = ocr_clean(im, px0, px1, y0, y1, scale, psm) if tp is None else ''
+        raws.append((t, t2))
+        if to is None: to = parse_order_cell2(t, marks)
+        if tp is None: tp = take_prod(t2)
+        if to and tp: break
+    go, _, _ = decode_order(glyph_cells(a, ox0, ox1, y0, y1, line_pitch))
+    gp, _, _ = decode_product(glyph_cells(a, px0, px1, y0, y1, line_pitch), codes_by_len)
+    return to, tp, go, gp, raws
+
+
+def evaluate_both(date, scan, show=False):
+    codes_by_len = {}
+    for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = {(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']}
+    tord = {(l, o) for l, o, _ in truth}; tprod = {(l, p) for l, _, p in truth}
+    stats = dict(rows=0, o_agree=0, o_agree_wrong=0, p_agree=0, p_agree_wrong=0, both_agree=0, both_agree_wrong=0)
+    out = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        rows = []
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if bars: rows.append((y0, y1, bars))
+        pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
+        for y0, y1, bars in rows:
+            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            stats['rows'] += 1
+            if to and to == go:
+                stats['o_agree'] += 1; stats['o_agree_wrong'] += (line, to) not in tord
+            if tp and tp == gp:
+                stats['p_agree'] += 1; stats['p_agree_wrong'] += (line, tp) not in tprod
+            if to and to == go and tp and tp == gp:
+                stats['both_agree'] += 1; stats['both_agree_wrong'] += (line, to, tp) not in truth
+            out.append((png.name, line, to, go, tp, gp))
+    print(date, stats)
+    if show:
+        for r in out:
+            if not (r[2] and r[2] == r[3] and r[4] and r[4] == r[5]): print('   ', r)
+    return out
+
+
+# ---- v20: the decision the page makes, and an audit of every scan on file -------------------------------------------
+def decide(to, tp, go, gp, pairs):
+    """-> (order, product, status). Taken: matches an order + product on file, or both readers agree (0 wrong on 28/29 Sep
+    in 227 agreements). Otherwise boxed with the best reading."""
+    for o, p in [(to, tp), (go, gp), (to, gp), (go, tp)]:
+        if o and p and (o, p) in pairs: return o, p, 'read'
+    m = match_pair(to or '', tp or '', pairs) if to and tp else None
+    if m and m[0] in (to, go) and m[1] in (tp, gp): return m[0], m[1], 'matched to schedule history'
+    if to and to == go and tp and tp == gp: return to, tp, 'read by both readers'
+    o = to if to == go else (to or go); p = tp if tp == gp else (tp or gp)
+    return o, p, 'check'
+
+
+def audit(date, scan, history='before'):
+    codes_by_len = {}
+    for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
+    pairs = set()
+    for f in sorted(Path('data/packets').glob('packet_*.json')):
+        dd = f.stem.split('_')[1]
+        if history == 'before' and dd >= date: continue
+        q = json.load(open(f, encoding='utf-8'))
+        pairs |= {(r['order'], r['prod_code']) for e in q['ext'] for r in e['rows']}
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
+    tset = set(truth)
+    res = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.30), int(h * 0.08))), config=f'--psm 6 -c tessedit_char_whitelist={WL}')
+        mm = re.search(r'LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})', top)
+        if not mm: continue
+        line = 'SE' + d(mm.group(1))
+        rows = []
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if bars: rows.append((y0, y1, bars))
+        pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
+        for y0, y1, bars in rows:
+            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            o, p, st = decide(to, tp, go, gp, pairs)
+            res.append((png.name, line, o, p, st, to, tp, go, gp))
+    taken = [r for r in res if r[4] != 'check']
+    got = {(r[1], r[2], r[3]) for r in res}
+    wrong = [r for r in taken if (r[1], r[2], r[3]) not in tset]
+    print(f'{date} (history {history}): truth {len(truth)} | rows {len(res)} | taken {len(taken)} WRONG {len(wrong)} | boxed {len(res) - len(taken)} | truth rows with no row {len(tset - got) - sum(1 for r in res if r[4] == "check" and (r[1], r[2], r[3]) not in tset)}')
+    for r in wrong: print('   TAKEN BUT DIFFERENT FROM MY TRANSCRIPTION', r)
+    return res, truth
+
+
+# ---- line code: a known line, read two ways, underline erased ---------------------------------------------------------
+LINES = ['SE11', 'SE12', 'SE13', 'SE21', 'SE22', 'SE23', 'SE24', 'SE25', 'SE31', 'SE32', 'SE42', 'SE43', 'SE61']
+
+
+def line_code_box(im):
+    """Box of the line-code word ('SE22') next to 'LINE NO' in the title strip, or None (not an EXT page)."""
+    w, h = im.size
+    strip = im.crop((0, 0, int(w * 0.40), int(h * 0.12)))
+    dd = pytesseract.image_to_data(strip, config='--psm 6', output_type=pytesseract.Output.DICT)
+    words = [(dd['text'][i].upper(), dd['left'][i], dd['top'][i], dd['width'][i], dd['height'][i], dd['line_num'][i], dd['block_num'][i])
+             for i in range(len(dd['text'])) if dd['text'][i].strip()]
+    for k, (t, x, y, ww, hh, ln, bl) in enumerate(words):
+        if t.startswith('LINE'):
+            after = [u for u in words[k + 1:k + 4] if u[5] == ln and u[6] == bl]
+            for u in after:
+                m = re.search(r'S[EF5][\w]{2}', u[0].replace(':', '').replace('.', ''))
+                if m and not u[0].startswith('NO'):
+                    return (u[1], u[2], u[1] + u[3], u[2] + u[4])
+            if len(after) >= 2:                                  # 'NO:' then the code
+                u = after[1] if after[0][0].startswith('NO') else after[0]
+                return (u[1], u[2], u[1] + u[3], u[2] + u[4])
+    return None
+
+
+def read_line_code(im):
+    """-> (line or None, readings). Underline erased; Tesseract (2 scales, SE + digits) and the glyph bank must agree on a
+    known line."""
+    box = line_code_box(im)
+    if not box: return None, ['no LINE NO label']
+    x0, y0, x1, y1 = box
+    a = np.asarray(im)
+    reads = []
+    for scale in (3, 4):
+        c = clean_cell(im, x0 - 4, x1 + 6, y0, y1, scale, pad=6)
+        t = re.sub(r'\s+', '', pytesseract.image_to_string(c, config='--psm 7 -c tessedit_char_whitelist=SEF0123456789').upper())
+        t = 'SE' + t[2:] if len(t) >= 4 else t
+        reads.append(t[:4])
+    crop = a[max(0, y0 - 6):y1 + 6, max(0, x0 - 4):x1 + 6]
+    cells = XR.segment(crop, 15.0)
+    g = None
+    if len(cells) == 4:
+        B = bank(); s = ''
+        for c, allowed in zip(cells, ['S', 'E', DIG, DIG]):
+            dd_ = B.dists(XR.feature(c)); s += min(allowed, key=lambda ch: dd_.get(ch, 9.0))
+        g = s
+    reads.append(g)
+    vals = [r for r in reads if r in LINES]
+    if g in LINES and vals.count(g) >= 2: return g, reads
+    if len(vals) >= 2 and len(set(vals)) == 1 and g is None: return vals[0], reads
+    return None, reads
+
+
+def audit_lines():
+    for date, scan in [('2026-09-25', 'doc05252320260928124922'), ('2026-09-28', 'doc05253620260928134035'), ('2026-09-29', 'doc05261220260929142225')]:
+        pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+        want = {e['scan_page']: e['line'] for e in pk['ext']}
+        ok = bad = none = 0
+        for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+            im = Image.open(png).convert('L')
+            if im.height > im.width: im = im.rotate(-90, expand=True)
+            sp = int(png.stem[1:])
+            line, reads = read_line_code(im)
+            exp = want.get(sp)
+            if exp is None and line is None: continue
+            if line == exp: ok += 1
+            elif line is None: none += 1; print('  ', date, png.name, 'expected', exp, 'NOT READ', reads)
+            else: bad += 1; print('  ', date, png.name, 'expected', exp, 'READ', line, reads)
+        print(date, 'line codes right', ok, 'wrong', bad, 'not read (page boxed)', none)
+
+
+def fit_line(t):
+    """A Tesseract word -> the known line it can only be (look-alikes only), else None."""
+    t = re.sub(r'[^A-Z0-9]', '', (t or '').upper())
+    m = re.search(r'S[EF5][0-9A-Z]{2}$', t) or re.search(r'S[EF5][0-9A-Z]{2}', t)    # S, E, two characters: nothing guessed
+    if not m: return None
+    w = 'SE' + m.group(0)[-2:]
+    sc = sorted((strict_dist(w, L), L) for L in LINES)
+    return sc[0][1] if sc[0][0] <= 0.6 and (len(sc) < 2 or sc[1][0] - sc[0][0] >= 0.3) else None
+
+
+def read_line_code2(im):
+    """Known line only; the header word (Tesseract), the 'LINE NO. SExx Total' footer (Tesseract, when on the page) and the
+    glyph bank on the header (the whole word compared with the 13 lines) - two must agree, else the page is boxed."""
+    w, h = im.size
+    lines = XR.ocr_lines(np.asarray(im))
+    reads, glyph = [], None
+    for ln in lines:
+        U = ' '.join(t[4] for t in ln).upper()
+        if re.search(r'LINE\s*N[O0]', U):
+            no = [j for j, t in enumerate(ln) if re.match(r'N[O0]', t[4].upper())]
+            if not no or no[0] + 1 >= len(ln): continue
+            word = ln[no[0] + 1][4]
+            reads.append(('footer' if 'TOTAL' in U else 'header', fit_line(word), word))
+            if 'TOTAL' not in U and glyph is None:
+                x = ln[no[0]]
+                a = np.asarray(im)
+                crop = a[max(0, x[1] - 12):x[1] + x[3] + 12, x[0] + x[2] + 5:x[0] + x[2] + 150]
+                cells = XR.segment(crop, 15.0)
+                if len(cells) >= 4:
+                    ds = [bank().dists(XR.feature(c)) for c in cells[:4]]
+                    sc = sorted((sum(d.get(ch, 9.0) for d, ch in zip(ds, L)), L) for L in LINES)
+                    glyph = sc[0][1] if sc[1][0] - sc[0][0] >= 0.15 else None
+                    reads.append(('glyph', glyph, f'{sc[0][1]} {sc[1][0] - sc[0][0]:.2f}'))
+    vals = [r[1] for r in reads if r[1]]
+    best = max(set(vals), key=vals.count) if vals else None
+    if best and vals.count(best) >= 2 and all(v == best for v in vals): return best, reads
+    return None, reads
+
+
+def audit_lines2():
+    for date, scan in [('2026-09-25', 'doc05252320260928124922'), ('2026-09-28', 'doc05253620260928134035'), ('2026-09-29', 'doc05261220260929142225')]:
+        pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+        want = {e['scan_page']: e['line'] for e in pk['ext']}
+        ok = bad = none = 0
+        for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+            sp = int(png.stem[1:])
+            if sp not in want and sp > max(want): continue
+            im = Image.open(png).convert('L')
+            if im.height > im.width: im = im.rotate(-90, expand=True)
+            line, reads = read_line_code2(im)
+            exp = want.get(sp)
+            if line == exp: ok += 1
+            elif line is None: none += 1; print('  ', date, png.name, 'expected', exp, 'BOXED', reads)
+            else: bad += 1; print('  ', date, png.name, 'expected', exp, 'WRONG', line, reads)
+        print(date, 'line codes right', ok, 'WRONG', bad, 'boxed', none)
+
+
+def audit2(date, scan, history='before', show=True):
+    codes_by_len = {}
+    for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
+    pairs = set()
+    for f in sorted(Path('data/packets').glob('packet_*.json')):
+        dd = f.stem.split('_')[1]
+        if history == 'before' and dd >= date: continue
+        q = json.load(open(f, encoding='utf-8'))
+        pairs |= {(r['order'], r['prod_code']) for e in q['ext'] for r in e['rows']}
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
+    tset = set(truth)
+    res = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.75), int(h * 0.10))), config='--psm 6').upper()
+        if not re.search(r'LINE\s*N[O0]', top) or not re.search(r'EXTRUS|WPPPOPRC|PRODUCTION\s*INSTRUCTION\s*-\s*EXT', top) or re.search(r'LINE\s*N[O0]\W*S[DC]\d', top): continue      # not an extrusion page (CNV: SD.., SC..)
+        line, lreads = read_line_code2(im)
+        rows = []
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if bars: rows.append((y0, y1, bars))
+        pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
+        for y0, y1, bars in rows:
+            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            o, p, st = decide(to, tp, go, gp, pairs)
+            if line is None: st = 'check'                                     # line code not certain: the page is boxed
+            res.append((png.name, line, o, p, st))
+    taken = [r for r in res if r[4] != 'check']
+    got = {(r[1], r[2], r[3]) for r in res}
+    wrong = [r for r in taken if (r[1], r[2], r[3]) not in tset]
+    per_page = {}
+    for e in pk['ext']: per_page[e['scan_page']] = len(e['rows'])
+    found = {}
+    for r in res: found[int(r[0][1:3])] = found.get(int(r[0][1:3]), 0) + 1
+    missing_pages = {p: (n, found.get(p, 0)) for p, n in per_page.items() if found.get(p, 0) < n}
+    print(f'{date} (history {history}): truth {len(truth)} | rows {len(res)} | taken {len(taken)} WRONG {len(wrong)} | boxed {len(res) - len(taken)} | pages short of rows {missing_pages}')
+    if show:
+        for r in wrong: print('   TAKEN BUT DIFFERENT FROM MY TRANSCRIPTION', r)
+    return res
+
+
+# ---- v21: the sheet's solid border lines isolate the printed row (handwriting sits between blocks); ruling scraps -------
+def isolate_row(a, bars, y0, y1, pad=10, thr=150):
+    """-> (page array, y0, y1). A row band holding a solid ruled line with ink on both sides (production notes written above
+    a block's top border, James Kuo 30 Sep: "ignore hand writing") is cut along the line - column by column, so a page
+    tilted on the glass still cuts cleanly - and only the side holding the printed '|' bars is kept; the rest (and the line)
+    is whited out in a copy of the page. Unchanged when there is nothing to cut."""
+    h, w = a.shape
+    xa, xb = max(0, int(bars[0]) - 6), min(w, int(bars[2]) + 6)
+    ya, yb = max(0, int(y0) - pad), min(h, int(y1) + pad)
+    reg = (a[ya:yb, xa:xb] < thr).astype(np.uint8)
+    W = reg.shape[1]
+    op = cv2.morphologyEx(reg, cv2.MORPH_OPEN, np.ones((1, 60), np.uint8))
+    cl = cv2.morphologyEx(op, cv2.MORPH_CLOSE, np.ones((5, 25), np.uint8))
+    n, lab, st, _ = cv2.connectedComponentsWithStats(cl, 8)
+    lines = sorted([i for i in range(1, n) if st[i][2] > 0.6 * W and st[i][3] < 18], key=lambda i: st[i][1])
+    if not lines: return a, y0, y1
+    H = reg.shape[0]
+    yy = np.arange(H)[:, None]
+    edges = []                                                   # per line: top and bottom row per column
+    for i in lines:
+        m = (lab == i) & (op > 0)
+        cols = np.where(m.any(axis=0))[0]
+        top = np.full(W, np.nan); bot = np.full(W, np.nan)
+        for x in cols:
+            r = np.where(m[:, x])[0]; top[x], bot[x] = r[0], r[-1]
+        xs = np.arange(W); ok = ~np.isnan(top)
+        top = np.interp(xs, xs[ok], top[ok]); bot = np.interp(xs, xs[ok], bot[ok])
+        edges.append((top, bot))
+    line_px = np.zeros_like(reg, bool)
+    for top, bot in edges: line_px |= (yy >= top[None, :] - 1) & (yy <= bot[None, :] + 1)
+    ink = reg.astype(bool) & ~line_px
+    segs = []                                                    # regions between consecutive lines
+    bounds = [(None, None)] + edges + [(None, None)]
+    for k in range(len(bounds) - 1):
+        lo = bounds[k][1]; hi = bounds[k + 1][0]
+        m = np.ones_like(reg, bool)
+        if lo is not None: m &= yy > lo[None, :] + 1
+        if hi is not None: m &= yy < hi[None, :] - 1
+        segs.append(m)
+    bx = [int(b) - xa for b in bars]
+    def score(m):
+        e = ink & m
+        rows = np.where(e.sum(axis=1) > 2)[0]
+        if not len(rows): return None
+        nb = 0
+        for x in bx:                                             # the printed '|' bars: a tall stroke at the bar column
+            c = e[:, max(0, x - 4):x + 5].any(axis=1)
+            run = best = 0
+            for v in c:
+                run = run + 1 if v else 0; best = max(best, run)
+            nb += best >= 12
+        return nb, rows[0], rows[-1] + 1
+    sc = [(score(m), m) for m in segs]
+    inked = [(s_, m) for s_, m in sc if s_ and s_[2] - s_[1] > 6]
+    if len(inked) < 2: return a, y0, y1
+    (nb, r0, r1), keep = max(inked, key=lambda t: (t[0][0], -abs((t[0][2] - t[0][1]) - 24)))
+    if nb == 0: return a, y0, y1
+    out = a.copy()
+    sub = out[ya:yb, xa:xb]
+    sub[~keep | line_px] = 255
+    return out, ya + int(r0), ya + int(r1)
+
+
+def glyph_cells(a, x0, x1, y0, y1, pitch, pad=6):
+    """Glyph cells of a printed cell; a 1-px ruling scrap is not a character, nor is a short mark at either end (the dash
+    is always inside an order number)."""
+    crop = a[max(0, y0 - pad):y1 + pad, int(x0):int(x1)]
+    cells = [c for c in XR.segment(crop, pitch) if c[2][3] > 1]
+    if cells:
+        hmax = max(c[2][3] for c in cells)
+        while cells and cells[0][2][3] < 0.45 * hmax: cells = cells[1:]
+        while cells and cells[-1][2][3] < 0.45 * hmax: cells = cells[:-1]
+    return [(c[0], XR.feature(c), c[2]) for c in cells]
+
+
+def read_row_both(im, a, line_pitch, y0, y1, bars, codes_by_len, w):
+    (ox0, ox1), (px0, px1) = cells_x(*bars, w)
+    a2, y0, y1 = isolate_row(a, bars, y0, y1)
+    if a2 is not a: a, im = a2, Image.fromarray(a2)
+    marks = suffix_marks(im, ox0, ox1, y0, y1)
+    to = tp = None; raws = []
+    for scale, psm in CELL_TRIES:
+        t = ocr_clean(im, ox0, ox1, y0, y1, scale, psm) if to is None else ''
+        t2 = ocr_clean(im, px0, px1, y0, y1, scale, psm) if tp is None else ''
+        raws.append((t, t2))
+        if to is None: to = parse_order_cell2(t, marks)
+        if tp is None: tp = take_prod(t2)
+        if to and tp: break
+    go, _, _ = decode_order(glyph_cells(a, ox0, ox1, y0, y1, line_pitch))
+    gp, _, _ = decode_product(glyph_cells(a, px0, px1, y0, y1, line_pitch), codes_by_len)
+    return to, tp, go, gp, raws
+
+
+# ---- v22: a line's pages run on until its 'LINE NO. SExx Total' footer, so a page without a footer continues on the next --
+def settle_lines(pages):
+    """pages: [{'line': certain line or None, 'reads': [(kind, value, raw)]}] in scan order (extrusion pages only).
+    A page whose line was not certain takes the line of the next page when it has no footer (the line continues) and its
+    own header or glyph reading says the same; or of the previous page when that one had no footer. Two independent
+    agreements, as for any other line code; otherwise the page stays boxed."""
+    for i, p in enumerate(pages):
+        if p['line']: continue
+        own = {r[1] for r in p['reads'] if r[1] and r[0] in ('header', 'glyph')}
+        has_footer = any(r[0] == 'footer' for r in p['reads'])
+        nxt = pages[i + 1] if i + 1 < len(pages) else None
+        prv = pages[i - 1] if i else None
+        if nxt and not has_footer and nxt['line'] and nxt['line'] in own and len(own) == 1:
+            p['line'] = nxt['line']; p['how'] = 'continues on the next page'
+        elif prv and prv['line'] and not any(r[0] == 'footer' for r in prv['reads']) and prv['line'] in own and len(own) == 1:
+            p['line'] = prv['line']; p['how'] = 'continued from the previous page'
+    return pages
+
+
+def audit3(date, scan, history='before', show=True):
+    codes_by_len = {}
+    for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
+    pairs = set()
+    for f in sorted(Path('data/packets').glob('packet_*.json')):
+        dd = f.stem.split('_')[1]
+        if history == 'before' and dd >= date: continue
+        q = json.load(open(f, encoding='utf-8'))
+        pairs |= {(r['order'], r['prod_code']) for e in q['ext'] for r in e['rows']}
+    pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+    truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
+    tset = set(truth)
+    pages = []
+    for png in sorted((Path('work/pages') / scan).glob('p[0-9][0-9].png')):
+        im = Image.open(png).convert('L')
+        if im.height > im.width: im = im.rotate(-90, expand=True)
+        a = np.asarray(im); h, w = a.shape
+        top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.75), int(h * 0.10))), config='--psm 6').upper()
+        if not re.search(r'LINE\s*N[O0]', top) or not re.search(r'EXTRUS|WPPPOPRC|PRODUCTION\s*INSTRUCTION\s*-\s*EXT', top) or re.search(r'LINE\s*N[O0]\W*S[DC]\d', top): continue
+        line, lreads = read_line_code2(im)
+        rows = []
+        for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+            bars = row_bars(a, y0, y1, w)
+            if bars: rows.append((y0, y1, bars))
+        pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
+        got = []
+        for y0, y1, bars in rows:
+            to, tp, go, gp, raws = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
+            if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            got.append(decide(to, tp, go, gp, pairs))
+        pages.append({'png': png.name, 'line': line, 'reads': lreads, 'rows': got})
+    settle_lines(pages)
+    res = [(p['png'], p['line'], o, pr, st if p['line'] else 'check') for p in pages for o, pr, st in p['rows']]
+    taken = [r for r in res if r[4] != 'check']
+    wrong = [r for r in taken if (r[1], r[2], r[3]) not in tset]
+    per_page = {e['scan_page']: len(e['rows']) for e in pk['ext']}
+    found = {}
+    for r in res: found[int(r[0][1:3])] = found.get(int(r[0][1:3]), 0) + 1
+    missing_pages = {p: (n, found.get(p, 0)) for p, n in per_page.items() if found.get(p, 0) < n}
+    print(f'{date} (history {history}): truth {len(truth)} | rows {len(res)} | taken {len(taken)} WRONG {len(wrong)} | boxed {len(res) - len(taken)} | pages short of rows {missing_pages}')
+    for p in pages:
+        if p.get('how'): print('   line', p['png'], p['line'], p['how'])
+    if show:
+        for r in wrong: print('   TAKEN BUT DIFFERENT FROM MY TRANSCRIPTION', r)
+        for r in res:
+            if r[4] == 'check': print('   boxed', r)
+    return res
+
+
+SCANS = [('2026-09-25', 'doc05252320260928124922'), ('2026-09-28', 'doc05253620260928134035'), ('2026-09-29', 'doc05261220260929142225')]
+
+
+def dump_parity(out_dir, scans=SCANS):
+    """For tests/js/reader_parity.js: each extrusion page as raw grey bytes plus this reader's results per row (bands,
+    bars, glyph pitch, row isolation, suffix marks, glyph readings, cleaned-cell size). Run with GLYPH_Q=1 (the page's
+    copy of the glyph bank)."""
+    out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
+    codes_by_len = {}
+    for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
+    n = 0
+    for date, scan in scans:
+        pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
+        for sp in sorted({e['scan_page'] for e in pk['ext']}):
+            pg = f'p{sp:02d}'
+            im = Image.open(Path('work/pages') / scan / f'{pg}.png').convert('L')
+            if im.height > im.width: im = im.rotate(-90, expand=True)
+            a = np.asarray(im); h, w = a.shape
+            rows = []
+            for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
+                bars = row_bars(a, y0, y1, w)
+                rows.append([int(y0), int(y1), [int(v) for v in bars] if bars else None])
+            br = [(y0, y1, b) for y0, y1, b in rows if b]
+            pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in br]) if br else 15.0
+            res = []
+            for y0, y1, b in br:
+                (ox0, ox1), (px0, px1) = cells_x(*b, w)
+                a2, ny0, ny1 = isolate_row(a, b, y0, y1)
+                im2 = Image.fromarray(a2) if a2 is not a else im
+                go, _, _ = decode_order(glyph_cells(a2, ox0, ox1, ny0, ny1, pitch))
+                gp, _, _ = decode_product(glyph_cells(a2, px0, px1, ny0, ny1, pitch), codes_by_len)
+                cc = np.asarray(clean_cell(im2, ox0, ox1, ny0, ny1, 3))
+                res.append({'y0': y0, 'y1': y1, 'bars': b, 'iso': [int(ny0), int(ny1)], 'marks': suffix_marks(im2, ox0, ox1, ny0, ny1),
+                            'go': go, 'gp': gp, 'clean_shape': list(cc.shape), 'clean_dark': int((cc < 128).sum())})
+                n += 1
+            a.tofile(out_dir / f'{scan}_{pg}.bin')
+            json.dump({'W': w, 'H': h, 'bands': rows, 'pitch': pitch, 'rows': res}, open(out_dir / f'{scan}_{pg}.json', 'w'))
+    return n

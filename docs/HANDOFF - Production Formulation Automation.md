@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.39 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.40 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1619,6 +1619,49 @@ instead of AO"*).
 - Tests `tests/test_product_code.py` (rules in Python and in the page's JavaScript) and `tests/test_scan_reader_page.py`
   (real scans, `OCR_TESTS=1`).
 
+## 7.49 Two readers, border lines, handwriting ignored: every scan on file read right (30 Sep 2026)
+
+James, after more boxed rows (HSA0S-1, H67A164-1, RP25818-2, RP26512-1, H68A080-1 under a handwritten note): *"the
+production sheet always have boarder lines to divide up data. Use it to isolate data"*, *"ignore hand writing. thats just
+notes from production team"*, *"repeat the test with SEP 29 production until you can produce identical product"*, *"use
+this opportunity to check every scan file you currently have. see if anything else is missed"*.
+- **Border lines isolate the printed row** (`isolate_row`): a row band holding one of the sheet's solid border lines with
+  ink on both sides is cut along the line, column by column (a page tilted on the glass still cuts cleanly), and only the
+  side holding the printed '|' bars is read; notes written above a block's top border are whited out. 29 Sep p14:
+  H68A080-1 / CPP30KS215 under "-PA205" now reads by both readers.
+- **Cells**: ruled lines and edge bars erased, the text-height part kept, binarized; the characters after the dash are
+  counted on the image, so a bar can never become a suffix digit (H69A203-17).
+- **Two independent readers per cell**: Tesseract on the cleaned cell (up to four settings) and the plant's glyph bank
+  (`scan_reader/glyph_bank.npz`, nearest printed character; order decoded by position rules, product = nearest Product
+  Master code of the same length). A 1-px ruling scrap is no longer a character (29 Sep SPA40WM8 had been read as a
+  9-character code; Tesseract alone read WM5, which is also a real code). A row is **taken** only when an order +
+  product on file matches (any reader) or **both readers agree on both values**; otherwise it is boxed.
+- **Line code**: a known line read two independent ways (page header word, "LINE NO. SExx Total" footer, glyph bank on
+  the header), with no reading disagreeing; a line word must be S, E and two characters (nothing missing is guessed).
+  A line's pages run on until its footer, so a page without a footer takes its next page's line when its own header says
+  the same (28 Sep p3: header SE13, glyph unsure SE12/SE13 by 0.03, p4 certain SE13 with footer). Otherwise every row of
+  the page is boxed, with a Line box to correct.
+- **The page runs the same reader**: `ui/reader.js` (inlined by `ui/build.py`), glyph bank shipped as `glyph-bank.js`
+  (quantized int8, 1.65 MB, published beside the page like `eng-data.js`). `tests/js/reader_parity.js` runs it under
+  node on the same page images as `ui/ocr_eval.py`: bands, bars, pitch, row isolation, suffix marks, glyph readings and
+  cleaned cells identical on all 222 rows of the three scans (after matching OpenCV's opening exactly: borders count and
+  an even kernel shifts one pixel).
+- **Every scan on file** (`ui/ocr_eval.py audit3`, history from schedules before the day only, the page's bank):
+  25 Sep 71/71, 28 Sep 75/75, 29 Sep 76/76 taken; **0 wrong, 0 boxed, no printed row missed**. Every row taken equals the
+  transcription, so no transcription mistake was found in the three packets.
+- **Chrome load test** (local copy of the page, the scan PDFs, the Word file sent back to a local receiver because
+  Chrome refuses automated downloads): 29 Sep in 54 s: 76 orders, **0 to check, 76/76 same as Tech's 29 Sep issue**,
+  76/76 as transcribed; the Word file has the same pages, orders, formulas and settings as the pipeline's `FRM
+  Formulation 2026-09-29.docx` (only the source line and a "generated in the page" note differ). 25 Sep in 58 s: 71/71,
+  0 to check; 28 Sep in 54 s: 75/75, 0 to check (p3 line by continuation). Same as Tech's issue that day 70/71 and 74/75:
+  RP26810-1 (SE21) now gets the 29 Sep issue (FUA152KS4 then FU0041KS4), as the latest-formulation rule requires (§7.47).
+- **Caveat**: the glyph bank was built on 28 Sep from the 25 and 28 Sep scans, so on those two days the glyph reader is
+  partly in-sample; 29 Sep is out of sample. New scans will show how it holds; a disagreement is always boxed, never
+  guessed.
+- Tests: `tests/test_scan_reader_page.py` (`OCR_TESTS=1`: every row of the three scans right and taken; page reader =
+  reference on every row), `tests/test_product_code.py` (the page's decision, suffix, line-code and continuation rules).
+- Artifact republished: version 25, with `glyph-bank.js` beside the page (and `eng-data.js`, unchanged).
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1747,6 +1790,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.40 | 2026-09-30 | Claude Code (local, with James Kuo) | **Two readers, border lines, handwriting ignored (§7.49)**: row cut at the sheet border line; Tesseract + glyph bank must agree; line code two ways + page continuation; page reader = reference on 222/222 rows; 25/28/29 Sep all rows right, 0 boxed; Chrome 29 Sep 76/76 same as Tech, Word file = pipeline's. |
 | 1.39 | 2026-09-30 | Claude Code (local, with James Kuo) | **Scan reader and product codes made hard rules (§7.48)**: `product_code.py`; Product Master letter-O codes fixed (2,084); reader cells at the bars, no wrong take on 28/29 Sep; Word download locked until boxed rows are confirmed. |
 | 1.38 | 2026-09-30 | Claude Code (local, with James Kuo) | **Always the latest formulation, even for a past schedule (§7.47)**. |
 | 1.37 | 2026-09-29 | Claude Code (local, with James Kuo) | **Interface reads a schedule scan in the page and downloads the Word formulation (§7.46)**: Tesseract in the page, tuned on 28/29 Sep (no wrong order, none missed silently); Chrome load test 86 s; docx built in the page. |

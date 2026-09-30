@@ -62,6 +62,20 @@ console.log(JSON.stringify({
   judgeHist: judge('RP26826-3', 'RPAQWRAN72', pairs, '').status,       // product garbage: not taken from history
   judgeNear: judge('H06A116-1', 'DPP50WB308', pairs, '').status,       // 0/6 is not a look-alike: not taken
   judgeOk: judge('RP26826-3', 'RPA4OWB3072', pairs, '').status,
+  // reader v22 (ui/reader.js): two readers, line code, handwriting
+  sfx17: parseOrderCell2('H69A203-17', 1), sfx1: parseOrderCell2('H69A203-1', 1), sfxShort: parseOrderCell2('H69A203-1', 2),
+  onFile: decide('H69A039-1', 'DPP30WB1023', null, null, new Set(['H69A039-1|DPP30WB1023'])).status,
+  glyphOnFile: decide('H69A066-2', 'SPA40WM5', 'H69A066-2', 'SPA40WM8', new Set(['H69A066-2|SPA40WM8'])),
+  disagree: decide('H69A066-2', 'SPA40WM5', 'H69A066-2', 'SPA40WM8', new Set()).status,
+  agree: decide('H70A001-1', 'DPP30WB1023', 'H70A001-1', 'DPP30WB1023', new Set()).status,
+  oneReader: decide('H70A001-1', 'DPP30WB1023', null, 'DPP30WB1023', new Set()).status,
+  fit: [fitLine('SE13'), fitLine('SEI3'), fitLine('SE1'), fitLine('SD31')],
+  footer: footerRead('LINENO.SE22TOTAL'),
+  lineOf: [lineOf([['header', 'SE13'], ['glyph', null]]), lineOf([['header', 'SE13'], ['glyph', 'SE13']]), lineOf([['header', 'SE13'], ['glyph', 'SE12'], ['footer', 'SE13']])],
+  settle: settleLines([
+    {line: null, lineReads: [['header', 'SE13'], ['glyph', null]]}, {line: 'SE13', lineReads: [['header', 'SE13'], ['glyph', 'SE13'], ['footer', 'SE13']]},
+    {line: null, lineReads: [['header', 'SE21'], ['footer', 'SE21']]}, {line: 'SE22', lineReads: [['header', 'SE22'], ['glyph', 'SE22']]},
+  ]).map(p => p.line),
 }));
 '''
 
@@ -83,3 +97,11 @@ def test_page_reader_rules(tmp_path):
     assert out['judgeHist'] == 'check'                  # RPAQWRAN72 never reaches the printed copy
     assert out['judgeNear'] != 'read' and out['judgeNear'] != 'matched to schedule history'
     assert out['judgeOk'] == 'matched to schedule history'
+    # reader v22: a bar is never a suffix digit; a row is taken only on file or when both readers agree
+    assert out['sfx17'] == 'H69A203-1' and out['sfx1'] == 'H69A203-1' and out['sfxShort'] is None
+    assert out['onFile'] == 'read' and out['glyphOnFile'] == {'order': 'H69A066-2', 'prod': 'SPA40WM8', 'status': 'read'}
+    assert out['disagree'] == 'check' and out['agree'] == 'read by both readers' and out['oneReader'] == 'check'
+    # the line code: a known line, two independent readings (or the page continues its neighbour's line), else boxed
+    assert out['fit'] == ['SE13', 'SE13', None, None] and out['footer'][:2] == ['footer', 'SE22']
+    assert out['lineOf'] == [None, 'SE13', None]
+    assert out['settle'] == ['SE13', 'SE13', None, 'SE22']      # p3 has a footer: it does not continue onto SE22

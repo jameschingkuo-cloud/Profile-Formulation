@@ -116,6 +116,40 @@ def eng_data():
     return out
 
 
+GLYPH_Q = (500.0, 38.0)          # int8 scale of the 560 shape values, uint8 scale of the 3 size/position values
+
+
+def quantize_bank(X):
+    """The glyph bank as bytes: per sample 560 shape values as int8 (x500, they lie within +-0.25) then the 3 size and
+    position values as uint8 (x38, they lie within 0..6.7). ocr_eval.bank() can read it back to check the page's reader."""
+    import numpy as np
+    shape = np.clip(np.round(X[:, :560] * GLYPH_Q[0]), -127, 127).astype(np.int8).view(np.uint8)
+    size = np.clip(np.round(X[:, 560:] * GLYPH_Q[1]), 0, 255).astype(np.uint8)
+    return np.concatenate([shape, size], axis=1)
+
+
+def dequantize_bank(Q):
+    import numpy as np
+    return np.concatenate([Q[:, :560].view(np.int8).astype(np.float32) / GLYPH_Q[0], Q[:, 560:].astype(np.float32) / GLYPH_Q[1]], axis=1)
+
+
+def glyph_bank_js():
+    """out/glyph-bank.js: the plant's glyph bank (scan_reader/glyph_bank.npz, 10,844 printed characters from the 25 and
+    28 Sep scans), quantized, gzipped and base64'd as a script published next to the page, for the page's second reader
+    (the same nearest-neighbour reading as ui/ocr_eval.py decode_order / decode_product)."""
+    import base64
+    import gzip
+    import numpy as np
+    out = config.OUTPUT_DIR / 'glyph-bank.js'
+    z = np.load(config.GLYPH_BANK)
+    X, y = z['X'].astype(np.float32), [str(v) for v in z['y']]
+    assert X.shape[1] == 563 and all(len(v) == 1 for v in y)
+    gz = gzip.compress(quantize_bank(X).tobytes(), 9)
+    out.write_text('/* glyph bank */window.GLYPH_BANK=' + json.dumps({'n': int(X.shape[0]), 'd': 563, 'q': GLYPH_Q, 'labels': ''.join(y),
+                   'data': base64.b64encode(gz).decode()}) + ';', encoding='ascii')
+    return out
+
+
 def line_layout(pk):
     """Per line: number, dosing, and the layout of Tech's latest issued page (feeder columns, AC, footnotes, effective
     date), for the Word formulation the page generates (same layout as daily/render_frm.py)."""
@@ -231,9 +265,11 @@ def main():
             'linemeta': line_layout(pk),
             'code_rule': {'colours': sorted(product_code.COLOURS), 'families': sorted(product_code.FAMILIES)}}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
+    t = t.replace('/*__READER__*/', (ROOT / 'ui' / 'reader.js').read_text(encoding='utf-8'))   # the scan reader (tested on its own)
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     page = t.replace('__DATA__', blob)
     eng_data()
+    glyph_bank_js()
     # the artifact source is the page fragment (the Artifact tool adds the document skeleton); the dated copy kept in
     # SharePoint is opened as a file, so it carries its own skeleton and charset
     full = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'

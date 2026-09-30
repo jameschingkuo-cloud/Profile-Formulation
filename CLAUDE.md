@@ -77,6 +77,14 @@ Change these only with James's explicit say-so, and log the change in the handof
   for a person, and the interface's Word download stays locked until every boxed row is confirmed (a correction must keep
   the rules and the product must be in the Product Master). Tests `test_product_code.py`; the real-scan reader test
   `OCR_TESTS=1 python -m pytest tests/test_scan_reader_page.py` (run it whenever the reader changes).
+- **Scan reader: two readers must agree, border lines isolate the row, handwriting is ignored (James, 30 Sep 2026)**.
+  `ui/ocr_eval.py` (`audit3`) is the reference; the page runs the same reader (`ui/reader.js`, inlined by `ui/build.py`;
+  glyph bank shipped as `glyph-bank.js`). A row band holding a solid border line with notes above it is cut along the
+  line and only the printed side (the one with the '|' bars) is read. Each cell is read by Tesseract (cleaned cell) and
+  by the glyph bank; a row is taken only when an order + product on file matches or both readers agree on both values.
+  The line code needs two independent readings (header, footer, glyph) or the page continues its neighbour's line (no
+  footer); else the page's rows are boxed. Change the reference first, then the page, and keep the parity test (page =
+  reference on every row) at 0 differences. Publish `glyph-bank.js` and `eng-data.js` with the page.
 - **Never auto-issue a formula the pipeline guessed.** Anything not matched exactly goes to an engineer. Every
   output is a draft until Tech signs it.
 
@@ -109,9 +117,10 @@ Change these only with James's explicit say-so, and log the change in the handof
 | `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. `preflight.py`: master change control (`check` / `accept`; accepted versions in `data/snapshots/`). `seed_master.py`: one-time Draft seed. Flow and maintenance in `docs/DATABASE.md` (§3, §7) |
 | `product_master/` | `prepare.py`: Product Master → `Product Master - Prepared <date>.xlsx` (code-derived columns, Issues, Verify First, Colour Codes, Import Map; §7.18). A working file, not published |
 | `scan_reader/` | `ext_scan_reader.py` (EXT scan reader, R1/R2 hardcoded, `glyph_bank.npz`); `render_pages.py` (page PNGs + quarter tiles for reading) |
+| `ui/` | The interface page: `build.py` (data + `page.template.html` + `reader.js` → `out/profile-formulation.html`, `eng-data.js`, `glyph-bank.js`); `reader.js` (the page's scan reader); `ocr_eval.py` (the reference reader, `audit3`, `dump_parity`) |
 | `data/packets/` | Transcribed daily packets `packet_YYYY-MM-DD.json` (`packet_date`, `source_scan`, `ext`, `cnv`, `frm`) |
 | `data/` | `ext_truth_2026-09-23.csv` (82 verified EXT rows), `published_manifest.json` |
-| `tests/` | `python -m pytest -q` (regression against the 23 and 24 Sep packets) |
+| `tests/` | `python -m pytest -q` (regression against the 23 and 24 Sep packets); `OCR_TESTS=1` for the real-scan reader tests; `tests/js/reader_parity.js` (page reader vs reference) |
 | `inputs/`, `work/`, `out/` | Not in git: local inputs, intermediate files, staged outputs |
 
 ## Daily run (James sends the day's scan)

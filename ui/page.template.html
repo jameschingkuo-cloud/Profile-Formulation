@@ -585,7 +585,6 @@ $('#mgrtable').addEventListener('click', e => { const tr = e.target.closest('tr[
 $('#runsub').textContent = `One day's packet from scan to published records. Shown for ${fmtDate(D.day)}.`;
 const drop = $('#drop'), gmsg = $('#genmsg'), gpages = $('#genpages'), gout = $('#genout'), gstop = $('#genstop');
 const PRODUCTS = new Set(D.products || []);
-const ORDER_RX = /^[A-Z0-9]{6,8}-\d{1,3}$/;
 let sampleFn = null, imgCaps = null, busy = false, ctl = null, mode = 'ocr', lastRun = null, lastPlan = null, lastSource = '';
 $('#gendate').value = new Date().toISOString().slice(0, 10);
 const dropNote = $('#dropnote');
@@ -819,182 +818,18 @@ async function ocr(canvas, psm, tsv = false){
   api.Recognize(null);
   return api.GetUTF8Text() || '';
 }
-// ---- the reader, hard rules (James Kuo, 30 Sep 2026: "these need to be hard rule. If anything odd is spotted, recheck the
-// OCR again"). Mirrors ui/ocr_eval.py read_page15, tested on the 28 and 29 Sep scans: no wrong order taken, every printed
-// row accounted for. Each order row is cut into two cells at the printed bars ("| Y | H67A164 - 1 | RPP63KS1 | PB405"),
-// so a bar can never be read as a digit of the suffix (H69A203-17 on 29 Sep); each cell is read with up to four settings.
-// A row is taken only when it matches an order + product already on file (look-alike characters only). Otherwise, if
-// the order number keeps the order rule and the product keeps the product-code rule AND is in the Product Master, it is
-// boxed "new order: check the number"; anything else is boxed "check". The Word document cannot be downloaded while a
-// row is boxed.
-function rowBands(src){                   // order rows: dark-pixel runs in the order-number text (bars excluded)
-  const W = src.width, H = src.height, x0 = Math.round(W * 0.086), x1 = Math.round(W * 0.13), y0 = Math.round(H * 0.07);
-  const px = src.getContext('2d').getImageData(x0, y0, x1 - x0, H - y0).data, w = x1 - x0, out = [];
-  let start = null, last = null;
-  for (let r = 0; r < H - y0; r++) {
-    let ink = 0;
-    for (let c = 0; c < w; c++) { const i = (r * w + c) * 4; if (0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2] < 140) ink++; }
-    if (ink > 5) { if (start === null) start = r; last = r; }
-    else if (start !== null && r - last > 4) { if (last - start >= 12) out.push([y0 + start, y0 + last]); start = null; }
-  }
-  if (start !== null && last - start >= 12) out.push([y0 + start, y0 + last]);
-  return out.filter(([a]) => a > H * 0.10);
-}
-function rowBars(src, y0, y1){            // the printed bars run below the text: suffix bar, die bar 0.064 W later, 'Y' bar 0.073 W before
-  const W = src.width, px = src.getContext('2d').getImageData(0, y1 + 2, W, 6).data, xs = [];
-  for (let x = Math.round(W * 0.03); x < W * 0.26; x++) {
-    let ink = 0; for (let r = 0; r < 6; r++) { const i = (r * W + x) * 4; if (0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2] < 140) ink++; }
-    if (ink / 6 >= 0.8) xs.push(x);
-  }
-  const near = (t, tol) => xs.filter(x => Math.abs(x - t) <= tol).sort((a, b) => Math.abs(a - t) - Math.abs(b - t))[0];
-  for (const suf of xs) {
-    if (suf < W * 0.11 || suf > W * 0.19) continue;
-    const die = near(suf + W * 0.064, W * 0.005);
-    if (die === undefined) continue;
-    const yb = near(suf - W * 0.073, W * 0.006);
-    return [yb !== undefined ? yb : Math.round(suf - W * 0.073), suf, die];
-  }
-  return null;
-}
 function cropPx(src, x0, y0, x1, y1, scale, pad){
   const H = src.height;
   return crop(src, x0 / src.width, Math.max(0, y0 - pad), x1 / src.width, Math.min(H, y1 + pad), scale, 0);
 }
-const CELL_WL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-';
-const CELL_TRIES = [[3, 7], [2, 7], [3, 13], [4, 8]];
-async function ocrCell(src, x0, x1, y0, y1, scale, psm){
-  const {api} = await loadTess();
-  api.SetVariable('tessedit_char_whitelist', CELL_WL);
-  try { return (await ocr(cropPx(src, x0, y0, x1, y1, scale, 8), psm)).toUpperCase().replace(/\s+/g, ''); }
-  finally { api.SetVariable('tessedit_char_whitelist', WL); }
-}
-const PAIRS = new Set(['0O', '0D', 'OD', '0Q', '1I', '1T', '1L', 'IT', 'IL', '1J', '5S', '8B', '4A', '4G', '6G', '6E', '2Z', '3S', '8S', 'BE', 'MN', '7/', '71', '3B', '8E',
-  '4Z', '6G', '0Q', 'WN', '8R', 'BR', 'EF'].flatMap(p => [p, p[1] + p[0]]));
-const SOFT = new Set('OSIZTE/:.-');
-const TO_D = {O: '0', D: '0', Q: '0', U: '0', I: '1', L: '1', T: '1', J: '1', Z: '2', S: '5', G: '6', E: '6', B: '8', A: '4', '/': '7'};
-const dig = s => [...s].map(c => TO_D[c] || c).join('');
-function strictDist(a, b){               // look-alike swap 0.3, stray OCR mark 0.5, any other difference 1.5 / 10
-  const n = a.length, m = b.length, D = [];
-  for (let i = 0; i <= n; i++) { D.push(new Array(m + 1).fill(0)); if (i) D[i][0] = D[i - 1][0] + (SOFT.has(a[i - 1]) ? 0.5 : 1.5); }
-  for (let j = 1; j <= m; j++) D[0][j] = D[0][j - 1] + (SOFT.has(b[j - 1]) ? 0.5 : 1.5);
-  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) {
-    const x = a[i - 1], y = b[j - 1], sub = x === y ? 0 : (PAIRS.has(x + y) ? 0.3 : 10);
-    D[i][j] = Math.min(D[i - 1][j - 1] + sub, D[i - 1][j] + (SOFT.has(x) ? 0.5 : 1.5), D[i][j - 1] + (SOFT.has(y) ? 0.5 : 1.5));
-  }
-  return D[n][m];
-}
-const ocrDist = strictDist;
-function matchPair(oRaw, pRaw, pairs){
-  let b1 = [Infinity], b2 = Infinity;
-  for (const [o, p] of pairs) {
-    const c = strictDist(oRaw, o) + strictDist(pRaw, p);
-    if (c < b1[0]) { b2 = b1[0]; b1 = [c, o, p]; } else if (c < b2) b2 = c;
-  }
-  return b1[0] <= 2.5 && b2 - b1[0] >= 1 ? {order: b1[1], prod: b1[2], cost: b1[0]} : null;
-}
-// ---- the order number and the product code, as hard rules (product_code.py; James Kuo, 30 Sep 2026)
-const ORDER_RULE = /^(H\d\d[A-Z]\d{3}|RP\d\d[0-9A-C]\d\d)-\d{1,2}$/;
-function parseOrderCell(t){
-  const m = /^[^A-Z0-9]*(H[0-9A-Z]{6}|RP[0-9A-Z]{5})-*([0-9ITLJZSOD]{1,2})[^A-Z0-9]*$/.exec(t);
-  if (!m) return null;
-  const base = m[1], b = base[0] === 'H' ? 'H' + dig(base.slice(1, 3)) + base[3] + dig(base.slice(4, 7))
-                                          : 'RP' + dig(base.slice(2, 4)) + (/[ABC]/.test(base[4]) ? base[4] : dig(base[4])) + dig(base.slice(5, 7));
-  const o = `${b}-${dig(m[2])}`;
-  return ORDER_RULE.test(o) ? o : null;
-}
-const CODE_RULE = /^([A-Z]{3})([1-9A-Z])([0-9])([A-Z]{2})([0-9]{1,5})$/;
-const TO_L = {'0': 'O', '1': 'I', '2': 'Z', '4': 'A', '5': 'S', '6': 'G', '8': 'B', '7': 'T'};
-const LOOK_L = {B: 'RE8', R: 'B', W: 'NM', N: 'WM', M: 'NW', O: 'DQ0', D: 'O0', S: '5', E: 'FB', F: 'E', I: '1LT', G: '6C', C: 'G'};
-const COLOURS = new Set(D.code_rule.colours), FAMILIES = new Set(D.code_rule.families);
-function codeProblems(c){
-  const m = CODE_RULE.exec(c || '');
-  if (!m) return ['does not fit family (3 letters) + thickness (digit 1-9 or letter, then a digit) + colour (2 letters) + number (digits)'];
-  return [...(FAMILIES.has(m[1]) ? [] : [`family ${m[1]} not in use`]), ...(COLOURS.has(m[4]) ? [] : [`colour ${m[4]} not in the colour list`])];
-}
-function repairCode(tok){
-  const t = (tok || '').toUpperCase().replace(/[^A-Z0-9/]/g, '');
-  if (t.length < 8) return null;
-  const fam = [...t.slice(0, 3)].map(c => TO_L[c] || c).join(''), th2 = TO_D[t[4]] || t[4], num = dig(t.slice(7));
-  const cr = [...t.slice(5, 7)].map(c => TO_L[c] || c).join('');
-  let cands = COLOURS.has(cr) ? [cr] : [];
-  if (!cands.length) for (const a of [cr[0], ...(LOOK_L[cr[0]] || '')]) for (const b of [cr[1], ...(LOOK_L[cr[1]] || '')]) if (COLOURS.has(a + b)) cands.push(a + b);
-  cands = [...new Set(cands)];
-  if (cands.length !== 1) return null;
-  const code = fam + t[3] + th2 + cands[0] + num;
-  return CODE_RULE.test(code) ? code : null;
-}
-function takeProd(t2){                   // a product is taken only when it (or its rule-based repair) is in the Product Master
-  const tok = (t2 || '').replace(/[^A-Z0-9/]/g, '');
-  for (const c of [tok, tok.slice(1), tok.slice(0, -1), tok.slice(1, -1)]) {
-    if (PRODUCTS.has(c)) return c;
-    const r = repairCode(c);
-    if (r && PRODUCTS.has(r)) return r;
-  }
-  return null;
-}
-function nearestOnFile(o, p, pairs){      // a hint for a boxed row: the closest order + product on file (never used by itself)
-  let best = null, bc = Infinity;
-  for (const [po, pp] of pairs) {
-    const oc = o ? strictDist(o, po) : 20, pc = p ? strictDist(p, pp) : 20;
-    const c = Math.min(oc + (pp === p ? 0 : 3), pc + (po === o ? 0 : 3));
-    if (c < bc) { bc = c; best = [po, pp]; }
-  }
-  return bc <= 11 ? best : null;
-}
-const READRANK = {'read': 0, 'matched to schedule history': 1, 'new order': 2, 'check': 3};
-const isMatched = r => r.status === 'read' || r.status === 'matched to schedule history';
-// one reading (from any reader) through the same hard rules
-function judge(oText, pText, pairs, raw){
-  const oRaw = (oText || '').replace(/[^A-Z0-9-]/g, '').replace(/^-+|-+$/g, ''), pRaw = (pText || '').replace(/[^A-Z0-9]/g, '');
-  const m = oRaw && pRaw ? matchPair(oRaw, pRaw, pairs) : null;
-  if (m) return {order: m.order, prod: m.prod, status: m.cost === 0 ? 'read' : 'matched to schedule history', raw};
-  const o = parseOrderCell(oText || ''), p = takeProd(pText || '');
-  if (o && p) return {order: o, prod: p, status: 'new order', raw, hint: nearestOnFile(o, p, pairs)};
-  return {order: o || oRaw, prod: p || pRaw, status: 'check', raw, hint: nearestOnFile(o || oRaw, p || pRaw, pairs)};
-}
-async function ocrPage(p, pairs){
-  const src = p.canvas;
-  const top = await ocr(crop(src, 0, 0, 0.30, 0.08), 6);
-  const mm = /LINE\s*N[O0]\s*[:.]?\s*S[EF]([0-9OISBZ]{2})/.exec(top.toUpperCase());
-  if (!mm) return null;                                     // not an extrusion page (CNV, FRM, blank)
-  const line = 'SE' + dig(mm[1]);
-  const orders = [], unread = [];
-  for (const [y0, y1] of rowBands(src)) {
-    if (ctl.signal.aborted) throw {code: 'cancelled'};
-    const bars = rowBars(src, y0, y1);
-    if (!bars) {                                            // no bars: not an order row, unless it carries numbers
-      const t = await ocrCell(src, src.width * 0.06, src.width * 0.24, y0, y1, 2, 7);
-      if (!/LINE|TOTAL|REPORT|SI|SPECIAL/.test(t) && /\d{3}/.test(t))
-        unread.push({text: t, img: cropPx(src, src.width * 0.05, y0, src.width * 0.30, y1, 1, 14).toDataURL('image/png')});
-      continue;
-    }
-    const [yb, sb, db] = bars;
-    let best = null, skip = false;
-    for (const [scale, psm] of CELL_TRIES) {               // "if anything odd is spotted, recheck the OCR again"
-      const t = await ocrCell(src, yb + 5, sb - 3, y0, y1, scale, psm), t2 = await ocrCell(src, sb + 5, db - 3, y0, y1, scale, psm);
-      if (/LINE|TOTAL|REPORT/.test(t + t2)) { skip = true; break; }
-      const r = judge(t, t2, pairs, `${t} | ${t2}`);
-      if (!best || READRANK[r.status] < READRANK[best.status]) best = r;
-      if (isMatched(r)) break;
-    }
-    if (skip || !best) continue;
-    if (best.status !== 'read' && !isMatched(best)) best.img = cropPx(src, yb - 20, y0, db + src.width * 0.05, y1, 1, 12).toDataURL('image/png');
-    orders.push(best);
-  }
-  return {page: p.label, line, orders, unread};
-}
-function historyPairs(){                  // every order + product on file (all dates: the up-to-date rule), plus issued FRM orders
-  const seen = new Map();
-  Object.values(D.sched_by_date || {}).forEach(rows => rows.forEach(([, o, p]) => seen.set(o + '|' + p, [o, p])));
-  return [...seen.values()];
-}
+/*__READER__*/
 
 async function generate(files){
   files = [...(files || [])];                                   // copy now: the input is cleared right after the pick
   if (busy || !files.length) return;
   const m = /(20\d{2})(\d{2})(\d{2})\d{6}/.exec(files[0].name || '');
   if (m) { $('#gendate').value = `${m[1]}-${m[2]}-${m[3]}`; transNote(); }          // copier file names carry the scan date
-  const date = $('#gendate').value, pairs = historyPairs();
+  const date = $('#gendate').value, pairs = historyPairs(), pairSet = new Set(pairs.map(([o, p]) => o + '|' + p));
   lastSource = files.map(f => f.name).join(', ');
   busy = true; drop.classList.add('off'); gstop.hidden = false; gout.innerHTML = ''; gpages.innerHTML = '';
   ctl = new AbortController();
@@ -1002,16 +837,16 @@ async function generate(files){
   let nPages = 0;
   try {
     say(mode === 'claude' ? 'Rendering the pages…' : 'Rendering the pages and starting the text reader…');
-    if (mode === 'ocr') await loadTess();
+    if (mode === 'ocr') { await loadTess(); await glyphBank(); }
     let batch = [];
     const per = mode === 'claude' ? Math.max(1, Math.min(imgCaps?.maxCount || 1, 4)) : 1;
     const flush = async () => {
       batch.forEach(p => { gpages.insertAdjacentHTML('beforeend', `<span id="gp${p.label}" class="busy">p${p.label}</span>`); });
       say(`${mode === 'claude' ? 'Claude is reading' : 'Reading'} page${batch.length > 1 ? 's' : ''} ${batch[0].label}${batch.length > 1 ? '–' + batch[batch.length - 1].label : ''} of ${batch[0].total}…`);
-      const got = mode === 'claude' ? await claudeRead(batch) : [await ocrPage(batch[0], pairs)];
+      const got = mode === 'claude' ? await claudeRead(batch) : [await ocrPage(batch[0], pairs, pairSet)];
       got.forEach((r, k) => {
         const el = $('#gp' + batch[k].label);
-        el.className = r ? 'ext' : ''; el.textContent = r ? `p${batch[k].label} ${r.line}` : `p${batch[k].label}`;
+        el.className = r ? 'ext' : ''; el.textContent = r ? `p${batch[k].label} ${r.line || '?'}` : `p${batch[k].label}`;
         if (r) reads.push(r);
       });
       batch.forEach(p => { p.canvas.width = 0; });          // free the page image
@@ -1023,11 +858,15 @@ async function generate(files){
       if (batch.length >= per) await flush();
     }
     if (batch.length) await flush();
+    if (mode === 'ocr') {                                    // line codes: a page without a footer continues on the next
+      boxUncertainLines(settleLines(reads));
+      reads.forEach(r => { const el = $('#gp' + r.page); if (el) { el.textContent = `p${r.page} ${r.line}`; if (r.lineGuess) el.className = 'warn'; } });
+    }
     render(reads, date, nPages);
     say(`Done in ${Math.round((performance.now() - t0) / 1000)} s: ${reads.length} extrusion page(s) of ${nPages} read${mode === 'ocr' ? ' by the text reader in this page' : ' by Claude'}.`);
   } catch (e) {
     say(e?.code ? (ERR[e.code] || `Could not finish (${e.code}).`) : (e?.message || 'Something went wrong reading the file.'));
-    if (reads.length) render(reads, date, null);
+    if (reads.length) { if (mode === 'ocr') boxUncertainLines(settleLines(reads)); render(reads, date, null); }
   } finally {
     busy = false; drop.classList.remove('off'); gstop.hidden = true;
   }
@@ -1049,6 +888,7 @@ function lookup(line, order, prod, date){
 }
 const STATUS_CHIP = {
   'matched to schedule history': o => `<span class="chip var" title="Read as ${esc(o.raw || '')}">matched to history</span>`,
+  'read by both readers': o => `<span class="chip var" title="Read as ${esc(o.raw || '')}">new: both readers agree</span>`,
   'new order': o => `<span class="chip warn" title="Read as ${esc(o.raw || '')}">new order: check the number</span>`,
   'check': o => `<span class="chip crit" title="Read as ${esc(o.raw || '')}">check</span>`,
   'corrected by you': () => '<span class="chip ok">corrected</span>',
@@ -1059,7 +899,7 @@ function render(reads, date, nPages){
   editRefs = [];
   const byLine = {};
   reads.forEach(r => r.orders.forEach(o => {
-    const L = (byLine[r.line] = byLine[r.line] || []);
+    const ln = o.line || r.line, L = (byLine[ln] = byLine[ln] || []);
     if (!L.some(x => x.order === o.order)) L.push({...o, page: r.page, _ref: o});
   }));
   const lines = Object.keys(byLine).sort((a, b) => (D.linemeta[a]?.no || 99) - (D.linemeta[b]?.no || 99));
@@ -1073,7 +913,8 @@ function render(reads, date, nPages){
     const rows = byLine[line].map((o, i) => {
       n++;
       const okOrder = ORDER_RULE.test(o.order), okProd = PRODUCTS.has(o.prod) && !codeProblems(o.prod).length;
-      const flagged = !okOrder || !okProd || o.status === 'new order' || o.status === 'check';
+      const okLine = !o.lineCheck || LINES.includes(line);
+      const flagged = !okOrder || !okProd || !okLine || o.status === 'new order' || o.status === 'check';
       if (flagged) toCheck++;
       const r = okOrder ? lookup(line, o.order, o.prod, date) : {how: 'exception', why: 'Order number not read cleanly: check the page'};
       if (r.how === 'exception') exc++; else filled++;
@@ -1094,12 +935,13 @@ function render(reads, date, nPages){
       let orderCell = `<b class="mono">${esc(o.order)}</b> ${chip}`, prodCell = `${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
       if (flagged) {
         const k = editRefs.push(o._ref) - 1;
-        const why = [okOrder ? '' : 'order number does not keep the rule (H69A039-1 / RP26811-1)', okProd ? '' : (codeProblems(o.prod).length ? 'product: ' + codeProblems(o.prod).join('; ') : 'product not in the Product Master')].filter(Boolean);
+        const why = [o.lineCheck ? 'the line code on this page was not read the same two ways: check the line on the paper' : '', okOrder ? '' : 'order number does not keep the rule (H69A039-1 / RP26811-1)', okProd ? '' : (codeProblems(o.prod).length ? 'product: ' + codeProblems(o.prod).join('; ') : 'product not in the Product Master')].filter(Boolean);
         orderCell = `<input class="genfix mono" data-k="${k}" data-f="order" value="${esc(o.order)}" aria-label="Order number"> ${chip}
           ${o.img ? `<div><img src="${o.img}" alt="The row on the scan" style="max-width:min(420px,100%);border:1px solid var(--line);background:#fff;margin-top:4px"></div>` : ''}
           ${o.raw ? `<div class="muted" style="font-size:12px">read as <span class="mono">${esc(o.raw)}</span></div>` : ''}
           ${o.hint ? `<div class="muted" style="font-size:12px">closest on file: <span class="mono">${esc(o.hint[0])} · ${esc(o.hint[1])}</span> (check the paper)</div>` : ''}
-          ${why.length ? `<div style="font-size:12px;color:var(--crit)">${esc(why.join(' · '))}</div>` : ''}`;
+          ${why.length ? `<div style="font-size:12px;color:var(--crit)">${esc(why.join(' · '))}</div>` : ''}
+          ${o.lineCheck ? `<div style="font-size:12px">Line <input class="genfix mono" data-k="${k}" data-f="line" value="${esc(line)}" aria-label="Line code" style="width:6em"></div>` : ''}`;
         prodCell = `<input class="genfix mono" data-k="${k}" data-f="prod" value="${esc(o.prod)}" aria-label="Product code">`;
       }
       return `<tr${flagged ? ' class="flagrow"' : ''}><td class="mono">${i + 1}</td><td>${orderCell}<div class="muted" style="font-size:12px">${/^\d+$/.test(o.page) ? 'scan p' + esc(o.page) : esc(o.page)}</div></td>
@@ -1145,7 +987,12 @@ function render(reads, date, nPages){
       const ref = editRefs[+inp.dataset.k], v = inp.value.toUpperCase().replace(/\s+/g, '');
       if (ref && v) ref[inp.dataset.f] = v;
     });
-    editRefs.forEach(ref => { if (ref && ORDER_RULE.test(ref.order) && PRODUCTS.has(ref.prod)) ref.status = 'corrected by you'; else if (ref) ref.status = 'check'; });
+    editRefs.forEach(ref => {
+      if (!ref) return;
+      const lineOk = !ref.lineCheck || LINES.includes(ref.line);
+      if (ref.lineCheck && lineOk) ref.lineCheck = false;
+      ref.status = ORDER_RULE.test(ref.order) && PRODUCTS.has(ref.prod) && lineOk ? 'corrected by you' : 'check';
+    });
     render(lastRun.reads, lastRun.date, lastRun.nPages);
   });
 }
