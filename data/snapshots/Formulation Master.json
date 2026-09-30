@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-30T13:22:25",
-"change_log_max_id": 223,
+"accepted_at": "2026-09-30T15:41:01",
+"change_log_max_id": 263,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -355,6 +355,17 @@
 "Variant": "Primary",
 "When to Use": ""
 },
+"FU0101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Description": "",
+"Family": "FU",
+"Formula Code": "FU0101BL3",
+"Seeded From": "FRM 2026-09-30 (doc05271720260930140641.pdf) p12 (SE43)",
+"Status": "Draft",
+"Variant": "Primary",
+"When to Use": ""
+},
 "FU0110WB7|Primary": {
 "Approved By": "",
 "Approved Date": "",
@@ -465,6 +476,17 @@
 "Variant": "Other",
 "When to Use": ""
 },
+"FUA011WB5|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Description": "",
+"Family": "FU",
+"Formula Code": "FUA011WB5",
+"Seeded From": "FRM 2026-09-30 (doc05271720260930140641.pdf) p4 (SE21)",
+"Status": "Draft",
+"Variant": "Primary",
+"When to Use": ""
+},
 "FUA021WB6|Primary": {
 "Approved By": "",
 "Approved Date": "",
@@ -475,6 +497,17 @@
 "Status": "Draft",
 "Variant": "Primary",
 "When to Use": ""
+},
+"FUA021WB6|Reclaim run-out": {
+"Approved By": "",
+"Approved Date": "",
+"Description": "",
+"Family": "FU",
+"Formula Code": "FUA021WB6",
+"Seeded From": "FRM 2026-09-30 (doc05271720260930140641.pdf) p4 (SE21)",
+"Status": "Draft",
+"Variant": "Reclaim run-out",
+"When to Use": "(Use this formula in case PP WB Reclaim is run out)"
 },
 "FUA060WBA|Other": {
 "Approved By": "",
@@ -494,6 +527,17 @@
 "Family": "FU",
 "Formula Code": "FUA060WBA",
 "Seeded From": "FRM 2026-09-23, 2026-09-24, 2026-09-25, 2026-09-28 (SE22)",
+"Status": "Draft",
+"Variant": "Primary",
+"When to Use": ""
+},
+"FUA101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Description": "",
+"Family": "FU",
+"Formula Code": "FUA101BL3",
+"Seeded From": "FRM 2026-09-30 (doc05271720260930140641.pdf) p12 (SE43)",
 "Status": "Draft",
 "Variant": "Primary",
 "When to Use": ""
@@ -560,6 +604,17 @@
 "Family": "FU",
 "Formula Code": "FUA152BD4",
 "Seeded From": "FRM 2026-09-28 (SE21)",
+"Status": "Draft",
+"Variant": "Primary",
+"When to Use": "Match color and opacity with QC sample"
+},
+"FUA152BL4|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Description": "",
+"Family": "FU",
+"Formula Code": "FUA152BL4",
+"Seeded From": "FRM 2026-09-30 (doc05271720260930140641.pdf) p4 (SE21)",
 "Status": "Draft",
 "Variant": "Primary",
 "When to Use": "Match color and opacity with QC sample"
@@ -2255,6 +2310,81 @@
 "Variant": "Primary",
 "Weight % (from Set)": ""
 },
+"SE21|FUA011WB5|Primary||Hopper 1": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 1",
+"Formula Code": "FUA011WB5",
+"Line Code": "SE21",
+"Material ID": "50-1560-050",
+"Recipe Weight %": "",
+"Set": "52",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA011WB5|Primary||Hopper 2": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 2",
+"Formula Code": "FUA011WB5",
+"Line Code": "SE21",
+"Material ID": "50-7002-433",
+"Recipe Weight %": "",
+"Set": "9",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA011WB5|Primary||Hopper 3": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 3",
+"Formula Code": "FUA011WB5",
+"Line Code": "SE21",
+"Material ID": "50-3963-019",
+"Recipe Weight %": "",
+"Set": "19",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA011WB5|Primary||Hopper 4": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 4",
+"Formula Code": "FUA011WB5",
+"Line Code": "SE21",
+"Material ID": "50-7002-248",
+"Recipe Weight %": "",
+"Set": "23",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA011WB5|Primary||Hopper 5": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 5",
+"Formula Code": "FUA011WB5",
+"Line Code": "SE21",
+"Material ID": "50-7002-034",
+"Recipe Weight %": "",
+"Set": "25",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
 "SE21|FUA021WB6|Primary||Hopper 1": {
 "Deviation (pts)": "",
 "Extruder": "",
@@ -2330,6 +2460,66 @@
 "Variant": "Primary",
 "Weight % (from Set)": ""
 },
+"SE21|FUA021WB6|Reclaim run-out||Hopper 1": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 1",
+"Formula Code": "FUA021WB6",
+"Line Code": "SE21",
+"Material ID": "50-1560-050",
+"Recipe Weight %": "",
+"Set": "63",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Reclaim run-out",
+"Weight % (from Set)": ""
+},
+"SE21|FUA021WB6|Reclaim run-out||Hopper 2": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 2",
+"Formula Code": "FUA021WB6",
+"Line Code": "SE21",
+"Material ID": "50-7002-433",
+"Recipe Weight %": "",
+"Set": "5",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Reclaim run-out",
+"Weight % (from Set)": ""
+},
+"SE21|FUA021WB6|Reclaim run-out||Hopper 4": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 4",
+"Formula Code": "FUA021WB6",
+"Line Code": "SE21",
+"Material ID": "50-7002-248",
+"Recipe Weight %": "",
+"Set": "18",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Reclaim run-out",
+"Weight % (from Set)": ""
+},
+"SE21|FUA021WB6|Reclaim run-out||Hopper 5": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 5",
+"Formula Code": "FUA021WB6",
+"Line Code": "SE21",
+"Material ID": "50-7002-034",
+"Recipe Weight %": "",
+"Set": "25",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Reclaim run-out",
+"Weight % (from Set)": ""
+},
 "SE21|FUA152BD4|Primary||Hopper 1": {
 "Deviation (pts)": "",
 "Extruder": "",
@@ -2399,6 +2589,81 @@
 "Material ID": "50-7002-034",
 "Recipe Weight %": "",
 "Set": "23",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA152BL4|Primary||Hopper 1": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 1",
+"Formula Code": "FUA152BL4",
+"Line Code": "SE21",
+"Material ID": "50-1560-050",
+"Recipe Weight %": "",
+"Set": "45",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA152BL4|Primary||Hopper 2": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 2",
+"Formula Code": "FUA152BL4",
+"Line Code": "SE21",
+"Material ID": "50-7002-433",
+"Recipe Weight %": "",
+"Set": "9",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA152BL4|Primary||Hopper 3": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 3",
+"Formula Code": "FUA152BL4",
+"Line Code": "SE21",
+"Material ID": "50-3963-019",
+"Recipe Weight %": "",
+"Set": "26",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA152BL4|Primary||Hopper 4": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 4",
+"Formula Code": "FUA152BL4",
+"Line Code": "SE21",
+"Material ID": "50-7002-281",
+"Recipe Weight %": "",
+"Set": "26",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE21|FUA152BL4|Primary||Hopper 5": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "Hopper 5",
+"Formula Code": "FUA152BL4",
+"Line Code": "SE21",
+"Material ID": "50-7002-034",
+"Recipe Weight %": "",
+"Set": "24",
 "Slope Used": "",
 "Source": "FRM",
 "Status": "Draft",
@@ -4850,6 +5115,66 @@
 "Variant": "Primary",
 "Weight % (from Set)": ""
 },
+"SE43|FU0101BL3|Primary||V1": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V1",
+"Formula Code": "FU0101BL3",
+"Line Code": "SE43",
+"Material ID": "50-7002-433",
+"Recipe Weight %": "",
+"Set": "5",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE43|FU0101BL3|Primary||V3": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V3",
+"Formula Code": "FU0101BL3",
+"Line Code": "SE43",
+"Material ID": "50-7002-281",
+"Recipe Weight %": "",
+"Set": "2.5",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE43|FU0101BL3|Primary||V5": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V5",
+"Formula Code": "FU0101BL3",
+"Line Code": "SE43",
+"Material ID": "50-1560-050",
+"Recipe Weight %": "",
+"Set": "77.5",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE43|FU0101BL3|Primary||V7": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V7",
+"Formula Code": "FU0101BL3",
+"Line Code": "SE43",
+"Material ID": "50-3963-019",
+"Recipe Weight %": "",
+"Set": "15",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
 "SE43|FU0151KS3|Primary||V1": {
 "Deviation (pts)": "",
 "Extruder": "",
@@ -4964,6 +5289,66 @@
 "Material ID": "50-7002-248",
 "Recipe Weight %": "",
 "Set": "2.7",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE43|FUA101BL3|Primary||V1": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V1",
+"Formula Code": "FUA101BL3",
+"Line Code": "SE43",
+"Material ID": "50-7002-433",
+"Recipe Weight %": "",
+"Set": "9",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE43|FUA101BL3|Primary||V3": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V3",
+"Formula Code": "FUA101BL3",
+"Line Code": "SE43",
+"Material ID": "50-7002-281",
+"Recipe Weight %": "",
+"Set": "2.5",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE43|FUA101BL3|Primary||V5": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V5",
+"Formula Code": "FUA101BL3",
+"Line Code": "SE43",
+"Material ID": "50-1560-050",
+"Recipe Weight %": "",
+"Set": "73.5",
+"Slope Used": "",
+"Source": "FRM",
+"Status": "Draft",
+"Variant": "Primary",
+"Weight % (from Set)": ""
+},
+"SE43|FUA101BL3|Primary||V7": {
+"Deviation (pts)": "",
+"Extruder": "",
+"Feeder": "V7",
+"Formula Code": "FUA101BL3",
+"Line Code": "SE43",
+"Material ID": "50-3963-019",
+"Recipe Weight %": "",
+"Set": "15",
 "Slope Used": "",
 "Source": "FRM",
 "Status": "Draft",
@@ -7542,6 +7927,17 @@
 "Status": "Draft",
 "Variant": "Primary"
 },
+"RPA30BL10|SE43|FUA101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FUA101BL3",
+"Last Run": "2026-09-30",
+"Line Code": "SE43",
+"Priority": "Primary",
+"Product Code": "RPA30BL10",
+"Status": "Draft",
+"Variant": "Primary"
+},
 "RPA30WB37|SE43|FUA151WB3|Primary": {
 "Approved By": "",
 "Approved Date": "",
@@ -7759,6 +8155,17 @@
 "Line Code": "SE43",
 "Priority": "Primary",
 "Product Code": "RPA40WB3073",
+"Status": "Draft",
+"Variant": "Primary"
+},
+"RPA40WB3126|SE31|FUA152WB4|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FUA152WB4",
+"Last Run": "2026-09-30",
+"Line Code": "SE31",
+"Priority": "Primary",
+"Product Code": "RPA40WB3126",
 "Status": "Draft",
 "Variant": "Primary"
 },
@@ -7993,6 +8400,17 @@
 "Status": "Draft",
 "Variant": "Primary"
 },
+"RPA50WB56|SE21|FUA011WB5|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FUA011WB5",
+"Last Run": "2026-09-30",
+"Line Code": "SE21",
+"Priority": "Primary",
+"Product Code": "RPA50WB56",
+"Status": "Draft",
+"Variant": "Primary"
+},
 "RPA60WB240|SE21|FUA001WB6|Reclaim run-out": {
 "Approved By": "",
 "Approved Date": "",
@@ -8014,6 +8432,17 @@
 "Product Code": "RPA60WB240",
 "Status": "Draft",
 "Variant": "Primary"
+},
+"RPA60WB240|SE21|FUA021WB6|Reclaim run-out": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FUA021WB6",
+"Last Run": "2026-09-30",
+"Line Code": "SE21",
+"Priority": "Alternate",
+"Product Code": "RPA60WB240",
+"Status": "Draft",
+"Variant": "Reclaim run-out"
 },
 "RPA60WB259|SE13|FUA001WB6|Primary": {
 "Approved By": "",
@@ -8070,6 +8499,17 @@
 "Status": "Draft",
 "Variant": "Primary"
 },
+"RPP30BL265|SE43|FU0101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FU0101BL3",
+"Last Run": "2026-09-30",
+"Line Code": "SE43",
+"Priority": "Primary",
+"Product Code": "RPP30BL265",
+"Status": "Draft",
+"Variant": "Primary"
+},
 "RPP30BL654|SE11|FU0151BL3|Primary": {
 "Approved By": "",
 "Approved Date": "",
@@ -8078,6 +8518,50 @@
 "Line Code": "SE11",
 "Priority": "Primary",
 "Product Code": "RPP30BL654",
+"Status": "Draft",
+"Variant": "Primary"
+},
+"RPP30BL815|SE43|FU0101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FU0101BL3",
+"Last Run": "2026-09-30",
+"Line Code": "SE43",
+"Priority": "Primary",
+"Product Code": "RPP30BL815",
+"Status": "Draft",
+"Variant": "Primary"
+},
+"RPP30BL816|SE43|FU0101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FU0101BL3",
+"Last Run": "2026-09-30",
+"Line Code": "SE43",
+"Priority": "Primary",
+"Product Code": "RPP30BL816",
+"Status": "Draft",
+"Variant": "Primary"
+},
+"RPP30BL817|SE43|FU0101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FU0101BL3",
+"Last Run": "2026-09-30",
+"Line Code": "SE43",
+"Priority": "Primary",
+"Product Code": "RPP30BL817",
+"Status": "Draft",
+"Variant": "Primary"
+},
+"RPP30BL818|SE43|FU0101BL3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FU0101BL3",
+"Last Run": "2026-09-30",
+"Line Code": "SE43",
+"Priority": "Primary",
+"Product Code": "RPP30BL818",
 "Status": "Draft",
 "Variant": "Primary"
 },
@@ -8103,6 +8587,17 @@
 "Status": "Draft",
 "Variant": "Primary"
 },
+"RPP30WB1065|SE43|FU0151WB3|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FU0151WB3",
+"Last Run": "2026-09-30",
+"Line Code": "SE43",
+"Priority": "Primary",
+"Product Code": "RPP30WB1065",
+"Status": "Draft",
+"Variant": "Primary"
+},
 "RPP40BL147|SE13|FUA151BL4|Primary": {
 "Approved By": "",
 "Approved Date": "",
@@ -8111,6 +8606,17 @@
 "Line Code": "SE13",
 "Priority": "Primary",
 "Product Code": "RPP40BL147",
+"Status": "Draft",
+"Variant": "Primary"
+},
+"RPP40BL1793|SE21|FUA152BL4|Primary": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FUA152BL4",
+"Last Run": "2026-09-30",
+"Line Code": "SE21",
+"Priority": "Primary",
+"Product Code": "RPP40BL1793",
 "Status": "Draft",
 "Variant": "Primary"
 },
@@ -8565,6 +9071,17 @@
 "Status": "Draft",
 "Variant": "Sign blank"
 },
+"SPA40WB761|SE12|FUA152WB4|Sign blank": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FUA152WB4",
+"Last Run": "2026-09-30",
+"Line Code": "SE12",
+"Priority": "Primary",
+"Product Code": "SPA40WB761",
+"Status": "Draft",
+"Variant": "Sign blank"
+},
 "SPA40WB761|SE31|FUA152WB4|Primary": {
 "Approved By": "",
 "Approved Date": "",
@@ -8661,6 +9178,17 @@
 "Line Code": "SE13",
 "Priority": "Primary",
 "Product Code": "SPA40WB937",
+"Status": "Draft",
+"Variant": "Sign blank"
+},
+"SPA40WB951|SE31|FUA152WB4|Sign blank": {
+"Approved By": "",
+"Approved Date": "",
+"Formula Code": "FUA152WB4",
+"Last Run": "2026-09-30",
+"Line Code": "SE31",
+"Priority": "Primary",
+"Product Code": "SPA40WB951",
 "Status": "Draft",
 "Variant": "Sign blank"
 },

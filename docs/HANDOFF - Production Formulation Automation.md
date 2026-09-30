@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.44 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.45 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1787,6 +1787,29 @@ remember to test it with chrome"*.
   (a variable used before it was set) - fixed in version 29.
 - Tests: `tests/test_product_code.py` (new product and look-alike rules); `OCR_TESTS=1` real-scan tests.
 
+## 7.54 Daily run 30 Sep 2026: the schedule, Tech's issue, the 13 new orders (30 Sep 2026)
+
+James asked whether the 13 rows the Word file left to the engineer were ever run: *"did we ever ran these product code?
+These could be new or there is issues with our data base"*. Six are new products never on a schedule since 2020
+(RPP40BL1793, RPP30WB1065, RPP30BL815-818, all order H69A330). Seven ran before on that line (RPA60WB240 208 times) but
+our formulas come only from Tech's pages, so nothing was on file for them there (RPA60WB240's 2022 formula was on file
+as Draft, which the draft does not use). He then sent Tech's FRM scan for the day (doc05271720260930140641.pdf) - *"take
+a look"* - and, on the F1102K / Q1203K names Tech still prints: *"ignore that. The engineer data base is still out of
+date. Your data is correct with F1203K"* (CLAUDE.md, memory). Then *"yes continue"*: record the day as on 29 Sep.
+- **Comparison**: where our draft had a formula (74 of 87 orders), it matched Tech's issue field for field. Tech issued
+  all 13 others: 4 joined a running group; new codes FUA152BL4 (SE21), FU0101BL3 and FUA101BL3 (SE43); RP26916-2 on
+  FUA021WB6 with the same settings as the 2022 page (the run-out now carries FUA021WB6, 2022 FUA001WB6); RP25523-2 on
+  FUA011WB5.
+- **Packet** `data/packets/packet_2026-09-30.json` (`work/transcribe_0930.py`, `work/transcribe_frm_0930.py`): 87 EXT rows
+  (16 pages), 62 CNV rows (11 pages), 13 FRM pages. Every printed line total adds up; SE23's total is on the missing report
+  page 9 and SE61 prints none (the handwritten weight sums match). Independent reader: 84/87 identical, 3 settled by eye.
+  Two punctuation marks read at zoom differ from the 29 Sep copy (H63A200-1 "VOIDFORM.", H68A053-1 "VOIDFORM,"): today's
+  values are today's page; the 29 Sep record stays as issued.
+- **Published**: EXT / CNV / FRM workbooks 2026-09-30, Product Master (2,665: the six new products as Draft), the three
+  records (+87 EXT, +62 CNV, +487 FRM rows), Formulation Master (Changes 224-263, Draft, pre-flight accepted; FU0012BL5 still
+  not written until DOW-C104 is named), interface copy and artifact (v30). Same six High issues as 29 Sep (partition orders
+  on SD22), none new.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1915,6 +1938,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.45 | 2026-09-30 | Claude Code (local, with James Kuo) | **Daily run 30 Sep (§7.54)**: the 13 engineer rows checked against history (6 new products, 7 missing formulas); Tech's issue matches every drafted order; packet, workbooks, records, PM and FM (Changes 224-263) published; F1203K rule. |
 | 1.44 | 2026-09-30 | Claude Code (local, with James Kuo) | **Page reader on the 30 Sep schedule (§7.53)**: tilted border erased (H69A330-11); new products taken only when both readers agree without the master; S/5-type look-alike agreement; 87/87 on 30 Sep, tested in Chrome; artifact v29. |
 | 1.43 | 2026-09-30 | Claude Code (local, with James Kuo) | **Tech's past formulation pages, 2021 on (§7.52)**: 28 Oct 2022 (12 lines), 3 Sep 2025, 15 Sep 2021, 5 Aug 2021; obsolete formulas to the Change Log only; 11 formulas added as Draft; Formulation Report Record +431. |
 | 1.42 | 2026-09-30 | Claude Code (local, with James Kuo) | **Every production schedule on the PC (§7.51)**: misnamed and rotated schedules read; every line of every day adds up to its printed total; 3 image-scan days turned upright and read; 2 Nov 2022 (EXT + CNV) and 24 Apr 2014 (SE25) found in copier scans; EXT record 63,231 rows, CNV record +28; PM 2,659. |

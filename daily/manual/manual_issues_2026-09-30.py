@@ -1,0 +1,45 @@
+# Issues found while transcribing the 30 Sep 2026 packet (schedule scan doc05268320260930114819.pdf and Tech's FRM scan
+# doc05271720260930140641.pdf, both sent in chat 30 Sep) that the automated checks don't cover. Each was seen on today's
+# page images. Carried from 29 Sep only where still true today; F1102K / Q1203K on Tech's pages are not issues (James
+# Kuo, 30 Sep 2026: "ignore that. The engineer data base is still out of date. Your data is correct with F1203K").
+MANUAL = [
+ # (Severity, Document, Line, Order, Check, Detail, Source)
+ ('Info','FRM','(all)','','Formulation pages scanned separately','The 30 Sep schedule scan has EXT and CNV only (27 pages). Tech’s 13 FRM pages (SE11-SE61, dated 9/30/26) came later as doc05271720260930140641.pdf. Before they came, "FRM Formulation 2026-09-30.docx" proposed 74 of 87 orders, all 74 the same as Tech’s issue field for field; the 13 new orders were left to the engineer and Tech issued all 13 (below)','FRM scan'),
+ # ---- FRM, new today
+ ('Info','FRM','SE12 / SE31 / SE43','RP26728-4, H68A154-1, RP26925-3, H69A330-3','New orders put with a running group','RP26728-4 with RP26511-1 (SE12 FUA152WB4 sign blank), H68A154-1 with RP26413-1 (SE31 FUA152WB4 sign blank), RP26925-3 with RP26826-3 / RP26120-1 (SE31 FUA152WB4), H69A330-3 with H69A038-1 (SE43 FU0151WB3): same settings as the group','FRM p2, p8, p12'),
+ ('Info','FRM','SE21 / SE43','H69A330-11, H69A330-7, H69A267-2, H69A330-2, H69A330-4, H69A330-1, H69A267-1','New formula codes','Tech issued FUA152BL4 (SE21 H69A330-11: Virgin 45, HiTalc 9, F1203K 26, BL-B26003A 26, CaCO3 24), FU0101BL3 (SE43: HiTalc 5, BL-B26003A 2.5, Virgin 77.5, F1203K 15; printed twice as separate groups with the same settings) and FUA101BL3 (SE43 H69A267-1: HiTalc 9, BL 2.5, Virgin 73.5, F1203K 15). None was in the Formulation Master','FRM p4, p12'),
+ ('Low','FRM','SE21','RP26916-2','Run-out formula printed with the reclaim formula’s code','RP26916-2 RPA60WB240: FUA021WB6 (PP WB Reclaim 35) then FUA021WB6 again for the run-out (no reclaim; 63 / 5 / 18 / 25). Tech’s 28 Oct 2022 page gave the same run-out settings the code FUA001WB6. Recorded as printed','FRM p4'),
+ ('Info','FRM','SE21','RP25523-2','Formula code from another line','RP25523-2 RPA50WB56 on FUA011WB5 (52 / 9 / 19 / 23 / 25); the Formulation Master had FUA011WB5 only on SE25 (52 / 26 / 16 / 32, other hoppers). Settings are Tech’s own for SE21','FRM p4'),
+ # ---- FRM, still true from 29 Sep
+ ('Medium','FRM','SE21','H69A203-1','Resin not on IWPFT062','FU0012BL5 Hopper 1 prints "PP Virgin-silo 3 (DOW-C104)" (63). DOW-C104 is not on IWPFT062; the nearest is 50-1560-034 PC104 = TI4015F (Braskem, Active). Silo 3 normally holds F6502A. Which resin is it, and is it in silo 3?','FRM p4'),
+ ('Low','FRM','SE21','H69A203-1','Alternate source not on IWPFT062','FU0012BL5 Hopper 5 prints "CaCO3 -Heritage HM-10HP (BayShore BI-113)" (27). HM-10HP = CA410 (James, 29 Sep 2026); BayShore BI-113 is not on IWPFT062 as a CaCO3 source','FRM p4'),
+ ('Medium','FRM','SE21','RP26810-1','Reclaim formula listed second, no note','RP26810-1 still lists FUA152KS4 (no reclaim; F1203K 13) before FU0041KS4 (PP Mix Reclaim 70), no note on either. The plant rule is reclaim first, virgin as the fallback (James, 29 Sep 2026): the page order says the opposite. Which runs first?','FRM p4'),
+ ('Info','FRM','SE24','RP26604-1','Grouped with its run-with','RP26604-1 is on FUA152WB4 with RP26901-1 and RP26803-2; the EXT page now prints "RUN WITH RPA40WB3051" (handwritten on 29 Sep)','FRM p7, scan p9'),
+ ('Info','FRM','(auger lines)','','Hopper rules','182 hopper settings (46 formulas) on Tech’s auger-line pages checked against the draft hopper rules (Q13): none outside them, including the new FUA152BL4, FUA021WB6 run-out, FU0101BL3 and FUA101BL3','FRM p1-12'),
+ # ---- EXT, new today
+ ('Medium','EXT','SE12 / SE21 / SE31 / SE43','13 orders','New orders (pen dots)','RP26728-4 (SE12), H69A330-11, RP26916-2, RP25523-2 (SE21), H68A154-1, RP26925-3 (SE31), H69A330-3, -7, -2, -4, -1 and H69A267-1, -2 (SE43), each with a pen dot in the margin. Six products were never on a schedule since 2020 and are not in the Product Master: RPP40BL1793, RPP30WB1065, RPP30BL815, RPP30BL816, RPP30BL817, RPP30BL818 (order H69A330). Tech issued formulas for all 13','scan p2, p5, p10, p14-15'),
+ ('Info','EXT','SE21','H69A330-11','Border printed on a slant','The row border above H69A330-11 prints on a slant and touches the suffix "11"; read at zoom. The page reader was fixed to remove such lines (30 Sep)','scan p5'),
+ ('Medium','EXT','SE23 / SE61','(page)','Totals not in the scan','SE23 continues on report page 9 (its line total), not in the scan; handwritten 3,939,487# on page 8 = the sum of its 7 weights. SE61 (report page 17, the last scanned) prints no line total or Final Total; handwritten 217,331# = the sum of its 11 weights','scan p8, p16'),
+ ('Info','EXT','SE25 / SE61','','Back in the main report','SE25 (report page 11) and SE61 (page 17) are in the main report today (run 13:19:20); on 29 Sep they were separate reports','scan p12, p16'),
+ ('Info','EXT','SE43 / SE61','H68A080-1, H69A068-1','Orders gone since 29 Sep','H68A080-1 (SE43; converting shows 4 OF 4) and H69A068-1 (SE61) are no longer on the schedule. Also gone: H67A063-1 (SC31), H68A169-1 (SD31)','scan p14, p16, p17, p27'),
+ ('Info','EXT','SE13 / SE25 / SE61','H69A158-1, H68A111-5, H69A097-1, H66A116-1, H64A178-1, H64A289-1…-4','In-str dates moved later','H69A158-1 30-Sep -> 22-Oct; H68A111-5 26-Sep and H69A097-1 21-Sep -> 15-Oct; H66A116-1 29-Sep -> 30-Oct; H64A178-1 and H64A289-1…-4 24-Sep -> 20-Oct','scan p3, p12, p16'),
+ ('Info','EXT','SE11','H63A200-1','Handwritten make-up note','"343 PLTS DONE" no longer printed; "MAKE UP FOR SCRAP pallets." handwritten under the instructions (converting SD22 shows 368 OF 374)','scan p1, p21'),
+ ('Info','EXT','SE11 / SE22','H63A200-1, H68A053-1','Punctuation read at zoom','H63A200-1 prints "VOIDFORM." (period) and H68A053-1 "VOIDFORM," (comma); the 29 Sep packet has them the other way round. Today’s values are from today’s page; the 29 Sep record stays as issued','scan p1, p7'),
+ # ---- EXT, still true from 29 Sep
+ ('Medium','EXT','SE23','H69A166-1, H68A091-1','GSM vs weight range','GSM 793 printed; the instructions give a range of 729-751','scan p8'),
+ ('Info','EXT','SE23 / SE25','H68A091-1, H64A244-1','999 pallets is a cap (hand corrections)','H68A091-1: 999 struck through, 1880 written below. H64A244-1: 999 -> 1044','scan p8, p12'),
+ ('Low','EXT','SE21','RP26424-2','Order width above length','Order size printed 96 x 48 (cut 96 x 48 5/8), the other way round from the other rows','scan p6'),
+ ('Low','EXT','SE23','H68A127-1','Old instruction date','In-str Date 19-Mar, far from the Sep-Oct dates on the other rows. Now "23 PLTS DONE"','scan p8'),
+ ('Info','EXT','SE43 / SE61','H69A038-1, H68A020-1','Handwriting over the record','"-PA205" above H69A038-1 (was above H68A080-1; equals the printed die). "-BB510" over H68A020-1 again (equals its die)','scan p14, p16'),
+ ('Info','EXT','SE31','RP26826-3','Typo','"RUN WIHT RPA40WB3051" (sic)','scan p10'),
+ # ---- CNV
+ ('Medium','CNV','SD41/SD42','RP26618-3','Board use more than ordered','"BOARD USE FROM OTHER ORDER RP26618-3 256 OF 200" (245 on 29 Sep)','scan p24'),
+ ('Low','CNV','SD41/SD42','RP26422-6, RP26506-4','Done more than ordered','152 DONE of 150 pallets; 134 DONE of 120','scan p24'),
+ ('Medium','CNV','SD22','H61A218-1 / H63A199-1','Same product, different weight tolerance','Both DPP40WB1673, target 0.2988: ranges 0.2779-0.3197 vs 0.2839-0.3137','scan p21'),
+ ('Low','CNV','SC31','H68A142-1','Packing note vs pieces per pallet','"120pcs laid flat" and "a total of 140 pcs"; Pc./Plt. 140','scan p27'),
+ ('Info','CNV','SD31','RP26731-2','Order listed twice','934 OF 999 and 0 OF 999, blank quantities; banner "RP26731-2 & RP26731-2"','scan p17-18'),
+ ('Info','CNV','SD51','(all rows)','Excel overflow','Semi Start prints #### (now also RP26604-1); Total Sheets ###### on RP26525-3 and RP26604-1. New H68A154-1 prints its Semi-Size from the Semi Start column and is cut at the Color border','scan p26'),
+ ('Info','CNV','(all)','','Page numbering','The converting pages are one document of 11 pages today ("Page: n of 11"), except SD11/SD12 and SD21 ("Page:1 of 1")','scan p17-27'),
+ ('Info','EXT','(all)','','Line totals check','All 11 printed line totals equal their rows (SE11, SE12, SE13, SE21, SE22, SE24, SE25, SE31, SE32, SE42, SE43). SE23’s is on the missing report page 9; SE61 prints none in the scan','p1-16'),
+ ('Info','Scan reader','(all)','','Glyph-reader crosscheck','scan_reader/ext_scan_reader.py: 84 of 87 orders identical on every key field; the 3 others settled by eye in favour of the transcription (H69A038-1 and H68A020-1 under the handwritten "-PA205" / "-BB510"; die PA3B5 on RP26728-4 read PA385). The interface page’s reader took all 87 rows the same as the transcription (tested in Chrome)','p1-16'),
+]

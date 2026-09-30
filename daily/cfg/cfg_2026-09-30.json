@@ -1,0 +1,7 @@
+{
+ "ext_crosscheck": "Key fields were also read independently by the glyph reader (scan_reader/ext_scan_reader.py) and compared: 84 of 87 orders identical on every key field. The other 3 were settled by eye in favour of the transcription: H69A038-1 and H68A020-1 under the handwritten '-PA205' / '-BB510', and die PA3B5 on RP26728-4 (read PA385). The interface page's reader took all 87 rows the same as the transcription (tested in Chrome). All 11 printed line totals equal the rows.",
+ "no_total_note": "No printed total: SE23 continues on report page 9, missing from the scan (handwritten 3,939,487# on page 8 = sum of its weights); SE61 (report page 17) prints no total in the scan (handwritten 217,331# = sum of its weights).",
+ "final_note": ". Not in today's scan: the main report's Final Total page (the report continues past page 17).",
+ "weight_note": ".",
+ "ext_pages_note": "Scan pages 1-16 are report pages 1-8, 10-17 (run 13:19:20; SE25 and SE61 are in the main report today). Report page 9 (SE23 continuation with its line total) is missing. Tech's formulation (FRM) pages came as a separate scan, doc05271720260930140641.pdf (13 pages, 9/30/26)."
+}
