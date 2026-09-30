@@ -87,7 +87,7 @@ PLAIN = r'gsm|match colou?r|new formula|W26038A/D2|WB\s*:\s*EA'   # sheet notes 
 
 
 def application(note):
-    n = (note or '').strip()
+    n = re.sub(r'match colou?r and opacity with QC sample', '', note or '', flags=re.I).strip()   # a standard instruction, not a trial
     for rx, name in APPS:
         if re.search(rx, n, re.I):
             return name
@@ -166,6 +166,16 @@ def slope_for(line, code, feeder, k):
         x = max(anyx, key=lambda x: (x[3], x[4]))
         return x[2], f'{feeder} {k}: slope from an older setup {x[0]}'
     return None, ''
+ORDER_RX = re.compile(r'^S?[A-Z]{1,2}[0-9A-Z]{2,5}-\d{1,2}$')
+
+
+def orders_in(text):
+    return {t for t in re.split(r'[,;\s]+', str(text or '').upper()) if ORDER_RX.match(t)}
+
+
+calc_orders = defaultdict(set)                     # (line, code) -> {(line, order)} from the calc's Product to Formula sheet
+for r in sheet('Product to Formula'):
+    calc_orders[(r['Line'], r['Formula Code'])] |= {(r['Line'], o) for o in orders_in(r['Last Orders'])}
 layer_share = {}                                   # code -> {extruder: share}
 evidence = []                                      # dicts
 for (line, code), rows in rec.items():
@@ -182,7 +192,9 @@ for (line, code), rows in rec.items():
     evidence.append({'code': code, 'app': application(L.get('Application / Note')), 'source': 'Calc workbook', 'line': line,
                      'date': last.date() if isinstance(last, datetime.datetime) else last, 'g': g, 'names': names, 'total': t,
                      'where': L.get('Source (last block)') or '', 'products': L.get('Products') or '', 'note': L.get('Application / Note') or '',
-                     'layers': '' if use else 'co-extrusion: no whole-sheet total in the calc'})
+                     'layers': '' if use else 'co-extrusion: no whole-sheet total in the calc',
+                     'orders': {(line, o) for o in orders_in(L.get('Last Orders'))} | calc_orders.get((line, code), set()),
+                     'prods': {(line, p) for p in re.split(r'[,\s]+', str(L.get('Products') or '')) if p}})
 
 # ---- 2. Tech's issued FRM pages
 packets = []
@@ -195,7 +207,7 @@ if old.exists():
     for q in json.loads(old.read_text(encoding='utf-8')):
         packets.append((q['packet_date'], q.get('frm_source_scan'), q['frm']))
 not_computed = []
-seen = set()
+seen = {}
 for day, scan, pages in sorted(packets, key=lambda x: x[0], reverse=True):
     for pg in pages:
         line = pg['line_code']
@@ -206,9 +218,11 @@ for day, scan, pages in sorted(packets, key=lambda x: x[0], reverse=True):
                 code, app = f['formula_code'], application(f.get('note'))
                 cells = [(c, v.get('material'), v.get('set')) for c, v in f['feeders'].items() if v.get('material') or v.get('set')]
                 sig = (line, code, app, tuple(sorted((c, m, str(s)) for c, m, s in cells)))
-                if sig in seen:
+                if sig in seen:                    # the same formula again (another group, an older issue): keep its orders too
+                    if seen[sig] is not None:
+                        seen[sig]['orders'] |= {(line, o) for o in gr['orders']}
                     continue
-                seen.add(sig)
+                seen[sig] = None
                 parts, why, layers = [], '', ''
                 if line in BLENDER:
                     byx = defaultdict(list)
@@ -246,7 +260,9 @@ for day, scan, pages in sorted(packets, key=lambda x: x[0], reverse=True):
                 g, names = norm100(g, names)
                 evidence.append({'code': code, 'app': app, 'source': 'Tech FRM page', 'line': line, 'date': datetime.date.fromisoformat(day),
                                  'g': g, 'names': names, 'total': 100.0, 'where': f'FRM {day} ({scan}) {line}',
-                                 'products': '', 'note': f.get('note') or '', 'layers': layers})
+                                 'products': '', 'note': f.get('note') or '', 'layers': layers,
+                                 'orders': {(line, o) for o in gr['orders']}, 'prods': set()})
+                seen[sig] = evidence[-1]
 
 # ---- 3. one formulation per code + application + composition (within TOL)
 for e in evidence:
@@ -279,11 +295,67 @@ for (code, app), es in by.items():
                       'g': rep['g'], 'total': rep['total'], 'materials': ', '.join(f'{n} {p:.1f}' for n, p in names.items()),
                       'n': len(c), 'calc': sum(x['source'] == 'Calc workbook' for x in c), 'frm': sum(x['source'] == 'Tech FRM page' for x in c),
                       'spread': spread, 'last': rep['date'], 'basis': rep['where'], 'layers': rep['layers'],
-                      'note': '; '.join(sorted({x['note'] for x in c if x['note']}))})
+                      'note': '; '.join(sorted({x['note'] for x in c if x['note']})),
+                      'orders': set().union(*(x['orders'] for x in c)), 'prods': set().union(*(x['prods'] for x in c))})
 ORDER = ['Standard', 'VOIDFORM', 'Sign blank', 'Corn box', 'Roll', 'Reclaim run-out']
 forms.sort(key=lambda f: (str(f['code']), ORDER.index(f['app']) if f['app'] in ORDER else 9, f['app'], f['version'].zfill(8)))
 
-# ---- 4. workbook
+# ---- 4. the latest run of each formulation: every field of the production schedule (James Kuo, 30 Sep 2026: "On the right
+# side after formulation, put together the latest run data. I need every field from production schedule sheet to be on it.
+# This way we can create a pattern and match them")
+SCHED = ['Run Date', 'Line', 'T', 'Order', 'Prod Code', 'Die', 'Order Width', 'Order Length', 'Material', 'Grade', 'Spec', 'Colors',
+         'Thk (mm)', 'GSM', 'Cut Width', 'Cut Length', 'Cut Rows', 'Total Sheets', 'Pack Code', '# Plt', 'PCs/Stack', 'Stk/Plt',
+         'Weight (LBs)', 'In-str Date', 'Web Width', 'Special Instructions']
+import csv  # noqa: E402
+sched = defaultdict(list)                          # (line, order) -> [row dict]
+sched_prod = defaultdict(list)                     # (line, product) -> [row dict]
+def add_row(d):
+    sched[(d['Line'], d['Order'])].append(d); sched_prod[(d['Line'], d['Prod Code'])].append(d)
+for name in ('ext_history.csv', 'ext_history_scans.csv'):
+    p = ROOT / 'work' / 'history' / name
+    if not p.exists():
+        continue
+    for r in csv.DictReader(open(p, encoding='utf-8')):
+        mat = (r['mat'] or '').split()
+        add_row({'Run Date': datetime.date.fromisoformat(r['date']), 'Line': r['line'], 'T': r['t'], 'Order': r['order'], 'Prod Code': r['prod_code'],
+                 'Die': r['die'], 'Order Width': r['width'], 'Order Length': r['length'], 'Material': mat[0] if mat else '',
+                 'Grade': mat[1] if len(mat) > 1 else '', 'Spec': r['mat_spec'], 'Colors': r['colour'], 'Thk (mm)': num(r['thk']),
+                 'GSM': num(r['gsm']), 'Cut Width': r['cut_width'], 'Cut Length': r['cut_length'], 'Cut Rows': num(r['cut_rows']),
+                 'Total Sheets': num(r['total_sheets']), 'Pack Code': r['pack'], '# Plt': num(r['plts']), 'PCs/Stack': num(r['pcs_stack']),
+                 'Stk/Plt': num(r['stk_plt']), 'Weight (LBs)': num(r['weight_lbs']), 'In-str Date': r['instr_date'], 'Web Width': r['web_width'],
+                 'Special Instructions': r['special'], 'from': 'System schedule ' + r['file']})
+for f in sorted((ROOT / 'data' / 'packets').glob('packet_*.json')):
+    q = json.loads(f.read_text(encoding='utf-8'))
+    for e in q['ext']:
+        for r in e['rows']:
+            ms = (r.get('mat_spec') or '').split()
+            cuts = r.get('cut_rows') or []
+            add_row({'Run Date': datetime.date.fromisoformat(q['packet_date']), 'Line': e['line'], 'T': r.get('T'), 'Order': r['order'],
+                     'Prod Code': r['prod_code'], 'Die': r.get('die'), 'Order Width': r.get('order_width'), 'Order Length': r.get('order_length'),
+                     'Material': ms[0] if ms else '', 'Grade': ms[1] if len(ms) > 1 else '', 'Spec': ms[2] if len(ms) > 2 else '',
+                     'Colors': r.get('colors'), 'Thk (mm)': num(r.get('thk')), 'GSM': num(r.get('gsm')),
+                     'Cut Width': cuts[0]['width'] if cuts else '', 'Cut Length': cuts[0]['length'] if cuts else '', 'Cut Rows': len(cuts),
+                     'Total Sheets': sum(num(c['total_sheets']) or 0 for c in cuts), 'Pack Code': r.get('pack_code'), '# Plt': num(r.get('num_plt')),
+                     'PCs/Stack': num(r.get('pcs_per_stack')), 'Stk/Plt': num(r.get('stk_per_plt')), 'Weight (LBs)': num(r.get('weight_lbs')),
+                     'In-str Date': r.get('instr_date'), 'Web Width': r.get('web_width'), 'Special Instructions': r.get('special_instructions'),
+                     'from': 'Daily scan ' + (q.get('source_scan') or '')})
+for fm in forms:
+    runs = [d for k in fm['orders'] for d in sched.get(k, [])]
+    fm['orders_found'] = len({(d['Line'], d['Order']) for d in runs})
+    if runs:
+        fm['run'] = max(runs, key=lambda d: d['Run Date'])
+        fm['run_how'] = 'Order named on Tech\'s page / calc sheet for this formulation'
+        continue
+    cap = (fm['last'] or datetime.date.min) + datetime.timedelta(days=60) if fm['last'] else None
+    pr = [d for k in fm['prods'] for d in sched_prod.get(k, []) if cap and d['Run Date'] <= cap]
+    if pr:
+        fm['run'] = max(pr, key=lambda d: d['Run Date'])
+        fm['run_how'] = 'Product named on the calc sheet (the order is not; formula for that run not confirmed)'
+    else:
+        fm['run'] = None
+        fm['run_how'] = 'No run on the schedules on file (Apr 2020 - Sep 2026)' if fm['orders'] or fm['prods'] else 'No order or product named'
+
+# ---- 5. workbook
 wb = Workbook()
 HEAD = PatternFill('solid', fgColor='1F3864'); HF = Font(color='FFFFFF', bold=True); WRAP = Alignment(wrap_text=True, vertical='top')
 def table(ws, header, rows, widths):
@@ -321,6 +393,41 @@ rd.column_dimensions['A'].width = 160
 for c in rd['A']:
     c.alignment = Alignment(wrap_text=True, vertical='top')
 rd['A1'].font = Font(bold=True, size=13)
+for line in ['',
+             'Sheet "Formulation + Latest Run": the formulation on the left (weight %), then the latest time it ran on the right, with every field '
+             'of the production schedule for that run (James Kuo, 30 Sep 2026: "I need every field from production schedule sheet to be on it. This way '
+             'we can create a pattern and match them"). The run is the latest schedule day of an order that Tech\'s page or calc sheet names for this '
+             'formulation; where only the product is named, the product\'s latest run on that line within 60 days of the formulation\'s last use '
+             '(marked in "Run found by"). Schedules on file: the system schedules Apr 2020 - Sep 2026, five scanned days, and the daily scans.']:
+    rd.append([line]); rd.cell(rd.max_row, 1).alignment = Alignment(wrap_text=True, vertical='top')
+
+RUNHEAD = PatternFill('solid', fgColor='375623')
+lr = wb.create_sheet('Formulation + Latest Run')
+fcols = ['Formula Code', 'Application', 'Version'] + [f'{g} %' for g in GROUPS] + ['Total', 'Materials', 'Evidence (calc / FRM)', 'Spread (points)', 'Last used']
+rcols = [f'Run: {c}' for c in SCHED] + ['Run found by', 'Orders on file with this formulation', 'Run row from']
+lr.append(fcols + [''] + rcols)
+for fm in forms:
+    r = fm['run'] or {}
+    lr.append([fm['code'], fm['app'], fm['version']] + [round(fm['g'][g], 1) if fm['g'].get(g) else None for g in GROUPS]
+              + [round(fm['total'], 1) if fm['g'] else None, fm['materials'], f"{fm['calc']} / {fm['frm']}",
+                 round(fm['spread'], 1) if fm['n'] > 1 else None, fm['last'], '']
+              + [r.get(c) for c in SCHED] + [fm['run_how'], fm['orders_found'] or None, r.get('from')])
+nf = len(fcols)
+for i, c in enumerate(lr[1], 1):
+    c.font = HF; c.alignment = Alignment(wrap_text=True, vertical='center')
+    c.fill = HEAD if i <= nf else (PatternFill('solid', fgColor='FFFFFF') if i == nf + 1 else RUNHEAD)
+widths = [13, 16, 8] + [7] * len(GROUPS) + [7, 34, 10, 8, 11, 2] + [11, 7, 4, 12, 13, 8, 9, 9, 8, 6, 12, 14, 6, 7, 9, 10, 6, 10, 9, 6, 9, 7, 10, 10, 9, 60] + [34, 10, 40]
+for i, w in enumerate(widths, 1):
+    lr.column_dimensions[get_column_letter(i)].width = w
+lr.freeze_panes = 'C2'; lr.auto_filter.ref = lr.dimensions
+for row in lr.iter_rows(min_row=2):
+    row[nf - 1].number_format = 'yyyy-mm-dd'; row[nf + 1].number_format = 'yyyy-mm-dd'
+    row[nf].fill = PatternFill('solid', fgColor='D9D9D9')
+    if row[2].value:
+        for c in row[:3]:
+            c.fill = PatternFill('solid', fgColor='FFF2CC')
+lr.row_dimensions[1].height = 45
+wb.move_sheet(lr, offset=-(len(wb.sheetnames) - 2))
 
 ws = wb.create_sheet('W% Master')
 table(ws, ['Formula Code', 'Application', 'Version'] + [f'{g} %' for g in GROUPS] + ['Total', 'Materials', 'Evidence (calc / FRM)', 'Spread (points)',
