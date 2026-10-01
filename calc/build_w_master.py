@@ -355,6 +355,47 @@ for fm in forms:
         fm['run'] = None
         fm['run_how'] = 'No run on the schedules on file (Apr 2020 - Sep 2026)' if fm['orders'] or fm['prods'] else 'No order or product named'
 
+# ---- 4b. colour and thickness (James Kuo, 1 Oct 2026: "lets break it down some more on the excel. add column for color and
+# thickiness"): from the formula code (handoff section 6.1: colour letters, then thickness - a digit = mm, a letter = 10 + n,
+# as in the product code), checked against the orders the formulation ran on
+def code_parts(code):
+    """FUA152WB4 -> ('WB', 4.0); FU0061WBD -> ('WB', 13.0); premix FU001GTW4 -> ('GTW', 4.0); else ('', None)."""
+    m = re.fullmatch(r'[A-Z]{2}[A-Z0-9]\d{2,4}([A-Z]{2,3})([0-9A-Z])', str(code or ''))
+    if not m:
+        return '', None
+    c, t = m.groups()
+    return c, int(t) if t.isdigit() else 10 + ord(t) - ord('A')      # whole mm: a 6.3 mm order runs a ..6 code
+
+
+def tally(vals):
+    from collections import Counter
+    c = Counter(v for v in vals if v not in (None, ''))
+    return '; '.join(f'{v} ({n})' for v, n in c.most_common())
+
+
+for fm in forms:
+    fm['colour'], fm['thk'] = code_parts(fm['code'])
+    latest = {}
+    for k in fm['orders']:
+        for d in sched.get(k, []):
+            if k not in latest or d['Run Date'] > latest[k]['Run Date']:
+                latest[k] = d
+    runs = list(latest.values())
+    fm['run_colours'] = tally(d['Colors'] for d in runs)
+    fm['run_thk'] = tally(f"{d['Thk (mm)']:.1f}" if isinstance(d['Thk (mm)'], (int, float)) else d['Thk (mm)'] for d in runs)
+    check = []
+    if runs and fm['thk'] is not None:
+        off = sorted({d['Thk (mm)'] for d in runs if isinstance(d['Thk (mm)'], (int, float)) and int(d['Thk (mm)'] + 1e-9) != fm['thk']})
+        if off:
+            check.append(f"thickness {', '.join(f'{x:.1f}' for x in off)} on orders, code says {fm['thk']}")
+    if runs and fm['colour']:                                         # a premix code (GTW) names the core colour first
+        off = sorted({d['Colors'] for d in runs if d['Colors'] and fm['colour'][:2] not in str(d['Colors']).split()})
+        if off:
+            check.append(f"colours {', '.join(off)} on orders, code says {fm['colour']}")
+    if not fm['colour']:
+        check.append('code does not follow the colour + thickness pattern')
+    fm['code_check'] = '; '.join(check)
+
 # ---- 5. workbook
 wb = Workbook()
 HEAD = PatternFill('solid', fgColor='1F3864'); HF = Font(color='FFFFFF', bold=True); WRAP = Alignment(wrap_text=True, vertical='top')
@@ -387,6 +428,10 @@ for line in [
     'difference between them). Versions "1 of 2" etc. are the same code + application with different compositions: James to say which is right.',
     'F1102K and Q1203K are counted as F1203K (James, 30 Sep 2026). Nothing here is approved; no master was changed.',
     f'Not computed ({len(not_computed)}): formulas on Tech\'s pages whose calibration slope or layer share is not in the calc workbooks (sheet "Not computed").',
+    'Colour and Thk (mm) (James Kuo, 1 Oct 2026: "add column for color and thickiness"): read from the formula code - the colour letters, then '
+    'the thickness in whole mm (a digit = mm, a letter = 10 + n: A = 10, D = 13, as in the product code; a 6.3 mm order runs a ..6 code). '
+    'This reading of the code is not confirmed yet (handoff section 6.1). "Colours / Thk on its orders" count what the schedules print for '
+    'the orders this formulation ran on (each order\'s latest run); "Colour / Thk check" lists where they differ from the code.',
 ]:
     rd.append([line])
 rd.column_dimensions['A'].width = 160
@@ -403,23 +448,27 @@ for line in ['',
 
 RUNHEAD = PatternFill('solid', fgColor='375623')
 lr = wb.create_sheet('Formulation + Latest Run')
-fcols = ['Formula Code', 'Application', 'Version'] + [f'{g} %' for g in GROUPS] + ['Total', 'Materials', 'Evidence (calc / FRM)', 'Spread (points)', 'Last used']
+fcols = (['Formula Code', 'Application', 'Version', 'Colour', 'Thk (mm)'] + [f'{g} %' for g in GROUPS]
+         + ['Total', 'Materials', 'Evidence (calc / FRM)', 'Spread (points)', 'Colours on its orders', 'Thk on its orders',
+            'Colour / Thk check', 'Last used'])
 rcols = [f'Run: {c}' for c in SCHED] + ['Run found by', 'Orders on file with this formulation', 'Run row from']
 lr.append(fcols + [''] + rcols)
 for fm in forms:
     r = fm['run'] or {}
-    lr.append([fm['code'], fm['app'], fm['version']] + [round(fm['g'][g], 1) if fm['g'].get(g) else None for g in GROUPS]
+    lr.append([fm['code'], fm['app'], fm['version'], fm['colour'] or None, fm['thk']]
+              + [round(fm['g'][g], 1) if fm['g'].get(g) else None for g in GROUPS]
               + [round(fm['total'], 1) if fm['g'] else None, fm['materials'], f"{fm['calc']} / {fm['frm']}",
-                 round(fm['spread'], 1) if fm['n'] > 1 else None, fm['last'], '']
+                 round(fm['spread'], 1) if fm['n'] > 1 else None, fm['run_colours'] or None, fm['run_thk'] or None,
+                 fm['code_check'] or None, fm['last'], '']
               + [r.get(c) for c in SCHED] + [fm['run_how'], fm['orders_found'] or None, r.get('from')])
 nf = len(fcols)
 for i, c in enumerate(lr[1], 1):
     c.font = HF; c.alignment = Alignment(wrap_text=True, vertical='center')
     c.fill = HEAD if i <= nf else (PatternFill('solid', fgColor='FFFFFF') if i == nf + 1 else RUNHEAD)
-widths = [13, 16, 8] + [7] * len(GROUPS) + [7, 34, 10, 8, 11, 2] + [11, 7, 4, 12, 13, 8, 9, 9, 8, 6, 12, 14, 6, 7, 9, 10, 6, 10, 9, 6, 9, 7, 10, 10, 9, 60] + [34, 10, 40]
+widths = [13, 16, 8, 8, 7] + [7] * len(GROUPS) + [7, 34, 10, 8, 18, 14, 30, 11, 2] + [11, 7, 4, 12, 13, 8, 9, 9, 8, 6, 12, 14, 6, 7, 9, 10, 6, 10, 9, 6, 9, 7, 10, 10, 9, 60] + [34, 10, 40]
 for i, w in enumerate(widths, 1):
     lr.column_dimensions[get_column_letter(i)].width = w
-lr.freeze_panes = 'C2'; lr.auto_filter.ref = lr.dimensions
+lr.freeze_panes = 'F2'; lr.auto_filter.ref = lr.dimensions
 for row in lr.iter_rows(min_row=2):
     row[nf - 1].number_format = 'yyyy-mm-dd'; row[nf + 1].number_format = 'yyyy-mm-dd'
     row[nf].fill = PatternFill('solid', fgColor='D9D9D9')
@@ -430,14 +479,16 @@ lr.row_dimensions[1].height = 45
 wb.move_sheet(lr, offset=-(len(wb.sheetnames) - 2))
 
 ws = wb.create_sheet('W% Master')
-table(ws, ['Formula Code', 'Application', 'Version'] + [f'{g} %' for g in GROUPS] + ['Total', 'Materials', 'Evidence (calc / FRM)', 'Spread (points)',
-                                                                                     'Last used', 'Layers (co-extrusion)', 'Notes as printed', 'Newest evidence'],
-      [[f['code'], f['app'], f['version']] + [round(f['g'][g], 1) if f['g'].get(g) else None for g in GROUPS]
+table(ws, ['Formula Code', 'Application', 'Version', 'Colour', 'Thk (mm)'] + [f'{g} %' for g in GROUPS]
+      + ['Total', 'Materials', 'Evidence (calc / FRM)', 'Spread (points)', 'Last used', 'Colours on its orders', 'Thk on its orders',
+         'Colour / Thk check', 'Layers (co-extrusion)', 'Notes as printed', 'Newest evidence'],
+      [[f['code'], f['app'], f['version'], f['colour'] or None, f['thk']] + [round(f['g'][g], 1) if f['g'].get(g) else None for g in GROUPS]
        + [round(f['total'], 1) if f['g'] else None, f['materials'], f"{f['calc']} / {f['frm']}", round(f['spread'], 1) if f['n'] > 1 else None,
-          f['last'], f['layers'], f['note'], f['basis']] for f in forms],
-      [13, 16, 8] + [8] * len(GROUPS) + [7, 40, 11, 9, 11, 50, 40, 60])
+          f['last'], f['run_colours'] or None, f['run_thk'] or None, f['code_check'] or None, f['layers'], f['note'], f['basis']] for f in forms],
+      [13, 16, 8, 8, 7] + [8] * len(GROUPS) + [7, 40, 11, 9, 11, 18, 14, 30, 50, 40, 60])
+ws.freeze_panes = 'F2'
 for row in ws.iter_rows(min_row=2):
-    row[len(GROUPS) + 7].number_format = 'yyyy-mm-dd'
+    row[len(GROUPS) + 9].number_format = 'yyyy-mm-dd'
     if row[2].value:
         for c in row[:3]:
             c.fill = PatternFill('solid', fgColor='FFF2CC')
