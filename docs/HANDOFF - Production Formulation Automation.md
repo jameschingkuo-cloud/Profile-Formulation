@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.46 (1 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.47 (1 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1845,6 +1845,36 @@ improve the OCR read and logic check when OCR read failed"*.
   product, die, thk, GSM, material, grade, spec, colours) is right on all 249 rows of 23, 24 and 30 Sep.** Remaining: text
   under handwriting and pages missing from the scan - flagged, not guessed. Tests `tests/test_scan_logic.py`.
 
+## 7.56 Two-step daily read: the formulation first, then every field for the records (1 Oct 2026)
+
+James: *"do read all. But make it two step. Get the fomulation to production team first. then read the rest for the data
+base update (Production Record)"* - *"this will reduce the wait time"*.
+- **Step 1** (`daily/stage1_formulation.py <scan> --date <d>`): key fields only, pages in parallel, logic checks, a
+  step-1 packet in `work/stage1` (never `data/packets`: records, masters and the reader's evaluation never see a machine
+  read; `config.packet_files()` gives it only to resolve/render_frm with `PKT_STAGE1=1`), then resolve, auger check and
+  the Word formulation (footer "step 1: read by the scan reader"). An order or product the checks cannot confirm is an
+  Exception, never a formula. Glyph distances for the whole scan at once (`Bank.prime`): identical values, about 25x
+  faster. 30 Sep: 87/87 orders as the PDF-corrected packet, about a minute (was over 10). Deskew left as is: the faster
+  angle moved pages by up to 0.07 degree. `--compare <d>` after step 2.
+- **Step 2** (`daily/stage2_records.py <scan> --date <d>`, about 1.5 minutes): every other EXT column by its printed
+  column (`scan_reader/ext_fields.py`). The report is line-printer text: the '|' bars of each record line give every glyph's
+  column (pitch voted from all bar pairs, one per page; offset per line, kept on the page's drift); further cut rows are the
+  lines under it with nothing left of the cut columns, and those at a page top belong to the record before (24 Sep
+  H64A244-1). Fields read in their printed forms (commas by place, fractions from the printed set, NNXNN, DD-Mon/Stock
+  with a Tesseract second read for months not yet in the bank). Own bank `glyph_bank_fields.npz` (13,207 glyphs labelled
+  from the 23/24/30 Sep system PDFs, added to the key bank), so the key-field and page readers are unchanged. A record line
+  with handwriting written into it is found inside its tall band (30 Sep H69A038-1, H68A020-1: product and die now read).
+- **Checks**: printed forms; pallets x pieces x stacks vs sheets within 1.5 pallets (the report rounds by up to one);
+  999 pallets only when the sheets fill that many; weight = width x length x GSM x sheets x 1.4187e-6 lb within 3%
+  (98% of 2020-26 rows within 0.6%); web = whole cut widths; cut rows alike (240/240 records); the previous transcribed
+  day's same order (sizes, pack, pieces, stacks, web, in-str date; a passed in-str date moved later is accepted); the
+  printed line totals.
+- **Measured with a bank that had not seen the day**: 30 Sep 87/87 and 24 Sep 80/80 records, every field right except
+  special instructions under handwriting (flagged); all line totals agree but one footer not read (flagged). Leave-one-
+  day-out over 23/24/30 Sep: 2 field errors in 245 records, both flagged by the checks.
+- Output `work/stage2/packet_<d>.json` with notes in `unclear`: settled at zoom, CNV/FRM pages added by eye (not read by
+  the reader yet), then saved to `data/packets` and the Daily run continues (CLAUDE.md). Next: the converting pages.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1973,6 +2003,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.47 | 2026-10-01 | Claude Code (local, with James Kuo) | **Two-step daily read (§7.56)**: step 1 sends the Word formulation in about a minute (87/87 orders on 30 Sep); step 2 reads every EXT field by printed column with arithmetic, previous-day and line-total checks (30 Sep 87/87, 24 Sep 80/80 records on a bank that had not seen the day). |
 | 1.46 | 2026-10-01 | Claude Code (local, with James Kuo) | **System PDF as ground truth (§7.55)**: 23/24/30 Sep checked and corrected (reissued); scan reader special instructions 70% -> 96-100% (printed-line library); logic checks repair failed reads (every key field right on 249 rows). |
 | 1.45 | 2026-09-30 | Claude Code (local, with James Kuo) | **Daily run 30 Sep (§7.54)**: the 13 engineer rows checked against history (6 new products, 7 missing formulas); Tech's issue matches every drafted order; packet, workbooks, records, PM and FM (Changes 224-263) published; F1203K rule. |
 | 1.44 | 2026-09-30 | Claude Code (local, with James Kuo) | **Page reader on the 30 Sep schedule (§7.53)**: tilted border erased (H69A330-11); new products taken only when both readers agree without the master; S/5-type look-alike agreement; 87/87 on 30 Sep, tested in Chrome; artifact v29. |
