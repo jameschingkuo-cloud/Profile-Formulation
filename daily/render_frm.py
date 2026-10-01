@@ -81,11 +81,12 @@ def load():
         return [dict(zip(r[0], x)) for x in r[1:]]
     draft, exc = rows('Draft'), rows('Exceptions')
     packets = {}
-    for p in sorted(config.PACKETS_DIR.glob('packet_*.json')):
+    files = {}
+    for p in config.packet_files():
         d = json.loads(p.read_text(encoding='utf-8'))
-        packets[d['packet_date']] = d
+        packets[d['packet_date']] = d; files[d['packet_date']] = p
     today = packets[PKT]
-    config.record_read(config.packet_path(PKT), 'daily packet (schedule)')
+    config.record_read(files[PKT], 'daily packet (schedule)')
     # page layout per line: latest issued FRM page on or before this date
     page = {}
     for d in sorted(x for x in packets if x <= PKT):
@@ -237,7 +238,7 @@ def render(today, lines, exc, out):
     run(hp, f'{status} · not for production until issued by Technical (IWPFO055 §5.3)' if n_exc else
         'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=RED if n_exc else GREY)
     fp = sec.footer.paragraphs[0]
-    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT} · formulation as last issued by Tech for each order on its line · page ", 8, color=GREY)
+    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation as last issued by Tech for each order on its line · page ", 8, color=GREY)
     page_field(fp)
 
     # ---- cover

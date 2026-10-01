@@ -214,7 +214,20 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 James, 29 Sep 2026: *"operator will use the paper copy. So whenever i or any other engineer scan you the production
 schedule. you will product a word formulation document for us to print out"*.
 
-1. Transcribe the EXT schedule into the packet (Daily run step 1; FRM pages are not needed for this).
+**Two steps (James, 1 Oct 2026: *"do read all. But make it two step. Get the fomulation to production team first. then
+read the rest for the data base update (Production Record)"* - *"this will reduce the wait time"*):**
+- **Step 1, the formulation first (about a minute):** `python daily/stage1_formulation.py <scan.pdf> --date <date>`.
+  The scan reader reads each EXT record's key fields (pages in parallel, no per-record instruction read), runs the
+  logic checks (`validate_read.py`), writes `work/stage1/packet_<date>.json` (`"stage": 1`) and runs resolve,
+  auger_check and render_frm -> `out/FRM Formulation <date>.docx` (footer: "step 1: read by the scan reader"). A row
+  whose order or product the checks cannot confirm is an Exception, never a formula. Then steps 4-5 below as usual.
+  The step-1 packet never goes in `data/packets`: records, masters and the reader's evaluation never read it.
+- **Step 2, everything else for the database:** the Daily run (transcription of every field, reader cross-check,
+  system PDF), then `python daily/stage1_formulation.py --compare <date>`. Exit 1 = step 1 read a line, order or product
+  differently: re-run resolve / render_frm on the full packet and re-issue the formulation (tell James).
+  30 Sep 2026 test: 87 of 87 orders identical to the transcribed, PDF-corrected packet; 56 s on James's PC.
+
+1. Transcribe the EXT schedule into the packet (Daily run step 1; FRM pages are not needed for this), or step 1 above.
 2. `PKT_DATE=<date> python daily/resolve.py` (FRM Draft: every order as last issued on its line, or an Exception).
 3. `PKT_DATE=<date> python daily/auger_check.py`: every hopper setting on an auger line against the draft hopper
    rules (Q13); list anything outside them for James. Slopes are not checked until the Auger Calibration master exists.

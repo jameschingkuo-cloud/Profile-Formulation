@@ -64,6 +64,39 @@ def test_validate_repairs_from_the_previous_day(monkeypatch):
     assert len(dropped) == 1 and len(out) == 3                              # handwriting read as a row: dropped
 
 
+def test_bank_prime_gives_exactly_the_same_distances():
+    import numpy as np
+    import ext_scan_reader as R
+    rng = np.random.default_rng(1)
+    X = rng.normal(size=(500, 40)).astype(np.float32)
+    B = R.Bank(X, rng.choice(list('ABC0123'), 500)).fit()
+    F = [X[i] + rng.normal(0, s, 40).astype(np.float32) for i, s in zip(rng.integers(0, 500, 50), rng.uniform(0, .5, 50))]
+    F.append(X[3].copy())                                                   # a bank glyph itself: distance 0
+    ref = []
+    for f in F:                                                             # the original per-label loop
+        d = np.linalg.norm(B.A - f, axis=1)
+        ref.append({lab: float(d[B.labels == lab].min()) for lab in np.unique(B.labels)})
+    assert [B.dists(f) for f in F] == ref
+    B.cache = {}
+    B.prime(F)
+    assert [B.cache[f.tobytes()] for f in F] == ref
+
+
+def test_a_step1_packet_is_read_only_by_the_formulation_scripts(tmp_path, monkeypatch):
+    sys.path.insert(0, str(ROOT))
+    import config
+    full, s1 = tmp_path / 'packets', tmp_path / 'stage1'
+    full.mkdir(); s1.mkdir()
+    (full / 'packet_2026-09-29.json').write_text('{}'); (s1 / 'packet_2026-09-30.json').write_text('{}')
+    monkeypatch.setattr(config, 'PACKETS_DIR', full); monkeypatch.setattr(config, 'STAGE1_DIR', s1)
+    monkeypatch.setenv('PKT_DATE', '2026-09-30'); monkeypatch.delenv('PKT_STAGE1', raising=False)
+    assert [p.name for p in config.packet_files()] == ['packet_2026-09-29.json']
+    monkeypatch.setenv('PKT_STAGE1', '1')
+    assert config.packet_files()[-1] == s1 / 'packet_2026-09-30.json'
+    (full / 'packet_2026-09-30.json').write_text('{}')                     # step 2 done: the full packet wins
+    assert all(p.parent == full for p in config.packet_files())
+
+
 def test_validate_never_guesses_between_two_candidates(monkeypatch):
     import validate_read as V
     two = [{'line': 'SE43', 'order': o, 'prod': 'DPP30WB1020', 'die': 'PA205', 'thk': '3.0', 'colors': 'WB WB WB', 'mat': 'PPP',

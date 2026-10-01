@@ -29,7 +29,8 @@ SCAN_DIR = _path('SCAN_DIR', ROOT / 'inputs' / 'scans')    # daily packet scans 
 HANDOFF = _path('HANDOFF', None)                           # the handoff document (lives in DOCS_DIR)
 WORK_DIR = _path('WORK_DIR', ROOT / 'work')                # intermediate files: parsed.pkl, issues.json, calc_products.json, reads.json
 DATA_DIR = ROOT / 'data'
-PACKETS_DIR = DATA_DIR / 'packets'                         # transcribed daily packets: packet_YYYY-MM-DD.json (kept in git)
+PACKETS_DIR = _path('PACKETS_DIR', DATA_DIR / 'packets')  # transcribed daily packets: packet_YYYY-MM-DD.json (kept in git)
+STAGE1_DIR = _path('STAGE1_DIR', WORK_DIR / 'stage1')     # step-1 reads (daily/stage1_formulation.py): never a record
 TRUTH_CSV = DATA_DIR / 'ext_truth_2026-09-23.csv'          # 82 verified EXT rows (scan reader training labels)
 GLYPH_BANK = ROOT / 'scan_reader' / 'glyph_bank.npz'
 
@@ -52,6 +53,17 @@ def published_path(name):
 def packet_path(date):
     """data/packets/packet_YYYY-MM-DD.json for a packet date (str or date)."""
     return PACKETS_DIR / f'packet_{date}.json'
+
+
+def packet_files():
+    """The packets the formulation scripts (resolve, render_frm) read: every transcribed packet, plus - with
+    PKT_STAGE1=1 - the PKT_DATE step-1 read in STAGE1_DIR while that day has no full packet. The records, the scan
+    reader's evaluation and the masters glob PACKETS_DIR only, so they never take a machine read as a transcription."""
+    ps = sorted(PACKETS_DIR.glob('packet_*.json'))
+    d = os.environ.get('PKT_DATE')
+    if os.environ.get('PKT_STAGE1') == '1' and d and not packet_path(d).exists() and (STAGE1_DIR / f'packet_{d}.json').exists():
+        ps = sorted(ps + [STAGE1_DIR / f'packet_{d}.json'], key=lambda p: p.name)
+    return ps
 
 
 def latest_packet():

@@ -57,7 +57,7 @@ def split_feeder(col):
 
 def load_packets():
     out = {}
-    for p in sorted(config.PACKETS_DIR.glob("packet_*.json")):
+    for p in config.packet_files():
         config.record_read(p, "daily packet")
         d = json.loads(p.read_text(encoding="utf-8"))
         out[d.get("packet_date") or p.stem.split("_", 1)[1]] = d
@@ -181,6 +181,11 @@ def main():
     for pg in today["ext"]:
         for r in pg["rows"]:
             line, order, product = pg["line"], r["order"], r["prod_code"]
+            if r.get("read_check"):              # step 1 from the scan: the order or product could not be confirmed
+                exceptions.append([line, order, product, r.get("mat_spec", ""), r.get("colors", ""), r.get("thk", ""),
+                                   r.get("gsm", ""), (r.get("special_instructions") or "")[:160],
+                                   f"Scan read not certain - check the order and product on the paper: {r['read_check']}", "", None, None])
+                continue
             rec = by_order.get((line, order))
             if rec:
                 draft += draft_rows(line, order, product, rec)

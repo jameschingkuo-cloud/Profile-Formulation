@@ -301,18 +301,47 @@ class Bank:
 
     def fit(self):
         self.A = np.array(self.X, np.float32); self.labels = np.array(self.y)
+        order = np.argsort(self.labels, kind="stable")            # the bank grouped by label: one min per group
+        self.As, ls = self.A[order], self.labels[order]
+        self.starts = np.r_[0, np.flatnonzero(ls[1:] != ls[:-1]) + 1] if len(ls) else np.zeros(0, int)
+        self.ulabels = ls[self.starts]
         self.cache = {}
         return self
 
     def dists(self, f):
         key = f.tobytes()
         if key not in self.cache:
-            d = np.linalg.norm(self.A - f, axis=1)
-            best = {}
-            for lab in np.unique(self.labels):
-                best[lab] = float(d[self.labels == lab].min())
-            self.cache[key] = best
+            d = np.linalg.norm(self.As - f, axis=1)
+            self.cache[key] = {lab: float(m) for lab, m in zip(self.ulabels, np.minimum.reduceat(d, self.starts))}
         return self.cache[key]
+
+    def prime(self, feats, tol=1e-4, batch=256):
+        """Fill the cache for many glyphs at once (step 1 speed: James Kuo, 1 Oct 2026, "this will reduce the wait time").
+        The values are exactly the ones dists() gives: a float64 matrix product finds, per label, the few bank glyphs
+        that can be the nearest (within tol, far above the float32 rounding of a distance), and only those distances are
+        then computed the way dists() computes them."""
+        new = {}
+        for f in feats:
+            k = f.tobytes()
+            if k not in self.cache:
+                new.setdefault(k, f)
+        if not new or not len(self.As):
+            return
+        if not hasattr(self, "A64"):
+            self.A64 = self.As.astype(np.float64); self.n64 = (self.A64 ** 2).sum(1)
+            self.counts = np.diff(np.r_[self.starts, len(self.As)])
+        keys, F = list(new), np.array(list(new.values()), np.float32)
+        for i0 in range(0, len(F), batch):
+            Fb = F[i0:i0 + batch].astype(np.float64)
+            d = np.sqrt(np.maximum(self.n64[None, :] - 2 * Fb @ self.A64.T + (Fb ** 2).sum(1)[:, None], 0))
+            lim = np.repeat(np.minimum.reduceat(d, self.starts, axis=1), self.counts, axis=1) + tol
+            for j in range(len(Fb)):
+                f = F[i0 + j]
+                cand = np.flatnonzero(d[j] <= lim[j])
+                exact = np.linalg.norm(self.As[cand] - f, axis=1)
+                best = np.full(len(self.starts), np.inf, np.float32)
+                np.minimum.at(best, np.searchsorted(self.starts, cand, "right") - 1, exact)
+                self.cache[keys[i0 + j]] = {lab: float(m) for lab, m in zip(self.ulabels, best)}
 
     def save(self, path):
         np.savez_compressed(path, X=np.array(self.X, np.float32), y=np.array(self.y))
@@ -331,7 +360,7 @@ def is_ext_page(im):
     return "EXTRUSION" in txt or "WPPPOPRC" in txt
 
 
-def page_rows(path):
+def page_rows(path, instructions_crop=True):
     """Find record lines on one EXT page; return line code, page no., per-row cells, totals cells."""
     raw = upright(path)
     if not is_ext_page(raw):
@@ -384,14 +413,14 @@ def page_rows(path):
     # special instructions, read per record (1 Oct 2026, measured against the system PDF): the record's own area below its
     # first line, from the product column to just before Total Sheets, read on its own. The full-page read above merges
     # these lines with the cut rows beside them and drops lines near a record line ("Sheets must be flat ...", "23 PLTS DONE").
-    for k, (r0, r1) in enumerate(runs):
+    for k, (r0, r1) in enumerate(runs if instructions_crop else []):   # step 1 (formulation) skips this: speed
         y0, y1 = r1 + 4, (runs[k + 1][0] - 4 if k + 1 < len(runs) else end)
         crop = im[y0:y1, max(0, X("Prod") - 60):X("Total") - 15]
         if crop.size and y1 - y0 > 12:
             info["rows"][k]["special_crop"] = special_from_crop(crop)
     # the top of the page, above its first record: instructions carried on from the last record of the page before
     # (30 Sep RP26717-1: "RUN WITH NEXT 78 PLTS DONE" at the top of report page 4)
-    if runs and runs[0][0] - (hy + 60) > 20:
+    if instructions_crop and runs and runs[0][0] - (hy + 60) > 20:
         top = im[hy + 60:runs[0][0] - 6, max(0, X("Prod") - 60):X("Total") - 15]
         info["carry_special"] = special_from_crop(top, need_label=False)
     return info
@@ -642,11 +671,22 @@ def load_truth(path):
 
 
 # ------------------------------------------------------------------------------------ main
-def read_scan(pdf, bank):
+def read_scan(pdf, bank, instructions_crop=True, workers=1):
+    """workers > 1: the pages are read in parallel processes (the page reads are independent; step 1 uses this so the
+    formulation reaches the production team sooner - James Kuo, 1 Oct 2026: "this will reduce the wait time")."""
     dec = Decoder(bank)
     out = []
-    for i, path in enumerate(render_pdf(pdf), 1):
-        info = page_rows(path)
+    paths = render_pdf(pdf)
+    if workers > 1:
+        from concurrent.futures import ProcessPoolExecutor
+        from functools import partial
+        with ProcessPoolExecutor(workers) as ex:
+            infos = list(ex.map(partial(page_rows, instructions_crop=instructions_crop), paths))
+    else:
+        infos = [page_rows(p, instructions_crop) for p in paths]
+    bank.prime([c[1] for info in infos for row in info["rows"] for s in ("A", "B") for c in row[s]]
+               + [c[1] for info in infos for c in (info.get("line_cells") or [])])     # all glyphs at once: same values
+    for i, info in enumerate(infos, 1):
         line, lf = decode_line_code(dec, info)
         if info.get("carry_special") and out:              # carried on from the previous page's last record
             prev = out[-1]
