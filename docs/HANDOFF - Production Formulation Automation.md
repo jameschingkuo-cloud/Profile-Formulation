@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.45 (30 Sep 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.46 (1 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1820,6 +1820,31 @@ date. Your data is correct with F1203K"* (CLAUDE.md, memory). Then *"yes continu
   James whether VOIDFORM is an exception); H66A116-1 / H64A244-1 FUA011WB5 now "If reclaim runs out". The records keep
   Tech's page order (as issued). Artifact v31; tests `test_draft_keeps_every_formulation`.
 
+## 7.55 The system PDF as ground truth: corrections and a better scan read (1 Oct 2026)
+
+James sent the system's own PDF of the 30 Sep report (BPN9PFR$_Z6KU24Rb.PDF): *"take a look at yesterday production
+schedule PDF file and confirm your scan file is rock solid"*; then *"correct what you can"* and *"but the main goal is to
+improve the OCR read and logic check when OCR read failed"*.
+- **Check** (`scan_reader/verify_with_system_pdf.py`): 30 Sep 1,825 of 1,827 fields identical; 23 and 24 Sep (system PDFs
+  092326 / 092426 in Production Instruction) the same kind of differences: special-instruction punctuation ("VOIDFORM," read
+  as "VOIDFORM."), text carried onto the next page, a printed line under handwriting, and 24 Sep H64A244-1's two cut rows
+  on a page missing from the scan (80,040 -> 240,120 sheets). Every key field identical.
+- **Corrected** (`scan_reader/correct_from_system_pdf.py`, each change noted on the row): 23 Sep 7 rows, 24 Sep 6 rows,
+  30 Sep 2 rows; all three days now 0 differences; EXT workbooks reissued (`publish.py --reissue`), EXT record rows
+  reissued (`daily/record.py --reissue "<why>"`, new, only when James asks). 24 Sep checks 73 -> 76 (H64A244-1 complete).
+- **Scan read** (`scan_reader/ext_scan_reader.py`, scored by `scan_reader/score_vs_pdf.py`; a day's own text left out of
+  the library when scoring it): special instructions read per record from the label down, page-top text carried to the
+  previous record, and snapped to the printed lines (`scan_reader/instructions.py`: 1,648 lines from the 2020-2026 system
+  schedules; numbers from the scan, wording/punctuation/case/spacing from the matching printed form; only OCR-explainable
+  differences accepted, so "RUN WIHT" stays as printed). Special instructions exact: 30 Sep 70% -> 99%, 23 Sep 100%, 24 Sep 96%.
+- **Logic checks** (`scan_reader/validate_read.py`): handwriting read as a row dropped (24 Sep "-PC405"); an order under
+  handwriting from the previous schedule day when one order fits line + product + die (30 Sep H69A038-1, 23/24 Sep
+  RP26410-1) or sits between the same neighbours (30 Sep H68A020-1 under "-BB510"); thk from the product code; a die
+  look-alike to the line's die (PA385 -> PA3B5); unreadable fields of a damaged row and unread instruction numbers from the
+  same order the previous day; a "PLTS DONE" line not read today flagged. **After the checks every key field (line, order,
+  product, die, thk, GSM, material, grade, spec, colours) is right on all 249 rows of 23, 24 and 30 Sep.** Remaining: text
+  under handwriting and pages missing from the scan - flagged, not guessed. Tests `tests/test_scan_logic.py`.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -1948,6 +1973,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.46 | 2026-10-01 | Claude Code (local, with James Kuo) | **System PDF as ground truth (§7.55)**: 23/24/30 Sep checked and corrected (reissued); scan reader special instructions 70% -> 96-100% (printed-line library); logic checks repair failed reads (every key field right on 249 rows). |
 | 1.45 | 2026-09-30 | Claude Code (local, with James Kuo) | **Daily run 30 Sep (§7.54)**: the 13 engineer rows checked against history (6 new products, 7 missing formulas); Tech's issue matches every drafted order; packet, workbooks, records, PM and FM (Changes 224-263) published; F1203K rule. |
 | 1.44 | 2026-09-30 | Claude Code (local, with James Kuo) | **Page reader on the 30 Sep schedule (§7.53)**: tilted border erased (H69A330-11); new products taken only when both readers agree without the master; S/5-type look-alike agreement; 87/87 on 30 Sep, tested in Chrome; artifact v29. |
 | 1.43 | 2026-09-30 | Claude Code (local, with James Kuo) | **Tech's past formulation pages, 2021 on (§7.52)**: 28 Oct 2022 (12 lines), 3 Sep 2025, 15 Sep 2021, 5 Aug 2021; obsolete formulas to the Change Log only; 11 formulas added as Draft; Formulation Report Record +431. |

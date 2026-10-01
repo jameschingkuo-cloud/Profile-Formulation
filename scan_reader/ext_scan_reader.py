@@ -31,6 +31,8 @@ except Exception:
     _tc = os.environ.get("TESSERACT_CMD")
 if _tc:
     pytesseract.pytesseract.tesseract_cmd = _tc
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import instructions  # noqa: E402  special instructions snapped to the printed lines (1 Oct 2026)
 
 # =====================================================================================================
 #  HARDCODED FIELD RULES — DO NOT REMOVE OR LOOSEN WITHOUT JAMES KUO'S SAY-SO.
@@ -379,7 +381,59 @@ def page_rows(path):
         xs = min(t[0] for t in ln)
         if owner and ("SPECIAL" in txt.upper() or X("Actual") - 40 < xs < X("Cut")):
             owner[-1].setdefault("special", []).append(re.sub(r"^.*Instructions:\s*", "", txt))
+    # special instructions, read per record (1 Oct 2026, measured against the system PDF): the record's own area below its
+    # first line, from the product column to just before Total Sheets, read on its own. The full-page read above merges
+    # these lines with the cut rows beside them and drops lines near a record line ("Sheets must be flat ...", "23 PLTS DONE").
+    for k, (r0, r1) in enumerate(runs):
+        y0, y1 = r1 + 4, (runs[k + 1][0] - 4 if k + 1 < len(runs) else end)
+        crop = im[y0:y1, max(0, X("Prod") - 60):X("Total") - 15]
+        if crop.size and y1 - y0 > 12:
+            info["rows"][k]["special_crop"] = special_from_crop(crop)
+    # the top of the page, above its first record: instructions carried on from the last record of the page before
+    # (30 Sep RP26717-1: "RUN WITH NEXT 78 PLTS DONE" at the top of report page 4)
+    if runs and runs[0][0] - (hy + 60) > 20:
+        top = im[hy + 60:runs[0][0] - 6, max(0, X("Prod") - 60):X("Total") - 15]
+        info["carry_special"] = special_from_crop(top, need_label=False)
     return info
+
+
+LABEL = re.compile(r"^.*?(?:Spec\w*\s+)?Ins\w*\s*:\s*|^.*?Special\s+\S+\s*", re.I)
+DASHES = re.compile(r"^[\W_eEcCoOnNrRsStTwWaAiIu]{0,3}$")
+
+
+TRAIL_NOISE = re.compile(r"(\s+(oe|ee|eo|ae|os|[‘’'\"_~—-]+))+\s*$")
+
+
+def special_from_crop(crop, need_label=True):
+    """The instruction lines of one record, read on their own. Every instruction block starts with the printed label
+    'Special Instructions:', so without the label there are none (dashed lines then only read as noise); reading starts at
+    the label, which keeps the cut rows printed above it out. Dashed separator lines (read as 'eee ee re ...'), lines that are
+    only cut-row numbers and noise marks after the text are dropped. Erasing the dashes as pixels damaged the letters
+    touching them (tried 1 Oct). need_label=False: the top of a page, where a record's text carries on from the page before."""
+    txt = pytesseract.image_to_string(crop, config="--psm 6").splitlines()
+    lab = next((i for i, s in enumerate(txt) if re.search(r"sp\w*al\s+\S*n|instruc|inst\w*ions", s, re.I)), None)
+    if lab is None and need_label:
+        return []
+    if lab is not None:
+        txt = txt[lab:]
+        txt[0] = LABEL.sub("", txt[0], count=1)
+    out = []
+    for s in txt:
+        s = TRAIL_NOISE.sub("", s.strip(" |_~:;'\"‘’")).strip(" |_~:;'\"‘’")
+        if not s:
+            continue
+        words = re.findall(r"[A-Za-z]+", s)
+        if words and len(words) >= 3 and sum(len(w) for w in words) / len(words) <= 3.2 and \
+                sum(c in "eEcCoOnNrRsStTwWaA" for w in words for c in w) >= 0.85 * sum(len(w) for w in words):
+            continue                                       # a dashed separator line read as letters
+        if instructions.NUMERIC_LINE.match(s) or re.fullmatch(r"\W*\w{0,3}\W*\d+(\s+\d+/\d+)?\W*", s):
+            continue                                       # cut-row numbers ("96 3/4", "S963 4")
+        if sum(ch.isalnum() for ch in s) < 3 or not re.search(r"[A-Za-z0-9]{2}", s):
+            continue                                       # specks ("a", "- ; a")
+        if not need_label and not instructions.snap_line(s)[1].startswith('library'):
+            continue                                       # page top: only lines the system really prints (header noise)
+        out.append(s)
+    return out
 
 
 # ------------------------------------------------------------------------------------ decoding
@@ -594,10 +648,18 @@ def read_scan(pdf, bank):
     for i, path in enumerate(render_pdf(pdf), 1):
         info = page_rows(path)
         line, lf = decode_line_code(dec, info)
+        if info.get("carry_special") and out:              # carried on from the previous page's last record
+            prev = out[-1]
+            raw = " | ".join(x for x in [prev["special_raw"]] + info["carry_special"] if x)
+            prev["special"], sflags = instructions.snap(raw)
+            prev["special_raw"] = raw
+            prev["flags"] = "; ".join(x for x in [prev["flags"], f"instructions continue at the top of scan page {i}"] + sflags if x)
         for row in info["rows"]:
             vals, flags = decode_row(dec, row)
+            raw = " | ".join(row.get("special_crop", row.get("special", [])))
+            text, sflags = instructions.snap(raw)      # the printed wording, from the system's own past schedules
             out.append({"scan_page": i, "report_page": info["page"], "line": line, **vals,
-                        "special": " | ".join(row.get("special", [])), "flags": "; ".join(lf + info["flags"] + flags)})
+                        "special": text, "special_raw": raw, "flags": "; ".join(lf + info["flags"] + flags + sflags)})
     return out
 
 

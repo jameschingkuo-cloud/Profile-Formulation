@@ -166,8 +166,13 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
      corrected.
    - Set `packet_date` and `source_scan`.
 2. Run an independent check of the EXT key fields:
-   `python scan_reader/ext_scan_reader.py read <scan.pdf> scan_reader/glyph_bank.npz work/ext_read_<date>.csv`.
-   Every difference from your transcription gets settled by looking at the page again.
+   `python scan_reader/ext_scan_reader.py read <scan.pdf> scan_reader/glyph_bank.npz work/ext_read_<date>.csv`, then the
+   logic checks `python scan_reader/validate_read.py <date> work/ext_read_<date>.csv work/ext_valid_<date>.csv` (repairs
+   only from a single consistent candidate, each with its reason: handwriting read as a row, an order or product under
+   handwriting from the previous schedule day, thk from the product code, a die look-alike to the line's die, a number not
+   read in an instruction). Special instructions are snapped to the lines the system really prints
+   (`scan_reader/instructions.py`, from the system schedules). Every difference from your transcription gets settled by
+   looking at the page again. With the system PDF: `python scan_reader/score_vs_pdf.py <csv> <pdf>` scores the read.
    When the system's own PDF of the day's report is available (`BPN9PFR*.PDF`, the text the paper is printed from), run
    `python scan_reader/verify_with_system_pdf.py <date> <pdf>`: the PDF is the authority for printed text, the scan adds
    only handwriting. A comma and a period cannot be told apart on the scan, and printed text under handwriting is still
