@@ -104,3 +104,36 @@ def test_validate_never_guesses_between_two_candidates(monkeypatch):
     monkeypatch.setattr(V, 'schedules', lambda: {'2026-09-29': two})
     out, *_ = V.validate('2026-09-30', [_rows(order='HR62266-1')])
     assert out[0]['order'] == 'HR62266-1' and 'check by eye' in out[0]['checks']
+
+
+def _fields(**over):
+    f = {'T': 'Y', 'order_width': '31 5/8', 'order_length': '34 1/4', 'pack_code': '30X42', 'num_plt': '190',
+         'cut_rows': [{'width': '31 5/8', 'length': '34 7/8', 'total_sheets': '34,675'}] * 2, 'pcs_per_stack': '365',
+         'stk_per_plt': '1', 'weight_lbs': '67,270', 'instr_date': '16-Oct', 'web_width': '63 1/4'}      # 30 Sep H69A039-1
+    f.update(over)
+    return f
+
+
+def test_step2_record_checks():
+    import ext_fields as F
+    assert F.check_record(_fields(), '631') == []
+    assert F.check_record(_fields(weight_lbs='61,270'), '631')                # weight vs size x GSM x sheets
+    assert F.check_record(_fields(num_plt='19'), '631')                       # pallets x pieces x stacks vs sheets
+    assert F.check_record(_fields(num_plt='191'), '631') == []                # the report rounds pallets by up to one
+    assert F.check_record(_fields(order_width='31 4/8'), '631')               # not a printed fraction
+    assert F.check_record(_fields(web_width='64 1/4'), '631')                 # web = whole cut widths
+    assert F.check_record(_fields(pack_code='30442'), '631')                  # X read as 4
+    big = _fields(cut_rows=[{'width': '31 1/8', 'length': '51 1/4', 'total_sheets': '184,867'}] * 3, num_plt='999', web_width='93 3/8',
+                  pcs_per_stack='295')
+    assert F.check_record(big, None) == []                                    # 999 = the most the report prints
+    assert F.check_record(dict(big, pcs_per_stack='9295'), None)              # a stroke read as a digit (30 Sep H68A091-1)
+
+
+def test_step2_cut_rows_and_dates():
+    import ext_fields as F
+    a, b = {'width': '31 1/8', 'length': '51 1/4', 'total_sheets': '184,867'}, {'width': '31 1/8', 'length': '51 1/8', 'total_sheets': '184,867'}
+    rows = [dict(a), dict(b), dict(a)]
+    assert 'taken from them' in F.agree_cut_rows(rows)[0] and rows[1] == a   # one row against two that agree
+    rows = [dict(a), dict(b)]
+    assert 'check' in F.agree_cut_rows(rows)[0] and rows[1] == b             # one against one: never chosen
+    assert [F.snap_instr(t) for t in ('20-0ct', 'St0ck', '19-Mar', '19 Mar', 'garbage')] == ['20-Oct', 'Stock', '19-Mar', '19-Mar', '']

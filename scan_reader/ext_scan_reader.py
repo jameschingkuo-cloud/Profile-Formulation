@@ -360,8 +360,28 @@ def is_ext_page(im):
     return "EXTRUSION" in txt or "WPPPOPRC" in txt
 
 
-def page_rows(path, instructions_crop=True):
-    """Find record lines on one EXT page; return line code, page no., per-row cells, totals cells."""
+def text_bands(bw, runs):
+    """A record line with handwriting written into it reads as one tall band (30 Sep 2026: "-PA205" over H69A038-1, a
+    note over H68A020-1): within a band much taller than the page's record lines, the printed line is the window of a
+    record line's height crossed by the most '|' bars. Bands of normal height are kept as they are."""
+    if len(runs) < 2:
+        return runs
+    import ext_fields
+    h0 = int(np.median([r1 - r0 for r0, r1 in runs]))
+    out = []
+    for r0, r1 in runs:
+        if r1 - r0 > 1.5 * h0:
+            best = max(((len(ext_fields.bar_xs(bw, y, y + h0)), -y) for y in range(r0, r1 - h0 + 1, 2)), default=(0, 0))
+            if best[0] >= 3:
+                out.append((-best[1], -best[1] + h0))
+                continue
+        out.append((r0, r1))
+    return out
+
+
+def page_rows(path, instructions_crop=True, fields=False):
+    """Find record lines on one EXT page; return line code, page no., per-row cells, totals cells. fields=True (step 2):
+    also every other column of each record and its cut rows (ext_fields.page_lines) and the line-total words."""
     raw = upright(path)
     if not is_ext_page(raw):
         return {"path": path, "rows": [], "line_cells": None, "page": None, "flags": [], "skipped": True}
@@ -378,6 +398,9 @@ def page_rows(path, instructions_crop=True):
         m = re.search(r"PAGE\s*:?\s*(\d+)", U)
         if m and info["page"] is None:
             info["page"] = int(m.group(1))
+        m = re.search(r"RUN\s*DATE\s*:?\s*(\d{1,2}/\d{1,2}/\d{2})\s+(\d{1,2}:\d\d:\d\d)", U)
+        if m and "run_date" not in info:
+            info["run_date"], info["run_time"] = m.group(1), m.group(2)
         if re.search(r"LINE\s*NO", U):
             no = [j for j, t in enumerate(ln) if t[4].upper().startswith("NO")]
             if no and no[0] + 1 < len(ln):
@@ -389,6 +412,7 @@ def page_rows(path, instructions_crop=True):
                   and re.search(r"LINE.*TOTAL", " ".join(w for *_, w in ln).upper())), None)
     end = min(t[1] for t in total) - 10 if total else im.shape[0] - 50
     runs = ink_runs(bw, X("Mfg") - 18, X("Prod") - 18, hy + 70, end)
+    runs = text_bands(bw, runs)
     A = (X("Mfg") - 18, X("Actual") - 12)
     B = (X("Mat") - 8, X("Cut") - 20)
     crops = [(im[r0 - 10:r1 + 10, A[0]:A[1]], im[r0 - 10:r1 + 10, B[0]:B[1]], r0) for r0, r1 in runs]
@@ -398,6 +422,19 @@ def page_rows(path, instructions_crop=True):
         info["rows"].append({"y": y,
                              "A": [(c[0], feature(c), c[2]) for c in segment(ca, pitch)],
                              "B": [(c[0], feature(c), c[2]) for c in segment(cb, pitch)]})
+    if fields:                                         # step 2: the rest of each record, by printed column
+        import ext_fields
+        fls = ext_fields.page_lines(im, bw, runs, end, pitch)
+        for row, fl in zip(info["rows"], fls):
+            row["fields_lines"] = fl
+        info["total_words"] = [w for *_, w in total] if total else []
+        first = next((fl[0] for fl in fls if fl), None)
+        if first and runs[0][0] - (hy + 70) > 20:      # a record's cut rows carried on from the page before
+            info["carry_cut_lines"] = ext_fields.cut_lines(im, bw, hy + 70, runs[0][0] - 6, first["a"], first["b"])
+        last = next((fl[0] for fl in reversed(fls) if fl), None)
+        if total and last:                             # the line total: PCs under Total Sheets, LBs under Weight
+            ty0, ty1 = min(t[1] for t in total), max(t[1] + t[3] for t in total)
+            info["footer_cells"] = ext_fields.line_cells(im, ty0, ty1, last["a"], last["b"], ("foot_pcs", "foot_lbs"))
     if info.get("line_crop") is not None and info["line_crop"].size:
         info["line_cells"] = [(c[0], feature(c), c[2]) for c in segment(info["line_crop"], pitch)]
     # special instructions: full-page text of the lines under each record
@@ -671,23 +708,34 @@ def load_truth(path):
 
 
 # ------------------------------------------------------------------------------------ main
-def read_scan(pdf, bank, instructions_crop=True, workers=1):
-    """workers > 1: the pages are read in parallel processes (the page reads are independent; step 1 uses this so the
-    formulation reaches the production team sooner - James Kuo, 1 Oct 2026: "this will reduce the wait time")."""
-    dec = Decoder(bank)
-    out = []
+def read_pages(pdf, instructions_crop=True, workers=1, fields=False):
+    """page_rows() of every page of a scan; workers > 1 reads the pages in parallel processes."""
     paths = render_pdf(pdf)
     if workers > 1:
         from concurrent.futures import ProcessPoolExecutor
         from functools import partial
         with ProcessPoolExecutor(workers) as ex:
-            infos = list(ex.map(partial(page_rows, instructions_crop=instructions_crop), paths))
-    else:
-        infos = [page_rows(p, instructions_crop) for p in paths]
+            return list(ex.map(partial(page_rows, instructions_crop=instructions_crop, fields=fields), paths))
+    return [page_rows(p, instructions_crop, fields) for p in paths]
+
+
+def read_scan(pdf, bank, instructions_crop=True, workers=1, fields_bank=None, infos=None):
+    """workers > 1: the pages are read in parallel processes (the page reads are independent; step 1 uses this so the
+    formulation reaches the production team sooner - James Kuo, 1 Oct 2026: "this will reduce the wait time")."""
+    dec = Decoder(bank)
+    out = []
+    if infos is None:                                      # (infos given: the pages were read already)
+        infos = read_pages(pdf, instructions_crop, workers, fields_bank is not None)
     bank.prime([c[1] for info in infos for row in info["rows"] for s in ("A", "B") for c in row[s]]
                + [c[1] for info in infos for c in (info.get("line_cells") or [])])     # all glyphs at once: same values
+    if fields_bank is not None:
+        fields_bank.prime([c[1] for info in infos for row in info["rows"] for ln in (row.get("fields_lines") or [])
+                           for cells in ln['cells'].values() for c in cells])
     for i, info in enumerate(infos, 1):
         line, lf = decode_line_code(dec, info)
+        if fields_bank is not None and info.get("carry_cut_lines") and out and out[-1].get("fields"):
+            import ext_fields
+            ext_fields.carry_cuts(fields_bank, out[-1], info["carry_cut_lines"], i)
         if info.get("carry_special") and out:              # carried on from the previous page's last record
             prev = out[-1]
             raw = " | ".join(x for x in [prev["special_raw"]] + info["carry_special"] if x)
@@ -700,6 +748,9 @@ def read_scan(pdf, bank, instructions_crop=True, workers=1):
             text, sflags = instructions.snap(raw)      # the printed wording, from the system's own past schedules
             out.append({"scan_page": i, "report_page": info["page"], "line": line, **vals,
                         "special": text, "special_raw": raw, "flags": "; ".join(lf + info["flags"] + flags + sflags)})
+            if fields_bank is not None:                    # step 2: every other column, by printed column
+                import ext_fields
+                out[-1]["fields"], out[-1]["field_flags"] = ext_fields.read_row(fields_bank, row)
     return out
 
 

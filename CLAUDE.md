@@ -131,13 +131,13 @@ Change these only with James's explicit say-so, and log the change in the handof
 |---|---|
 | `config.py` | Paths (env var → `local_settings.json` → default in repo); `record_read`, `content_hash` |
 | `publish.py` | out/ → PUBLISH_DIR/<folder> (database) or DOCS_DIR (workspace), with the hard-rule guard and verify-after-copy |
-| `daily/` | Packet JSON → EXT / CNV / FRM workbooks (`build_xlsx.py`, `checks.py`) and Product Master merge (`build_master.py`) |
+| `daily/` | Packet JSON → EXT / CNV / FRM workbooks (`build_xlsx.py`, `checks.py`) and Product Master merge (`build_master.py`); the two-step scan read (`stage1_formulation.py`, `stage2_records.py`) |
 | `daily/manual/` | Hand-found issues per day (`manual_issues_<date>.py`) |
 | `daily/cfg/` | Read Me notes per day (`cfg_<date>.json`) |
 | `calc/` | Tech's `SExx Formulation.xls` → `Formulation Calc Library.xlsx` (`parse_fcal.py` → `export_calc_products.py` → `build_formulation_master.py`); `auger_rules.py` |
 | `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. `preflight.py`: master change control (`check` / `accept`; accepted versions in `data/snapshots/`). `seed_master.py`: one-time Draft seed. Flow and maintenance in `docs/DATABASE.md` (§3, §7) |
 | `product_master/` | `prepare.py`: Product Master → `Product Master - Prepared <date>.xlsx` (code-derived columns, Issues, Verify First, Colour Codes, Import Map; §7.18). A working file, not published |
-| `scan_reader/` | `ext_scan_reader.py` (EXT scan reader, R1/R2 hardcoded, `glyph_bank.npz`); `render_pages.py` (page PNGs + quarter tiles for reading) |
+| `scan_reader/` | `ext_scan_reader.py` (EXT scan reader, R1/R2 hardcoded, `glyph_bank.npz`); `ext_fields.py` (step 2: every other EXT column by printed column, `glyph_bank_fields.npz`); `validate_read.py`, `instructions.py` (logic checks); `render_pages.py` (page PNGs + quarter tiles for reading) |
 | `history/` | The system's own past extrusion schedules (Production Instruction PDFs): `prod_instr.py` (parse), `analyze.py` (findings) |
 | `order_number.py`, `product_code.py` | The order-number and product-code hard rules (used by checks, readers, masters) |
 | `ui/` | The interface page: `build.py` (data + `page.template.html` + `reader.js` → `out/profile-formulation.html`, `eng-data.js`, `glyph-bank.js`); `reader.js` (the page's scan reader); `ocr_eval.py` (the reference reader, `audit3`, `dump_parity`) |
@@ -222,10 +222,23 @@ read the rest for the data base update (Production Record)"* - *"this will reduc
   auger_check and render_frm -> `out/FRM Formulation <date>.docx` (footer: "step 1: read by the scan reader"). A row
   whose order or product the checks cannot confirm is an Exception, never a formula. Then steps 4-5 below as usual.
   The step-1 packet never goes in `data/packets`: records, masters and the reader's evaluation never read it.
-- **Step 2, everything else for the database:** the Daily run (transcription of every field, reader cross-check,
-  system PDF), then `python daily/stage1_formulation.py --compare <date>`. Exit 1 = step 1 read a line, order or product
-  differently: re-run resolve / render_frm on the full packet and re-issue the formulation (tell James).
-  30 Sep 2026 test: 87 of 87 orders identical to the transcribed, PDF-corrected packet; 56 s on James's PC.
+- **Step 2, everything else for the database:** `python daily/stage2_records.py <scan.pdf> --date <date>` (about
+  1.5 minutes) reads every EXT field: the key fields and instructions, and every other column by its printed column
+  (`scan_reader/ext_fields.py`: the '|' bars of each record line place every glyph; sizes, cut rows, total sheets, pack,
+  pallets, pieces, stacks, weight, in-str date, web width, the line totals; its own glyph bank `glyph_bank_fields.npz`,
+  so the key-field and page readers are unchanged). Logic checks: printed forms, pallets x pieces vs sheets, weight vs
+  size x GSM x sheets, web = whole cut widths, cut rows alike, 999 pallets, the previous transcribed day's same order,
+  the printed line totals. Output `work/stage2/packet_<date>.json` with every note in the record's `unclear`. Settle each
+  note at zoom, add the CNV (and any FRM) pages by eye (not read by the reader yet), save it as
+  `data/packets/packet_<date>.json` without `"stage"`, then the Daily run from step 2 (system PDF, records).
+  `--compare <date>` scores a step-2 read against a transcribed packet. Then
+  `python daily/stage1_formulation.py --compare <date>`: exit 1 = step 1 read a line, order or product differently:
+  re-run resolve / render_frm on the full packet and re-issue the formulation (tell James).
+  Tests (1 Oct 2026): step 1 on 30 Sep, 87 of 87 orders identical to the PDF-corrected packet, about a minute. Step 2
+  with a field bank that had not seen the day: 30 Sep and 24 Sep, every field of all 167 records right except special
+  instructions under handwriting (flagged); the one line total not read is flagged.
+  When a new day's system PDF arrives, add it to the field bank:
+  `python scan_reader/ext_fields.py train <scan> <pdf> [<scan> <pdf> ...]` (all days) and measure with `loo`.
 
 1. Transcribe the EXT schedule into the packet (Daily run step 1; FRM pages are not needed for this), or step 1 above.
 2. `PKT_DATE=<date> python daily/resolve.py` (FRM Draft: every order as last issued on its line, or an Exception).
