@@ -2312,8 +2312,8 @@
      "web_width": "94 7/8",
      "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT             822 PLTS DONE / (RANGE WEIGHT 970-1000 GSM)",
      "handwritten": "Printed # Plt '999' struck through by hand and '1044' handwritten below it.",
-     "unclear": "Only the first cut row (31 5/8 x 39 1/16, 80,040) is printed on this page; the record's remaining cut rows and its Special Instructions are not on this page (presumably continue on report page 11, not in this scan). | Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): cut rows 1 -> 3 (31 5/8 x 39 1/16 = 80,040; 31 5/8 x 39 1/16 = 80,040; 31 5/8 x 39 1/16 = 80,040); special instructions '' -> 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT             822 PLTS DONE / (RANGE WEIGHT 970-1000 GSM)'",
-     "truncated": true
+     "unclear": "Only the first cut row (31 5/8 x 39 1/16, 80,040) is printed on this page; the record's remaining cut rows and its Special Instructions are not on this page (presumably continue on report page 11, not in this scan). | Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): cut rows 1 -> 3 (31 5/8 x 39 1/16 = 80,040; 31 5/8 x 39 1/16 = 80,040; 31 5/8 x 39 1/16 = 80,040); special instructions '' -> 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT             822 PLTS DONE / (RANGE WEIGHT 970-1000 GSM)' | Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): record complete from the PDF (its continuation page is missing from the scan)",
+     "truncated": false
     }
    ],
    "line_total_pcs": "",

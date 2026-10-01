@@ -86,6 +86,9 @@ def main(argv):
             if norm(r['special_instructions']) != norm(s['special']):
                 notes.append(f'special instructions {r["special_instructions"]!r} -> {s["special"]!r}')
                 r['special_instructions'] = s['special']
+            if r.get('truncated'):                 # the scan missed the page the record runs on to; the PDF has all of it
+                r['truncated'] = False
+                notes.append('record complete from the PDF (its continuation page is missing from the scan)')
             if notes:
                 changed += 1
                 note = f'Corrected from the system PDF {pdf.name} (run {info["run_date"]} {info["run_time"]}; James Kuo, 1 Oct 2026): ' + '; '.join(notes)
