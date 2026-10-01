@@ -168,6 +168,11 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 2. Run an independent check of the EXT key fields:
    `python scan_reader/ext_scan_reader.py read <scan.pdf> scan_reader/glyph_bank.npz work/ext_read_<date>.csv`.
    Every difference from your transcription gets settled by looking at the page again.
+   When the system's own PDF of the day's report is available (`BPN9PFR*.PDF`, the text the paper is printed from), run
+   `python scan_reader/verify_with_system_pdf.py <date> <pdf>`: the PDF is the authority for printed text, the scan adds
+   only handwriting. A comma and a period cannot be told apart on the scan, and printed text under handwriting is still
+   printed (James, 1 Oct 2026: *"confirm your scan file is rock solid"* - 30 Sep: 1,825 of 1,827 fields identical; the 2
+   were such calls made at zoom).
 3. Hand-found issues:
    - Copy yesterday's `daily/manual/manual_issues_<date>.py` to today's date.
    - Do not carry forward issues for materials in `checks.REPLACED` (Q1203K, F1102K): the checks note them as Info.
