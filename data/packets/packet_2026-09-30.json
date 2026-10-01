@@ -108,9 +108,9 @@
      "weight_lbs": "3,041",
      "instr_date": "04-Nov",
      "web_width": "62 1/4",
-     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM)",
-     "handwritten": "Handwritten 'MAKE UP FOR SCRAP pallets.' (pen) below the printed instructions.",
-     "unclear": ""
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM) / 343 PLTS DONE",
+     "handwritten": "Handwritten 'MAKE UP FOR SCRAP pallets.' (pen) written over the printed third line '343 PLTS DONE'.",
+     "unclear": "Third line and the comma after VOIDFORM taken from the system PDF BPN9PFR$_Z6KU24Rb.PDF (same run, 9/30/26 13:19:20): on the scan the handwriting covers '343 PLTS DONE' and the comma reads as a period (James Kuo, 1 Oct 2026)."
     },
     {
      "T": "Y",
@@ -247,7 +247,7 @@
    "line_total_pcs": "121,880",
    "line_total_lbs": "118,633",
    "final_total": "",
-   "page_notes": "7 records, same orders as 29 Sep. H69A039-1 48 PLTS DONE (14). H63A200-1 no longer prints '343 PLTS DONE'; handwritten 'MAKE UP FOR SCRAP pallets.' under its instructions; its 'VOIDFORM.' prints a period (read at zoom; the 29 Sep packet has a comma). Faint '(' scan artifact bottom-left."
+   "page_notes": "7 records, same orders as 29 Sep. H69A039-1 48 PLTS DONE (14). Handwritten 'MAKE UP FOR SCRAP pallets.' written over H63A200-1's printed '343 PLTS DONE' line (the system PDF shows the line). Faint '(' scan artifact bottom-left."
   },
   {
    "scan_page": 2,
@@ -2825,9 +2825,9 @@
      "weight_lbs": "19,360",
      "instr_date": "01-Oct",
      "web_width": "63",
-     "special_instructions": "GENESIS. TARGET THICKNESS 10 (RANGE IS 9.50-10.50) / 38 PLTS DONE",
+     "special_instructions": "GENESIS, TARGET THICKNESS 10 (RANGE IS 9.50-10.50) / 38 PLTS DONE",
      "handwritten": "Handwritten '-BB510' just above this record's first line, over the T / Mfg# columns.",
-     "unclear": "Prod code char 5 read as zero ('RBPA0KS70', A = 10 mm, matches Thk 10.0). Spec RDRDRD (R2: RD accepted but flagged)."
+     "unclear": "Prod code char 5 read as zero ('RBPA0KS70', A = 10 mm, matches Thk 10.0). Spec RDRDRD (R2: RD accepted but flagged). 'GENESIS,' (comma) from the system PDF BPN9PFR$_Z6KU24Rb.PDF; it reads as a period on the scan (James Kuo, 1 Oct 2026)."
     },
     {
      "T": "Y",
@@ -7681,5 +7681,14 @@
    ]
   }
  ],
- "frm_source_scan": "doc05271720260930140641.pdf"
+ "frm_source_scan": "doc05271720260930140641.pdf",
+ "corrections": [
+  {
+   "date": "2026-10-01",
+   "source": "BPN9PFR$_Z6KU24Rb.PDF",
+   "run": "9/30/26 13:19:20",
+   "rows_changed": 2,
+   "by": "James Kuo: \"correct what you can\" (work/transcribe_0930.py edited)"
+  }
+ ]
 }

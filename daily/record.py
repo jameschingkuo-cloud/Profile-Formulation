@@ -10,6 +10,8 @@ PUBLISH_DIR (read and recorded, per the hard rule) or, if none is published yet,
   - not in the record yet        -> its rows are appended;
   - already there, rows the same -> skipped;
   - already there, rows differ   -> STOP: nothing is written. Past rows are never edited.
+    Only when James asks: python daily/record.py --reissue "<why, quoting James>" <date> ... replaces that date's rows with
+    the corrected packet's (1 Oct 2026: 23, 24 and 30 Sep corrected from the system PDFs, "correct what you can").
 Rows come from data/packets/packet_<date>.json, values as printed. The workbooks go to out/; publish.py publishes.
 """
 import datetime
@@ -30,6 +32,7 @@ from resolve import split_feeder, variant  # noqa: E402
 DOSING = {'SE24': 'WEIGHT', 'SE42': 'WEIGHT', 'SE43': 'WEIGHT', 'SE61': 'WEIGHT'}   # the rest are auger lines (load.DOSING)
 PLTS_DONE = re.compile(r'(\d[\d,]*)\s*PLTS?\s+DONE', re.I)
 X_OF_Y = re.compile(r'^\s*(\d[\d,]*)\s+OF\s+(\d[\d,]*)\s*$', re.I)
+REISSUE = ''                               # set by --reissue "<why>": replace a date already recorded (James asks only)
 RECORDS = {'FRM': ('Formulation Report Record.xlsx', 'Issued'),
            'EXT': ('Extrusion Production Record.xlsx', 'Orders by Day'),
            'CNV': ('Converting Production Record.xlsx', 'Orders by Day')}
@@ -344,6 +347,9 @@ def main(dates):
                        sorted(tuple(norm(r.get(h)) for h in header) for r in new)
                 if same:
                     log.append(f'{d}: already recorded, identical ({len(new)} rows) - skipped')
+                elif REISSUE:                   # only when James asks
+                    rows = sorted([r for r in rows if norm(r.get(date_col)) != d] + new, key=lambda r: norm(r.get(date_col)))  # stable: day order kept
+                    log.append(f'{d}: REISSUED - {len(have[d])} rows replaced by {len(new)} from the corrected packet ({REISSUE})')
                 else:
                     stop.append(f'{name}: {d} is already recorded with different rows ({len(have[d])} there, '
                                 f'{len(new)} from the packet). Past rows are never edited; nothing written.')
@@ -458,4 +464,8 @@ if __name__ == '__main__':
     elif sys.argv[1:2] == ['--history']:
         main_history([a for a in sys.argv[2:] if not a.startswith('--')], replace='--replace-history' in sys.argv)
     else:
+        if '--reissue' in sys.argv:            # python daily/record.py --reissue "<why, quoting James>" <date> ...
+            k = sys.argv.index('--reissue')
+            REISSUE = sys.argv[k + 1]
+            del sys.argv[k:k + 2]
         main(sys.argv[1:])

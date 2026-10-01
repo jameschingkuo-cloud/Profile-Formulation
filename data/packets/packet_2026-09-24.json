@@ -40,9 +40,9 @@
      "weight_lbs": "67,270",
      "instr_date": "16-Oct",
      "web_width": "63 1/4",
-     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT (RANGE IS 582 - 600 GSM)",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT (RANGE IS 582 - 600 GSM)",
      "handwritten": "",
-     "unclear": ""
+     "unclear": "Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): special instructions 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT (RANGE IS 582 - 600 GSM)' -> 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT (RANGE IS 582 - 600 GSM)'"
     },
     {
      "T": "Y",
@@ -74,9 +74,9 @@
      "weight_lbs": "22,558",
      "instr_date": "13-Oct",
      "web_width": "63 1/4",
-     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT (RANGE IS 473 - 488GSM)",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT  (RANGE IS 473 - 488GSM)",
      "handwritten": "",
-     "unclear": ""
+     "unclear": "Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): special instructions 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT (RANGE IS 473 - 488GSM)' -> 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT  (RANGE IS 473 - 488GSM)'"
     },
     {
      "T": "Y",
@@ -108,9 +108,9 @@
      "weight_lbs": "3,041",
      "instr_date": "04-Nov",
      "web_width": "62 1/4",
-     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM)",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM) / 343 PLTS DONE",
      "handwritten": "MAKE UP FOR SCRAP PALLETS.",
-     "unclear": "Printed 2nd instruction line has its lower half clipped/obscured where the handwriting overlaps; the punctuation after 'VOIDFORM' is not visible (given as '.' per the same line's convention elsewhere). Handwritten word 'SCRAP' is loosely formed (reads like 'suap'); 'SCRAP' is the best reading. No 'PLTS DONE' note printed on this record today."
+     "unclear": "Printed 2nd instruction line has its lower half clipped/obscured where the handwriting overlaps; the punctuation after 'VOIDFORM' is not visible (given as '.' per the same line's convention elsewhere). Handwritten word 'SCRAP' is loosely formed (reads like 'suap'); 'SCRAP' is the best reading. No 'PLTS DONE' note printed on this record today. | Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): special instructions 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM)' -> 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, WEIGHT CHECK EVERY 30 MINS (RANGE 582-600 GSM) / 343 PLTS DONE'"
     },
     {
      "T": "Y",
@@ -599,9 +599,9 @@
      "weight_lbs": "1,167,581",
      "instr_date": "Stock",
      "web_width": "48",
-     "special_instructions": "",
+     "special_instructions": "RUN WITH NEXT                            78 PLTS DONE",
      "handwritten": "",
-     "unclear": ""
+     "unclear": "Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): special instructions '' -> 'RUN WITH NEXT                            78 PLTS DONE'"
     }
    ],
    "line_total_pcs": "",
@@ -2237,9 +2237,9 @@
      "weight_lbs": "3,237",
      "instr_date": "29-Sep",
      "web_width": "93 3/8",
-     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT  (RANGE IS 970 - 1000 GSM) / MAKE UP FOR SCRAP PLTS",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT  (RANGE IS 970 - 1000 GSM) / MAKE UP FOR SCRAP PLTS",
      "handwritten": "",
-     "unclear": ""
+     "unclear": "Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): special instructions 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM. PLEASE WATCH WEIGHT  (RANGE IS 970 - 1000 GSM) / MAKE UP FOR SCRAP PLTS' -> 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT  (RANGE IS 970 - 1000 GSM) / MAKE UP FOR SCRAP PLTS'"
     },
     {
      "T": "Y",
@@ -2291,6 +2291,16 @@
        "width": "31 5/8",
        "length": "39 1/16",
        "total_sheets": "80,040"
+      },
+      {
+       "width": "31 5/8",
+       "length": "39 1/16",
+       "total_sheets": "80,040"
+      },
+      {
+       "width": "31 5/8",
+       "length": "39 1/16",
+       "total_sheets": "80,040"
       }
      ],
      "pack_code": "30X42",
@@ -2300,9 +2310,9 @@
      "weight_lbs": "436,298",
      "instr_date": "15-Sep",
      "web_width": "94 7/8",
-     "special_instructions": "",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT             822 PLTS DONE / (RANGE WEIGHT 970-1000 GSM)",
      "handwritten": "Printed # Plt '999' struck through by hand and '1044' handwritten below it.",
-     "unclear": "Only the first cut row (31 5/8 x 39 1/16, 80,040) is printed on this page; the record's remaining cut rows and its Special Instructions are not on this page (presumably continue on report page 11, not in this scan).",
+     "unclear": "Only the first cut row (31 5/8 x 39 1/16, 80,040) is printed on this page; the record's remaining cut rows and its Special Instructions are not on this page (presumably continue on report page 11, not in this scan). | Corrected from the system PDF 092426.PDF (run 9/24/26 13:32:32; James Kuo, 1 Oct 2026): cut rows 1 -> 3 (31 5/8 x 39 1/16 = 80,040; 31 5/8 x 39 1/16 = 80,040; 31 5/8 x 39 1/16 = 80,040); special instructions '' -> 'SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT             822 PLTS DONE / (RANGE WEIGHT 970-1000 GSM)'",
      "truncated": true
     }
    ],
@@ -7220,6 +7230,15 @@
    "effective_date": "6/15/00",
    "handwritten": "",
    "unclear": ""
+  }
+ ],
+ "corrections": [
+  {
+   "date": "2026-10-01",
+   "source": "092426.PDF",
+   "run": "9/24/26 13:32:32",
+   "rows_changed": 6,
+   "by": "James Kuo: \"correct what you can\""
   }
  ]
 }
