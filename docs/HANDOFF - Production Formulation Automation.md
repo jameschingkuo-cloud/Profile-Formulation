@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.49 (5 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.50 (5 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1912,6 +1912,21 @@ covers:
   been read: open the saved copy with the Read tool, confirm it is the last build plus the host's wrapper, then publish
   again. Resending without reading it is refused a second time.
 
+## 7.59 Scan or PDF through one door; daily run 5 Oct 2026 (5 Oct 2026)
+
+James: *"make sure you can read PDF word file as well. I want to be able to feed it in both way (scan and PDf doc) and
+have it able to process"*. `daily/intake.py` tells the system extrusion report, the converting schedule PDF and a copier
+scan apart by their content and runs step 1 (Word formulation) or step 2 (records) for each. The interface page's drop
+box takes the same three: the system PDF is read from its text (pdf.js, exact), a scan by the in-page reader as before
+(30 Sep scan: 87/87 in 69 s), and the converting PDF is named as not used for the formulation. Artifact v34-v35.
+Also on 5 Oct: the page stopped at load on 2 Oct data (no Tech FRM pages: `D.lines` empty; v32), fixed in v33 with the
+draft as the day's lines; lessons in CLAUDE.md ("The interface artifact"); SharePoint permissions in the user settings.
+- **5 Oct run** (BPN9PFR$_Z7XTIDbA.PDF, run 13:42:46; Die Cutting Schedule 10-05.pdf): 81 EXT records, every line equal to
+  its printed total; Word formulation sent first, 68 orders as last issued + 13 for the engineer (6 new today, 7 still
+  open since 2 Oct); 63 converting rows, fixed fields unchanged from 2 Oct. Published: EXT and CNV workbooks, Product
+  Master (2,668), Extrusion record +81, Converting record +63, interface copy, artifact v35. High issues: the known SD22
+  partition ones only.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -2040,6 +2055,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.50 | 2026-10-05 | Claude Code (local, with James Kuo) | **Scan or PDF through one door; 5 Oct run (§7.59)**: `daily/intake.py` and the page's drop box take the system PDF (exact text) or a scan; page fix for days without Tech pages (v33); 5 Oct published (81 EXT, 63 CNV), artifact v35. |
 | 1.49 | 2026-10-05 | Claude Code (local, with James Kuo) | **Interface artifact lessons (§7.58)**: what went wrong with uploads, data files, copier PDFs, downloads, Chrome testing and republishing, written into CLAUDE.md for the next session. |
 | 1.48 | 2026-10-05 | Claude Code (local, with James Kuo) | **Daily run 2 Oct from the system PDFs (§7.57)**: EXT from the AIX report text, CNV from the Excel schedule's PDF (`packet_from_pdf.py`, `cnv_from_pdf.py`); Word formulation sent first (81 + 7 for the engineer); workbooks, Product Master, EXT and CNV records, interface copy and artifact v32 published. |
 | 1.47 | 2026-10-01 | Claude Code (local, with James Kuo) | **Two-step daily read (§7.56)**: step 1 sends the Word formulation in about a minute (87/87 orders on 30 Sep); step 2 reads every EXT field by printed column with arithmetic, previous-day and line-total checks (30 Sep 87/87, 24 Sep 80/80 records on a bank that had not seen the day). |
