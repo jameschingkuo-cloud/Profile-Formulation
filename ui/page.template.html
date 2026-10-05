@@ -317,12 +317,12 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
       </div>
     </div>
     <div class="panel" id="gen" style="margin-top:16px">
-      <div><h2 style="font-size:24px">Generate the formulation from a schedule scan</h2>
-        <p class="muted" style="margin:4px 0 0">Drop the copier PDF of the extrusion schedule. The page reads each extrusion page's line, order and product with text recognition running in this page (nothing is uploaded; Claude reads it instead where your viewer allows images). It then gives every order the latest formulation issued for it on that line (whatever the schedule's date), the same rule as the pipeline; anything else is left for an engineer. Rows it cannot match to a schedule on file are boxed for you to check against the paper. A check, not an issue: the printed document still comes from the pipeline.</p></div>
+      <div><h2 style="font-size:24px">Generate the formulation from the schedule</h2>
+        <p class="muted" style="margin:4px 0 0">Drop the extrusion schedule either way: the system's own PDF (BPN9PFR…PDF, read exactly from its text) or the copier scan. For a scan, the page reads each extrusion page's line, order and product with text recognition running in this page (nothing is uploaded; Claude reads it instead where your viewer allows images). It then gives every order the latest formulation issued for it on that line (whatever the schedule's date), the same rule as the pipeline; anything else is left for an engineer. Rows it cannot match to a schedule on file are boxed for you to check against the paper. A check, not an issue: the printed document still comes from the pipeline.</p></div>
       <div class="genrow">
         <label class="drop" id="drop" for="scanfile">
-          <strong>Drop a schedule scan here, or click to choose it</strong>
-          <span>PDF from the copier (or page images). CNV and FRM pages in the same file are skipped.</span>
+          <strong>Drop the schedule here (system PDF or scan), or click to choose it</strong>
+          <span>The system's PDF (BPN9PFR…PDF) or the copier's scan (or page images). Converting and FRM pages are skipped.</span>
           <span class="caps" id="dropnote"></span>
           <input id="scanfile" type="file" accept="application/pdf,image/jpeg,image/png" hidden>
         </label>
@@ -687,6 +687,37 @@ function copierJpegs(buf){
   }
   return pages && out.length === pages ? out : null;
 }
+// A PDF that carries its text (James Kuo, 5 Oct 2026: "I want to be able to feed it in both way (scan and PDf doc)"): the
+// system's own extrusion report (BPN9PFR…PDF) is read from its text, exactly - no text recognition. Each record line of the
+// report is '| T | Mfg# - Ord# | Prod Code | Die | ...'; the page's line code is its 'LINE NO: SExx' and the date its Run Date.
+// -> {kind: 'ext', reads, date, run, nPages} | {kind: 'cnv'} (the converting schedule: not used here) | null (no text: a scan)
+async function textPdf(buf){
+  const L = await loadPdfJs();
+  const doc = await L.getDocument({data: buf.slice(), isEvalSupported: false}).promise;
+  const linesOf = async i => {
+    const items = (await (await doc.getPage(i)).getTextContent()).items.filter(t => t.str && t.str.trim());
+    const rows = [];
+    items.forEach(t => { const y = t.transform[5], r = rows.find(r => Math.abs(r.y - y) <= 2); r ? r.items.push(t) : rows.push({y, items: [t]}); });
+    return rows.sort((a, b) => b.y - a.y).map(r => r.items.sort((a, b) => a.transform[4] - b.transform[4]).map(t => t.str).join(' ').replace(/\s+/g, ' ').trim());
+  };
+  const first = await linesOf(1), head = first.join(' ');
+  if (/PRODUCTION INSTRUCTIONS\b/.test(head) && /Issue Date/.test(head)) return {kind: 'cnv'};
+  if (!/PRODUCTION INSTRUCTION - EXTRUSION/.test(head)) return null;
+  const reads = []; let date = '', run = '';
+  for (let i = 1; i <= doc.numPages; i++) {
+    const lines = i === 1 ? first : await linesOf(i), text = lines.join(' | ');
+    const m = /Run Date:\s*(\d{1,2})\/(\d{1,2})\/(\d{2})\s+(\d\d:\d\d:\d\d)/.exec(text);
+    if (m && !date) { date = `20${m[3]}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}`; run = m[4]; }
+    const line = (/LINE NO:\s*(SE\d\d)/.exec(text) || [])[1];
+    const orders = [];
+    lines.forEach(l => {
+      const r = /^\|\s*[A-Z]?\s*\|\s*([A-Z0-9]{7})\s*-\s*(\d{1,3})\s*\|\s*([A-Z0-9]+)\s*\|/.exec(l);
+      if (r) orders.push({order: `${r[1]}-${+r[2]}`, prod: r[3], status: 'from the PDF text', raw: l.slice(0, 60), newProduct: true});
+    });
+    if (line && orders.length) reads.push({page: String(i), line, orders, unread: []});
+  }
+  return {kind: 'ext', reads, date, run, nPages: doc.numPages};
+}
 async function* pagesOf(files){
   let n = 0;
   for (const f of files) {
@@ -842,6 +873,23 @@ async function generate(files){
   const reads = [], t0 = performance.now();
   let nPages = 0;
   try {
+    for (const f of files) {                                // the system's own PDF: its text, exactly (no text recognition)
+      if (!(f.type === 'application/pdf' || /\.pdf$/i.test(f.name))) continue;
+      const buf = new Uint8Array(await f.arrayBuffer());
+      if (copierJpegs(buf)) continue;                       // a copier scan: read below
+      say('Reading the PDF’s text…');
+      const t = await textPdf(buf);
+      if (t?.kind === 'cnv') { say(`${f.name}: the converting schedule, not used for the formulation.`); files = files.filter(x => x !== f); continue; }
+      if (t?.kind === 'ext') {
+        if (t.date) { $('#gendate').value = t.date; transNote(); }
+        lastSource = `${f.name} (system PDF, run ${t.date} ${t.run})`;
+        gpages.innerHTML = t.reads.map(r => `<span class="ext">p${r.page} ${r.line}</span>`).join('');
+        render(t.reads, t.date || date, t.nPages);
+        say(`Done in ${Math.round((performance.now() - t0) / 1000)} s: ${t.reads.reduce((a, r) => a + r.orders.length, 0)} orders on ${t.reads.length} page(s) read from the text of the system PDF (exact, no text recognition).`);
+        return;
+      }
+    }
+    if (!files.length) return;
     say(mode === 'claude' ? 'Rendering the pages…' : 'Rendering the pages and starting the text reader…');
     if (mode === 'ocr') { await loadTess(); await glyphBank(); }
     let batch = [];
@@ -898,6 +946,7 @@ function lookup(line, order, prod, date){
   return {how: 'exception', why: 'New order on this line: no formula issued for it before'};
 }
 const STATUS_CHIP = {
+  'from the PDF text': () => '<span class="chip ok" title="Read from the text of the system PDF">PDF text</span>',
   'matched to schedule history': o => `<span class="chip var" title="Read as ${esc(o.raw || '')}">matched to history</span>`,
   'read by both readers': o => `<span class="chip var" title="Read as ${esc(o.raw || '')}">new: both readers agree</span>`,
   'new product: both readers agree': o => `<span class="chip warn" title="Read as ${esc(o.raw || '')}">new product: both readers agree</span>`,

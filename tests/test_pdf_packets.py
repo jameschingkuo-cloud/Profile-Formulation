@@ -47,3 +47,16 @@ def test_the_packet_is_what_the_pdfs_give():
     pk = json.loads(PK.read_text(encoding='utf-8'))
     assert E.ext_pages(EXT_PDF)[0] == pk['ext']
     assert C.cnv_pages(CNV_PDF) == pk['cnv']
+
+
+INTAKE = [(Path(r'C:/Users/JamesKuo/Downloads/BPN9PFR$_Z7XTIDbA.PDF'), ('ext-pdf', '2026-10-05')), (EXT_PDF, ('ext-pdf', '2026-10-02')),
+          (CNV_PDF, ('cnv-pdf', '2026-10-02')), (Path(r'C:/Users/JamesKuo/Downloads/doc05268320260930114819.pdf'), ('scan', '2026-09-30'))]
+
+
+@pytest.mark.parametrize('pdf,expected', INTAKE)
+def test_intake_tells_a_scan_from_a_system_pdf(pdf, expected):
+    """James Kuo, 5 Oct 2026: "I want to be able to feed it in both way (scan and PDf doc) and have it able to process"."""
+    if not pdf.exists():
+        pytest.skip(f'{pdf.name} is not on this PC')
+    import intake
+    assert intake.kind(pdf) == expected

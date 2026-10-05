@@ -248,6 +248,9 @@ document it in your MD so other can learn from you?"*. The page is https://claud
   console**, even when only the data changed: serve the scratchpad copy on a free port (another session may already be
   using 8765), add `?v=n` to the address so the browser does not show a cached copy, and confirm there are no errors and
   that the tabs and line buttons respond.
+- Escapes in page code: patches sent through a shell heredoc turned JavaScript `'\n'` and `\b` into a real line break and
+  a backspace character, twice on 5 Oct, so the page would not load. Change page and Python code with the Edit tool,
+  and syntax-check the built page's scripts with `node --check` before publishing.
 
 **Publishing a new version** (5 Oct 2026)
 - Publish from the scratchpad copy: copy `out/profile-formulation.html` to `<scratchpad>/ui/profile-formulation.html` and
@@ -262,6 +265,21 @@ document it in your MD so other can learn from you?"*. The page is https://claud
   3. Publish again.
 - Checking the saved file only by script and resending is refused a second time (*"identical content already refused"*).
   The saved file must be opened with the Read tool. If someone edited the page in between, merge their changes first.
+
+## One door for a day's schedule: scan or PDF (5 Oct 2026)
+
+James Kuo, 5 Oct 2026: *"make sure you can read PDF word file as well. I want to be able to feed it in both way (scan and
+PDf doc) and have it able to process"*. Start every day with
+`python daily/intake.py <file> [<file> ...] [--date YYYY-MM-DD] [--step 1|2]`. It looks at each file's content, not its name:
+- **System extrusion report** (`BPN9PFR$_*.PDF`, text): exact. Step 1 builds the EXT part (`packet_from_pdf.py`) and then
+  the Word formulation. The date is its Run Date.
+- **Converting schedule** (`Die Cutting Schedule MM-DD.pdf`, text): step 2 adds the converting pages.
+- **Copier scan** (pictures, no text): step 1 runs `stage1_formulation.py`; step 2 runs `stage2_records.py`, a draft to
+  settle. The date comes from `--date` or the scan time in the copier's file name.
+If both a report and a scan of the same day come in, the report is used for EXT; the scan adds only its handwriting.
+The interface page's drop box takes the same three. The system PDF is read from its text in the page (pdf.js text, exact,
+under a second); the converting PDF gets "not used for the formulation"; a scan gets the in-page text reader as before.
+Tested 5 Oct: report 81/81 (68 + 13 for the engineer, the same as the pipeline); 30 Sep scan 87/87 in 69 s.
 
 ## When the day comes as the system's own PDFs (2 Oct 2026)
 
