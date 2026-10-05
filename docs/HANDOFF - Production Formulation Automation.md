@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.47 (1 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.48 (5 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1875,6 +1875,26 @@ base update (Production Record)"* - *"this will reduce the wait time"*.
 - Output `work/stage2/packet_<d>.json` with notes in `unclear`: settled at zoom, CNV/FRM pages added by eye (not read by
   the reader yet), then saved to `data/packets` and the Daily run continues (CLAUDE.md). Next: the converting pages.
 
+## 7.57 Daily run 2 Oct 2026 from the system's own PDFs (run 5 Oct 2026)
+
+James sent the day as two PDFs instead of a scan: `BPN9PFR$_Z7Ubmp3i.PDF` (extrusion report, run 10/02/26 13:14:34, 18
+pages) and `Die Cutting Schedule 10-02.pdf` (converting schedule printed from Excel, 11 pages). Both carry their text.
+- **Step 1** (`daily/packet_from_pdf.py --ext`): 88 records from the report text, every line equal to its printed total,
+  Final Total 6,325,199 PCs / 21,541,117 LBs. `FRM Formulation 2026-10-02.docx` (DRAFT): 81 orders as last issued on
+  their line, 7 new for the engineer - H68A090-1 (SE25; same product as H66A116-1, FU0011WB5 / FUA011WB5), H69A330-6
+  RPP30GS130 and H69A330-10 RPP30BD58 (SE43, never scheduled; 2 new Product Master rows), H69A350-1...-4 RBP33EB.. (SE61,
+  ran Jan-Aug 2026, no Tech page on file). Sent to James 2 Oct.
+- **Step 2** (`daily/cnv_from_pdf.py`, `--cnv`): 64 converting rows on 11 pages. Columns are the table's own lines named
+  by their headers (the slitter page's extra 'Extrusion Start' column -> semi_start); each cell's whole text comes from the
+  PDF's text-drawing operations, so a cell the paper cuts off reads whole (H68A127-1 Color 'WB GT WB', printed 'B GT V';
+  H68A170-2 Semi-Size '51 4/16 X 73 12/16'); notes and banners follow the transcriptions' form (done notes, a cell's second
+  line, 'Line directly above' / 'Lines directly below', banners outside the table). Against the 30 Sep transcription of the
+  same orders: 1,072 of 1,080 fixed fields identical, the 8 others where the PDF is more exact.
+- **Published** (same six High issues as 29-30 Sep, the SD22 partition orders; none new): EXT and CNV workbooks
+  2026-10-02, Product Master (2,667), Extrusion Production Record (+88), Converting Production Record (+64; no FRM rows: no
+  Tech pages), interface copy, artifact v32. Read Me notes name the PDFs (`cfg` keys `source`, `transcribed_note`, new in
+  `build_xlsx.py`). Tests `tests/test_pdf_packets.py`.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -2003,6 +2023,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.48 | 2026-10-05 | Claude Code (local, with James Kuo) | **Daily run 2 Oct from the system PDFs (§7.57)**: EXT from the AIX report text, CNV from the Excel schedule's PDF (`packet_from_pdf.py`, `cnv_from_pdf.py`); Word formulation sent first (81 + 7 for the engineer); workbooks, Product Master, EXT and CNV records, interface copy and artifact v32 published. |
 | 1.47 | 2026-10-01 | Claude Code (local, with James Kuo) | **Two-step daily read (§7.56)**: step 1 sends the Word formulation in about a minute (87/87 orders on 30 Sep); step 2 reads every EXT field by printed column with arithmetic, previous-day and line-total checks (30 Sep 87/87, 24 Sep 80/80 records on a bank that had not seen the day). |
 | 1.46 | 2026-10-01 | Claude Code (local, with James Kuo) | **System PDF as ground truth (§7.55)**: 23/24/30 Sep checked and corrected (reissued); scan reader special instructions 70% -> 96-100% (printed-line library); logic checks repair failed reads (every key field right on 249 rows). |
 | 1.45 | 2026-09-30 | Claude Code (local, with James Kuo) | **Daily run 30 Sep (§7.54)**: the 13 engineer rows checked against history (6 new products, 7 missing formulas); Tech's issue matches every drafted order; packet, workbooks, records, PM and FM (Changes 224-263) published; F1203K rule. |

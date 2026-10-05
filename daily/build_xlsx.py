@@ -20,11 +20,12 @@ import os
 PKT = os.environ.get('PKT_DATE', '2026-09-23')
 _pd = datetime.date.fromisoformat(PKT)
 import load as _load
-SRC = (os.environ.get('PKT_SRC') or (_load._PK or {}).get('source_scan') or 'scan name not recorded (set PKT_SRC)') + f' (scan of the {_pd.day} {_pd:%b %Y} production packet)'
-if (_load._PK or {}).get('frm_source_scan'):   # FRM pages scanned separately (28 Sep 2026)
-    SRC += f'; FRM pages: {_load._PK["frm_source_scan"]} (separate scan)'
 _cfg = os.environ.get('PKT_CFG') or str(_pl.Path(__file__).resolve().parent / 'cfg' / f'cfg_{PKT}.json')
 EXTRA = json.load(open(_cfg, encoding='utf-8')) if os.path.exists(_cfg) else {}
+SRC = EXTRA.get('source') or ((os.environ.get('PKT_SRC') or (_load._PK or {}).get('source_scan') or 'scan name not recorded (set PKT_SRC)')
+                              + f' (scan of the {_pd.day} {_pd:%b %Y} production packet)')   # 'source': a day sent as PDFs (2 Oct 2026)
+if (_load._PK or {}).get('frm_source_scan'):   # FRM pages scanned separately (28 Sep 2026)
+    SRC += f'; FRM pages: {_load._PK["frm_source_scan"]} (separate scan)'
 F = 'Arial'
 HDR = PatternFill('solid', fgColor='1F3864'); HFONT = Font(name=F, bold=True, color='FFFFFF', size=10)
 BODY = Font(name=F, size=10); BOLD = Font(name=F, size=10, bold=True)
@@ -79,7 +80,7 @@ def issues_sheet(wb, docs):
 
 today = os.environ.get('RUN_DATE') or datetime.date.today().isoformat()
 common = [f'Source: {SRC}.',
-          f'Transcribed {today} from the page images (each field read by eye at high zoom), then cross-checked by script. '
+          EXTRA.get('transcribed_note', f'Transcribed {today} from the page images (each field read by eye at high zoom), then cross-checked by script. ').replace('{today}', today)
           + EXTRA.get('ext_crosscheck', 'Key fields of all 82 extrusion orders also match the independently verified set in ext_truth_2026-09-23.csv.'),
           'Values are copied exactly as printed (text columns). Number columns are converted from the printed text for checking; '
           'the printed text is kept beside them where formatting matters (fractions, commas).',

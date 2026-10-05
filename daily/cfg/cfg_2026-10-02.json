@@ -1,0 +1,8 @@
+{
+ "source": "BPN9PFR$_Z7Ubmp3i.PDF (the system's own extrusion report, run 10/02/26 13:14:34) and Die Cutting Schedule 10-02.pdf (the converting schedule printed from Excel, issue date 10/2/2026), both sent in chat 2 Oct 2026",
+ "transcribed_note": "Built {today} from the two PDFs' own text (daily/packet_from_pdf.py, daily/cnv_from_pdf.py): nothing OCR'd or transcribed by eye; every record, cut row, cell and instruction as printed. ",
+ "ext_crosscheck": "Every extrusion line adds up to its printed line total and the Final Total equals all 88 rows. The PDFs carry no handwriting: pallets done are the printed 'PLTS DONE' and 'N DONE' notes.",
+ "final_note": ".",
+ "weight_note": ".",
+ "ext_pages_note": "PDF pages 1-18 are report pages 1-18 (the 'Scan Page' columns give the PDF page). Converting: the Excel schedule's 11 pages, 'Page: n of 11'. No Tech FRM pages today."
+}

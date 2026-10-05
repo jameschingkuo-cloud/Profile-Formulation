@@ -209,6 +209,19 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 10. Run `python -m pytest -q`, then commit the packet JSON, the manual issues and `data/published_manifest.json`.
 11. Handoff: add the day's notes (as in §7.10) and a revision-history row.
 
+## When the day comes as the system's own PDFs (2 Oct 2026)
+
+James sent `BPN9PFR$_*.PDF` (the AIX extrusion report itself) and `Die Cutting Schedule MM-DD.pdf` (the converting
+schedule printed from Excel) instead of a scan. Both carry their text: nothing is OCR'd or transcribed by eye.
+1. Step 1, formulation first: `python daily/packet_from_pdf.py <date> --ext <BPN9PFR pdf>` writes the packet's EXT part
+   (refused unless every line adds up to its printed total), then pre-flight, `resolve.py`, `auger_check.py`,
+   `render_frm.py` and send the Word file.
+2. Step 2: `python daily/packet_from_pdf.py <date> --cnv <Die Cutting Schedule pdf>` adds the converting pages
+   (`daily/cnv_from_pdf.py`: columns from the table's own lines, each cell's whole text from the PDF's drawing operations,
+   also where the paper cuts it off; notes under / above a record and banners as the transcriptions record them).
+   Then the Daily run from step 3 (manual issues, `cfg_<date>.json` with `source` and `transcribed_note` for the Read Me,
+   workbooks, Product Master, publish, records, interface copy). No handwriting on a PDF: 'handwritten' stays empty.
+
 ## Print formulation for the floor (an engineer sends the schedule scan)
 
 James, 29 Sep 2026: *"operator will use the paper copy. So whenever i or any other engineer scan you the production
