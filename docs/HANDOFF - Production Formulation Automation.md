@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.48 (5 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.49 (5 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1895,6 +1895,23 @@ pages) and `Die Cutting Schedule 10-02.pdf` (converting schedule printed from Ex
   Tech pages), interface copy, artifact v32. Read Me notes name the PDFs (`cfg` keys `source`, `transcribed_note`, new in
   `build_xlsx.py`). Tests `tests/test_pdf_packets.py`.
 
+## 7.58 Lessons from the interface artifact, written down (5 Oct 2026)
+
+James: *"remember you had some trouble with document uploading into artificat? Can you make sure you document it in your
+MD so other can learn from you?"*. CLAUDE.md now has a section, "The interface artifact: what went wrong before". It
+covers:
+- **Uploads.** The drop box was blocked because the page sent images to Claude, which James's account does not allow
+  for an artifact. The page now reads the scan itself.
+- **Data files.** An artifact page can load CDN scripts but cannot fetch data, so the language data and the glyph bank
+  ship as scripts (`eng-data.js`, `glyph-bank.js`).
+- **Copier scans.** pdf.js hung on them inside the frame, so the page takes each page's JPEG straight out of the PDF.
+- **Downloads.** Downloads started by automation are blocked.
+- **Chrome testing.** The page is served from 127.0.0.1, the PDF is handed over with DataTransfer, and the frame's
+  token address is never copied.
+- **Publishing (new on 5 Oct).** In a new or compacted session the first publish is refused until the live version has
+  been read: open the saved copy with the Read tool, confirm it is the last build plus the host's wrapper, then publish
+  again. Resending without reading it is refused a second time.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -2023,6 +2040,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.49 | 2026-10-05 | Claude Code (local, with James Kuo) | **Interface artifact lessons (§7.58)**: what went wrong with uploads, data files, copier PDFs, downloads, Chrome testing and republishing, written into CLAUDE.md for the next session. |
 | 1.48 | 2026-10-05 | Claude Code (local, with James Kuo) | **Daily run 2 Oct from the system PDFs (§7.57)**: EXT from the AIX report text, CNV from the Excel schedule's PDF (`packet_from_pdf.py`, `cnv_from_pdf.py`); Word formulation sent first (81 + 7 for the engineer); workbooks, Product Master, EXT and CNV records, interface copy and artifact v32 published. |
 | 1.47 | 2026-10-01 | Claude Code (local, with James Kuo) | **Two-step daily read (§7.56)**: step 1 sends the Word formulation in about a minute (87/87 orders on 30 Sep); step 2 reads every EXT field by printed column with arithmetic, previous-day and line-total checks (30 Sep 87/87, 24 Sep 80/80 records on a bank that had not seen the day). |
 | 1.46 | 2026-10-01 | Claude Code (local, with James Kuo) | **System PDF as ground truth (§7.55)**: 23/24/30 Sep checked and corrected (reissued); scan reader special instructions 70% -> 96-100% (printed-line library); logic checks repair failed reads (every key field right on 249 rows). |

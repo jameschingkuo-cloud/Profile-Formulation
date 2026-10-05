@@ -205,9 +205,56 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
 9. Interface copy (James, 29 Sep 2026: *"lets keep a copy create a separate folder in the fomulation record for now to
    hold these file. No Tech sign off require"*): `PKT_DATE=<date> python ui/build.py`, then
    `python publish.py "Profile Formulation <date>.html"` (Daily Formulation Report/Interface Copy) and republish the
-   artifact from `out/profile-formulation.html`.
+   artifact from `out/profile-formulation.html` (read "The interface artifact" below first).
 10. Run `python -m pytest -q`, then commit the packet JSON, the manual issues and `data/published_manifest.json`.
 11. Handoff: add the day's notes (as in §7.10) and a revision-history row.
+
+## The interface artifact: what went wrong before (read before changing, testing or publishing it)
+
+James, 5 Oct 2026: *"remember you had some trouble with document uploading into artificat? Can you make sure you
+document it in your MD so other can learn from you?"*. The page is https://claude.ai/artifact/1kSFUwuS1GUeiG13twAw5j
+(built by `ui/build.py`; handoff §7.46, §7.49, §7.53).
+
+**Uploading a schedule PDF into the page (29 Sep 2026)**
+- *The drop box went grey with a stop-sign cursor.* The page sent page images to Claude (`sample` capability), and
+  James's account does not let an artifact send images to Claude, in Chrome or in the app. The reason showed only in
+  small text beside the box, cut off in his screenshot. First fix: say inside the box why it is unavailable, and do not
+  block on a failed capability check (`5bfdad7`). Real fix: the page reads the scan itself (Tesseract 5 through
+  tesseract.js-core, plus the plant's glyph bank). Nothing is uploaded anywhere, and it works for anyone the page is
+  shared with. Do not build a feature that depends on sending images to Claude from the page.
+- *An artifact page may load scripts from the allowed CDNs (jsDelivr ...) but cannot fetch data files.* So Tesseract's
+  language data ships as a script, `eng-data.js` (gzip + base64), and the glyph bank as `glyph-bank.js`, both published
+  next to the page with the Artifact tool's `files`. Files left out of a later publish are kept: send them again only when
+  they change. `eng-data.js` is built once (tessdata_fast) and does not change; `glyph-bank.js` changes with
+  `scan_reader/glyph_bank.npz`.
+- *pdf.js hung drawing the copier's scans inside the artifact frame.* A copier PDF is one JPEG per page, so the page takes
+  the JPEGs straight out of the file and never renders the PDF.
+- *Downloads.* The Word file leaves the page through the declared `downloads` capability (the viewer confirms each save).
+  Chrome blocks downloads started by automation, so the first real Save prompt is the user's; to test the bytes, the page
+  posted the file to a receiver on 127.0.0.1.
+
+**Testing it in Chrome** (after every reader change; memory "test-reader-in-chrome")
+- The artifact runs in a sandboxed frame. Automation cannot reach its file input, and the frame's address carries a
+  private access token: never copy that address anywhere. Serve the built page (the `out/` files copied to the scratchpad)
+  with `python -m http.server` on 127.0.0.1, together with a copy of the PDF.
+- The upload tool takes files only from this session's folders and caps them at 10 MB. Hand the PDF to the page's file
+  input from inside the page instead: fetch → `File` → `DataTransfer`.
+- Python tests and the parity test do not catch page-only errors. Artifact v28 shipped broken (a variable used before it
+  was set), and only the Chrome run caught it.
+
+**Publishing a new version** (5 Oct 2026)
+- Publish from the scratchpad copy: copy `out/profile-formulation.html` to `<scratchpad>/ui/profile-formulation.html` and
+  publish that path with `url` set to the link above. Omit `capabilities` so the declared `sample` and `downloads` carry
+  forward.
+- In a new session, or after the conversation was compacted, the first publish is refused: *"You hadn't viewed the live
+  version"*. The tool saves the live source to a `tool-results/artifact-*.html` file.
+  1. Read that file with the Read tool, using offset/limit: one line near 350 holds the day's data (300,000-400,000
+     characters).
+  2. Compare it with the last build. The live copy is the last build plus the wrapper the host adds (doctype, head, a
+     small style block), nothing else.
+  3. Publish again.
+- Checking the saved file only by script and resending is refused a second time (*"identical content already refused"*).
+  The saved file must be opened with the Read tool. If someone edited the page in between, merge their changes first.
 
 ## When the day comes as the system's own PDFs (2 Oct 2026)
 
