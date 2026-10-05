@@ -370,16 +370,19 @@ const issuesFor = code => D.issues.filter(i => i.sev !== 'Info' && (i.line || ''
 
 // ---- header + strip
 const high = D.issues.filter(i => i.sev === 'High').length;
-$('#sub').innerHTML = `Packet ${fmtDate(D.day)} 2026 · <span class="mono">${esc(D.scans.packet)}</span> + FRM <span class="mono">${esc(D.scans.frm)}</span>`;
+const DRAFT = D.stats.source === 'draft';      // no Tech FRM pages for the day yet: formulation as last issued (2 Oct 2026)
+$('#sub').innerHTML = `Packet ${fmtDate(D.day)} 2026 · <span class="mono">${esc(D.scans.packet)}</span>` + (DRAFT
+  ? ' · no Tech FRM pages yet: formulation as last issued on each line (draft)' : ` + FRM <span class="mono">${esc(D.scans.frm)}</span>`);
 $('#strip').innerHTML = [
-  ['acc', D.stats.orders, 'orders on 13 lines', 'every one has a formula on its line page'],
-  ['ok', `${D.stats.draft_match}/${D.stats.drafted}`, 'draft matched Tech', `${D.stats.exceptions} new orders went to an engineer`],
+  ['acc', D.stats.orders, `orders on ${D.stats.lines || D.lines.length} lines`, DRAFT ? `${D.stats.exceptions} new on their line, for an engineer` : 'every one has a formula on its line page'],
+  DRAFT ? ['ok', `${D.stats.drafted}/${D.stats.orders}`, 'orders with a formulation', 'as last issued on their line; Tech has not issued the day yet']
+        : ['ok', `${D.stats.draft_match}/${D.stats.drafted}`, 'draft matched Tech', `${D.stats.exceptions} new orders went to an engineer`],
   ['crit', high, 'material issues', 'formulas using materials IWPFT062 does not allow'],
   ['ok', D.master.changes, 'unlogged master changes', `pre-flight clean · accepted ${D.master.accepted}`],
 ].map(([c, b, t, s]) => `<div class="${c}"><span class="caps">${t}</span><b>${b}</b><small>${s}</small></div>`).join('');
 
 // ---- line board
-let current = localGet('line') || D.lines[0].code;
+let current = localGet('line') || D.lines[0]?.code;
 function renderRail(){
   $('#rail').innerHTML = D.lines.map(l => {
     const n = l.groups.reduce((a, g) => a + g.orders.length, 0);
@@ -415,6 +418,7 @@ function weightBars(fs){
 }
 function renderLine(){
   const l = D.lines.find(x => x.code === current);
+  if (!l) { $('#line').innerHTML = '<p class="muted">No line on this day’s schedule.</p>'; return; }
   const n = l.groups.reduce((a, g) => a + g.orders.length, 0);
   const iss = issuesFor(l.code);
   $('#line').innerHTML = `
@@ -457,9 +461,9 @@ $('#mkv').innerHTML = [['Formulas', D.master.formulas], ['Line settings', D.mast
 // ---- daily run
 $('#proto').textContent = `Copy of the published files after the ${fmtDate(D.day)} run (built ${D.built}); refreshed after each daily run, not live.`;
 $('#flow').innerHTML = [
-  ['done', 'Scan', `Schedule ${D.scans.packet}; FRM ${D.scans.frm}`],
+  ['done', 'Scan', `Schedule ${D.scans.packet}; ${DRAFT ? 'no Tech FRM pages yet' : 'FRM ' + D.scans.frm}`],
   ['done', 'Transcribe + check', `${D.stats.orders} orders; glyph reader cross-check; line totals tie`],
-  ['done', 'Draft', `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
+  ['done', 'Draft', DRAFT ? `${D.stats.drafted} orders as last issued; ${D.stats.exceptions} exceptions for an engineer` : `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
   ['done', 'Publish', 'EXT, CNV, FRM workbooks; Product Master merged'],
   ['done', 'Records', 'Appended to the three history records'],
   ['done', 'Interface copy', 'Saved to Daily Formulation Report \ Interface Copy (no Tech sign-off: James, 29 Sep 2026)'],
@@ -539,10 +543,11 @@ function setRows(f, weight){
     }).join('');
   }).join('');
 }
-let opLine = localGet('opline') || D.lines[0].code;
+let opLine = localGet('opline') || D.lines[0]?.code;
 function renderOp(){
   $('#oppick').innerHTML = D.lines.map(l => `<button type="button" data-l="${l.code}" aria-pressed="${l.code === opLine}"><span class="n">Line ${l.no}</span><span class="c">${l.code}</span></button>`).join('');
   const l = D.lines.find(x => x.code === opLine) || D.lines[0];
+  if (!l) { $('#opline').innerHTML = '<p class="muted">No line on this day’s schedule.</p>'; return; }
   const weight = l.dosing === 'WEIGHT';
   const watch = /watch|weight|range|void\s*form|corn\s*box|roll|check/i;
   $('#opline').innerHTML = `<div class="ophead"><div><div class="caps">Line ${l.no}${l.ac ? ' · ' + esc(l.ac) : ''} · ${fmtDate(D.day)}</div><h2>${l.code} · ${l.sched.length} order${l.sched.length === 1 ? '' : 's'}</h2>
@@ -558,7 +563,7 @@ function renderOp(){
         ${o.si ? `<div class="si ${watch.test(o.si) ? 'watch' : ''}">${esc(o.si)}</div>` : ''}
         ${g ? `<div class="forms">${g.formulas.map((f, i, all) => `<div class="form ${i === 0 ? 'first' : ''}"><div class="fhead"><span class="when">${whenLabel(f, i, all)}</span><span class="code">${esc(f.code)}</span></div>
             ${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></div>`).join('')}</div>`
-          : `<div class="noform">No formulation on the FRM for this order. Ask Tech before starting.</div>`}
+          : `<div class="noform">${DRAFT ? 'New on this line: no formulation issued for it yet. An engineer completes it; ask before starting.' : 'No formulation on the FRM for this order. Ask Tech before starting.'}</div>`}
       </article>`; }).join('')}</div>
     ${l.notes.length ? `<div class="foot" style="margin-top:12px">${l.notes.map(esc).join('<br>')}</div>` : ''}`;
 }
@@ -1170,9 +1175,9 @@ function show(v){
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
 function localGet(k){ try { return localStorage.getItem('pf-' + k); } catch { return null; } }
 function localSet(k, v){ try { localStorage.setItem('pf-' + k, v); } catch {} }
-if (!D.lines.some(l => l.code === current)) current = D.lines[0].code;
+if (!D.lines.some(l => l.code === current)) current = D.lines[0]?.code;
 renderRail(); renderLine();
-if (!D.lines.some(l => l.code === opLine)) opLine = D.lines[0].code;
+if (!D.lines.some(l => l.code === opLine)) opLine = D.lines[0]?.code;
 renderOp();
 const VIEWS = ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust'];
 const hv = (location.hash || '').slice(1); show(VIEWS.includes(hv) ? hv : (VIEWS.includes(localGet('view')) ? localGet('view') : 'op'));

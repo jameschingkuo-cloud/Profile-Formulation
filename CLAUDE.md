@@ -241,6 +241,13 @@ document it in your MD so other can learn from you?"*. The page is https://claud
   input from inside the page instead: fetch → `File` → `DataTransfer`.
 - Python tests and the parity test do not catch page-only errors. Artifact v28 shipped broken (a variable used before it
   was set), and only the Chrome run caught it.
+- Artifact v32 (2 Oct data) loaded but no button worked (James, 5 Oct 2026: *"i cant click any buttom"*). The page built
+  its lines from Tech's FRM pages, the day had none, and the script stopped at load on `D.lines[0].code`. Now a day
+  without Tech pages shows the FRM Draft (`ui/build.py` `draft_lines`, the same formulation as the Word file), and the
+  page no longer assumes a line exists. **Before every publish, open the built page locally and read the browser
+  console**, even when only the data changed: serve the scratchpad copy on a free port (another session may already be
+  using 8765), add `?v=n` to the address so the browser does not show a cached copy, and confirm there are no errors and
+  that the tabs and line buttons respond.
 
 **Publishing a new version** (5 Oct 2026)
 - Publish from the scratchpad copy: copy `out/profile-formulation.html` to `<scratchpad>/ui/profile-formulation.html` and
