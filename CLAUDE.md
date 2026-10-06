@@ -281,6 +281,27 @@ The interface page's drop box takes the same three. The system PDF is read from 
 under a second); the converting PDF gets "not used for the formulation"; a scan gets the in-page text reader as before.
 Tested 5 Oct: report 81/81 (68 + 13 for the engineer, the same as the pipeline); 30 Sep scan 87/87 in 69 s.
 
+## The scheduled email run (6 Oct 2026)
+
+James Kuo, 6 Oct 2026: *"check my email everyday for schedule from JVallejo@wpjk.inteplast.com. usually there are two,
+one for extrusion and one for converting"*; files to Downloads; "Full run, stop on new High"; every 30 min, 11:00-16:00
+on weekdays. The scheduled task `daily-schedule-run` (Claude app, runs only while the app is open) does:
+1. `powershell -ExecutionPolicy Bypass -File daily/fetch_schedule_mail.ps1 [-Date ..]`: the emails from Johanna Vallejo
+   ("SCHEDULE MM/DD" with `BPN9PFR$_*.PDF`; "DIE CUT SCHEDULE" with `Die Cutting Schedule MM-DD.pdf`) and their PDF
+   attachments saved to Downloads. The Microsoft 365 connector finds the emails but cannot return an attachment's bytes
+   ("Binary attachment - content cannot be returned inline"), and the browser pane is not signed in to Outlook (a sign-in
+   is never typed by Claude). So the script goes through the classic Outlook on James's PC over COM (profile "Outlook"; it
+   starts in the background, catches up in about 10 s). Same bytes already there = left alone; a re-sent file under the
+   same name is saved beside it as `<name> (HHmm).pdf`. Nothing is deleted, moved or sent.
+2. `python daily/schedule_status.py <date>` -> `next:` wait-ext / step1 / step1-resent / wait-cnv / step2 /
+   step2-resent / daily-run / interface / done / ask-james. It looks only at the schedule PDFs by those names, never at the
+   copier's `doc*.pdf` scans or anything else in Downloads.
+3. step1: `python daily/intake.py <ext pdf>` (pre-flight first), send the Word formulation to James. step2:
+   `python daily/intake.py <cnv pdf> --step 2`, then the Daily run from step 3. Before publishing,
+   `python daily/new_highs.py <date>`: exit 1 = a High the previous day did not have -> stop, tell James, publish nothing.
+   "No formula to propose" is not counted (the Word file's ENGINEER TO COMPLETE rows, reported with step 1).
+4. A re-sent schedule after the day was published (`ask-james`): records stay as issued; tell James, change nothing.
+
 ## When the day comes as the system's own PDFs (2 Oct 2026)
 
 James sent `BPN9PFR$_*.PDF` (the AIX extrusion report itself) and `Die Cutting Schedule MM-DD.pdf` (the converting

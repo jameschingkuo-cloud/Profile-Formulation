@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.50 (5 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.51 (6 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -1927,6 +1927,22 @@ draft as the day's lines; lessons in CLAUDE.md ("The interface artifact"); Share
   Master (2,668), Extrusion record +81, Converting record +63, interface copy, artifact v35. High issues: the known SD22
   partition ones only.
 
+## 7.60 The schedule run from email; 6 Oct step 1 (6 Oct 2026)
+
+James: *"check my email everyday for schedule from JVallejo@wpjk.inteplast.com. usually there are two, one for extrusion
+and one for converting"*; files to Downloads; "Full run, stop on new High"; *"Every 30 min, 11:00-16:00"* (weekdays).
+The Microsoft 365 connector finds the emails but cannot return an attachment ("Binary attachment - content cannot be
+returned inline"), and the browser pane is not signed in to Outlook. The attachments come through the classic Outlook on
+James's PC over COM (`daily/fetch_schedule_mail.ps1`; it starts Outlook in the background). `daily/schedule_status.py`
+says what is left for a date; `daily/new_highs.py` compares the day's High issues with the previous day's ("No formula to
+propose" not counted). Scheduled task `daily-schedule-run` in the Claude app (runs while the app is open); CLAUDE.md
+"The scheduled email run". Artifact v36 republished on James's request (comment monitor had stopped).
+- **6 Oct step 1** (BPN9PFR$_Z7Y53NYt.PDF from "SCHEDULE 10/06", run 13:42:43): 81 EXT records on 13 lines, every line
+  equal to its printed total; pre-flight 0 changes, IWPFT062 0 differences. Word formulation sent: 65 orders as last
+  issued + 16 for the engineer. New since 5 Oct: H66A005-1 DPP50WB307 (SE21; GSM 1,052 printed, its instruction gives
+  970-1000), H69A183-1/-2/-3 RPP30WB176/883/874 (SE43). Gone: H67A164-1, H69A031-3, H69A066-2, H69A066-5. The converting
+  schedule for 6 Oct had not come by 13:15.
+
 ## 8. Automation plan: one step at a time
 
 | Phase | What | Needs |
@@ -2055,6 +2071,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.51 | 2026-10-06 | Claude Code (local, with James Kuo) | **Schedule run from email (§7.60)**: schedule PDFs fetched from Johanna Vallejo's emails through Outlook, status and new-High checks, scheduled task every 30 min 11:00-16:00 weekdays; 6 Oct step 1 (81 orders, 16 for the engineer). |
 | 1.50 | 2026-10-05 | Claude Code (local, with James Kuo) | **Scan or PDF through one door; 5 Oct run (§7.59)**: `daily/intake.py` and the page's drop box take the system PDF (exact text) or a scan; page fix for days without Tech pages (v33); 5 Oct published (81 EXT, 63 CNV), artifact v35. |
 | 1.49 | 2026-10-05 | Claude Code (local, with James Kuo) | **Interface artifact lessons (§7.58)**: what went wrong with uploads, data files, copier PDFs, downloads, Chrome testing and republishing, written into CLAUDE.md for the next session. |
 | 1.48 | 2026-10-05 | Claude Code (local, with James Kuo) | **Daily run 2 Oct from the system PDFs (§7.57)**: EXT from the AIX report text, CNV from the Excel schedule's PDF (`packet_from_pdf.py`, `cnv_from_pdf.py`); Word formulation sent first (81 + 7 for the engineer); workbooks, Product Master, EXT and CNV records, interface copy and artifact v32 published. |
