@@ -288,7 +288,9 @@ one for extrusion and one for converting"*; files to Downloads; "Full run, stop 
 on weekdays. The scheduled task `daily-schedule-run` (Claude app, runs only while the app is open) does:
 1. `powershell -ExecutionPolicy Bypass -File daily/fetch_schedule_mail.ps1 [-Date ..]`: the emails from Johanna Vallejo
    ("SCHEDULE MM/DD" with `BPN9PFR$_*.PDF`; "DIE CUT SCHEDULE" with `Die Cutting Schedule MM-DD.pdf`) and their PDF
-   attachments saved to Downloads. The Microsoft 365 connector finds the emails but cannot return an attachment's bytes
+   attachments saved to Downloads. James's Outlook rule "Move all messages from Johanna Vallejo to Production Schedule"
+   puts them in `Inbox\Complete\Production Schedule` (James, 6 Oct 2026: *"I move the email to new folder and set new rule
+   where is will always be in that folder"*); the script looks there, then in the Inbox for one not moved yet. The Microsoft 365 connector finds the emails but cannot return an attachment's bytes
    ("Binary attachment - content cannot be returned inline"), and the browser pane is not signed in to Outlook (a sign-in
    is never typed by Claude). So the script goes through the classic Outlook on James's PC over COM (profile "Outlook"; it
    starts in the background, catches up in about 10 s). Same bytes already there = left alone; a re-sent file under the

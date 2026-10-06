@@ -5,27 +5,38 @@
 #
 #   powershell -ExecutionPolicy Bypass -File daily/fetch_schedule_mail.ps1 [-Date 2026-10-06] [-WaitSeconds 60]
 #
+# Where the emails are: James's Outlook rule "Move all messages from Johanna Vallejo to Production Schedule" (6 Oct 2026:
+# "I move the email to new folder and set new rule where is will always be in that folder") puts them in
+# Inbox\Complete\Production Schedule. The Inbox is looked at too, for one the rule has not moved yet.
 # Only PDF attachments of emails from the sender received on that date. A file already in Downloads with the same bytes
 # is left as it is; a different file under the same name (a re-sent schedule) is saved beside it as "<name> (HHmm).pdf".
 # Nothing is deleted, moved or sent. One line per attachment: status | file | subject | received.
-param([string]$Date = (Get-Date -Format 'yyyy-MM-dd'), [int]$WaitSeconds = 60, [string]$Sender = 'VALLEJO')
+param([string]$Date = (Get-Date -Format 'yyyy-MM-dd'), [int]$WaitSeconds = 60, [string]$Sender = 'VALLEJO',
+      [string]$Folder = 'Complete\Production Schedule')
 
 $day = [datetime]::ParseExact($Date, 'yyyy-MM-dd', $null)
 $dl = Join-Path $env:USERPROFILE 'Downloads'
 $ol = New-Object -ComObject Outlook.Application
 $ns = $ol.GetNamespace('MAPI')
 $inbox = $ns.GetDefaultFolder(6)
+$folders = @()
+try { $f = $inbox; foreach ($n in $Folder.Split('\')) { $f = $f.Folders.Item($n) }; $folders += $f }
+catch { "warning | | folder Inbox\$Folder not found (rule changed?): looking in the Inbox only" }
+$folders += $inbox
 try { $ns.SendAndReceive($false) } catch {}
 
 function Get-Mails {
-    $items = $inbox.Items
-    $items.Sort('[ReceivedTime]', $true)
-    $found = @()
-    foreach ($m in $items) {
-        if ($m.ReceivedTime -lt $day) { break }
-        if ($m.ReceivedTime -ge $day.AddDays(1)) { continue }
-        $s = ''; try { $s = "$($m.SenderEmailAddress) $($m.SenderName)" } catch {}
-        if ($s -match $Sender) { $found += $m }
+    $found = @(); $ids = @{}
+    foreach ($fo in $folders) {
+        $items = $fo.Items
+        $items.Sort('[ReceivedTime]', $true)
+        foreach ($m in $items) {
+            try { $t = $m.ReceivedTime } catch { continue }
+            if ($t -lt $day) { break }
+            if ($t -ge $day.AddDays(1)) { continue }
+            $s = ''; try { $s = "$($m.SenderEmailAddress) $($m.SenderName)" } catch {}
+            if ($s -match $Sender -and -not $ids.ContainsKey($m.EntryID)) { $ids[$m.EntryID] = 1; $found += $m }
+        }
     }
     , $found
 }
