@@ -296,7 +296,11 @@ on weekdays. The scheduled task `daily-schedule-run` (Claude app, runs only whil
 2. `python daily/schedule_status.py <date>` -> `next:` wait-ext / step1 / step1-resent / wait-cnv / step2 /
    step2-resent / daily-run / interface / done / ask-james. It looks only at the schedule PDFs by those names, never at the
    copier's `doc*.pdf` scans or anything else in Downloads.
-3. step1: `python daily/intake.py <ext pdf>` (pre-flight first), send the Word formulation to James. step2:
+3. step1: `python daily/intake.py <ext pdf>` (pre-flight first), then email the Word formulation to James (James, 6 Oct
+   2026: *"whenever this happen (aka schedule from my outlook), can you email me the formulation for that day"*):
+   `powershell -ExecutionPolicy Bypass -File daily/email_formulation.ps1 -Date <date> -Body "<summary>" [-Replaces]`.
+   The connector's send tool takes no attachment, so this too goes through classic Outlook. The recipient is fixed in
+   the script (James only); each version of the file is sent once (`work/emailed_<date>.txt` holds its hash). step2:
    `python daily/intake.py <cnv pdf> --step 2`, then the Daily run from step 3. Before publishing,
    `python daily/new_highs.py <date>`: exit 1 = a High the previous day did not have -> stop, tell James, publish nothing.
    "No formula to propose" is not counted (the Word file's ENGINEER TO COMPLETE rows, reported with step 1).

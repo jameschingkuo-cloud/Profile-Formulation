@@ -1942,6 +1942,11 @@ propose" not counted). Scheduled task `daily-schedule-run` in the Claude app (ru
   issued + 16 for the engineer. New since 5 Oct: H66A005-1 DPP50WB307 (SE21; GSM 1,052 printed, its instruction gives
   970-1000), H69A183-1/-2/-3 RPP30WB176/883/874 (SE43). Gone: H67A164-1, H69A031-3, H69A066-2, H69A066-5. The converting
   schedule for 6 Oct had not come by 13:15.
+- **The formulation by email** (James: *"whenever this happen (aka schedule from my outlook), can you email me the
+  formulation for that day"*): `daily/email_formulation.ps1` sends `out/FRM Formulation <date>.docx` to James only (address
+  fixed in the script) through classic Outlook, since the connector's send tool takes no attachment; once per version of
+  the file (`work/emailed_<date>.txt`), `-Replaces` for a rebuilt copy. 6 Oct sent 13:37, in James's inbox with the
+  attachment. The scheduled task emails it at step 1.
 
 ## 8. Automation plan: one step at a time
 
@@ -2071,7 +2076,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
-| 1.51 | 2026-10-06 | Claude Code (local, with James Kuo) | **Schedule run from email (§7.60)**: schedule PDFs fetched from Johanna Vallejo's emails through Outlook, status and new-High checks, scheduled task every 30 min 11:00-16:00 weekdays; 6 Oct step 1 (81 orders, 16 for the engineer). |
+| 1.51 | 2026-10-06 | Claude Code (local, with James Kuo) | **Schedule run from email (§7.60)**: the day's formulation emailed to James; schedule PDFs fetched from Johanna Vallejo's emails through Outlook, status and new-High checks, scheduled task every 30 min 11:00-16:00 weekdays; 6 Oct step 1 (81 orders, 16 for the engineer). |
 | 1.50 | 2026-10-05 | Claude Code (local, with James Kuo) | **Scan or PDF through one door; 5 Oct run (§7.59)**: `daily/intake.py` and the page's drop box take the system PDF (exact text) or a scan; page fix for days without Tech pages (v33); 5 Oct published (81 EXT, 63 CNV), artifact v35. |
 | 1.49 | 2026-10-05 | Claude Code (local, with James Kuo) | **Interface artifact lessons (§7.58)**: what went wrong with uploads, data files, copier PDFs, downloads, Chrome testing and republishing, written into CLAUDE.md for the next session. |
 | 1.48 | 2026-10-05 | Claude Code (local, with James Kuo) | **Daily run 2 Oct from the system PDFs (§7.57)**: EXT from the AIX report text, CNV from the Excel schedule's PDF (`packet_from_pdf.py`, `cnv_from_pdf.py`); Word formulation sent first (81 + 7 for the engineer); workbooks, Product Master, EXT and CNV records, interface copy and artifact v32 published. |
