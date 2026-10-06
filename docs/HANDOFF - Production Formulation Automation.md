@@ -1947,6 +1947,11 @@ propose" not counted). Scheduled task `daily-schedule-run` in the Claude app (ru
   fixed in the script) through classic Outlook, since the connector's send tool takes no attachment; once per version of
   the file (`work/emailed_<date>.txt`), `-Replaces` for a rebuilt copy. 6 Oct sent 13:37, in James's inbox with the
   attachment. The scheduled task emails it at step 1.
+- **6 Oct daily run** (converting schedule "Die Cutting Schedule 10-06.pdf", e-mailed 13:24, 62 rows on 11 pages): manual
+  issues and cfg written, EXT/CNV workbooks and Product Master built and published, the three records appended (81 EXT, 62
+  CNV rows; no FRM rows, no Tech pages), interface copy published, artifact v37. `new_highs.py`: 3 High, all also on 5 Oct,
+  0 new. Orders without a formula: 16 (H66A005-1, H69A183-1/-2/-3 new today; the rest since 2 or 5 Oct). Converting: only
+  H69A062-6 gone. Special instruction of H64A178-1 (Bradford, thickness range) is blank today (Low). Tests 67 passed.
 
 ## 8. Automation plan: one step at a time
 
@@ -2076,6 +2081,7 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.52 | 2026-10-06 | Claude Code (local, with James Kuo) | **6 Oct daily run (§7.60)**: converting schedule came 13:24; workbooks, Product Master, records, interface copy and artifact v37 published; 0 new High. |
 | 1.51 | 2026-10-06 | Claude Code (local, with James Kuo) | **Schedule run from email (§7.60)**: the day's formulation emailed to James; schedule PDFs fetched from Johanna Vallejo's emails through Outlook, status and new-High checks, scheduled task every 30 min 11:00-16:00 weekdays; 6 Oct step 1 (81 orders, 16 for the engineer). |
 | 1.50 | 2026-10-05 | Claude Code (local, with James Kuo) | **Scan or PDF through one door; 5 Oct run (§7.59)**: `daily/intake.py` and the page's drop box take the system PDF (exact text) or a scan; page fix for days without Tech pages (v33); 5 Oct published (81 EXT, 63 CNV), artifact v35. |
 | 1.49 | 2026-10-05 | Claude Code (local, with James Kuo) | **Interface artifact lessons (§7.58)**: what went wrong with uploads, data files, copier PDFs, downloads, Chrome testing and republishing, written into CLAUDE.md for the next session. |
