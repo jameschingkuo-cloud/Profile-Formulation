@@ -1947,6 +1947,10 @@ propose" not counted). Scheduled task `daily-schedule-run` in the Claude app (ru
   fixed in the script) through classic Outlook, since the connector's send tool takes no attachment; once per version of
   the file (`work/emailed_<date>.txt`), `-Replaces` for a rebuilt copy. 6 Oct sent 13:37, in James's inbox with the
   attachment. The scheduled task emails it at step 1.
+- **Gate on new email** (James: *"Only run the rest of the program if there is new email. If not, no need to run the
+  rest of the pipeline"*): each tick first runs `daily/schedule_gate.py` (time, lock, Johanna's emails for today and the
+  previous weekday, now read from James's rule folder Inbox\Complete\Production Schedule); only an email no run has
+  handled lets the run go on. 5-6 Oct emails seeded as handled.
 - **6 Oct daily run** (converting schedule "Die Cutting Schedule 10-06.pdf", e-mailed 13:24, 62 rows on 11 pages): manual
   issues and cfg written, EXT/CNV workbooks and Product Master built and published, the three records appended (81 EXT, 62
   CNV rows; no FRM rows, no Tech pages), interface copy published, artifact v37. `new_highs.py`: 3 High, all also on 5 Oct,
