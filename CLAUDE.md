@@ -287,12 +287,18 @@ James Kuo, 6 Oct 2026: *"check my email everyday for schedule from JVallejo@wpjk
 one for extrusion and one for converting"*; files to Downloads; "Full run, stop on new High"; every 30 min, 11:00-16:00
 on weekdays. The scheduled task `daily-schedule-run` (Claude app, runs only while the app is open) does:
 0. **The gate, first and usually the only step** (James, 6 Oct 2026: *"Only run the rest of the program if there is new
-   email. If not, no need to run the rest of the pipeline"*): `python daily/schedule_gate.py`. Last line `gate: skip (..)`
-   = the run ends there (after 16:20; a run already working; or no schedule email from today or the previous weekday that
-   a run has not handled). `gate: run` = new email: it lists them with each date's status and writes
-   `work/schedule_run.lock` (holding those emails). The run ends with `python daily/schedule_gate.py --done`, which marks
-   them handled in `work/schedule_mail_handled.json` and removes the lock; also when it stops on purpose (a new High). A
-   run that dies is tried again once its lock is 90 minutes old; an email that comes in during a run waits for the next tick.
+   email. If not, no need to run the rest of the pipeline"*; *"if there is email that is within the previous and the
+   current 30 minutes run, that's when the email attachment need to be pulled"*; *"No new email in system"*; *"Just end
+   program if there's nothing new found"*): `python daily/schedule_gate.py`. It looks only at Johanna's emails received
+   since the previous check (`work/schedule_last_check.txt`; 30 minutes back when there is none) and pulls only their PDFs
+   (`fetch_schedule_mail.ps1 -Since/-Until`). Last line `gate: skip (No new email in system: ..)` (or after 16:20, or a run
+   already working) = the run ends there. Each check records its time, so every email falls in exactly one window, also
+   one that came after 16:20 or overnight (the 11:00 check takes it); a lock-skipped check does not move the window.
+   `gate: run` = new email: it lists them with their dates' status and writes `work/schedule_run.lock` (holding those
+   emails). The run ends with `python daily/schedule_gate.py --done`, which marks them handled in
+   `work/schedule_mail_handled.json` (so an email two windows caught is not run twice) and removes the lock; also when it
+   stops on purpose (a new High). Test a check as if made at a given time, recording nothing:
+   `python daily/schedule_gate.py --test-at "2026-10-06 13:13" [--since "2026-10-06 12:43"]`.
 1. `powershell -ExecutionPolicy Bypass -File daily/fetch_schedule_mail.ps1 [-Date ..]`: the emails from Johanna Vallejo
    ("SCHEDULE MM/DD" with `BPN9PFR$_*.PDF`; "DIE CUT SCHEDULE" with `Die Cutting Schedule MM-DD.pdf`) and their PDF
    attachments saved to Downloads. James's Outlook rule "Move all messages from Johanna Vallejo to Production Schedule"
