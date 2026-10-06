@@ -286,6 +286,13 @@ Tested 5 Oct: report 81/81 (68 + 13 for the engineer, the same as the pipeline);
 James Kuo, 6 Oct 2026: *"check my email everyday for schedule from JVallejo@wpjk.inteplast.com. usually there are two,
 one for extrusion and one for converting"*; files to Downloads; "Full run, stop on new High"; every 30 min, 11:00-16:00
 on weekdays. The scheduled task `daily-schedule-run` (Claude app, runs only while the app is open) does:
+0. **The gate, first and usually the only step** (James, 6 Oct 2026: *"Only run the rest of the program if there is new
+   email. If not, no need to run the rest of the pipeline"*): `python daily/schedule_gate.py`. Last line `gate: skip (..)`
+   = the run ends there (after 16:20; a run already working; or no schedule email from today or the previous weekday that
+   a run has not handled). `gate: run` = new email: it lists them with each date's status and writes
+   `work/schedule_run.lock` (holding those emails). The run ends with `python daily/schedule_gate.py --done`, which marks
+   them handled in `work/schedule_mail_handled.json` and removes the lock; also when it stops on purpose (a new High). A
+   run that dies is tried again once its lock is 90 minutes old; an email that comes in during a run waits for the next tick.
 1. `powershell -ExecutionPolicy Bypass -File daily/fetch_schedule_mail.ps1 [-Date ..]`: the emails from Johanna Vallejo
    ("SCHEDULE MM/DD" with `BPN9PFR$_*.PDF`; "DIE CUT SCHEDULE" with `Die Cutting Schedule MM-DD.pdf`) and their PDF
    attachments saved to Downloads. James's Outlook rule "Move all messages from Johanna Vallejo to Production Schedule"

@@ -3,7 +3,7 @@
 # converting"). The Microsoft 365 connector finds the emails but cannot hand over an attachment's bytes, so this goes
 # through the Outlook installed on James's PC (classic Outlook over COM; it starts in the background if not running).
 #
-#   powershell -ExecutionPolicy Bypass -File daily/fetch_schedule_mail.ps1 [-Date 2026-10-06] [-WaitSeconds 60]
+#   powershell -ExecutionPolicy Bypass -File daily/fetch_schedule_mail.ps1 [-Date 2026-10-06[,2026-10-05]] [-WaitSeconds 60]
 #
 # Where the emails are: James's Outlook rule "Move all messages from Johanna Vallejo to Production Schedule" (6 Oct 2026:
 # "I move the email to new folder and set new rule where is will always be in that folder") puts them in
@@ -14,7 +14,10 @@
 param([string]$Date = (Get-Date -Format 'yyyy-MM-dd'), [int]$WaitSeconds = 60, [string]$Sender = 'VALLEJO',
       [string]$Folder = 'Complete\Production Schedule')
 
-$day = [datetime]::ParseExact($Date, 'yyyy-MM-dd', $null)
+# -Date takes one date or several, comma-separated (one Outlook pass for all of them)
+$days = $Date.Split(',') | Where-Object { $_.Trim() } | ForEach-Object { [datetime]::ParseExact($_.Trim(), 'yyyy-MM-dd', $null) }
+$day = ($days | Measure-Object -Minimum).Minimum
+$end = (($days | Measure-Object -Maximum).Maximum).AddDays(1)
 $dl = Join-Path $env:USERPROFILE 'Downloads'
 $ol = New-Object -ComObject Outlook.Application
 $ns = $ol.GetNamespace('MAPI')
@@ -33,7 +36,7 @@ function Get-Mails {
         foreach ($m in $items) {
             try { $t = $m.ReceivedTime } catch { continue }
             if ($t -lt $day) { break }
-            if ($t -ge $day.AddDays(1)) { continue }
+            if ($t -ge $end -or -not ($days | Where-Object { $_ -eq $t.Date })) { continue }
             $s = ''; try { $s = "$($m.SenderEmailAddress) $($m.SenderName)" } catch {}
             if ($s -match $Sender -and -not $ids.ContainsKey($m.EntryID)) { $ids[$m.EntryID] = 1; $found += $m }
         }

@@ -22,3 +22,22 @@ def test_only_schedule_pdfs_are_looked_at(tmp_path, monkeypatch):
 def test_nothing_received_waits(monkeypatch):
     monkeypatch.setattr(schedule_status, 'schedule_pdfs', lambda d: {'ext-pdf': [], 'cnv-pdf': []})
     assert schedule_status.status('2099-01-05')['next'] == 'wait-ext'
+
+
+def test_gate_dates_and_skips(tmp_path, monkeypatch):
+    import datetime
+    import json
+    import schedule_gate as g
+    assert g.dates(datetime.date(2026, 10, 6)) == ['2026-10-05', '2026-10-06']
+    assert g.dates(datetime.date(2026, 10, 5)) == ['2026-10-02', '2026-10-05']      # Monday -> Friday
+    monkeypatch.setattr(g, 'LOCK', tmp_path / 'schedule_run.lock')
+    monkeypatch.setattr(g, 'LEDGER', tmp_path / 'handled.json')
+    row = ('already', r'C:\x\Die Cutting Schedule 10-06.pdf', 'DIE CUT SCHEDULE ', '2026-10-06 13:24')
+    monkeypatch.setattr(g, 'fetch', lambda ds, wait=30: [row])
+    noon = datetime.datetime(2026, 10, 6, 12, 0)
+    assert g.check(now=datetime.datetime(2026, 10, 6, 16, 35)).startswith('gate: skip (after 16:20')
+    assert g.check(now=noon) == 'gate: run'                                          # not handled yet
+    assert g.check(now=noon).startswith('gate: skip (a run is working')
+    g.done()
+    assert not g.LOCK.exists() and list(json.loads(g.LEDGER.read_text())) == [g.key(row)]
+    assert g.check(now=noon).startswith('gate: skip (no new schedule email')
