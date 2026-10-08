@@ -1,6 +1,6 @@
 # HANDOFF — Production Formulation Automation
 
-**Status: Rev 1.51 (6 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
+**Status: Rev 1.53 (7 Oct 2026); work continues on James's PC (§7.23).** The code is in git (James's PC + private GitHub repo, §7.17–§7.18). The database
 structure and flow are designed (§7.19, `docs/DATABASE.md`); database workbooks live in `Engineering Pipeline\Production
 Formulation\<kind>`, this folder is Claude's workspace (§7.21). Four packets processed (23, 24, 25, 28 Sep; §7.20 adds a
 three-way accuracy check; §7.22 the first FRM Draft). Earlier: Tech's calc workbooks read (§7.12), auger rules drafted (§7.14), dosing per line
@@ -2085,10 +2085,23 @@ This document is not listed (it can't carry its own hash). Update this table whe
 
 ---
 
+## 7.62 Daily run 7 Oct 2026 (7 Oct 2026)
+
+Scheduled run, both emails in one window (SCHEDULE 10/07 13:07, DIE CUT SCHEDULE 13:08). No code change.
+- **Step 1** (BPN9PFR$_Z7Zg8XB5.PDF, run 13:43:54): 86 EXT records on 13 lines, every line equal to its printed total;
+  pre-flight 0 changes, IWPFT062 0 differences. Word formulation emailed to James and sent in chat: 62 orders as last issued,
+  24 for the engineer. New since 6 Oct: H69A330-8, H69A330-5 (SE11), H6AA013-1, H69A344-1, H69A345-4, H69A338-1, H69A338-2
+  (SE13), H6AA036-3 (SE43). Gone: H69A158-1, H69A105-3 (SE13), H66A005-1 (SE21). Printed GSM outside the instruction's
+  range: H69A039-1 and H63A200-1 (631 vs 582-600), H68A088-1 (514 vs 473-488), H68A091-1 (793 vs 729-751).
+- **Step 2 and daily run**: converting schedule 54 rows on 10 pages (9 orders gone since 6 Oct, none new). Manual issues and
+  cfg written, EXT/CNV workbooks and Product Master built and published, records appended (86 EXT, 54 CNV; no FRM rows),
+  interface copy published, artifact v38. `new_highs.py`: 3 High, all also on 6 Oct, 0 new. pytest 68 passed, 5 skipped.
+
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.53 | 2026-10-07 | Claude Code (local, with James Kuo) | **7 Oct daily run (§7.62)**: both schedule emails 13:07/13:08; formulation emailed (62 as issued, 24 for the engineer); 86 EXT + 54 CNV rows built, published and recorded; artifact v38; 0 new High. |
 | 1.52 | 2026-10-06 | Claude Code (local, with James Kuo) | **6 Oct daily run (§7.60)**: converting schedule came 13:24; workbooks, Product Master, records, interface copy and artifact v37 published; 0 new High. |
 | 1.51 | 2026-10-06 | Claude Code (local, with James Kuo) | **Schedule run from email (§7.60)**: the day's formulation emailed to James; schedule PDFs fetched from Johanna Vallejo's emails through Outlook, status and new-High checks, scheduled task every 30 min 11:00-16:00 weekdays; 6 Oct step 1 (81 orders, 16 for the engineer). |
 | 1.50 | 2026-10-05 | Claude Code (local, with James Kuo) | **Scan or PDF through one door; 5 Oct run (§7.59)**: `daily/intake.py` and the page's drop box take the system PDF (exact text) or a scan; page fix for days without Tech pages (v33); 5 Oct published (81 EXT, 63 CNV), artifact v35. |
