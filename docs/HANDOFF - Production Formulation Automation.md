@@ -2167,10 +2167,25 @@ or published; its packet is committed as it stands. 13 Oct is the last published
   `new_highs.py` compares with the previous packet date (15 Oct, never built) and showed 3 High as new; they are the same 3 as on 13 Oct
   (H64A244-1 semi size and total sheets, H65A163-1 total sheets), so 0 new against the last published day. pytest 70 passed, 5 skipped.
 
+## 7.68 Daily run 19 Oct 2026 (19 Oct 2026)
+
+Scheduled run, one window (SCHEDULE 10/19 e-mailed 13:41, DIE CUT SCHEDULE 13:42). No code change. 16 Oct is the previous published day.
+- **Step 1** (BPN9PFR$_Z7l3fFV2.PDF, run 14:16:34): 83 EXT records on 13 lines, every line equal to its printed total; pre-flight 0 changes,
+  IWPFT062 0 differences. Word formulation emailed to James and sent in chat: 46 orders as last issued, 37 for the engineer.
+  New since 16 Oct (16): SE13 H6AA077-5, H69A181-2; SE22 H69A288-11 (RPAA0OF17, letter O in the code as printed), H6AA043-1, H6AA043-2, H69A058-1,
+  H6AA080-1, H6AA080-2; SE25 H69A116-2, H69A116-3, H69A044-1, H69A181-1; SE61 H6AA060-1..-3, H6AA063-1. Gone (14): SE11 H6AA075-2, H6AA075-3,
+  H6AA036-3, H69A364-2; SE13 H69A335-1, H69A335-2, H69A377-1, H69A378-1; SE21 H69A358-1, H69A363-1; SE25 H69A330-9; SE31 H69A373-1; SE61 H69A350-1, H69A350-2.
+  Printed GSM outside the instruction's range: H69A039-1 (631 vs 582-600), H68A091-1 (793 vs 729-751), H69A044-1 (793 vs 729-751), H68A090-1 (1,052 vs 970-1000;
+  the e-mail summary listed only the first three, its check missed the comma).
+- **Step 2 and daily run**: converting schedule 73 rows on 11 pages. Manual issues and cfg written, EXT/CNV workbooks and Product Master built and
+  published, records appended (83 EXT, 73 CNV; no FRM rows), interface copy published, artifact v44. `new_highs.py`: 3 High, the same 3 as 16 Oct, 0 new.
+  pytest 70 passed, 5 skipped.
+
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.59 | 2026-10-19 | Claude Code (local, with James Kuo) | **19 Oct daily run (§7.68)**: schedule emails 13:41/13:42; formulation emailed (46 as issued, 37 for the engineer); 83 EXT + 73 CNV rows built, published and recorded; artifact v44; 0 new High. |
 | 1.58 | 2026-10-16 | Claude Code (local, with James Kuo) | **16 Oct daily run (§7.67)**: both schedule emails 11:42; formulation emailed (48 as issued, 33 for the engineer); 81 EXT + 72 CNV rows built, published and recorded; artifact v43; 0 new High against 13 Oct (15 Oct never built). |
 | 1.57 | 2026-10-13 | Claude Code (local, with James Kuo) | **13 Oct daily run (§7.66)**: schedule emails 13:55/14:02; formulation emailed (57 as issued, 27 for the engineer); 84 EXT + 70 CNV rows built, published and recorded; artifact v42; 0 new High. |
 | 1.56 | 2026-10-12 | Claude Code (local, with James Kuo) | **12 Oct daily run (§7.65)**: schedule emails 12:52/12:55; formulation emailed (67 as issued, 10 for the engineer); 77 EXT + 61 CNV rows built, published and recorded; artifact v41; 0 new High. |
