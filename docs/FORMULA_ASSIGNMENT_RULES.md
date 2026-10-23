@@ -83,3 +83,23 @@ James, 23 Oct 2026: *"winter start in start of nov. Summar starts in the start o
   James's naming the lookup prints FUA151WB4 (1 Apr - 31 Oct) or FUA152WB4 (1 Nov - 31 Mar), and each line's settings must
   be keyed by (line, season composition), not by the name Tech printed before. Tech issued the winter pages on 28 Oct
   2022, a few days before 1 Nov.
+
+## Built: daily/assign.py (23 Oct 2026)
+`daily/resolve.py` now asks the rules for every order with no earlier issue on its line and no approved master row;
+`ASSIGN_RULES=0` turns them off. A proposal prints as PROPOSED BY RULE (code) on every row; a Main never run on the line
+stays an Exception that names the code and its W%. Backtest (`tests/test_assign.py`; `work/backtest_rules.py -v` lists
+the misses), as each morning before Tech issued, on the 145 orders the issue history could not answer:
+- 109 (75%): the rule names the formulation Tech issued that day (17 with the very settings, 8 with settings Tech then
+  tuned, 84 naming the code where the line had no settings yet).
+- 23: a different one. Mostly James's cleanup, where Tech's page still printed a code he replaced (WB 4 mm packaging:
+  his Main FU0031WB4 vs FU0041WB4 / FU0021WB4 / FUA152WB4 on SE12, SE13, SE24, SE25; WB 5 mm VOIDFORM: his Main FU0051WB5
+  vs FU0011WB5 "secondary Voidform"); and the weight-blender lines, to settle with James: SE43 prints FU0151WB3 for WB
+  3 mm packaging (his notes: Secondary; FU0032WB3 Main) and FU0010GS3 / FU0010BD3 / FUA000BD3 for coloured 3 mm (R1 says
+  FUA151GS3 / FUA151BD3); SE42 prints FU0151KS3 for CPP30KS215 (his note: "Main SE43 only"; KS 3 mm packaging has two
+  Mains, FU0032KS3 and FU0051KS3). The GT premix orders (DPP40WB1700: FU001GTW4 / FU0021GT4, his note "???") are left
+  to the engineer.
+- 13: no proposal, the bubble line on 23 and 28 Sep before any SE61 issue was on file (the line fallback needs one).
+25 Sep as that morning (`tests/test_resolve.py`): both new orders proposed by rule with the codes Tech issued that day
+(FU0021WB4, FXA020WB4), nothing left for the engineer. 23 Oct: 70 orders instead of 41 (29 by rule, all with settings),
+29 Exceptions instead of 58, 25 of them naming the code and waiting only for line settings (FU0031WB4 on SE12/13/23/25/31,
+FU0061WBD on SE32, FUA031KS5/6 and FUA032KS4 on SE21 ...).

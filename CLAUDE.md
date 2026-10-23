@@ -386,6 +386,31 @@ read the rest for the data base update (Production Record)"* - *"this will reduc
 5. The Formulation Report Record takes a day only when its formulation is issued. On a schedule-only packet
    (no Tech FRM pages) `record.py` appends EXT and CNV and skips FRM; the FRM rows follow once the document is issued.
 
+## Formula assignment by rule (James Kuo, 23 Oct 2026)
+
+James: *"There are too many new product code which make the one to one match not very useful. To make it work, we need to
+build logic system so that you assign formulation to product base on logic"*. The rules he gave, quoted and tested, are
+in `docs/FORMULA_ASSIGNMENT_RULES.md`; the authority for which code is current is his annotated W% Master
+(`data/w_master/W Master Formulation draft (version 1) - James notes 2026-10-23.xlsx`, Notes column: Main / Secondary /
+replace by / archive / remove / rename). `daily/assign.py` applies them; `daily/resolve.py` calls it for an order that
+has no earlier issue on its line and no approved master row (`ASSIGN_RULES=0` turns it off for backtests).
+- The code's fixed parts come from the schedule row: prefix from the Spec (R1R1R1 FU, R4R4R4 RU, OPOPOP FX, S1S1S1 FS,
+  A1A1A1 FA, U1U1U1 FH, F.. FR, the bubble line BF); third character `A` for a colour other than KS/WB and for the special
+  specs, else the schedule's grade (A -> A, P -> 0), always `0` on the bubble line; colour and thickness from the product
+  code (6.3 mm runs a ..6 code; 10 mm A, 13 mm D). The middle digits are a version number: James's Main row decides.
+- Qualifiers: VOIDFORM / corn box / sign blank from the special instructions; summer (1 Apr - 31 Oct) or winter Main;
+  an "SE43" Main outranks the general one on SE43; customer-specific, roll, HDPE, PE Mains are never proposed by rule.
+- Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name he
+  says to replace by it. A Main never run on the line is not a formulation yet: it stays an Exception that names the code
+  and the W% (the auger calculation from the W% is the next step). The bubble line's BF codes have no W% row: a code
+  already issued on the line for the same fixed parts is taken.
+- Every rule row says **PROPOSED BY RULE (code)** in its Note, `How Resolved` = "Proposed by rule (...)", the Draft has a
+  "By Rule" sheet, the Issues a Medium row per order, and the Word file marks the rows and counts them on the cover.
+  Never silent, never a guess: a key with several plain Mains, or no Main, is an Exception that says so.
+- Backtest (`tests/test_assign.py`): as each morning before Tech issued, for the orders the history could not answer, the
+  rule names the formulation Tech issued in about three quarters of the cases; the rest are James's cleanup (Tech's page
+  printed a code he replaced) or SE42/SE43 choices still to settle with him. Run `work/backtest_rules.py -v` to see them.
+
 ## Calc workbooks → Formulation Master (when Tech's workbooks change)
 
 1. `python calc/parse_fcal.py` reads every `*Formulation*.xls` in `CALC_DIR` and records each one.

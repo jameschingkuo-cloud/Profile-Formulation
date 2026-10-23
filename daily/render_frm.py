@@ -238,7 +238,9 @@ def render(today, lines, exc, out):
     run(hp, f'{status} · not for production until issued by Technical (IWPFO055 §5.3)' if n_exc else
         'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=RED if n_exc else GREY)
     fp = sec.footer.paragraphs[0]
-    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation as last issued by Tech for each order on its line · page ", 8, color=GREY)
+    n_rule = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any(x['note'].startswith('PROPOSED BY RULE') for x in g['forms']))
+    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation as last issued by Tech for each order on its line"
+            + (' · rows marked PROPOSED BY RULE: the Main for the product by the rules of 23 Oct 2026, with the settings last issued on the line' if n_rule else '') + ' · page ', 8, color=GREY)
     page_field(fp)
 
     # ---- cover
@@ -253,10 +255,14 @@ def render(today, lines, exc, out):
          'Every order has its formulation. Technical checks and signs the issue block, then it goes to the floor.', 11)
     para(doc, '', space_after=4)
     para(doc, 'How to read the line pages', 12, bold=True, space_after=2)
-    for t in ('Auger lines: Set is the auger motor speed, 0 to 100. It is not a percentage.',
-              'Weight blender lines (Line 7, 12, 13, 16): Set is weight %; each extruder adds to 100; Auto takes the balance.',
-              'Where an order lists more than one formulation, they are printed in run order: reclaim first (use up the scrap before virgin PP), then down the list (James Kuo, 29 and 30 Sep 2026).',
-              'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.'):
+    tips = ['Auger lines: Set is the auger motor speed, 0 to 100. It is not a percentage.',
+            'Weight blender lines (Line 7, 12, 13, 16): Set is weight %; each extruder adds to 100; Auto takes the balance.',
+            'Where an order lists more than one formulation, they are printed in run order: reclaim first (use up the scrap before virgin PP), then down the list (James Kuo, 29 and 30 Sep 2026).',
+            'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.']
+    if n_rule:
+        tips.append(f'PROPOSED BY RULE ({n_rule} order{"s" if n_rule != 1 else ""}): the order itself was never issued; the formulation is the Main for the '
+                    "product (colour, thickness, grade, spec: James Kuo's rules of 23 Oct 2026) with the settings Technical last issued for it on that line. Check these first.")
+    for t in tips:
         para(doc, '•  ' + t, 10.5, space_after=1)
     if n_exc:
         para(doc, '', space_after=4)

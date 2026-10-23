@@ -2229,6 +2229,31 @@ Scheduled run, one window (SCHEDULE 10/23 e-mailed 13:03, DIE CUT SCHEDULE 13:04
   Manual issues and cfg written, EXT/CNV workbooks and Product Master built and published, records appended (99 EXT, 65 CNV; no FRM rows), interface copy
   published, artifact v48. `new_highs.py`: 3 High, the same 3 as 22 Oct, 0 new. pytest 70 passed, 5 skipped.
 
+## 7.73 Formula assignment by rule (23 Oct 2026)
+
+James: *"our current solution is not possible. There are too many new product code which make the one to one match not
+very useful. To make it work, we need to build logic system so that you assign formulation to product base on logic"*.
+He annotated the W% Master Formulation draft (Notes: Main / Secondary / replace by / archive / remove / rename; he also
+rounded compositions) and gave the rules in chat, quoted and tested in `docs/FORMULA_ASSIGNMENT_RULES.md`: R1 a colour
+other than KS/WB is graphic grade (`A`), the bubble line stays `0` (*"we cant make the bubble process smooth enough to
+product graphic grade at this moment"*); R2 reclaim only in KS/WB; R3 the Spec column decides the prefix (*"R1 is standard
+and R4 is the worst grade so R4 is mostly reclaim"*); R4 the middle digits are a version number (*"just sequence"*); R5
+summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolymer on WB 4 mm graphic).
+- `daily/assign.py` (rules + his Main rows -> code; settings as Tech last issued that formulation on the line, under his
+  name or an old printed name he replaced; the bubble line falls back to a code already issued there), called by
+  `daily/resolve.py` after the order history and the approved master; every row PROPOSED BY RULE, a "By Rule" sheet, a
+  Medium issue per order, the Word file marks and counts them. Tests: `tests/test_assign.py`, `test_resolve.py` (25 Sep
+  as that morning: both new orders proposed with the codes Tech issued; nothing left for the engineer).
+- Backtest on every Tech issue on file (145 orders the history could not answer): 109 the same formulation Tech issued
+  (75%), 23 different (mostly James's cleanup of old codes, plus SE42/SE43 choices to settle with him), 13 no proposal
+  (the bubble line before any issue was on file). 23 Oct: 29 Exceptions instead of 58; 25 of them name the code and wait
+  only for line settings - the auger calculation from the W% is the next step (James, 30 Sep: *"once the Product is
+  assigned with Fomulation. You will have to do the Auger calculation as well"*).
+- Also today: Tech's 6 and 7 Oct FRM pages into the packets (8 Oct scan, read by eye, `daily/frm_from_text.py`; 5 and
+  2 Oct still to transcribe); the 8 and 9 Oct Word files went out before those pages were in (SE43 colour feeder V3 vs V8).
+- Open with James: KS 3 mm packaging Main (FU0032KS3 or FU0051KS3); SE42/SE43 Mains (FU0151WB3, FU0010GS3/BD3,
+  FUA000BD3); the spelling of FU1400GD4, FU001TLW4, FU001EAW4 with the `A`; FE vs FH for extra UV.
+
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
@@ -2245,6 +2270,7 @@ Scheduled run, one window (SCHEDULE 10/23 e-mailed 13:03, DIE CUT SCHEDULE 13:04
 | 1.54 | 2026-10-08 | Claude Code (local, with James Kuo) | **8 Oct daily run (§7.63)**: both schedule emails 12:45/12:46; formulation emailed (61 as issued, 29 for the engineer); 90 EXT + 58 CNV rows built, published and recorded; artifact v39; 0 new High. |
 | 1.53 | 2026-10-07 | Claude Code (local, with James Kuo) | **7 Oct daily run (§7.62)**: both schedule emails 13:07/13:08; formulation emailed (62 as issued, 24 for the engineer); 86 EXT + 54 CNV rows built, published and recorded; artifact v38; 0 new High. |
 | 1.52 | 2026-10-06 | Claude Code (local, with James Kuo) | **6 Oct daily run (§7.60)**: converting schedule came 13:24; workbooks, Product Master, records, interface copy and artifact v37 published; 0 new High. |
+| 1.52 | 2026-10-23 | Claude Code (local, with James Kuo) | **Formula assignment by rule (§7.73)**: James's rules R1-R5 and his annotated W% Master drive `daily/assign.py`; 25 Sep backtest both new orders right, 75% on all issues on file; Tech's 6-7 Oct pages in the packets. |
 | 1.51 | 2026-10-06 | Claude Code (local, with James Kuo) | **Schedule run from email (§7.60)**: the day's formulation emailed to James; schedule PDFs fetched from Johanna Vallejo's emails through Outlook, status and new-High checks, scheduled task every 30 min 11:00-16:00 weekdays; 6 Oct step 1 (81 orders, 16 for the engineer). |
 | 1.50 | 2026-10-05 | Claude Code (local, with James Kuo) | **Scan or PDF through one door; 5 Oct run (§7.59)**: `daily/intake.py` and the page's drop box take the system PDF (exact text) or a scan; page fix for days without Tech pages (v33); 5 Oct published (81 EXT, 63 CNV), artifact v35. |
 | 1.49 | 2026-10-05 | Claude Code (local, with James Kuo) | **Interface artifact lessons (§7.58)**: what went wrong with uploads, data files, copier PDFs, downloads, Chrome testing and republishing, written into CLAUDE.md for the next session. |

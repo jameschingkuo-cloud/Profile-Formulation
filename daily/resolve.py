@@ -31,6 +31,9 @@ from openpyxl.utils import get_column_letter  # noqa: E402
 
 PKT = os.environ.get("PKT_DATE")   # checked in main(), so daily/record.py can import variant() and split_feeder()
 RUN_DATE = os.environ.get("RUN_DATE") or datetime.date.today().isoformat()
+RULES = os.environ.get("ASSIGN_RULES", "1") != "0"   # ASSIGN_RULES=0: history only (backtests of the pre-rule behaviour)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import assign  # noqa: E402
 
 VARIANT_RULES = [  # note text on the FRM row -> variant (db/schema.py VARIANTS)
     (re.compile(r"run\s*out", re.I), "Reclaim run-out"),
@@ -176,8 +179,9 @@ def main():
     by_order, by_product = issued_history(packets, cut)                  # latest issue on file, any date
     history_dates = sorted(d for d in packets if packets[d]["frm"] and (cut is None or d < cut))
     approved, _ = approved_master()
+    issued = assign.issued_on_line(packets) if RULES else {}
 
-    draft, exceptions = [], []
+    draft, exceptions, by_rule = [], [], []
     for pg in today["ext"]:
         for r in pg["rows"]:
             line, order, product = pg["line"], r["order"], r["prod_code"]
@@ -193,6 +197,23 @@ def main():
             if (line, product) in approved:      # an engineer decided it in the master
                 draft += master_rows(line, order, product, approved[(line, product)])
                 continue
+            # the rules (daily/assign.py; James, 23 Oct 2026): the Main for this product's fixed parts, with the settings
+            # Tech last printed for it on this line. Marked PROPOSED BY RULE on every row; never silent.
+            prop, why = assign.propose(line, r, datetime.date.fromisoformat(PKT), issued) if RULES else (None, 'rules off')
+            if prop and prop['settings']:
+                date, page, formulas = prop['settings']
+                for row in draft_rows(line, order, product, (date, page, formulas)):
+                    row[11] = f"Proposed by rule ({prop['how']})"
+                    row[13] = f"rule R1-R5 + settings as issued on {line} {date} (FRM scan p{page})"
+                    row[15] = f"PROPOSED BY RULE ({prop['code']})" + (f" · {row[15]}" if row[15] else "")
+                    draft.append(row)
+                by_rule.append([line, order, product, prop['code'], prop['how'], date])
+                continue
+            hint = why if why else ""
+            if prop:                             # the code is decided, its settings on this line are not
+                hint = f"Formula {prop['code']} by rule ({prop['how']}); never run on {line}: settings to be set. " \
+                       f"W%: " + ", ".join(f"{k.split(' ')[0]} {v:g}" for k, v in (prop['main']['w'] or {}).items() if v)
+            hint0 = hint
             hint = ""
             prod_rec = by_product.get((line, product))
             m = RUN_WITH.search(r.get("special_instructions", ""))
@@ -203,8 +224,13 @@ def main():
             elif prod_rec:
                 codes = ", ".join(f["formula_code"] for f in prod_rec[2])
                 hint = f"Same product last ran here as {prod_rec[3]} ({prod_rec[0]}) with {codes}"
+            hint = " | ".join(h for h in (hint0, hint) if h)
             other = sorted({ln for (ln, o) in by_order if o == order and ln != line})
             reason = "New order on this line: no formula issued for it before"
+            if prop:
+                reason = f"Formula {prop['code']} decided by rule; no settings on {line} yet (never run here)"
+            elif RULES and why and not why.startswith("rules off"):
+                reason += f"; rules: {why}"
             if other:
                 reason = f"Order was issued on another line before ({', '.join(other)}), not on {line}"
             exceptions.append([line, order, product, r.get("mat_spec", ""), r.get("colors", ""), r.get("thk", ""),
@@ -215,10 +241,10 @@ def main():
     dropped = sorted({(pg["line_code"], o) for pg in packets[last]["frm"] for g in pg["groups"] for o in g["orders"]}
                      - today_orders) if last else []
 
-    write(today, draft, exceptions, dropped, last, history_dates)
+    write(today, draft, exceptions, dropped, last, history_dates, by_rule)
 
 
-def write(today, draft, exceptions, dropped, last, history_dates):
+def write(today, draft, exceptions, dropped, last, history_dates, by_rule=()):
     F = "Arial"
     hfont, hfill, body = Font(name=F, bold=True, color="FFFFFF", size=10), PatternFill("solid", fgColor="1F3864"), Font(name=F, size=10)
     wb = Workbook()
@@ -250,6 +276,9 @@ def write(today, draft, exceptions, dropped, last, history_dates):
           exceptions, {"Reason": 50, "Suggestion (not used)": 60, "Special Instructions (start)": 50, "Engineer Decision": 30})
     n_orders = len({(r[0], r[1]) for r in draft})
     issues = [["High", "FRM Draft", e[0], e[1], "No formula to propose", e[8], "EXT", None] for e in exceptions]
+    issues += [["Medium", "FRM Draft", b[0], b[1], "Proposed by rule, not issued for this order before",
+                f"{b[3]}: {b[4]}; settings as issued on {b[0]} {b[5]} (docs/FORMULA_ASSIGNMENT_RULES.md)", "rules", None] for b in by_rule]
+    sheet("By Rule", ["Line Code", "Order", "Product Code", "Formula Code", "How", "Settings issued"], list(by_rule), {"How": 60})
     issues += [["Info", "FRM Draft", ln, o, f"On the {last} FRM, not on today's schedule", "Dropped since the last issued FRM", f"FRM {last}", None]
                for ln, o in dropped]
     sheet("Issues", ["Severity", "Document", "Line", "Order", "Check", "Detail", "Source", "James / Tech response"], issues,
@@ -262,6 +291,9 @@ def write(today, draft, exceptions, dropped, last, history_dates):
         ["Schedule", f"{today.get('source_scan', '')} (EXT, packet {PKT})"],
         ["Issued FRMs searched", ", ".join(history_dates) or "none"],
         ["Orders proposed", f"{n_orders} of {n_orders + len(exceptions)}"],
+        ["Proposed by rule", f"{len(by_rule)} (sheet By Rule; James Kuo's rules of 23 Oct 2026, docs/FORMULA_ASSIGNMENT_RULES.md: "
+                             "the Main he marked in the W% Master for the product's colour, thickness, grade and spec, with the settings "
+                             "Tech last issued for that formulation on the line; every such row says PROPOSED BY RULE)"],
         ["Exceptions", len(exceptions)],
         ["Settings", "As last issued. Auger lines: Set is motor speed 0-100 (not %). Weight lines (SE24, SE42, SE43, SE61): Set is weight %, Auto = balance."],
         ["Run", RUN_DATE],

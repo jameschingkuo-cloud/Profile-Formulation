@@ -174,6 +174,8 @@ def test_draft_keeps_every_formulation(tmp_path):
     got = {}
     for x in rows[1:]:
         d = dict(zip(h, x))
+        if str(d['How Resolved']).startswith('Proposed by rule'):      # rule proposals (daily/assign.py) are not "as last issued"
+            continue
         got.setdefault((d['Line Code'], d['Order']), {})[d['Formula Row']] = d['Formula Code']
     issued = {}                                    # latest issue before 28 Sep wins, as in resolve.issued_history
     for d in ('2026-09-23', '2026-09-24', '2026-09-25'):
@@ -203,7 +205,8 @@ def test_print_formulation_docx(tmp_path):
     from docx import Document
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28')
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
+               ASSIGN_RULES='0')          # the history-only draft; the rules' Word marks are tested in test_assign.py
     for script in ('resolve.py', 'render_frm.py'):
         r = subprocess.run([sys.executable, str(ROOT / 'daily' / script)], env=env, capture_output=True, text=True, cwd=ROOT)
         assert r.returncode == 0, r.stdout + r.stderr
@@ -230,7 +233,8 @@ def test_engineer_decision_fills_the_rerun(tmp_path):
     pub, out = tmp_path / 'pub', tmp_path / 'out'
     out.mkdir()
     env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
-               SNAP_DIR=str(tmp_path / 'snap'), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28')
+               SNAP_DIR=str(tmp_path / 'snap'), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
+               ASSIGN_RULES='0')          # this tests the approved-master path, which runs before the rules
     py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
     name = 'Formulation Master.xlsx'
     live = config.published_path(name)                       # a copy of the published master (read only)
