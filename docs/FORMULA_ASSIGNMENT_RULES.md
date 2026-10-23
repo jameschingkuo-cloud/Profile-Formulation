@@ -76,3 +76,10 @@ James, 23 Oct 2026: *"winter start in start of nov. Summar starts in the start o
   only: FUA151WB4 "Main Summer fomulation" and FUA152WB4 "Main Winter Formulation" (James's rename of FUA151WB4 2 of 2).
   Tech's own 2026 issues agree: SE13 / SE31 / SE32 ran FUA152WB4 on 23 Sep - 7 Oct and FUA151WB4 for the SE43 group - to
   be checked against the season boundary when the November pages come in.
+- What the data shows (23 Oct): the season is a **composition** switch, not a change of the printed name. Tech's pages
+  print FUA152WB4 on the auger lines and FUA151WB4 on SE43 in every month on file; but the composition behind them changes:
+  Aug-Oct issues (2020, 2021, 2025, 2026) run about 74% virgin / 15% homopolymer F1203K / 8-9% talc (James's "Summer"),
+  the 28 Oct 2022 issue for the Dec 2022 - Jan 2023 runs about 80% virgin / 8% homopolymer / 9% talc ("Winter"). So under
+  James's naming the lookup prints FUA151WB4 (1 Apr - 31 Oct) or FUA152WB4 (1 Nov - 31 Mar), and each line's settings must
+  be keyed by (line, season composition), not by the name Tech printed before. Tech issued the winter pages on 28 Oct
+  2022, a few days before 1 Nov.
