@@ -101,19 +101,24 @@ def run_order(formulas):
     return sorted(formulas, key=lambda f: (bool(re.search(r"run\s*out", f.get("note") or "", re.I)), not uses_reclaim(f)))
 
 
-def draft_rows(line, order, product, rec):
+def draft_rows(line, order, product, rec, names=None):
+    """names: printed code -> the code to show (James, 23 Oct 2026: "Don't use old formula code in the print out"). With
+    the rules on, an old name James renamed shows as his name; the name Tech printed stays in Source."""
     date, page, formulas = rec
     formulas = run_order(formulas)
     rows = []
     for i, f in enumerate(formulas):
         var = variant(f.get("note", ""), i == 0)
+        printed = f["formula_code"]
+        shown = (names or {}).get(printed) or (assign.current_name(printed) if RULES else printed)
+        src = f"FRM {date} scan p{page}" + (f" (printed as {printed})" if shown != printed else "")
         for col, v in f["feeders"].items():
             if not (v.get("material") or v.get("set")):
                 continue
             ext, feeder = split_feeder(col)
-            rows.append([line, order, product, f["formula_code"], var, ext, feeder, None, v.get("material", ""),
+            rows.append([line, order, product, shown, var, ext, feeder, None, v.get("material", ""),
                          v.get("set", ""), None, "Last issued (same order, same line)",
-                         datetime.date.fromisoformat(date), f"FRM {date} scan p{page}", i + 1, f.get("note", "")])
+                         datetime.date.fromisoformat(date), src, i + 1, f.get("note", "")])
     return rows
 
 
@@ -192,7 +197,15 @@ def main():
                 continue
             rec = by_order.get((line, order))
             if rec:
-                draft += draft_rows(line, order, product, rec)
+                # the codes print under James's names (23 Oct 2026: "Don't use old formula code in the print out"): the
+                # Main the rules name for this order lends its name to the issued code it was printed as (FUA152WB4 on
+                # the auger lines in summer -> FUA151WB4); the settings are Tech's as issued, untouched
+                names = {}
+                if RULES:
+                    prop, _ = assign.propose(line, r, datetime.date.fromisoformat(PKT), issued)
+                    if prop and prop['main']:
+                        names = {f['formula_code']: prop['code'] for f in rec[2] if f['formula_code'] in prop['main']['printed']}
+                draft += draft_rows(line, order, product, rec, names)
                 continue
             if (line, product) in approved:      # an engineer decided it in the master
                 draft += master_rows(line, order, product, approved[(line, product)])
@@ -202,10 +215,11 @@ def main():
             prop, why = assign.propose(line, r, datetime.date.fromisoformat(PKT), issued) if RULES else (None, 'rules off')
             if prop and prop['settings']:
                 date, page, formulas = prop['settings']
-                for row in draft_rows(line, order, product, (date, page, formulas)):
+                names = {f['formula_code']: prop['code'] for f in formulas if prop['main'] and f['formula_code'] in prop['main']['printed']}
+                for row in draft_rows(line, order, product, (date, page, formulas), names):
                     row[11] = f"Proposed by rule ({prop['how']})"
-                    row[13] = f"rule R1-R5 + settings as issued on {line} {date} (FRM scan p{page})"
-                    row[15] = f"PROPOSED BY RULE ({prop['code']})" + (f" · {row[15]}" if row[15] else "")
+                    row[13] = f"rule R1-R5 + settings as issued on {line} {date} (FRM scan p{page}" + (f", printed as {prop['printed_as']}" if prop['printed_as'] != prop['code'] else "") + ")"
+                    row[15] = "PROPOSED BY RULE" + (f" · {row[15]}" if row[15] else "")
                     draft.append(row)
                 by_rule.append([line, order, product, prop['code'], prop['how'], date])
                 continue
@@ -227,12 +241,12 @@ def main():
             hint = " | ".join(h for h in (hint0, hint) if h)
             other = sorted({ln for (ln, o) in by_order if o == order and ln != line})
             reason = "New order on this line: no formula issued for it before"
+            if other:
+                reason = f"Order was issued on another line before ({', '.join(other)}), not on {line}"
             if prop:
                 reason = f"Formula {prop['code']} decided by rule; no settings on {line} yet (never run here)"
             elif RULES and why and not why.startswith("rules off"):
                 reason += f"; rules: {why}"
-            if other:
-                reason = f"Order was issued on another line before ({', '.join(other)}), not on {line}"
             exceptions.append([line, order, product, r.get("mat_spec", ""), r.get("colors", ""), r.get("thk", ""),
                                r.get("gsm", ""), (r.get("special_instructions") or "")[:160], reason, hint, None, None])
 

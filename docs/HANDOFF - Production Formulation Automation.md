@@ -2262,6 +2262,12 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   "FE"; SE42/SE43's own codes; the GT premix). Settings carry over only for the same formulation: backtest 99 of 145
   the same as Tech, 33 different (Tech printing codes James replaced), 13 the bubble line before any issue.
 - Still open from the morning: the spelling of FU1400GD4, FU001TLW4, FU001EAW4 with the `A`.
+- James: *"Don't use old formula code in the print out"* (rule R6): every row prints under his W% Master name (FUA152WB4 on an
+  auger line in summer -> FUA151WB4; FU0001RF6 -> FUA001RF6), "printed as" kept in the Draft's Source, settings untouched.
+  *"Take a look at today schedule and re run it with the new logic"*: 23 Oct, 99 orders - 41 as last issued, 28 by rule
+  with settings, 30 for the engineer of which 29 have their code decided and wait for line settings (auger step), 1
+  undecided (RPP40FW2, flame-retardant FW 4 mm: no Main yet). The morning's issued copy (58 for the engineer) stays as
+  issued unless James asks for a reissue. James: *"overall, I believe we have 99% capability now"*.
 
 ## Revision history
 

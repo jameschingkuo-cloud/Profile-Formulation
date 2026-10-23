@@ -166,7 +166,8 @@ def test_draft_keeps_every_formulation(tmp_path):
     from openpyxl import load_workbook
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28')
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
+               ASSIGN_RULES='0')          # codes as Tech printed them; James's names (23 Oct 2026) are tested in test_assign.py
     r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
     rows = list(load_workbook(out / 'FRM Draft 2026-09-28.xlsx', read_only=True)['Draft'].iter_rows(values_only=True))
@@ -309,7 +310,8 @@ def test_past_schedule_gets_the_latest_formulation(tmp_path):
     from openpyxl import load_workbook
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-29')
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-29',
+               ASSIGN_RULES='0')          # codes as Tech printed them; James's names (23 Oct 2026) are tested in test_assign.py
     env.pop('HISTORY_BEFORE', None)
     r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr

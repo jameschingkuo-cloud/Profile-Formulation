@@ -139,6 +139,23 @@ def rules():
     return _RULES
 
 
+def current_name(code):
+    """James's name for a code (James, 23 Oct 2026: "Don't use old formula code in the print out"). An old name that is
+    not a current Main / Secondary name anywhere (FU0014BA4 -> FUA014BA4, FH0012WB4 -> FHA012WB4, RO000WB4 -> RU0000WB4)
+    becomes the name he gave it; a name still current (FUA152WB4 is his winter name and the sign-blank Main) or one that
+    points to several Mains stays as printed."""
+    R = rules()
+    if 'rename' not in R:
+        current = {m['code'] for m in R['mains']}
+        to = defaultdict(set)
+        for m in R['mains']:
+            for p in m['printed']:
+                if p not in current:
+                    to[p].add(m['code'])
+        R['rename'] = {p: next(iter(c)) for p, c in to.items() if len(c) == 1}
+    return R['rename'].get(code, code)
+
+
 SAME_TOL = 2.5      # points of weight %, every material group
 
 

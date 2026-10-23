@@ -120,3 +120,12 @@ review and clean up"*; *"capture all the indicators like OP, R1, A1 etc"*. `calc
 (old names as "Printed as"), the indicator each prefix stands for (R1/R2/R3, R4, OP, S1, A1, U1, F1/F4, bubble line) next
 to the Spec and grade the schedule printed on the formulation's latest run (amber where they disagree), "Replaced" (same
 formulation or other composition), "Archived", and "Open for James" with what the notes do not settle.
+
+## R6. The printout uses James's names, never an old code (23 Oct 2026)
+James: *"Don't use old formula code in the print out"*. Every row of the Word formulation (and the Draft, the page) shows
+the code under the name James gave in the W% Master: a Main's old names (renames, and same-composition rows he folded
+into it) print as the Main - FUA152WB4 on an auger line in summer prints FUA151WB4, FU0001RF6 prints FUA001RF6, RU0000KS3
+prints RU0001KS3; the name Tech printed stays in the Draft's Source column ("printed as ..."), the settings are Tech's as
+issued, untouched. `daily/assign.py` `current_name` (an old name that is nowhere current, pointing to one Main) and, for an
+order's issued rows, the Main the rules name for that order; a name still current (FUA152WB4 is the winter name and the
+sign-blank Main) or pointing to two Mains (FH0001NSA) stays as printed. `ASSIGN_RULES=0` prints the codes as Tech did.

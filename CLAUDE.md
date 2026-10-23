@@ -406,7 +406,10 @@ has no earlier issue on its line and no approved master row (`ASSIGN_RULES=0` tu
   says to replace by it. A Main never run on the line is not a formulation yet: it stays an Exception that names the code
   and the W% (the auger calculation from the W% is the next step). The bubble line's BF codes have no W% row: a code
   already issued on the line for the same fixed parts is taken.
-- Every rule row says **PROPOSED BY RULE (code)** in its Note, `How Resolved` = "Proposed by rule (...)", the Draft has a
+- The printout uses James's names, never an old code (23 Oct 2026: *"Don't use old formula code in the print out"*):
+  an issued code he renamed or folded into a Main (same composition) prints as that Main (`assign.current_name`, and
+  the Main the rules name for the order); "printed as ..." stays in the Draft's Source; settings untouched.
+- Every rule row says **PROPOSED BY RULE** in its Note, `How Resolved` = "Proposed by rule (...)", the Draft has a
   "By Rule" sheet, the Issues a Medium row per order, and the Word file marks the rows and counts them on the cover.
   Never silent, never a guess: a key with several plain Mains, or no Main, is an Exception that says so.
 - Backtest (`tests/test_assign.py`): as each morning before Tech issued, for the orders the history could not answer, the

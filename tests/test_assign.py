@@ -40,6 +40,16 @@ def test_fixed_parts_of_the_code():
     assert assign.derive('SE21', row('RPP40WB1', 'PPP P Z9Z9Z9'))[0] is None
 
 
+def test_print_james_names_not_old_codes():
+    """James, 23 Oct 2026: "Don't use old formula code in the print out"."""
+    assert assign.current_name('FU0014BA4') == 'FUA014BA4'          # renamed
+    assert assign.current_name('FH0012WB4') == 'FHA012WB4'          # renamed (old UV letter)
+    assert assign.current_name('RO000WB4') == 'RU0000WB4'
+    assert assign.current_name('FUA152WB4') == 'FUA152WB4'          # still a current name (winter / sign blank): unchanged
+    assert assign.current_name('FU0021WB4') == 'FU0021WB4'          # a Main under its own name
+    assert assign.current_name('FH0001NSA') == 'FH0001NSA'          # points to two Mains: left for James
+
+
 def test_season_rule():
     assert assign.season(datetime.date(2026, 10, 31)) == 'summer'
     assert assign.season(datetime.date(2026, 11, 1)) == 'winter'
@@ -108,6 +118,26 @@ def test_backtest_against_tech_issues():
                 names = (p['main']['printed'] if p['main'] else set()) | {p['code']}
                 tot['same' if any(c in names for c in tech[k]) else 'different'] += 1
     assert tot['same'] >= 95 and tot['different'] <= 35, dict(tot)
+
+
+def test_draft_prints_james_names(tmp_path):
+    """29 Sep, every order as last issued: the codes print under James's names (FU0001RF6 -> FUA001RF6; FUA152WB4 on an
+    auger line in September -> FUA151WB4, his summer name), the settings untouched; the printed name stays in Source."""
+    out = tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-29')
+    r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    from openpyxl import load_workbook
+    rows = list(load_workbook(out / 'FRM Draft 2026-09-29.xlsx', read_only=True)['Draft'].iter_rows(values_only=True))
+    h = list(rows[0])
+    got = {}
+    for x in rows[1:]:
+        d = dict(zip(h, x))
+        got.setdefault(d['Order'], set()).add((d['Formula Code'], 'printed as' in str(d['Source'])))
+    assert got['H67A164-2'] == {('FUA001RF6', True)}
+    assert got['RP26604-1'] == {('FUA151WB4', True)}
+    assert got['H67A164-1'] == {('FU0070KS6', False)}
 
 
 def test_word_marks_rule_rows(tmp_path):
