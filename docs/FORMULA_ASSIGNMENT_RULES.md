@@ -67,3 +67,12 @@ rows (prefix from the Spec, grade letter from the colour / schedule grade, colou
 - 20: no W% Master row for the key: SE61 EB 3/5 mm (BF… are co-extrusion, "Not computed" - Tech's own SE61 pages have
   them, so the lookup must also take a code already issued on the line), PK 2 mm anti-static, FW 4 mm flame retardant,
   WB 3 mm opaque.
+
+## R5. Summer and winter formulations
+James, 23 Oct 2026: *"winter start in start of nov. Summar starts in the start of april"*.
+- Winter formulation from 1 November to 31 March; summer formulation from 1 April to 31 October. The schedule's run date
+  decides (today's formulation is for the schedule in hand).
+- Where it applies: a key with a "Summer" Main and a "Winter" Main in the W% Master. On 23 Oct that is WB 4 mm graphic
+  only: FUA151WB4 "Main Summer fomulation" and FUA152WB4 "Main Winter Formulation" (James's rename of FUA151WB4 2 of 2).
+  Tech's own 2026 issues agree: SE13 / SE31 / SE32 ran FUA152WB4 on 23 Sep - 7 Oct and FUA151WB4 for the SE43 group - to
+  be checked against the season boundary when the November pages come in.
