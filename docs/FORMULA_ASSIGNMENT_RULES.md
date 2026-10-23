@@ -158,3 +158,10 @@ James, 23 Oct 2026: *"The slitter should use the same formula like SPA signs bla
 - Records, 2020-2026: every "SEND TO SLITTER" order on file is an SPA or SPP product (SE31 1,122, SE24 554, SE21 124 ...);
   on Tech's 2026 pages they print under "(For sign blank orders only)" / "SIGN BLANK" with FUA152WB4 (SE12, SE13, SE31,
   SE32, SE24), FUA151WM4 for the WM ones and FXA020WB4 for an OP one. `daily/assign.py` `wanted`.
+- R6, checked on RP26717-1 (James, 23 Oct: *"RP26717-1 Sign blank why is that order sign blank. It's an RPA. Check
+  logic system"*): the rules do not call it a sign blank (RPA, "RUN WITH NEXT"); the "(For sign blank orders only)"
+  note and the FUA152WB4 settings are Tech's own 6-7 Oct SE13 page, where Tech grouped this order with the SPA sign
+  blanks (as last issued). The naming had then wrongly renamed it to the summer FUA151WB4 by the printed code alone.
+  Now the name follows the formulation the page printed: a group noted sign blank / VOIDFORM / corn box takes that
+  Main's name (`assign.names_for_issued`); only a plain group takes the order's own Main. "RUN WITH NEXT" (run on the
+  next order's formulation) is not read by the rules yet - noted for James.

@@ -275,6 +275,24 @@ def fits_plain(m, seas, line):
     return not q
 
 
+def names_for_issued(line, row, day, formulas):
+    """printed code -> James's name for an order's issued formulas (R6). The Main that lends its name is the one for the
+    formulation Tech actually printed: the page's own note decides (a "(For sign blank orders only)" group is the
+    sign-blank formulation whatever the product), else the order's own qualifiers. James, 23 Oct 2026, on RP26717-1 (an
+    RPA order Tech grouped with the sign blanks): it must print as the sign-blank Main, not be renamed to the summer one."""
+    key, why = derive(line, row)
+    if key is None:
+        return {}
+    want, seas = wanted(line, row, day)
+    page_q = set()
+    for f in formulas:
+        page_q |= {q for q in quals(f.get('note', '')) if q in ('sign', 'void', 'corn')}
+    main, _ = choose(key, page_q or want, seas, line)
+    if main is None:
+        return {}
+    return {f['formula_code']: main['code'] for f in formulas if f['formula_code'] in main['printed']}
+
+
 def issued_on_line(packets):
     """(line, printed code) -> (date, scan page, [formula dicts of the group]) from every Tech issue on file, latest wins."""
     out = {}

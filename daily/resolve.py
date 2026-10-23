@@ -200,11 +200,7 @@ def main():
                 # the codes print under James's names (23 Oct 2026: "Don't use old formula code in the print out"): the
                 # Main the rules name for this order lends its name to the issued code it was printed as (FUA152WB4 on
                 # the auger lines in summer -> FUA151WB4); the settings are Tech's as issued, untouched
-                names = {}
-                if RULES:
-                    prop, _ = assign.propose(line, r, datetime.date.fromisoformat(PKT), issued)
-                    if prop and prop['main']:
-                        names = {f['formula_code']: prop['code'] for f in rec[2] if f['formula_code'] in prop['main']['printed']}
+                names = assign.names_for_issued(line, r, datetime.date.fromisoformat(PKT), rec[2]) if RULES else {}
                 draft += draft_rows(line, order, product, rec, names)
                 continue
             if (line, product) in approved:      # an engineer decided it in the master
