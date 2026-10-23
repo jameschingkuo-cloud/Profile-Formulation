@@ -2268,6 +2268,11 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   with settings, 30 for the engineer of which 29 have their code decided and wait for line settings (auger step), 1
   undecided (RPP40FW2, flame-retardant FW 4 mm: no Main yet). The morning's issued copy (58 for the engineer) stays as
   issued unless James asks for a reissue. James: *"overall, I believe we have 99% capability now"*.
+- R7 (James: *"The slitter should use the same formula like SPA signs blank"*): an SPA/SPP product or an order sent to the
+  slitter takes the sign-blank Main (FUA152WB4); the records agree (every "SEND TO SLITTER" order on file is SPA/SPP).
+  *"Fresh the artifacts with today schedule"*: the 23 Oct draft, Word and page rebuilt in staging with the rules and
+  James's names (69 of 99 orders with a formulation, 12 PROPOSED BY RULE marks), console clean, artifact v49 republished
+  (the morning's v48 from the scheduled run was live; read and merged per the procedure). Not re-published to SharePoint.
 
 ## Revision history
 
