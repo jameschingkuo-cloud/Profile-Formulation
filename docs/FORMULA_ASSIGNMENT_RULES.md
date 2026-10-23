@@ -10,6 +10,8 @@ against the data on file. Nothing here is applied until the rule tests clean and
 James: *"a few rules for general, if its color (not black or white) its always graphic grade order (FUA, FAA etc)"*.
 - Colour other than KS (black) and WB (white) -> graphic grade -> third character of the code is `A` (FUA…, FAA…, FHA…, FRA…).
 - KS and WB orders: the grade comes from the schedule (grade A = graphic -> `A`; grade P = packaging -> `0`), to be confirmed.
+- **Exception: the bubble line** (SE61, co-extrusion, James's "BB line"; codes BF…). James, 23 Oct: *"bubble line are
+  expection. so BF does not apply to this rule. its BF0 even when its EB"*. A BF code always has `0` in the third place.
 - Test, 23 Oct: of James's Main/Secondary rows for colours other than KS/WB, 64 carry `A` after his renames; the 24 that
   keep `0` are customer-specific (Carter, Orbis, Tzu-Chi), roll, HDPE (HU…), the BB line (BF…), PE, flame-retardant and a
   few standard ones (FU0001EAD, FU0151EB4, FU1400GD4, FU0000NC6, FU0000NSG, FU0001SSA, FU001TLW4, FU001EAW4).
