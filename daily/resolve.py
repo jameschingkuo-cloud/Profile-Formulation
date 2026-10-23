@@ -111,7 +111,7 @@ def draft_rows(line, order, product, rec, names=None):
         var = variant(f.get("note", ""), i == 0)
         printed = f["formula_code"]
         shown = (names or {}).get(printed) or (assign.current_name(printed) if RULES else printed)
-        src = f"FRM {date} scan p{page}" + (f" (printed as {printed})" if shown != printed else "")
+        src = (f"Tech's calc sheet, last run {date}" if page == 'calc' else f"FRM {date} scan p{page}") + (f" (printed as {printed})" if shown != printed else "")
         for col, v in f["feeders"].items():
             if not (v.get("material") or v.get("set")):
                 continue
@@ -185,6 +185,8 @@ def main():
     history_dates = sorted(d for d in packets if packets[d]["frm"] and (cut is None or d < cut))
     approved, _ = approved_master()
     issued = assign.issued_on_line(packets) if RULES else {}
+    if RULES:
+        assign.set_pages(packets)            # the lines' feeder columns and wording, for settings taken from the calc sheets
 
     draft, exceptions, by_rule = [], [], []
     for pg in today["ext"]:
@@ -214,8 +216,8 @@ def main():
                 names = {f['formula_code']: prop['code'] for f in formulas if prop['main'] and f['formula_code'] in prop['main']['printed']}
                 for row in draft_rows(line, order, product, (date, page, formulas), names):
                     row[11] = f"Proposed by rule ({prop['how']})"
-                    row[13] = f"rule R1-R5 + settings as issued on {line} {date} (FRM scan p{page}" + (f", printed as {prop['printed_as']}" if prop['printed_as'] != prop['code'] else "") + ")"
-                    row[15] = "PROPOSED BY RULE" + (f" · {row[15]}" if row[15] else "")
+                    row[13] = f"rule R1-R7 + {prop['settings_src']}" + (f", printed as {prop['printed_as']}" if prop['printed_as'] != prop['code'] and page != 'calc' else "")
+                    row[15] = "PROPOSED BY RULE" + (" · settings from the calc sheet" if page == 'calc' else "") + (f" · {row[15]}" if row[15] else "")
                     draft.append(row)
                 by_rule.append([line, order, product, prop['code'], prop['how'], date])
                 continue

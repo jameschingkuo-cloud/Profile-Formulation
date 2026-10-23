@@ -2273,6 +2273,15 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   *"Fresh the artifacts with today schedule"*: the 23 Oct draft, Word and page rebuilt in staging with the rules and
   James's names (69 of 99 orders with a formulation, 12 PROPOSED BY RULE marks), console clean, artifact v49 republished
   (the morning's v48 from the scheduled run was live; read and merged per the procedure). Not re-published to SharePoint.
+- James, on the engineer list: *"H68A244-1 you sure we don't have this one? This is just black. Double check"* - Tech's SE21
+  calc sheet had FU0041KS5 since May 2026; the lookup had read only the FRM pages on file. Settings now come from (1)
+  the line's issued pages, (2) Tech's current calc recipe for the line (`Formulation Calc Library.xlsx`, marked "settings
+  from the calc sheet", materials as the line's page words the same material), (3) none. *"H6AA163-1 if it's color one
+  then just pick color graph formulation"*: FUA002OFA with the SE22 calc-sheet settings (as FEA002OFA). *"RP26717-1 Sign
+  blank why is that order sign blank. It's an RPA"*: Tech's own 6-7 Oct SE13 page groups it with the sign blanks; the
+  naming now follows the page's note (FUA152WB4), not the printed code alone. 23 Oct after all this: 41 as issued, 49 by
+  rule (21 from the calc sheets), 9 for the engineer (8 named: FU0031WB4 on SE25, FU0001WBD on SE32, FUA031KS5 and
+  RU0000KS5 on SE21; 1 undecided, RPP40FW2). Artifact v50.
 
 ## Revision history
 

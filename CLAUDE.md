@@ -402,8 +402,9 @@ has no earlier issue on its line and no approved master row (`ASSIGN_RULES=0` tu
   code (6.3 mm runs a ..6 code; 10 mm A, 13 mm D). The middle digits are a version number: James's Main row decides.
 - Qualifiers: VOIDFORM / corn box / sign blank from the special instructions; summer (1 Apr - 31 Oct) or winter Main;
   an "SE43" Main outranks the general one on SE43; customer-specific, roll, HDPE, PE Mains are never proposed by rule.
-- Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name he
-  says to replace by it. A Main never run on the line is not a formulation yet: it stays an Exception that names the code
+- Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name of
+  the same composition; else Tech's current calc recipe for it on the line (`out/Formulation Calc Library.xlsx`, marked
+  "settings from the calc sheet"; James, 23 Oct 2026: *"you sure we don't have this one? This is just black"*). A Main never run on the line is not a formulation yet: it stays an Exception that names the code
   and the W% (the auger calculation from the W% is the next step). The bubble line's BF codes have no W% row: a code
   already issued on the line for the same fixed parts is taken.
 - The printout uses James's names, never an old code (23 Oct 2026: *"Don't use old formula code in the print out"*):

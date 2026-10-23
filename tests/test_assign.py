@@ -73,7 +73,7 @@ def test_james_main_rows_decide():
     issued = {}
     # WB 4 mm graphic: summer and winter Mains (R5)
     p, _ = assign.propose('SE31', row('RPA40WB3051', 'PPP A R1R1R1'), datetime.date(2026, 10, 23), issued)
-    assert p['code'] == 'FUA151WB4' and p['settings'] is None
+    assert p['code'] == 'FUA151WB4' and (p['settings'] is None or p['settings'][1] == 'calc')   # no page: the calc sheet, if built
     p, _ = assign.propose('SE31', row('RPA40WB3051', 'PPP A R1R1R1'), datetime.date(2026, 11, 2), issued)
     assert p['code'] == 'FUA152WB4'
     # VOIDFORM picks the VOIDFORM Main; SE43's own Main outranks the general one there
@@ -109,6 +109,28 @@ def test_settings_come_from_the_line_and_the_bubble_line_falls_back():
     # SE61: no W% row for BF0000EB3, but Tech issued it on the line -> taken from the line
     p, _ = assign.propose('SE61', row('RBP33EB40', 'BBB P R6R6R6', 'Bradford'), datetime.date(2026, 10, 23), issued)
     assert p['code'] == 'BF0000EB3' and p['how'].startswith('code already issued on SE61')
+
+
+def test_settings_from_tech_calc_sheet():
+    """James, 23 Oct 2026, H68A244-1 (DPP50KS185, SE21): "you sure we don't have this one? This is just black. Double
+    check". No FRM page on file carries a KS 5 mm code on SE21, but Tech's SE21 calc sheet has FU0041KS5 (last run May
+    2026): the rule names FU0041KS5 and takes those settings, worded as the line's latest page prints each hopper."""
+    if not assign.CALC_LIB.exists():
+        import pytest
+        pytest.skip('Formulation Calc Library not built on this PC')
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        if d['packet_date'] <= '2026-10-07':
+            packets[d['packet_date']] = d
+    assign.set_pages(packets)
+    assign._CALC = None
+    p, why = assign.propose('SE21', row('DPP50KS185', 'PPP P R1R1R1', 'Send to Bobst'), datetime.date(2026, 10, 23), assign.issued_on_line(packets))
+    assert p['code'] == 'FU0041KS5' and p['settings'] and p['settings'][1] == 'calc'
+    feeders = p['settings'][2][0]['feeders']
+    assert set(feeders) == {f'Hopper {i}' for i in range(1, 6)}
+    assert feeders['Hopper 3']['set'] == '74' and 'Reclaim' in feeders['Hopper 3']['material']
+    assert 'calc sheet' in p['how'] and p['settings_src'].startswith("settings from Tech's SE21 calc sheet")
 
 
 def test_backtest_against_tech_issues():

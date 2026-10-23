@@ -165,3 +165,12 @@ James, 23 Oct 2026: *"The slitter should use the same formula like SPA signs bla
   Now the name follows the formulation the page printed: a group noted sign blank / VOIDFORM / corn box takes that
   Main's name (`assign.names_for_issued`); only a plain group takes the order's own Main. "RUN WITH NEXT" (run on the
   next order's formulation) is not read by the rules yet - noted for James.
+
+## Settings sources, in order (23 Oct 2026)
+James, on H68A244-1 (DPP50KS185, SE21, "Formula FU0041KS5 decided by rule; no settings on SE21"): *"you sure we don't have
+this one? This is just black. Double check"*. Tech's SE21 calc sheet has had FU0041KS5 since May 2026; the lookup had only
+read the FRM pages on file. A proposal's settings now come from, in order: (1) the formulation as Tech last issued it on
+the line (an FRM page on file, under James's name or an old name of the same composition); (2) Tech's current calc
+recipe for it on the line (`Formulation Calc Library.xlsx`, "Current Recipes", settings as Tech wrote them, materials
+worded as the line's latest page prints that role on that hopper) - marked "settings from the calc sheet" on the row;
+(3) none: an Exception that names the code. On 23 Oct this moves 21 of the 29 such orders into the formulation.

@@ -293,6 +293,88 @@ def names_for_issued(line, row, day, formulas):
     return {f['formula_code']: main['code'] for f in formulas if f['formula_code'] in main['printed']}
 
 
+CALC_LIB = config.OUTPUT_DIR / 'Formulation Calc Library.xlsx'      # calc/parse_fcal.py from Tech's SExx Formulation.xls
+_CALC = None
+_PAGES = {}
+
+
+def set_pages(packets):
+    """The latest Tech FRM page per line (feeder columns and the wording printed on each hopper), for calc recipes."""
+    global _PAGES
+    _PAGES = {}
+    for d in sorted(packets):
+        for pg in packets[d]['frm']:
+            _PAGES[pg['line_code']] = pg
+
+
+def calc_feeder(line, ext, feeder, columns):
+    """A calc-sheet feeder ('H1'; ('A','V1'); ('B','H1') on SE31; 'V1'; ('A','A1')) -> the line's FRM column name."""
+    f = str(feeder or '').strip().upper()
+    ext = (str(ext or '').strip().upper() or None)
+    if f.startswith('#') or ext == 'TOTAL':
+        return None
+    cands = []
+    if f.startswith('H') and f[1:].isdigit():
+        cands = [f'Hopper {f[1:]}', f'{ext or "A"} V{f[1:]}', f'Extruder {ext or "A"} V{f[1:]}', f'{ext or "A"} {f[1:]}']
+    elif f.startswith('V') and f[1:].isdigit():
+        cands = [f, f'{ext or "A"} {f}', f'Extruder {ext or "A"} {f}']
+    elif len(f) >= 2 and f[0] in 'ABCD' and f[1:].isdigit():
+        cands = [f'{f[0]} {f[1:]}']
+    return next((c for c in cands if c in columns), None)
+
+
+def calc_recipes():
+    """Tech's current calc recipes: (line, code) -> (last run, [formula dict]) in the shape of an issued FRM group.
+    Settings as Tech wrote them (auger lines: the setting; weight lines: the %); materials re-worded as the line's
+    latest FRM page prints the same role on that hopper, else as written in the calc sheet."""
+    global _CALC
+    if _CALC is not None:
+        return _CALC
+    _CALC = {}
+    if not CALC_LIB.exists():
+        return _CALC
+    from openpyxl import load_workbook
+    sys.path.insert(0, str(config.ROOT / 'calc'))
+    from common import mat_key  # noqa: E402
+    config.record_read(CALC_LIB, "Tech's calc recipes (formula assignment settings)")
+    ws = load_workbook(CALC_LIB, read_only=True, data_only=True)['Current Recipes']
+    rows = list(ws.iter_rows(values_only=True))
+    H = rows[0]
+    groups = defaultdict(list)
+    for r in rows[1:]:
+        d = dict(zip(H, r))
+        groups[(d['Line'], d['Formula Code'])].append(d)
+    for (line, code), rs in groups.items():
+        pg = _PAGES.get(line)
+        columns = pg['feeder_columns'] if pg else []
+        # the page's wording for the SAME material (by material key) on that hopper - never another material of the
+        # same role: a black order's "KS MB-CR401K" must not come out as the page's "WB-W26038A"
+        wording = {}
+        if pg:
+            for g in pg['groups']:
+                for f in g['formulas']:
+                    for col, v in f['feeders'].items():
+                        if v.get('material'):
+                            wording[(col, mat_key(v['material']))] = v['material']
+        feeders = {c: {'material': '', 'set': ''} for c in columns}
+        for d in rs:
+            col = calc_feeder(line, d['Extruder'], d['Feeder'], columns) if columns else (f"Hopper {str(d['Feeder'])[1:]}" if str(d['Feeder']).startswith('H') else None)
+            if not col or not d['Material (as written)']:
+                continue
+            weight = line in ('SE24', 'SE42', 'SE43', 'SE61')
+            val = d['Formulation %'] if weight else d['Setting']
+            if val is None or (isinstance(val, (int, float)) and float(val) == 0):
+                continue                                   # a hopper Tech does not feed is left empty, as on the page
+            mat = d['Material (as written)']
+            mat = wording.get((col, mat_key(mat)), mat)
+            s = f'{float(val):g}' if isinstance(val, (int, float)) else str(val)
+            feeders[col] = {'material': mat, 'set': s}
+        if any(v['material'] for v in feeders.values()):
+            last = max(str(d['Last Run'] or '')[:10] for d in rs)
+            _CALC[(line, code)] = (last, [{'formula_code': code, 'feeders': feeders, 'note': ''}])
+    return _CALC
+
+
 def issued_on_line(packets):
     """(line, printed code) -> (date, scan page, [formula dicts of the group]) from every Tech issue on file, latest wins."""
     out = {}
@@ -327,7 +409,8 @@ def propose(line, row, day, issued):
             if prior:
                 rec, code = prior[0]
                 return {'code': code, 'main': None, 'settings': rec, 'printed_as': code, 'season': seas,
-                        'how': f'code already issued on {line} for {"/".join(key)} (no W% Master row)'}, ''
+                        'how': f'code already issued on {line} for {"/".join(key)} (no W% Master row)',
+                        'settings_src': f'settings as issued on {line} {rec[0]} (FRM scan p{rec[1]})'}, ''
         return None, why
     for printed in sorted(main['printed'], key=lambda c: c != main['code']):   # James's name first, then old names
         rec = issued.get((line, printed))
@@ -338,9 +421,19 @@ def propose(line, row, day, issued):
             if not formulas:
                 continue
             return {'code': main['code'], 'main': main, 'settings': (rec[0], rec[1], formulas), 'printed_as': printed, 'season': seas,
-                    'how': f"James's Main {main['code']}" + (f' (Tech printed it as {printed})' if printed != main['code'] else '')}, ''
+                    'how': f"James's Main {main['code']}" + (f' (Tech printed it as {printed})' if printed != main['code'] else ''),
+                    'settings_src': f'settings as issued on {line} {rec[0]} (FRM scan p{rec[1]})'}, ''
+    # not on a page on file: Tech's own calc sheet for the line (James, 23 Oct 2026, H68A244-1 DPP50KS185: "you sure we
+    # don't have this one? This is just black. Double check" - FU0041KS5 had been on SE21's calc sheet since May 2026)
+    for printed in sorted(main['printed'], key=lambda c: c != main['code']):
+        rec = calc_recipes().get((line, printed))
+        if rec:
+            last, formulas = rec
+            return {'code': main['code'], 'main': main, 'settings': (last, 'calc', formulas), 'printed_as': printed, 'season': seas,
+                    'how': f"James's Main {main['code']}" + (f' (calc sheet has it as {printed})' if printed != main['code'] else '') + f"; settings from Tech's {line} calc sheet, last run {last}",
+                    'settings_src': f"settings from Tech's {line} calc sheet (last run {last}" + (f', as {printed}' if printed != main['code'] else '') + ')'}, ''
     return {'code': main['code'], 'main': main, 'settings': None, 'printed_as': None, 'season': seas, 'how': "James's Main"}, \
-        f'{main["code"]} by rule, never run on {line}: no settings on this line yet'
+        f'{main["code"]} by rule, never run on {line}: no settings on this line (no page, no calc sheet)'
 
 
 if __name__ == '__main__':
