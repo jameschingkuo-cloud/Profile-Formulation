@@ -8,7 +8,7 @@ logic"). The rules, quoted from James and tested, are in docs/FORMULA_ASSIGNMENT
   R2  reclaim only in KS / WB formulations (a consequence of R1; not used to choose, only to check).
   R3  the schedule's Spec column decides the first two letters (R1R1R1 -> FU, R4R4R4 -> RU, OPOPOP -> FX, S1S1S1 -> FS,
       R2R2R2 -> FU as Tech issues it (RU0001WB4 'LTL wrap' is a customer-specific Main),
-      A1A1A1 -> FA, U1U1U1 -> FH, F?F?F? -> FR, the bubble line's R6/RD/RM -> BF).
+      A1A1A1 -> FA, U1U1U1 -> FE ("Extra UV is FE"; FH on older pages), F?F?F? -> FR, the bubble line's R6/RD/RM -> BF).
   R4  the three middle digits are a version number: which version is current is what James marked Main in the W% Master.
   R5  summer formulation 1 Apr - 31 Oct, winter 1 Nov - 31 Mar, where a key has a "Summer" and a "Winter" Main.
 
@@ -33,7 +33,8 @@ import product_code as pc  # noqa: E402
 W_MASTER = config.ROOT / 'data' / 'w_master' / 'W Master Formulation draft (version 1) - James notes 2026-10-23.xlsx'
 
 PREFIX = {'R1R1R1': 'FU', 'R3R3R3': 'FU', 'R2R2R2': 'FU', 'R4R4R4': 'RU', 'OPOPOP': 'FX', 'S1S1S1': 'FS',
-          'A1A1A1': 'FA', 'U1U1U1': 'FH', 'F1F1F1': 'FR', 'F4F4F4': 'FR', 'R6R6R6': 'BF', 'RDRDRD': 'BF', 'RMR6R6': 'BF'}
+          'A1A1A1': 'FA', 'U1U1U1': 'FE', 'F1F1F1': 'FR', 'F4F4F4': 'FR', 'R6R6R6': 'BF', 'RDRDRD': 'BF', 'RMR6R6': 'BF'}
+OLD_PREFIX = {'FE': ('FH',)}            # James, 23 Oct 2026: "Extra UV is FE"; Tech's older pages print FH for it
 SPECIAL = {'OPOPOP', 'S1S1S1', 'A1A1A1', 'U1U1U1', 'F1F1F1', 'F4F4F4'}      # always graphic grade 'A'
 BLACK_WHITE = {'KS', 'WB'}
 CODE_RX = re.compile(r'\b([A-Z]{2}[A-Z0-9]{3,5}[A-Z]{2,3}[0-9A-Z])\b')
@@ -78,6 +79,11 @@ def restricted(note):
     return any(w in n for w in RESTRICTED)
 
 
+def canon_prefix(pre):
+    """'FH' -> 'FE' (the old letter for extra UV); anything else as it is."""
+    return next((k for k, olds in OLD_PREFIX.items() if pre in olds), pre)
+
+
 def thk_char(mm):
     """4.0 -> '4'; 6.3 -> '6' (a 6.3 mm order runs a ..6 code); 10 -> 'A'; 13 -> 'D'; 25 -> 'P'."""
     n = int(mm + 1e-9)
@@ -113,7 +119,7 @@ def rules():
             continue                     # premix colours / odd lengths: James to spell them (rules doc R1)
         m = {'code': code, 'printed': {r['Formula Code'], code}, 'level': lv, 'quals': quals(r['Notes']),
              'restricted': restricted(r['Notes']), 'application': r['Application'], 'note': r['Notes'],
-             'key': (code[:2], code[2], r['Colour'][:2], thk_char(float(r['Thk (mm)']))),
+             'key': (canon_prefix(code[:2]), code[2], r['Colour'][:2], thk_char(float(r['Thk (mm)']))),
              'w': {c: r.get(c) for c in W_COLS}, 'materials': r.get('Materials')}
         mains.append(m); by_key[m['key']].append(m)
     # printed names: a row "replace by/with X" (or by description) carries the settings of its Main under the old name
@@ -132,7 +138,7 @@ def rules():
             gch = 'A' if 'graphic' in note.lower() else ('0' if 'pack' in note.lower() else (own[2] if len(own) == 9 else None))
             cands = [m for m in mains if m['level'] == lv and m['key'][2] == (r['Colour'] or '')[:2]
                      and r['Thk (mm)'] is not None and m['key'][3] == thk_char(float(r['Thk (mm)'])) and m['quals'] == want
-                     and m['key'][0] == own[:2] and (gch is None or m['key'][1] == gch)]
+                     and m['key'][0] == canon_prefix(own[:2]) and (gch is None or m['key'][1] == gch)]
             if len(cands) == 1:
                 target = cands[0]
         if target is not None:
@@ -236,7 +242,7 @@ def issued_for_key(line, key, issued):
     """Codes Tech has issued on the line whose fixed parts (R1, R3, colour, thickness) are the key: the W% Master has
     no row for some of them (the bubble line's BF0000EB3 / EB5 are co-extrusion, 'Not computed'). Latest issue first."""
     hits = [(rec, code) for (ln, code), rec in issued.items()
-            if ln == line and len(code) == 9 and (code[:3], code[6:8], code[8]) == (key[0] + key[1], key[2], key[3])]
+            if ln == line and len(code) == 9 and (canon_prefix(code[:2]) + code[2], code[6:8], code[8]) == (key[0] + key[1], key[2], key[3])]
     return sorted(hits, key=lambda x: x[0][0], reverse=True)
 
 

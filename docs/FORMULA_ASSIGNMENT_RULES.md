@@ -46,7 +46,7 @@ James, 23 Oct 2026 (answering what decides black/white): *"R1 is standard and R4
   | OPOPOP          | FX          | extra opaque ("OP")                          |
   | S1S1S1          | FS          | ultra smooth ("S1")                          |
   | A1A1A1          | FA          | anti-static                                  |
-  | U1U1U1          | FH (FE?)    | extra UV ("U1"; James renames some FH -> FE) |
+  | U1U1U1          | FE          | extra UV ("U1"). James, 23 Oct: *"Extra UV is FE"*; FH on old pages is the same thing |
   | F1F1F1 / F4F4F4 | FR          | flame retardant                              |
   | R6R6R6, RDRDRD, RMR6R6 | BF   | the BB line (SE61 co-extrusion)              |
 
