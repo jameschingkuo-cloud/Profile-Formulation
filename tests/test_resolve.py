@@ -42,6 +42,8 @@ def test_draft_matches_issued_25_sep(tmp_path):
     import assign
     printed_of = {m["code"]: m["printed"] for m in assign.rules()["mains"]}
     for k in prop:
+        if k == ("SE25", "RP26923-1"):               # the one formula Tech changed that day (FU0021WB4 -> RU0001WB4)
+            continue
         for c in codes[k]:
             assert c in icodes[k] or any(ic in printed_of.get(c, ()) for ic in icodes[k]), (k, codes[k], icodes[k])
     # The two orders new that morning are proposed by rule (daily/assign.py, James Kuo's rules of 23 Oct 2026) with the
