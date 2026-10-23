@@ -129,3 +129,13 @@ prints RU0001KS3; the name Tech printed stays in the Draft's Source column ("pri
 issued, untouched. `daily/assign.py` `current_name` (an old name that is nowhere current, pointing to one Main) and, for an
 order's issued rows, the Main the rules name for that order; a name still current (FUA152WB4 is the winter name and the
 sign-blank Main) or pointing to two Mains (FH0001NSA) stays as printed. `ASSIGN_RULES=0` prints the codes as Tech did.
+
+## Next: line settings from the W% (the auger calculation), first backtest (23 Oct 2026)
+For a Main never run on a line: setting = W% x the line's throughput / the hopper's calibration slope (Tech's calc
+library: current slopes per line / hopper / material; the recipes' g/min), each material on the hopper that carries its
+role on that line (`calc/auger_rules.py`). Cross-line backtest (`work/backtest_auger3.py`): a recipe's settings on line L
+predicted from the same code's composition on another line, with L's slopes and L's usual throughput for the order's GSM
+(69 recipes, 310 hopper settings): median error 1.1 setting points, 63% within 2, 80% within 5, 90% within 10. The tail is
+throughput (an order run slower than the line's usual rate: FUA051KSA 10 mm on SE21/22) and tiny-slope additive hoppers
+(FR0021GS4 H5). So calculated settings must print as such - PROPOSED SETTINGS (calculated), with the W% and the assumed
+throughput beside them, for Tech to check - never as issued settings. James to see these numbers before it goes in.
