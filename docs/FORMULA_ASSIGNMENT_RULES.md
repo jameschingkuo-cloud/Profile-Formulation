@@ -139,3 +139,13 @@ predicted from the same code's composition on another line, with L's slopes and 
 throughput (an order run slower than the line's usual rate: FUA051KSA 10 mm on SE21/22) and tiny-slope additive hoppers
 (FR0021GS4 H5). So calculated settings must print as such - PROPOSED SETTINGS (calculated), with the W% and the assumed
 throughput beside them, for Tech to check - never as issued settings. James to see these numbers before it goes in.
+
+## 3 mm VOIDFORM, checked in the records (23 Oct 2026)
+James: *"For the one that said void form. I think you probably put it as standard and that's why I missed it during clean
+up. Check old record for 3mm void form formula"*. Every Tech issue on file: SE11 prints FU0022WB3 "(For VOIDFORM order
+only)" for the 3 mm WB VOIDFORM orders (24 issues since 23 Sep; the calc library notes it "Void Form" since 2023) - James
+marked it Main Voidform. SE43 prints FU0151WB3 for its 3 mm WB orders, VOIDFORM (H69A038-1, 28-30 Sep) and plain
+packaging (H69A183-2/-3, H69A330-3, 6-7 Oct) alike; revision 1 labelled it "Standard" because its latest run was the
+VOIDFORM order and the page row carried no "(For VOIDFORM ...)" note, so James's note became "Secondary Packing grade".
+Proposed: FU0151WB3 = "Main SE43" for 3 mm WB, as FU0151KS3 ("Main SE43 only") and FU0151WB4 ("Main Voidform, SE43").
+On the "Open for James" sheet of revision 2.

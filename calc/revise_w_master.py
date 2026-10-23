@@ -192,6 +192,13 @@ def main():
         ['Extra UV is FE', 'FHA101WB3 and FHA012WB4 keep FH in the names James gave; FH0001NSA has two Mains (anti-static -> FHA001NSA, extra UV -> FEA001NSA)', 'Rename FHA.. to FEA..? Anti-static is FA by the Spec rule'],
         ['Weight-blender lines', 'SE43 prints FU0151WB3 (WB 3 mm packaging; note: Secondary), FU0010GS3 / FU0010BD3 / FUA000BD3 (coloured 3 mm); SE42 prints FU0151KS3 ("Main SE43 only")', 'Own Mains on SE42/SE43, or the general ones?'],
         ['GT premix', 'DPP40WB1700 runs FU001GTW4 / FU0021GT4 (note "???")', 'Keep as an engineer decision?'],
+        ['3 mm VOIDFORM (James, 23 Oct: "Check old record for 3mm void form formula")',
+         'Tech\'s records: SE11 issues FU0022WB3 "(For VOIDFORM order only)" on every 3 mm WB VOIDFORM order since 23 Sep (and the calc library notes it "Void Form" since 2023) - '
+         'it is marked Main Voidform already. SE43 issues FU0151WB3 for its 3 mm WB orders, the VOIDFORM one (H69A038-1 DPP30WB1020, 28-30 Sep) and the plain packaging ones '
+         '(H69A183-2/-3, H69A330-3, 6-7 Oct) alike; revision 1 labelled FU0151WB3 "Standard" (its latest run was the VOIDFORM order), so the VOIDFORM use was not visible and '
+         'the note became "Secondary Packing grade". Also labelled Standard / run-out though their latest run was a VOIDFORM order: FU0011WB5 1 of 2, FUA011WB5 2 of 6, '
+         'FU0001WBA, FU0041WBA, FU0001WBD, FU0061WBD (the VOIDFORM-specific rows exist beside them).',
+         'FU0151WB3 = "Main SE43" (3 mm WB, void form and packaging), like FU0151KS3 and FU0151WB4?'],
     ]
     sheet('Open for James', ['Question', 'Detail', 'To decide'], data, {'Question': 30, 'Detail': 110, 'To decide': 40})
     OUT.parent.mkdir(parents=True, exist_ok=True)
