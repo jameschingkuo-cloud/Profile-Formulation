@@ -69,6 +69,14 @@ def test_james_main_rows_decide():
     assert p['code'] == 'FU0021WB4'
     p, _ = assign.propose('SE43', row('DPP40WB1673', 'PPP P R1R1R1', 'VOIDFORM'), datetime.date(2026, 10, 23), issued)
     assert p['code'] == 'FU0151WB4'
+    # R7: an SPA product or an order sent to the slitter takes the sign-blank Main; a colour with no sign-blank Main
+    # takes its plain Main (SPA40WM8 -> FUA151WM4, as Tech prints)
+    p, _ = assign.propose('SE13', row('SPA40WB958', 'PPP A R1R1R1'), datetime.date(2026, 10, 23), issued)
+    assert p['code'] == 'FUA152WB4'
+    p, _ = assign.propose('SE13', row('RPA40WB3502', 'PPP A R1R1R1', 'SEND TO SLITTER. MARK EDGE'), datetime.date(2026, 10, 23), issued)
+    assert p['code'] == 'FUA152WB4'
+    p, _ = assign.propose('SE31', row('SPA40WM8', 'PPP A R1R1R1', 'SEND TO SLITTER'), datetime.date(2026, 10, 23), issued)
+    assert p['code'] == 'FUA151WM4'
     # a key with two plain Mains is not decided (KS 3 mm packaging: James to say)
     p, why = assign.propose('SE11', row('RPP30KS948', 'PPP P R1R1R1'), datetime.date(2026, 10, 23), issued)
     assert p is None and why.startswith('several Mains')
@@ -136,7 +144,7 @@ def test_draft_prints_james_names(tmp_path):
         d = dict(zip(h, x))
         got.setdefault(d['Order'], set()).add((d['Formula Code'], 'printed as' in str(d['Source'])))
     assert got['H67A164-2'] == {('FUA001RF6', True)}
-    assert got['RP26604-1'] == {('FUA151WB4', True)}
+    assert got['RP26604-1'] == {('FUA152WB4', False)}        # an SPA sign blank (R7): FUA152WB4 is its Main, no rename
     assert got['H67A164-1'] == {('FU0070KS6', False)}
 
 

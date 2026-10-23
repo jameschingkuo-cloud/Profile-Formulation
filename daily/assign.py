@@ -219,12 +219,15 @@ def derive(line, row):
 def wanted(line, row, day):
     """The qualifiers an order asks for, from its special instructions and line."""
     si = (row.get('special_instructions') or '').upper()
+    prod = row.get('prod_code') or ''
     q = set()
     if 'VOIDFORM' in si or 'VOID FORM' in si:
         q.add('void')
     if 'CORN' in si:
         q.add('corn')
-    if 'SIGN BLANK' in si or 'SIGNBLANK' in si:
+    # R7 (James, 23 Oct 2026): "The slitter should use the same formula like SPA signs blank". A sign blank is an SPA
+    # (or SPP) product, or any order sent to the slitter; Tech prints these under "(For sign blank orders only)".
+    if 'SIGN BLANK' in si or 'SIGNBLANK' in si or 'SLIT' in si or prod[:3] in ('SPA', 'SPP'):
         q.add('sign')
     mm = pc.thickness_mm(row.get('prod_code') or '')
     if mm is not None and abs(mm - 6.3) < 1e-6:

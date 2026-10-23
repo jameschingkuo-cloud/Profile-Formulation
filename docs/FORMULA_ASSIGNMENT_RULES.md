@@ -149,3 +149,12 @@ packaging (H69A183-2/-3, H69A330-3, 6-7 Oct) alike; revision 1 labelled it "Stan
 VOIDFORM order and the page row carried no "(For VOIDFORM ...)" note, so James's note became "Secondary Packing grade".
 Proposed: FU0151WB3 = "Main SE43" for 3 mm WB, as FU0151KS3 ("Main SE43 only") and FU0151WB4 ("Main Voidform, SE43").
 On the "Open for James" sheet of revision 2.
+
+## R7. The slitter takes the sign-blank formula
+James, 23 Oct 2026: *"The slitter should use the same formula like SPA signs blank"*.
+- A sign blank is an SPA (or SPP) product, or any order whose instructions send it to the slitter ("SEND TO SLITTER");
+  it takes the Main James marked for sign blanks (WB 4 mm: FUA152WB4 "Main SPA"). A colour or thickness with no
+  sign-blank Main takes its plain Main, as Tech prints (SPA40WM8 on SE31: FUA151WM4).
+- Records, 2020-2026: every "SEND TO SLITTER" order on file is an SPA or SPP product (SE31 1,122, SE24 554, SE21 124 ...);
+  on Tech's 2026 pages they print under "(For sign blank orders only)" / "SIGN BLANK" with FUA152WB4 (SE12, SE13, SE31,
+  SE32, SE24), FUA151WM4 for the WM ones and FXA020WB4 for an OP one. `daily/assign.py` `wanted`.
