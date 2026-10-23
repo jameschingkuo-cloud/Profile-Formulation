@@ -2289,6 +2289,11 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   no settings on the line, goes to the engineer. 23 Oct, rules only: 99 orders - 87 by rule (36 with this order's own
   last-issued settings, 30 with the line's, 21 from the calc sheets), 12 for the engineer (FU0031WB4 and FU0051WB5 on
   SE25, FU0001WBD on SE32, FUA031KS5 / RU0000KS5 / RU0000WB4 on SE21/SE25, RPP40FW2 undecided). Artifact v50. pytest 81.
+- R8 (James: *"H69A284-3 we don't have roll formulation??"*): a roll order (ROLLS / "Rolled material" in its instructions,
+  spec R2R2R2) takes his "Main roll" (WB 4 mm: FU0021WB4, with the SE25 settings Tech noted "(For roll material only)"
+  and the run-out row Tech prints with it); LTL wrap (LTL / WRAP) takes RU0001WB4 "Main, R2 LTL wrap". An order with a
+  qualifier now takes the issued group Tech noted for it, not the newest group under the code. 23 Oct, final: 90 of 99
+  by rule (36 own last issue, 33 the line's, 21 calc sheets), 9 for the engineer; artifact refreshed again. pytest 82.
 
 ## Revision history
 
