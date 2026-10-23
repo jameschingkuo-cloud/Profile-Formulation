@@ -1,4 +1,6 @@
-"""Backtest: the FRM Draft for 25 Sep, built only from the 23-24 Sep issued FRMs, against what Tech issued on 25 Sep."""
+"""Backtest of the issue-history mechanism: the FRM Draft for 25 Sep as last issued (ASSIGN_RULES=0: the pre-23-Oct draft),
+built only from the 23-24 Sep issued FRMs, against what Tech issued on 25 Sep. Since 23 Oct 2026 the history serves the
+rules only as a settings source (James: "No history process"); the rules-first draft is tested in test_assign.py."""
 import json
 import os
 import subprocess
@@ -13,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_draft_matches_issued_25_sep(tmp_path):
     env = dict(os.environ, PYTHONUTF8="1", PKT_DATE="2026-09-25", RUN_DATE="2026-09-28", HISTORY_BEFORE="2026-09-25",
-               OUTPUT_DIR=str(tmp_path / "out"), WORK_DIR=str(tmp_path / "work"))
+               OUTPUT_DIR=str(tmp_path / "out"), WORK_DIR=str(tmp_path / "work"), ASSIGN_RULES="0")
     r = subprocess.run([sys.executable, str(ROOT / "daily/resolve.py")], env=env, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stderr[-2000:]
     wb = load_workbook(tmp_path / "out" / "FRM Draft 2026-09-25.xlsx")
@@ -36,23 +38,9 @@ def test_draft_matches_issued_25_sep(tmp_path):
                             feeder = feeder.split(" ", 1)[1] if feeder[:2] in ("A ", "B ", "C ", "D ") else feeder
                             issued[(pg["line_code"], o)].add((feeder, v["material"], v["set"]))
     differ = sorted(k for k in prop if prop[k] != issued.get(k))
-    assert len(prop) == 71
-    # the codes print under James's names (23 Oct 2026, rule R6): each is the issued code or a Main it was printed as
-    sys.path.insert(0, str(ROOT / "daily"))
-    import assign
-    printed_of = {m["code"]: m["printed"] for m in assign.rules()["mains"]}
+    assert len(prop) == 69
     for k in prop:
-        if k == ("SE25", "RP26923-1"):               # the one formula Tech changed that day (FU0021WB4 -> RU0001WB4)
-            continue
-        for c in codes[k]:
-            assert c in icodes[k] or any(ic in printed_of.get(c, ()) for ic in icodes[k]), (k, codes[k], icodes[k])
-    # The two orders new that morning are proposed by rule (daily/assign.py, James Kuo's rules of 23 Oct 2026) with the
-    # very codes Tech issued that day: H67A120-1 FU0021WB4 (SE23), H68A153-1 FXA020WB4 (SE31), each with the line's
-    # settings as last issued (Tech tuned some that day). RP26923-1: the one formula Tech changed that day.
-    by_rule = {row[1] for row in wb["By Rule"].iter_rows(min_row=2, values_only=True)}
-    assert by_rule == {"H67A120-1", "H68A153-1"}
-    for k in (("SE23", "H67A120-1"), ("SE31", "H68A153-1")):
-        assert codes[k] == icodes[k]
-    assert set(differ) <= {("SE23", "H67A120-1"), ("SE31", "H68A153-1"), ("SE25", "RP26923-1")} and ("SE25", "RP26923-1") in differ
+        assert codes[k] == icodes[k] or k == ("SE25", "RP26923-1"), (k, codes[k], icodes[k])
+    assert differ == [("SE25", "RP26923-1")]          # the one formula Tech changed that day
     exc = {row[1] for row in wb["Exceptions"].iter_rows(min_row=2, values_only=True)}
-    assert exc == set()                               # nothing left for an engineer that morning
+    assert exc == {"H67A120-1", "H68A153-1"}          # the two new orders go to an engineer (the rules answer them: test_assign.py)

@@ -182,6 +182,32 @@ def test_draft_prints_james_names(tmp_path):
     assert got['H67A164-1'] == {('FU0070KS6', False)}
 
 
+def test_rules_first_25_sep(tmp_path):
+    """James, 23 Oct 2026: "Moving forward ... we use logic base formulation process. Remove old logic and apply new" and
+    "No history process. If logic don't work, ask engineering for help". 25 Sep as that morning, rules first: the two
+    new orders get the codes Tech issued (FU0021WB4, FXA020WB4); every order left to the engineer says why (a Main
+    without settings on the line, or a key the rules cannot decide); nothing is printed "as last issued" by itself."""
+    out = tmp_path / 'out'
+    out.mkdir()
+    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-25',
+               RUN_DATE='2026-09-28', HISTORY_BEFORE='2026-09-25')
+    r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    from openpyxl import load_workbook
+    wb = load_workbook(out / 'FRM Draft 2026-09-25.xlsx', read_only=True)
+    rows = list(wb['Draft'].iter_rows(values_only=True))
+    h = list(rows[0])
+    hows = {}
+    for x in rows[1:]:
+        d = dict(zip(h, x))
+        hows.setdefault(d['Order'], set()).add(str(d['How Resolved']).split(' (')[0])
+    assert all(v <= {'By rule', 'Proposed by rule', 'Product to Formula'} for v in hows.values()), hows
+    by_rule = {row[1] for row in wb['By Rule'].iter_rows(min_row=2, values_only=True)}
+    assert {'H67A120-1', 'H68A153-1'} <= by_rule
+    for e in list(wb['Exceptions'].iter_rows(values_only=True))[1:]:
+        assert str(e[8]).startswith('Formula ') or 'rules:' in str(e[8]), e
+
+
 def test_word_marks_rule_rows(tmp_path):
     out = tmp_path / 'out'
     out.mkdir()

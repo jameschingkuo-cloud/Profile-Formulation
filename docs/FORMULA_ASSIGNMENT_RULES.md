@@ -174,3 +174,15 @@ the line (an FRM page on file, under James's name or an old name of the same com
 recipe for it on the line (`Formulation Calc Library.xlsx`, "Current Recipes", settings as Tech wrote them, materials
 worded as the line's latest page prints that role on that hopper) - marked "settings from the calc sheet" on the row;
 (3) none: an Exception that names the code. On 23 Oct this moves 21 of the 29 such orders into the formulation.
+
+## The rules are the process (23 Oct 2026)
+James: *"I think I know the problem. Moving forward, including today we use logic base formulation process. Remove old
+logic and apply new."* From 23 Oct `daily/resolve.py` decides every order in this order: an engineer's approved decision
+in the Formulation Master; then the rules (the Main for the product's fixed parts and qualifiers), with the settings from
+this order's own last issue when that is the same formulation, else the line's latest issue of it, else Tech's calc
+sheet; an order whose last issue was a formulation James replaced gets the Main and goes to the engineer if the line has
+no settings for it. Only where the rules cannot decide (no Main, several Mains, no prefix rule) is the order printed as
+last issued, marked RULES UNDECIDED. `ASSIGN_RULES=0` keeps the pre-23-Oct draft (each order as last issued) for the
+backtests.
+- James, 23 Oct 2026: *"No history process. If logic don't work, ask engineering for help"*. An order the rules cannot
+  decide is an Exception for the engineer (its last issue, if any, is quoted as a note, never printed as the formulation).

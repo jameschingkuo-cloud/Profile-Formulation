@@ -394,8 +394,10 @@ James: *"There are too many new product code which make the one to one match not
 build logic system so that you assign formulation to product base on logic"*. The rules he gave, quoted and tested, are
 in `docs/FORMULA_ASSIGNMENT_RULES.md`; the authority for which code is current is his annotated W% Master
 (`data/w_master/W Master Formulation draft (version 1) - James notes 2026-10-23.xlsx`, Notes column: Main / Secondary /
-replace by / archive / remove / rename). `daily/assign.py` applies them; `daily/resolve.py` calls it for an order that
-has no earlier issue on its line and no approved master row (`ASSIGN_RULES=0` turns it off for backtests).
+replace by / archive / remove / rename). `daily/assign.py` applies them; from 23 Oct (James: *"Moving forward, including today we use logic base formulation
+process. Remove old logic and apply new"*) `daily/resolve.py` decides every order by them, after an engineer's approved
+master row and before the order history, which is used only for the settings (this order's own last issue of the same
+formulation first) and, marked RULES UNDECIDED, where the rules cannot decide (`ASSIGN_RULES=0`: the old draft, for backtests).
 - The code's fixed parts come from the schedule row: prefix from the Spec (R1R1R1 FU, R4R4R4 RU, OPOPOP FX, S1S1S1 FS,
   A1A1A1 FA, U1U1U1 FH, F.. FR, the bubble line BF); third character `A` for a colour other than KS/WB and for the special
   specs, else the schedule's grade (A -> A, P -> 0), always `0` on the bubble line; colour and thickness from the product

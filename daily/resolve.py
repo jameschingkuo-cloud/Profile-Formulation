@@ -198,19 +198,25 @@ def main():
                                    f"Scan read not certain - check the order and product on the paper: {r['read_check']}", "", None, None])
                 continue
             rec = by_order.get((line, order))
-            if rec:
-                # the codes print under James's names (23 Oct 2026: "Don't use old formula code in the print out"): the
-                # Main the rules name for this order lends its name to the issued code it was printed as (FUA152WB4 on
-                # the auger lines in summer -> FUA151WB4); the settings are Tech's as issued, untouched
-                names = assign.names_for_issued(line, r, datetime.date.fromisoformat(PKT), rec[2]) if RULES else {}
-                draft += draft_rows(line, order, product, rec, names)
+            if rec and not RULES:                # ASSIGN_RULES=0: the pre-23-Oct draft, each order as last issued
+                draft += draft_rows(line, order, product, rec)
                 continue
-            if (line, product) in approved:      # an engineer decided it in the master
+            if (line, product) in approved:      # an engineer decided it in the master: outranks the rules
                 draft += master_rows(line, order, product, approved[(line, product)])
                 continue
-            # the rules (daily/assign.py; James, 23 Oct 2026): the Main for this product's fixed parts, with the settings
-            # Tech last printed for it on this line. Marked PROPOSED BY RULE on every row; never silent.
+            # The rules first (James Kuo, 23 Oct 2026: "Moving forward, including today we use logic base formulation
+            # process. Remove old logic and apply new"): the Main for this product's fixed parts (daily/assign.py). Its
+            # settings: this order's own last issue when that is the same formulation (continuity on the floor), else
+            # the line's latest issue of it, else Tech's calc sheet. An order whose last issue was a formulation James
+            # replaced gets the Main, and goes to the engineer if the line has no settings for it yet.
             prop, why = assign.propose(line, r, datetime.date.fromisoformat(PKT), issued) if RULES else (None, 'rules off')
+            if prop and rec and prop['main'] and any(f['formula_code'] in prop['main']['printed'] for f in rec[2]):
+                own = [f for f in rec[2] if f['formula_code'] in prop['main']['printed']]
+                names = {f['formula_code']: prop['code'] for f in own}
+                for row in draft_rows(line, order, product, (rec[0], rec[1], own), names):
+                    row[11] = f"By rule ({prop['how'].split(';')[0]}); settings as last issued for this order"
+                    draft.append(row)
+                continue
             if prop and prop['settings']:
                 date, page, formulas = prop['settings']
                 names = {f['formula_code']: prop['code'] for f in formulas if prop['main'] and f['formula_code'] in prop['main']['printed']}
@@ -221,10 +227,16 @@ def main():
                     draft.append(row)
                 by_rule.append([line, order, product, prop['code'], prop['how'], date])
                 continue
+            # James, 23 Oct 2026: "No history process. If logic don't work, ask engineering for help": an order the rules
+            # cannot decide goes to the engineer, with what Tech last issued for it as a note, never as the formulation.
             hint = why if why else ""
+            if rec and prop is None:
+                hint = f"Rules cannot decide ({why}); last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]} - ask engineering"
             if prop:                             # the code is decided, its settings on this line are not
                 hint = f"Formula {prop['code']} by rule ({prop['how']}); never run on {line}: settings to be set. " \
                        f"W%: " + ", ".join(f"{k.split(' ')[0]} {v:g}" for k, v in (prop['main']['w'] or {}).items() if v)
+                if rec:
+                    hint += f" | Last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]} - a formulation James replaced"
             hint0 = hint
             hint = ""
             prod_rec = by_product.get((line, product))

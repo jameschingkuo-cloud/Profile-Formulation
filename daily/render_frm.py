@@ -239,8 +239,8 @@ def render(today, lines, exc, out):
         'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=RED if n_exc else GREY)
     fp = sec.footer.paragraphs[0]
     n_rule = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any(x['note'].startswith('PROPOSED BY RULE') for x in g['forms']))
-    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation as last issued by Tech for each order on its line"
-            + (' · rows marked PROPOSED BY RULE: the Main for the product by the rules of 23 Oct 2026, with the settings last issued on the line' if n_rule else '') + ' · page ', 8, color=GREY)
+    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation by the rules of 23 Oct 2026 (James Kuo's W% Master), settings as Technical last issued them on the line"
+            + (' · rows marked PROPOSED BY RULE: this order never ran that formulation here before' if n_rule else '') + ' · page ', 8, color=GREY)
     page_field(fp)
 
     # ---- cover
