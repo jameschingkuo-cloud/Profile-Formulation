@@ -2251,8 +2251,17 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   assigned with Fomulation. You will have to do the Auger calculation as well"*).
 - Also today: Tech's 6 and 7 Oct FRM pages into the packets (8 Oct scan, read by eye, `daily/frm_from_text.py`; 5 and
   2 Oct still to transcribe); the 8 and 9 Oct Word files went out before those pages were in (SE43 colour feeder V3 vs V8).
-- Open with James: KS 3 mm packaging Main (FU0032KS3 or FU0051KS3); SE42/SE43 Mains (FU0151WB3, FU0010GS3/BD3,
-  FUA000BD3); the spelling of FU1400GD4, FU001TLW4, FU001EAW4 with the `A`; FE vs FH for extra UV.
+- James, later the same day: *"Extra UV is FE"* (FH on old pages is the same); *"keep this excel in your MD file and produce a
+  revision"* / *"make a new Master W % formulation excel for me to review and clean up"* / *"capture all the indicators like
+  OP, R1, A1 etc"*: his annotated file is kept in `data/w_master/`, `calc/revise_w_master.py` builds **W% Master Formulation
+  (draft v2).xlsx** (published to the workspace): 179 Main/Secondary rows under his names with the old names as "Printed as",
+  the indicator each prefix stands for beside the Spec and grade the schedule printed on its latest run, 133 rows folded
+  ("Replaced": same formulation within 2.5 points, so its line settings carry over, or another composition, which needs
+  its own), 56 archived, and "Open for James" (10 items for Monday 26 Oct: two Mains for KS 3 mm and KS 6 mm packaging and
+  NS 10 mm UV; FUA001SS6 and FAA051WBA notes without a target; FU00020BF4 / FU001WB5 code lengths; FHA.. names under
+  "FE"; SE42/SE43's own codes; the GT premix). Settings carry over only for the same formulation: backtest 99 of 145
+  the same as Tech, 33 different (Tech printing codes James replaced), 13 the bubble line before any issue.
+- Still open from the morning: the spelling of FU1400GD4, FU001TLW4, FU001EAW4 with the `A`.
 
 ## Revision history
 

@@ -135,6 +135,8 @@ Change these only with James's explicit say-so, and log the change in the handof
 | `daily/manual/` | Hand-found issues per day (`manual_issues_<date>.py`) |
 | `daily/cfg/` | Read Me notes per day (`cfg_<date>.json`) |
 | `calc/` | Tech's `SExx Formulation.xls` → `Formulation Calc Library.xlsx` (`parse_fcal.py` → `export_calc_products.py` → `build_formulation_master.py`); `auger_rules.py` |
+| `daily/assign.py` | Formula assignment by rule (James Kuo, 23 Oct 2026): rules R1-R5 + his Main rows -> the code and the line's last issued settings; `docs/FORMULA_ASSIGNMENT_RULES.md` has the rules verbatim and their tests |
+| `data/w_master/` | James's annotated W% Master (`...James notes 2026-10-23.xlsx`, kept as received: the authority on which code is Main); `calc/revise_w_master.py` builds revision 2 from it (`out/W% Master Formulation (draft v2).xlsx`) |
 | `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. `preflight.py`: master change control (`check` / `accept`; accepted versions in `data/snapshots/`). `seed_master.py`: one-time Draft seed. Flow and maintenance in `docs/DATABASE.md` (§3, §7) |
 | `product_master/` | `prepare.py`: Product Master → `Product Master - Prepared <date>.xlsx` (code-derived columns, Issues, Verify First, Colour Codes, Import Map; §7.18). A working file, not published |
 | `scan_reader/` | `ext_scan_reader.py` (EXT scan reader, R1/R2 hardcoded, `glyph_bank.npz`); `ext_fields.py` (step 2: every other EXT column by printed column, `glyph_bank_fields.npz`); `validate_read.py`, `instructions.py` (logic checks); `render_pages.py` (page PNGs + quarter tiles for reading) |

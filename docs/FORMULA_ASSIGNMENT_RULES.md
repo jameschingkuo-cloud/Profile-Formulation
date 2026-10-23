@@ -103,3 +103,20 @@ the misses), as each morning before Tech issued, on the 145 orders the issue his
 (FU0021WB4, FXA020WB4), nothing left for the engineer. 23 Oct: 70 orders instead of 41 (29 by rule, all with settings),
 29 Exceptions instead of 58, 25 of them naming the code and waiting only for line settings (FU0031WB4 on SE12/13/23/25/31,
 FU0061WBD on SE32, FUA031KS5/6 and FUA032KS4 on SE21 ...).
+
+## Settings carry over only for the same formulation (23 Oct 2026)
+A "replace by ..." note means two things. Where the old row has the same composition as James's Main (every group within
+2.5 points: FUA152WB4 on the auger lines in Sep 2026 -> his FUA151WB4 "Summer"), it is the same formulation under an older
+name: the line's settings printed under the old name carry over. Where the composition differs (FU0041WB4, 30% reclaim ->
+FU0031WB4; FU0011WB5 -> FU0051WB5 for VOIDFORM), it is a replacement: the Main needs its own settings on the line (the
+auger calculation), and the old settings are never reused. `daily/assign.py` `same_composition` / `replace_target`; the
+revision-2 workbook's "Replaced" sheet says which is which. With this, the backtest counts 99 of 145 as the same
+formulation Tech issued and 33 as different - the 10 that moved are Tech printing a code James replaced.
+
+## Revision 2 of the W% Master (23 Oct 2026)
+James: *"keep this excel in your MD file and produce a revision"*; *"make a new Master W % formulation excel for me to
+review and clean up"*; *"capture all the indicators like OP, R1, A1 etc"*. `calc/revise_w_master.py` ->
+`W% Master Formulation (draft v2).xlsx` (published to the workspace): his Main / Secondary rows under the names he gave
+(old names as "Printed as"), the indicator each prefix stands for (R1/R2/R3, R4, OP, S1, A1, U1, F1/F4, bubble line) next
+to the Spec and grade the schedule printed on the formulation's latest run (amber where they disagree), "Replaced" (same
+formulation or other composition), "Archived", and "Open for James" with what the notes do not settle.

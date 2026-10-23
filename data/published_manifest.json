@@ -486,6 +486,13 @@
   "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
   "sha256": "4e5781f776f7b4ce1d178c3170a71dc1414592d7a49b1ccba1650270da1005df"
  },
+ "workspace/W% Master Formulation (draft v2).xlsx": {
+  "bytes": 58822,
+  "content": "83c3ab50446c815c9ef78468e571fbce1cfe22c0ca752b1fcbefb57a75a7dae5",
+  "from": "W% Master Formulation (draft v2).xlsx",
+  "published_at": "2026-10-23T16:34:08",
+  "sha256": "26e6b2284e9c05251f58314c88383e72348ca07f1a6cae001e886f449f038739"
+ },
  "workspace/auger_rules.py": {
   "bytes": 4885,
   "content": "644d1268af7accabe40d7a85c6a647925ab9f24f90eb94b5ee7cb84e63b643a0",

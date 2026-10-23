@@ -122,29 +122,57 @@ def rules():
              'key': (canon_prefix(code[:2]), code[2], r['Colour'][:2], thk_char(float(r['Thk (mm)']))),
              'w': {c: r.get(c) for c in W_COLS}, 'materials': r.get('Materials')}
         mains.append(m); by_key[m['key']].append(m)
-    # printed names: a row "replace by/with X" (or by description) carries the settings of its Main under the old name
+    # "replace by/with ..." rows fold into their Main. The old name carries the Main's settings on a line only when the old
+    # row is the same formulation (its composition within SAME_TOL of the Main's: James consolidating names, e.g. FUA152WB4
+    # on the auger lines -> his FUA151WB4 "Summer"); a replacement with another composition (FU0041WB4 with 30% reclaim ->
+    # FU0031WB4) needs its own settings on the line, so it goes in 'replaces' and not in 'printed'.
     for r in R:
         if level(r['Notes']) != 'replace':
             continue
-        note = r['Notes'] or ''
-        named = [c for c in CODE_RX.findall(note) if c != r['Formula Code']]
-        want = quals(note)
-        target = None
-        if named:
-            target = next((m for m in mains if m['code'] == named[0] or named[0] in m['printed']), None)
-        if target is None:                     # by description, or its own code: the Main of the same colour/thk with the same words
-            lv = 'secondary' if 'secondary' in note.lower() else 'main'
-            own = final_code(r)
-            gch = 'A' if 'graphic' in note.lower() else ('0' if 'pack' in note.lower() else (own[2] if len(own) == 9 else None))
-            cands = [m for m in mains if m['level'] == lv and m['key'][2] == (r['Colour'] or '')[:2]
-                     and r['Thk (mm)'] is not None and m['key'][3] == thk_char(float(r['Thk (mm)'])) and m['quals'] == want
-                     and m['key'][0] == canon_prefix(own[:2]) and (gch is None or m['key'][1] == gch)]
-            if len(cands) == 1:
-                target = cands[0]
-        if target is not None:
+        target = replace_target(r, mains)
+        if target is None:
+            continue
+        if same_composition(r, target['w']):
             target['printed'].add(r['Formula Code'])
+        target.setdefault('replaces', set()).add(r['Formula Code'])
     _RULES = {'mains': mains, 'by_key': by_key}
     return _RULES
+
+
+SAME_TOL = 2.5      # points of weight %, every material group
+
+
+def same_composition(row, w):
+    """True when the row's W% is within SAME_TOL of the Main's on every group (James's rounded values)."""
+    return all(abs((row.get(c) or 0) - (w.get(c) or 0)) <= SAME_TOL for c in W_COLS)
+
+
+def replace_target(r, mains):
+    """The Main (or Secondary) a "replace by/with ..." row folds into: the code named in the note; the row's own code
+    (another version of it marked Main); else, by description, the one of the same colour, thickness, prefix and grade
+    with the same words. None when none or several fit."""
+    note = r['Notes'] or ''
+    lv = 'secondary' if 'secondary' in note.lower() else 'main'
+    codes = CODE_RX.findall(note)
+    named = [c for c in codes if c != r['Formula Code']]
+    if named:
+        t = [m for m in mains if m['code'] == named[0] or named[0] in m['printed']]
+        return t[0] if len(t) == 1 else (next((m for m in t if m['level'] == lv), None) if t else None)
+    if codes:                                  # its own code: the version of it James marked Main / Secondary
+        t = [m for m in mains if r['Formula Code'] in m['printed'] and m['level'] == lv]
+        t = t or [m for m in mains if r['Formula Code'] in m['printed']]
+        for narrow in (lambda m: quals(note) == m['quals'],          # "replace by Main SPA FUA152WB4": the sign-blank Main
+                       lambda m: m['code'] == r['Formula Code'],      # the version still under this name, not one that absorbed it
+                       lambda m: not m['restricted']):                # the plain Main, not a customer's
+            if len(t) > 1:
+                t = [m for m in t if narrow(m)] or t
+        return t[0] if len(t) == 1 else None
+    own = final_code(r)
+    gch = 'A' if 'graphic' in note.lower() else ('0' if 'pack' in note.lower() else (own[2] if len(own) == 9 else None))
+    cands = [m for m in mains if m['level'] == lv and not m['restricted'] and m['key'][2] == (r['Colour'] or '')[:2]
+             and r['Thk (mm)'] is not None and m['key'][3] == thk_char(float(r['Thk (mm)'])) and m['quals'] == quals(note)
+             and m['key'][0] == canon_prefix(own[:2]) and (gch is None or m['key'][1] == gch)]
+    return cands[0] if len(cands) == 1 else None
 
 
 def derive(line, row):
