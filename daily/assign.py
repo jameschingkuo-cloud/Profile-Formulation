@@ -43,9 +43,9 @@ W_COLS = ['Virgin PP %', 'Homo PP (F1203K) %', 'Reclaim %', 'Talc %', 'CaCO3 %',
           'Additive %', 'Foam %', 'HDPE %', 'Skin %', 'Other %']
 # words in James's notes that make a Main apply to some orders only (the schedule or the line says which)
 QUALIFIERS = {'void': ('void',), 'corn': ('corn',), 'sign': ('sign blank', 'spa'), 'summer': ('summer',),
-              'winter': ('winter',), 'se43': ('se43',), '6.3': ('6.3',), '4.6': ('4.6',)}
+              'winter': ('winter',), 'se43': ('se43',), '6.3': ('6.3',), '4.6': ('4.6',), 'roll': ('roll',), 'ltl': ('ltl',)}
 # words that mark a Main for a customer or a product kind the schedule does not name: never proposed by rule
-RESTRICTED = ('orbis', 'carter', 'tzu', 'vistech', 'nissan', 'roll', 'ltl', 'batten', 'cabbage', 'hdpe', 'pe f', 'pe part',
+RESTRICTED = ('orbis', 'carter', 'tzu', 'vistech', 'nissan', 'batten', 'cabbage', 'hdpe', 'pe f', 'pe part',
               'bb line', 'customer', 'triple wall')
 
 
@@ -205,6 +205,9 @@ def derive(line, row):
     prefix = PREFIX.get(spec)
     if not prefix:
         return None, f'no rule for spec {spec!r} yet'
+    si = (row.get('special_instructions') or '').upper()
+    if spec == 'R2R2R2' and ('LTL' in si or 'WRAP' in si):
+        prefix = 'RU'                                      # LTL wrap: James's Main is RU0001WB4 "Main, R2 LTL wrap"
     if prefix == 'BF':
         gchar = '0'                                        # bubble line: packaging grade only (James, 23 Oct)
     elif colour not in BLACK_WHITE or spec in SPECIAL:
@@ -229,6 +232,12 @@ def wanted(line, row, day):
     # (or SPP) product, or any order sent to the slitter; Tech prints these under "(For sign blank orders only)".
     if 'SIGN BLANK' in si or 'SIGNBLANK' in si or 'SLIT' in si or prod[:3] in ('SPA', 'SPP'):
         q.add('sign')
+    # R8 (James, 23 Oct 2026, H69A284-3: "we don't have roll formulation??"): a roll order says ROLLS / ROLLED MATERIAL;
+    # Tech prints "(For roll material only)"; James's Main is FU0021WB4 "Main roll". LTL wrap likewise ("LTL MATERIAL").
+    if 'ROLL' in si:
+        q.add('roll')
+    if 'LTL' in si or 'WRAP' in si:
+        q.add('ltl')
     mm = pc.thickness_mm(row.get('prod_code') or '')
     if mm is not None and abs(mm - 6.3) < 1e-6:
         q.add('6.3')
@@ -375,15 +384,43 @@ def calc_recipes():
     return _CALC
 
 
+_ISSUED_GROUPS = defaultdict(list)     # (line, printed code) -> every issued group with it, newest first
+
+
 def issued_on_line(packets):
-    """(line, printed code) -> (date, scan page, [formula dicts of the group]) from every Tech issue on file, latest wins."""
+    """(line, printed code) -> (date, scan page, [formula dicts of the group]) from every Tech issue on file, latest wins.
+    Every group is kept too (_ISSUED_GROUPS), so an order with a qualifier can take the group Tech noted for it: the
+    roll group "(For roll material only)" of FU0021WB4 on SE25, not the plain packaging group under the same code."""
     out = {}
+    _ISSUED_GROUPS.clear()
     for date in sorted(packets):
         for pg in packets[date]['frm']:
             for g in pg['groups']:
                 for f in g['formulas']:
                     out[(pg['line_code'], f['formula_code'])] = (date, pg['scan_page'], g['formulas'])
+                    _ISSUED_GROUPS[(pg['line_code'], f['formula_code'])].insert(0, (date, pg['scan_page'], g['formulas']))
     return out
+
+
+def group_for(line, printed, want, issued):
+    """The issued group to take the settings from: the newest whose notes carry the order's qualifier (roll, VOIDFORM,
+    corn box, sign blank), else the newest with no such note, else the newest."""
+    groups = _ISSUED_GROUPS.get((line, printed)) or ([issued[(line, printed)]] if (line, printed) in issued else [])
+    if not groups:
+        return None
+    def notes_q(fs):
+        q = set()
+        for f in fs:
+            q |= {x for x in quals(f.get('note', '')) if x in ('roll', 'void', 'corn', 'sign', 'ltl')}
+        return q
+    marked = {q for q in want if q in ('roll', 'void', 'corn', 'sign', 'ltl')}
+    for g in groups:
+        if marked and notes_q(g[2]) & marked:
+            return g
+    for g in groups:
+        if not marked and not notes_q(g[2]):
+            return g
+    return groups[0]
 
 
 def issued_for_key(line, key, issued):
@@ -413,13 +450,14 @@ def propose(line, row, day, issued):
                         'settings_src': f'settings as issued on {line} {rec[0]} (FRM scan p{rec[1]})'}, ''
         return None, why
     for printed in sorted(main['printed'], key=lambda c: c != main['code']):   # James's name first, then old names
-        rec = issued.get((line, printed))
+        rec = group_for(line, printed, want, issued)
         if rec:
             # only this formulation's rows of the issued group (a group can hold another order's primary, e.g. the
             # VOIDFORM run-out FU0022WB3 printed under a FU0042WB3 order); its own run-out partner comes with it
             formulas = [f for f in rec[2] if f['formula_code'] in main['printed']]
             if not formulas:
                 continue
+            formulas += [f for f in rec[2] if f not in formulas and re.search(r'run\s*out', f.get('note') or '', re.I)]
             return {'code': main['code'], 'main': main, 'settings': (rec[0], rec[1], formulas), 'printed_as': printed, 'season': seas,
                     'how': f"James's Main {main['code']}" + (f' (Tech printed it as {printed})' if printed != main['code'] else ''),
                     'settings_src': f'settings as issued on {line} {rec[0]} (FRM scan p{rec[1]})'}, ''

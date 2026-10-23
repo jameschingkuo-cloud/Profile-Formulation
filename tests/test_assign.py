@@ -111,6 +111,28 @@ def test_settings_come_from_the_line_and_the_bubble_line_falls_back():
     assert p['code'] == 'BF0000EB3' and p['how'].startswith('code already issued on SE61')
 
 
+def test_roll_and_ltl_orders():
+    """James, 23 Oct 2026, H69A284-3 (RPP40WB890, SE25, R2R2R2 "ROLLS SAME AS ABOVE"): "we don't have roll formulation??"
+    A roll order takes his "Main roll" FU0021WB4, with the SE25 settings Tech issued for the rolls on 23 Sep (and the
+    run-out row Tech prints with it); an LTL wrap order takes RU0001WB4 "Main, R2 LTL wrap"."""
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        if d['packet_date'] <= '2026-10-07':
+            packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    roll = row('RPP40WB890', 'PPP P R2R2R2', 'ROLLS SAME AS ABOVE')
+    assert 'roll' in assign.wanted('SE25', roll, datetime.date(2026, 10, 23))[0]
+    p, why = assign.propose('SE25', roll, datetime.date(2026, 10, 23), issued)
+    assert p['code'] == 'FU0021WB4' and p['settings'] and p['settings'][1] != 'calc', why
+    assert [f['formula_code'] for f in p['settings'][2]] == ['FU0021WB4', 'FU0001WB4']      # the roll row and its run-out partner
+    assert 'roll material' in p['settings'][2][0]['note'].lower()
+    ltl = row('RPP40WB1186', 'PPP P R2R2R2', '1 Ticket per pallet & move to repacking area.  LTL MATERIAL')
+    assert assign.derive('SE25', ltl)[0] == ('RU', '0', 'WB', '4')
+    p, why = assign.propose('SE25', ltl, datetime.date(2026, 10, 23), issued)
+    assert p['code'] == 'RU0001WB4', why
+
+
 def test_settings_from_tech_calc_sheet():
     """James, 23 Oct 2026, H68A244-1 (DPP50KS185, SE21): "you sure we don't have this one? This is just black. Double
     check". No FRM page on file carries a KS 5 mm code on SE21, but Tech's SE21 calc sheet has FU0041KS5 (last run May

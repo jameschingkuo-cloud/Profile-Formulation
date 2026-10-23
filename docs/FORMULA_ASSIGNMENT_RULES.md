@@ -186,3 +186,13 @@ last issued, marked RULES UNDECIDED. `ASSIGN_RULES=0` keeps the pre-23-Oct draft
 backtests.
 - James, 23 Oct 2026: *"No history process. If logic don't work, ask engineering for help"*. An order the rules cannot
   decide is an Exception for the engineer (its last issue, if any, is quoted as a note, never printed as the formulation).
+
+## R8. Rolls and LTL wrap (23 Oct 2026)
+James, on H69A284-3 (RPP40WB890 on SE25, spec R2R2R2, "ROLLS SAME AS ABOVE"): *"we don't have roll formulation??"*. The
+rules had no roll qualifier and treated his "Main roll" rows as restricted, so the order fell to the packaging Main.
+- A roll order says ROLLS / "Rolled material" in its instructions (1,967 of the 2,314 R2R2R2 orders on file); the rest
+  say LTL / WRAP (the LTL wrap material). Spec R2R2R2 is their grade; the prefix stays FU for rolls.
+- Rolls take James's "Main roll" for the colour and thickness (WB 4 mm: FU0021WB4, which Tech prints "(For roll material
+  only) Check weight" with its run-out partner FU0001WB4 on SE25, 23-30 Sep 2026); LTL wrap takes RU0001WB4 "Main, R2
+  LTL wrap" (Tech issued it for RP26923-1 on 25 Sep). The run-out row Tech prints with a Main now travels with it.
+  `daily/assign.py` `wanted` / `derive`.
