@@ -2281,7 +2281,14 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   blank why is that order sign blank. It's an RPA"*: Tech's own 6-7 Oct SE13 page groups it with the sign blanks; the
   naming now follows the page's note (FUA152WB4), not the printed code alone. 23 Oct after all this: 41 as issued, 49 by
   rule (21 from the calc sheets), 9 for the engineer (8 named: FU0031WB4 on SE25, FU0001WBD on SE32, FUA031KS5 and
-  RU0000KS5 on SE21; 1 undecided, RPP40FW2). Artifact v50.
+  RU0000KS5 on SE21; 1 undecided, RPP40FW2).
+- James: *"Moving forward, including today we use logic base formulation process. Remove old logic and apply new"*;
+  *"No history process. If logic don't work, ask engineering for help"*. `resolve.py` now decides every order by the rules
+  (after an engineer's approved master row); the history is only a settings source (this order's own last issue of the
+  same formulation first, then the line's, then Tech's calc sheet); an order the rules cannot decide, or whose Main has
+  no settings on the line, goes to the engineer. 23 Oct, rules only: 99 orders - 87 by rule (36 with this order's own
+  last-issued settings, 30 with the line's, 21 from the calc sheets), 12 for the engineer (FU0031WB4 and FU0051WB5 on
+  SE25, FU0001WBD on SE32, FUA031KS5 / RU0000KS5 / RU0000WB4 on SE21/SE25, RPP40FW2 undecided). Artifact v50. pytest 81.
 
 ## Revision history
 
