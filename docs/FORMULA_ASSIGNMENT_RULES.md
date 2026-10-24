@@ -112,6 +112,15 @@ FU0031WB4; FU0011WB5 -> FU0051WB5 for VOIDFORM), it is a replacement: the Main n
 auger calculation), and the old settings are never reused. `daily/assign.py` `same_composition` / `replace_target`; the
 revision-2 workbook's "Replaced" sheet says which is which. With this, the backtest counts 99 of 145 as the same
 formulation Tech issued and 33 as different - the 10 that moved are Tech printing a code James replaced.
+- Changed 24 Oct 2026. James, on H69A040-1 (CPP40WB320, SE25) printed "FU0031WB4 ENGINEER TO SET": *"What is the issue
+  with line 10. You should have primary formulation for package grade white 4 mm"*. SE25 runs the packaging grade as
+  FU0021WB4 (36% reclaim; his "replace by Main, packaging grade" into FU0031WB4, 20%). An old name James folded into a
+  Main with another composition is that line's own recipe of the Main: its rows issued on the line are the Main's
+  settings there, after the Main's own names (same composition) and with the reclaim presence matching. Only from Tech's
+  issued pages, never an old name's calc-sheet recipe (SE13's FU062WB4 dates from 2019), and only from a group noted for
+  the order's own qualifier or a plain one (SE25's FU0021WB4 roll groups stay with the rolls). Backtest on every Tech
+  issue on file: 27 members gain settings, 19 equal to what Tech issued that day; the others are SE43 pages Tech changed
+  on 7 Oct and the GT premix order H68A127-1. `assign.member_settings`; test `test_line_own_recipe_of_a_folded_formulation`.
 
 ## Revision 2 of the W% Master (23 Oct 2026)
 James: *"keep this excel in your MD file and produce a revision"*; *"make a new Master W % formulation excel for me to

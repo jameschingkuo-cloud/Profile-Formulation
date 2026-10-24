@@ -2315,11 +2315,19 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   Exception (RP26826-6, RPP40FW2: no flame-retardant FW 4 mm Main). Interface page: Primary / Secondary labels, "no
   settings for it on this line yet", the Exception's reason; its "Generate the formulation" box no longer proposes from
   the issue history (rules' answer for the built day only). Artifact v54. pytest 85 passed, 5 skipped.
+- 24 Oct, James on H69A040-1 (SE25, "FU0031WB4 ENGINEER TO SET"): *"What is the issue with line 10. You should have primary
+  formulation for package grade white 4 mm"*. SE25 runs that grade as FU0021WB4 (36% reclaim), which James folded into
+  FU0031WB4 (20%); the same-composition rule had kept SE25's settings out. Now an old name he folded into a Main with
+  another composition gives the Main's settings on a line where Tech issued it (the line's own recipe; issued pages only,
+  plain or same-qualifier groups, reclaim matching). Backtest: 27 members gain settings, 19 equal to Tech's issue that day.
+  23 Oct: H69A040-1 prints FU0031WB4 with SE25's 30 Sep settings and FU0014WB4 as its run-out; 98 of 99 by rule, 23 orders
+  with settings to set (28 members), 1 Exception. Artifact v55. pytest 86 passed, 5 skipped.
 
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.65 | 2026-10-24 | Claude Code (local, with James Kuo) | **A line's own recipe of a folded formulation (§7.73)**: James on SE25 packaging WB 4 mm; an old name he folded into a Main with another composition gives the Main's settings where Tech issued it (issued pages only); 23 Oct 98 of 99 by rule, 23 with settings to set; artifact v55. |
 | 1.64 | 2026-10-24 | Claude Code (local, with James Kuo) | **R9 Primary + Secondary, R10 VOIDFORM never reclaim (§7.73)**: both members printed (Primary first, ENGINEER TO SET where a member has no settings); no reclaim on VOIDFORM orders; W% Master v2 republished (FU0011WB5 "secondary Voidform" archived); 23 Oct rebuilt (98 of 99 by rule, 24 with settings to set, 1 Exception); interface generator off the issue history; artifact v54. |
 | 1.63 | 2026-10-23 | Claude Code (local, with James Kuo) | **23 Oct daily run (§7.72)**: schedule emails 13:03/13:04; formulation emailed (41 as issued, 58 for the engineer); 99 EXT + 65 CNV rows built, published and recorded; artifact v48; 0 new High. |
 | 1.62 | 2026-10-22 | Claude Code (local, with James Kuo) | **22 Oct daily run (§7.71)**: schedule emails 13:36/13:37; formulation emailed (43 as issued, 43 for the engineer); 86 EXT + 66 CNV rows built, published and recorded; artifact v47; 0 new High. |

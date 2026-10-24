@@ -414,7 +414,9 @@ formulation first) and, marked RULES UNDECIDED, where the rules cannot decide (`
   order never gets a formulation with reclaim in James's W%, nor a row that feeds reclaim; Tech's old void formulas with
   reclaim (FU0011WB5 on SE25, FU0061WBD on SE22) are not printed. Tests: `tests/test_assign.py`.
 - Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name of
-  the same composition; else Tech's current calc recipe for it on the line (`out/Formulation Calc Library.xlsx`, marked
+  the same composition, then under an old name he folded into it with another composition (the line's own recipe of the
+  Main - James, 24 Oct 2026, on SE25: *"You should have primary formulation for package grade white 4 mm"*; issued pages
+  only, plain or same-qualifier groups, reclaim presence matching); else Tech's current calc recipe for it on the line (`out/Formulation Calc Library.xlsx`, marked
   "settings from the calc sheet"; James, 23 Oct 2026: *"you sure we don't have this one? This is just black"*). A Main never run on the line prints its code with "ENGINEER TO SET" (Draft sheet "Settings To Set"
   with James's W%; the auger calculation from the W% is the next step); an Exception is only an order the rules cannot
   decide. The bubble line's BF codes have no W% row: a code

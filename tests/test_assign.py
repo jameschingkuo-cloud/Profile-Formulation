@@ -324,3 +324,26 @@ def test_primary_first_even_without_settings():
     assert rows[0][15].startswith('ENGINEER TO SET') and [m['code'] for m in missing] == ['FUA032KS4'] and marked == '2026-10-07'
     forms = [{'note': rows[0][15], 'feeders': {}}, {'note': rows[1][15], 'feeders': {('', 'Hopper 1'): ('PP Virgin', '53', None)}}]
     assert [render_frm.when_label(forms, i) for i in range(2)] == ['Run first', 'If reclaim runs out']
+
+
+def test_line_own_recipe_of_a_folded_formulation():
+    """James, 24 Oct 2026, on H69A040-1 (CPP40WB320, SE25: FU0031WB4 "ENGINEER TO SET"): "What is the issue with line 10.
+    You should have primary formulation for package grade white 4 mm". SE25 runs the packaging grade as FU0021WB4 (36%
+    reclaim; James folded it into his Main FU0031WB4, 20%): those issued rows are SE25's own recipe of the Main, the
+    Primary, with the run-out row as its Secondary FU0014WB4. An old name's calc-sheet recipe is not taken (SE21's
+    FUA021KS5, folded into FUA031KS5, last run Nov 2025)."""
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        packets[d['packet_date']] = d
+    day = datetime.date(2026, 10, 23)
+    issued = assign.issued_on_line({d: p for d, p in packets.items() if d < '2026-10-23'})
+    sched = {r['order']: (pg['line'], r) for pg in packets['2026-10-23']['ext'] for r in pg['rows']}
+    fm, why = assign.formulation(*sched['H69A040-1'], day, issued)
+    prim, sec = fm['members']
+    assert (prim['code'], sec['code']) == ('FU0031WB4', 'FU0014WB4'), why
+    assert [f['formula_code'] for f in prim['rows']] == ['FU0021WB4'] and assign.uses_reclaim(prim['rows'][0])
+    assert prim['src'] == ('line', '2026-09-30', 10)
+    assert [f['formula_code'] for f in sec['rows']] == ['FU0021WB4'] and not assign.uses_reclaim(sec['rows'][0])
+    fm, _ = assign.formulation(*sched['H6AA017-1'], day, issued)
+    assert fm['members'][0]['code'] == 'FUA031KS5' and fm['members'][0]['rows'] is None

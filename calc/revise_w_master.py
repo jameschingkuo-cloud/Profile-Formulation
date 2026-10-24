@@ -172,7 +172,8 @@ def main():
     for i, t in sorted(target.items(), key=lambda kv: (R[kv[0]]['Colour'] or '', R[kv[0]]['Thk (mm)'] or 0, R[kv[0]]['Formula Code'])):
         r = R[i]
         data.append([r['Formula Code'], r['Application'], r['Version'], t['_final'], t['_level'].capitalize(),
-                     'same formulation (within 2.5 points): its line settings carry over' if same[i] else 'other composition: needs its own line settings',
+                     'same formulation (within 2.5 points): its line settings carry over' if same[i]
+                     else "other composition: where a line issued it, that is the line's own recipe of the Main (24 Oct 2026)",
                      r['Colour'], r['Thk (mm)']] + [r.get(c) for c in W_COLS] + [r.get('Materials'), r.get('Last used'), r['Notes']])
     s = sheet('Replaced', ['Old code', 'Application', 'Version', 'Replaced by', 'Status of that', 'Same composition?', 'Colour', 'Thk (mm)'] + W_COLS + ['Materials (old)', 'Last used', "James's note"],
               data, {'Materials (old)': 34, "James's note": 40, 'Same composition?': 44})

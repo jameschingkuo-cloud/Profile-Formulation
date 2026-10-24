@@ -122,10 +122,11 @@ def rules():
              'key': (canon_prefix(code[:2]), code[2], r['Colour'][:2], thk_char(float(r['Thk (mm)']))),
              'w': {c: r.get(c) for c in W_COLS}, 'materials': r.get('Materials')}
         mains.append(m); by_key[m['key']].append(m)
-    # "replace by/with ..." rows fold into their Main. The old name carries the Main's settings on a line only when the old
-    # row is the same formulation (its composition within SAME_TOL of the Main's: James consolidating names, e.g. FUA152WB4
-    # on the auger lines -> his FUA151WB4 "Summer"); a replacement with another composition (FU0041WB4 with 30% reclaim ->
-    # FU0031WB4) needs its own settings on the line, so it goes in 'replaces' and not in 'printed'.
+    # "replace by/with ..." rows fold into their Main. An old name of the same formulation (its composition within SAME_TOL
+    # of the Main's: James consolidating names, e.g. FUA152WB4 on the auger lines -> his FUA151WB4 "Summer") goes in
+    # 'printed': it prints as the Main (R6) and its settings anywhere are the Main's. One with another composition (SE25's
+    # FU0021WB4 at 36% reclaim -> FU0031WB4 at 20%) goes in 'replaces' only: its issued rows on a line are that line's own
+    # recipe of the Main, used after the Main's own names (member_settings; James, 24 Oct 2026).
     for r in R:
         if level(r['Notes']) != 'replace':
             continue
@@ -537,39 +538,49 @@ def member_settings(line, m, want, issued, own=None):
     """The rows of one member (Primary or Secondary) on the line: from the order's own last issue, else the line's issued
     groups (the one Tech noted for the order's qualifier first), else Tech's calc sheet. A row belongs to the member when
     its code is one of the member's printed names and it feeds reclaim exactly when the member's W% has reclaim (so the
-    Primary and Secondary of one code, FU0011WB5 52% and 0%, each get their own row). -> (rows, (kind, date, page)) or
-    (None, None)."""
+    Primary and Secondary of one code, FU0011WB5 52% and 0%, each get their own row).
+    Then the old names James folded into the member with another composition ('replaces'): the line's own recipe of that
+    formulation. James, 24 Oct 2026, on FU0031WB4 "ENGINEER TO SET" on SE25: "What is the issue with line 10. You should
+    have primary formulation for package grade white 4 mm" - SE25 runs it as FU0021WB4 (his "replace by Main, packaging
+    grade"). Only from Tech's issued pages (an old name's calc-sheet recipe can be years old), and only from a group noted
+    for the order's own qualifier or a plain one. -> (rows, (kind, date, page)) or (None, None)."""
     want_r = w_reclaim(m)
-
-    def pick(fs):
-        return [f for f in fs if f['formula_code'] in m['printed'] and uses_reclaim(f) == want_r]
-
-    if own:
-        rows = pick(own[2])
-        if rows:
-            return rows, ('own', own[0], own[1])
-    groups = sorted({id(g): g for p in m['printed'] for g in _ISSUED_GROUPS.get((line, p), [])}.values(),
-                    key=lambda g: g[0], reverse=True)
-    if not groups:
-        groups = [issued[(line, p)] for p in m['printed'] if (line, p) in issued]
+    marked = {q for q in want if q in QMARK}
 
     def notes_q(fs):
         q = set()
         for f in fs:
             q |= {x for x in quals(f.get('note', '')) if x in QMARK}
         return q
-    marked = {q for q in want if q in QMARK}
-    ordered = ([g for g in groups if marked and notes_q(g[2]) & marked] + [g for g in groups if not notes_q(g[2])] + groups)
-    for g in ordered:
-        rows = pick(g[2])
-        if rows:
-            return rows, ('line', g[0], g[1])
-    for printed in sorted(m['printed'], key=lambda c: c != m['code']):
-        rec = calc_recipes().get((line, printed))
-        if rec:
-            rows = pick(rec[1])
+    for names, own_recipe in ((m['printed'], False), (m.get('replaces', set()) - m['printed'], True)):
+        if not names:
+            continue
+
+        def pick(fs):
+            return [f for f in fs if f['formula_code'] in names and uses_reclaim(f) == want_r]
+
+        if own:
+            rows = pick(own[2])
             if rows:
-                return rows, ('calc', rec[0], 'calc')
+                return rows, ('own', own[0], own[1])
+        groups = sorted({id(g): g for p in names for g in _ISSUED_GROUPS.get((line, p), [])}.values(),
+                        key=lambda g: g[0], reverse=True)
+        if not groups:
+            groups = [issued[(line, p)] for p in names if (line, p) in issued]
+        ordered = ([g for g in groups if marked and notes_q(g[2]) & marked] + [g for g in groups if not notes_q(g[2])]
+                   + ([] if own_recipe else groups))
+        for g in ordered:
+            rows = pick(g[2])
+            if rows:
+                return rows, ('line', g[0], g[1])
+        if own_recipe:
+            continue
+        for printed in sorted(names, key=lambda c: c != m['code']):
+            rec = calc_recipes().get((line, printed))
+            if rec:
+                rows = pick(rec[1])
+                if rows:
+                    return rows, ('calc', rec[0], 'calc')
     return None, None
 
 
