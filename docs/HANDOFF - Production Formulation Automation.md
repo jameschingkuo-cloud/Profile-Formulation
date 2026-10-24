@@ -2322,11 +2322,20 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   plain or same-qualifier groups, reclaim matching). Backtest: 27 members gain settings, 19 equal to Tech's issue that day.
   23 Oct: H69A040-1 prints FU0031WB4 with SE25's 30 Sep settings and FU0014WB4 as its run-out; 98 of 99 by rule, 23 orders
   with settings to set (28 members), 1 Exception. Artifact v55. pytest 86 passed, 5 skipped.
+- R11, James on H6AA173-1 (R4 black 5 mm, SE21): *"look at other [auger] setting with similar products such as black
+  productions and then put them together ... if it's a R4 black production, it should run about 98% black reclaim and 2%
+  black color dye or master batch"*. An R4 Primary now takes only R4 rows (reclaim, no virgin/homopolymer/talc) - which
+  also corrected H6AA173-2 (R4 black 4 mm), wrongly printing a packaging recipe Tech had issued under FU0041KS4, to Tech's
+  RU0000KS4 of 23-25 Sep (Mix Reclaim hopper 3 at 99, KS colour hopper 4 at 10). RU0000KS5 on SE21 gets CALCULATED
+  settings: hopper 3 Mix Reclaim 99, hopper 4 KS colour 11 (98.0/2.0 with SE21's slopes 87.2 and 16.1 g/min per unit),
+  marked "CALCULATED SETTINGS, check before running". 23 Oct: 22 orders with settings to set (27 members), 1 Exception.
+  Artifact v56. pytest 87 passed, 5 skipped.
 
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.66 | 2026-10-24 | Claude Code (local, with James Kuo) | **R11 R4 black 98/2 (§7.73)**: R4 Primaries take only R4 rows (H6AA173-2 corrected); RU0000KS5 on SE21 calculated from Tech's R4 black recipe (hopper 3 99, hopper 4 11), marked CALCULATED; artifact v56. |
 | 1.65 | 2026-10-24 | Claude Code (local, with James Kuo) | **A line's own recipe of a folded formulation (§7.73)**: James on SE25 packaging WB 4 mm; an old name he folded into a Main with another composition gives the Main's settings where Tech issued it (issued pages only); 23 Oct 98 of 99 by rule, 23 with settings to set; artifact v55. |
 | 1.64 | 2026-10-24 | Claude Code (local, with James Kuo) | **R9 Primary + Secondary, R10 VOIDFORM never reclaim (§7.73)**: both members printed (Primary first, ENGINEER TO SET where a member has no settings); no reclaim on VOIDFORM orders; W% Master v2 republished (FU0011WB5 "secondary Voidform" archived); 23 Oct rebuilt (98 of 99 by rule, 24 with settings to set, 1 Exception); interface generator off the issue history; artifact v54. |
 | 1.63 | 2026-10-23 | Claude Code (local, with James Kuo) | **23 Oct daily run (§7.72)**: schedule emails 13:03/13:04; formulation emailed (41 as issued, 58 for the engineer); 99 EXT + 65 CNV rows built, published and recorded; artifact v48; 0 new High. |

@@ -413,6 +413,10 @@ formulation first) and, marked RULES UNDECIDED, where the rules cannot decide (`
 - R10 (*"void form should not use any reclaim"* - the reclaim's calcium varies and VOIDFORM is sold by weight): a VOIDFORM
   order never gets a formulation with reclaim in James's W%, nor a row that feeds reclaim; Tech's old void formulas with
   reclaim (FU0011WB5 on SE25, FU0061WBD on SE22) are not printed. Tests: `tests/test_assign.py`.
+- R11 (*"if it's a R4 black production, it should run about 98% black reclaim and 2% black color dye or master batch"*):
+  an R4 Primary takes only R4 rows (reclaim, no virgin/homopolymer/talc fed); an R4 black Main never run on the line gets
+  CALCULATED settings from Tech's latest R4 black recipe on the line (its reclaim hopper kept, the colour hopper set for
+  98/2 with the line's calibration slopes), marked "CALCULATED SETTINGS, check before running".
 - Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name of
   the same composition, then under an old name he folded into it with another composition (the line's own recipe of the
   Main - James, 24 Oct 2026, on SE25: *"You should have primary formulation for package grade white 4 mm"*; issued pages

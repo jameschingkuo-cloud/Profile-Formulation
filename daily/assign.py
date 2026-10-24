@@ -22,6 +22,7 @@ formulation yet (the auger calculation from the W% is the next step): it stays a
 import datetime
 import json
 import re
+import statistics
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -268,6 +269,131 @@ def uses_reclaim(f):
     return False
 
 
+BASE_RESIN = ('virgin', 'silo', '6502', 'sv258', 'basell', 'braskem', '1203k', '1102k', 'talc')
+
+
+def r4_recipe(f):
+    """An R4 row: reclaim and none of the virgin base (virgin PP, homopolymer, talc) - colour masterbatch and CaCO3 at most
+    beside it. James, 24 Oct 2026: "if it's a R4 black production, it should run about 98% black reclaim and 2% black
+    color dye or master batch". Keeps a packaging recipe printed under an old name folded into an R4 Main (SE21's FU0041KS4
+    page: virgin 32, mix reclaim 70, talc, CaCO3) from being printed as the R4 one."""
+    if not uses_reclaim(f):
+        return False
+    for v in f['feeders'].values():
+        mat, s = (v.get('material') or '').lower(), str(v.get('set') or '').strip().lower()
+        try:
+            fed = s == 'auto' or float(s.replace(',', '')) > 0
+        except ValueError:
+            fed = False
+        if fed and 'reclaim' not in mat and any(k in mat for k in BASE_RESIN):
+            return False
+    return True
+
+
+R4_BLACK = (98.0, 2.0)     # % black reclaim, % black colour MB (James, 24 Oct 2026)
+_SLOPES = None
+
+
+def slope(line, column, reclaim):
+    """The current calibration slope (g/min per setting unit) of a line's hopper ('Hopper 3') for reclaim or for a colour
+    masterbatch, from Tech's calc library (sheet "Auger Calibration"); None if not there."""
+    global _SLOPES
+    if _SLOPES is None:
+        _SLOPES = defaultdict(list)
+        if CALC_LIB.exists():
+            from openpyxl import load_workbook
+            ws = load_workbook(CALC_LIB, read_only=True, data_only=True)['Auger Calibration']
+            rows = list(ws.iter_rows(values_only=True))
+            for r in rows[1:]:
+                d = dict(zip(rows[0], r))
+                if d['Current Slope (g/min per unit)']:
+                    _SLOPES[(d['Line'], d['Feeder'])].append(d)
+    m = re.fullmatch(r'Hopper (\d)', column)
+    if not m:
+        return None
+    rs = [d for d in _SLOPES.get((line, 'H' + m.group(1)), [])
+          if ('RECLAIM' in str(d['Material Class']).upper()) == reclaim and (reclaim or 'COLOR' in str(d['Material Class']).upper())]
+    rs.sort(key=lambda d: str(d['Last Used'] or ''), reverse=True)
+    return float(rs[0]['Current Slope (g/min per unit)']) if rs else None
+
+
+def r4_black_settings(line, m):
+    """Calculated settings for an R4 black Main with no R4 recipe on the line. James, 24 Oct 2026, on H6AA173-1 (RU0000KS5,
+    SE21): "remember the [auger] setting is applied universally ... look at other [auger] setting with similar products
+    such as black productions and then put them together. And besides, if it's a R4 black production, it should run about
+    98% black reclaim and 2% black color dye or master batch". Auger lines only.
+    1. Tech's latest issued R4 black recipe on the line (any thickness; SE21: RU0000KS4, Mix Reclaim on hopper 3 at 99,
+       KS colour on hopper 4 at 10): the reclaim hopper as Tech runs it, the colour hopper set for 98/2 with the line's
+       calibration slopes.
+    2. Else the line's R4 black recipe in Tech's calc sheet for the hoppers and slopes, and the line's black recipes of the
+       same thickness for the throughput (median g/min, the last three years of the sheet); setting = share x g/min / slope.
+    -> (rows, ('calcd', template date, detail)) or (None, None)."""
+    if line in ('SE24', 'SE42', 'SE43', 'SE61'):
+        return None, None
+    best = None
+    for (ln, _), gs in _ISSUED_GROUPS.items():
+        if ln != line:
+            continue
+        for date, page, fs in gs:
+            for f in fs:
+                if f['formula_code'][-3:-1] == 'KS' and r4_recipe(f) and (best is None or date > best[0]):
+                    best = (date, page, f)
+    if best:
+        date, page, f = best
+        fed = {c: v for c, v in f['feeders'].items() if v.get('material') and str(v.get('set') or '').strip() not in ('', '0')}
+        rec = [c for c, v in fed.items() if 'reclaim' in v['material'].lower()]
+        col = [c for c, v in fed.items() if 'reclaim' not in v['material'].lower() and 'caco3' not in v['material'].lower()]
+        if len(rec) == 1 and len(col) == 1 and len(fed) == 2:
+            s_r, k_r, k_c = float(fed[rec[0]]['set']), slope(line, rec[0], True), slope(line, col[0], False)
+            if k_r and k_c:
+                s_c = round(R4_BLACK[1] / R4_BLACK[0] * s_r * k_r / k_c)
+                feeders = {c: dict(v) for c, v in f['feeders'].items()}
+                feeders[col[0]]['set'] = str(s_c)
+                return ([{'formula_code': m['code'], 'feeders': feeders, 'note': ''}],
+                        ('calcd', date, {'template': f"{f['formula_code']} as issued on {line} {date} (scan p{page})",
+                                         'T': s_r * k_r + s_c * k_c, 'basis': f"{rec[0]} reclaim kept at Tech's {s_r:g}",
+                                         'share': R4_BLACK, 'slopes': (k_r, k_c)}))
+    calc_recipes()
+    on_line = {code: rs for (ln, code), rs in _CALC_RAW.items() if ln == line and code}
+    if not on_line:
+        return None, None
+    last = {code: max(str(d['Last Run'] or '')[:10] for d in rs) for code, rs in on_line.items()}
+    tmpl = None
+    for code, rs in on_line.items():
+        if str(code)[:2] != 'RU' or str(code)[-3:-1] != 'KS' or (line, code) not in _CALC:
+            continue
+        fed = [d for d in rs if not d['Extruder'] and float(d['g/min'] or 0) > 0]
+        rec = [d for d in fed if 'RECLAIM' in str(d['Material Class']).upper()]
+        col = [d for d in fed if str(d['Material Class']).upper() == 'KS COLOR']
+        if len(fed) == 2 and len(rec) == 1 and len(col) == 1 and (tmpl is None or last[code] > tmpl[0]):
+            tmpl = (last[code], code, rec[0], col[0])
+    if tmpl is None:
+        return None, None
+    cut = f'{int(max(last.values())[:4]) - 3}{max(last.values())[4:]}'
+    thk = m['key'][3]
+
+    def total(rs):
+        return sum(float(d['g/min'] or 0) for d in rs if not d['Extruder'])
+    same = [total(rs) for code, rs in on_line.items() if str(code)[:2] in ('FU', 'RU') and str(code)[-1] == thk
+            and last[code] >= cut and total(rs) > 0]
+    black = [total(rs) for code, rs in on_line.items() if str(code)[:2] in ('FU', 'RU') and str(code)[-1] == thk
+             and str(code)[-3:-1] == 'KS' and last[code] >= cut and total(rs) > 0]
+    pool, basis = (black, f'{line} black {thk} recipes') if black else ((same, f'{line} {thk} recipes') if same else
+                                                                        ([total(on_line[tmpl[1]])], f'{tmpl[1]} on {line}'))
+    T = statistics.median(pool)
+    _, code, rec, col = tmpl
+    s_rec = round(R4_BLACK[0] / 100 * T / float(rec['Calibration Slope (g/min per unit)']))
+    s_col = round(R4_BLACK[1] / 100 * T / float(col['Calibration Slope (g/min per unit)']))
+    shaped = _CALC[(line, code)][1][0]
+    feeders = {c: dict(v) for c, v in shaped['feeders'].items()}
+    for c, v in feeders.items():
+        if v.get('material'):
+            v['set'] = str(s_rec if 'reclaim' in v['material'].lower() else s_col)
+    return ([{'formula_code': m['code'], 'feeders': feeders, 'note': ''}],
+            ('calcd', last[code], {'template': code, 'T': T, 'basis': f'{basis}, {len(pool)} recipe(s)', 'share': R4_BLACK,
+                                   'slopes': (float(rec['Calibration Slope (g/min per unit)']), float(col['Calibration Slope (g/min per unit)']))}))
+
+
 def choose(key, want, seas, line):
     """The Main for a key and what the order asks for. -> (main, why) with main None when none or several fit."""
     cands = [m for m in rules()['by_key'].get(key, []) if m['level'] == 'main' and not m['restricted']]
@@ -330,6 +456,7 @@ def names_for_issued(line, row, day, formulas):
 
 CALC_LIB = config.OUTPUT_DIR / 'Formulation Calc Library.xlsx'      # calc/parse_fcal.py from Tech's SExx Formulation.xls
 _CALC = None
+_CALC_RAW = {}         # (line, code) -> the calc sheet's rows as written (feeder, material class, slope, setting, g/min)
 _PAGES = {}
 
 
@@ -379,6 +506,8 @@ def calc_recipes():
     for r in rows[1:]:
         d = dict(zip(H, r))
         groups[(d['Line'], d['Formula Code'])].append(d)
+    _CALC_RAW.clear()
+    _CALC_RAW.update(groups)
     for (line, code), rs in groups.items():
         pg = _PAGES.get(line)
         columns = pg['feeder_columns'] if pg else []
@@ -545,6 +674,7 @@ def member_settings(line, m, want, issued, own=None):
     grade"). Only from Tech's issued pages (an old name's calc-sheet recipe can be years old), and only from a group noted
     for the order's own qualifier or a plain one. -> (rows, (kind, date, page)) or (None, None)."""
     want_r = w_reclaim(m)
+    r4 = m['key'][0] == 'RU' and want_r          # an R4 Primary takes R4 rows only (r4_recipe)
     marked = {q for q in want if q in QMARK}
 
     def notes_q(fs):
@@ -557,7 +687,7 @@ def member_settings(line, m, want, issued, own=None):
             continue
 
         def pick(fs):
-            return [f for f in fs if f['formula_code'] in names and uses_reclaim(f) == want_r]
+            return [f for f in fs if f['formula_code'] in names and uses_reclaim(f) == want_r and (not r4 or r4_recipe(f))]
 
         if own:
             rows = pick(own[2])
@@ -609,6 +739,8 @@ def formulation(line, row, day, issued, own=None):
     members = []
     for role_, m in pair:
         rows, src = member_settings(line, m, want, issued, own)
+        if rows is None and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
+            rows, src = r4_black_settings(line, m)          # James, 24 Oct 2026: R4 black, 98% reclaim + 2% colour
         if rows and 'void' in want:
             rows = [f for f in rows if not uses_reclaim(f)] or None
         members.append({'role': role_, 'code': m['code'], 'member': m, 'rows': rows, 'src': src})

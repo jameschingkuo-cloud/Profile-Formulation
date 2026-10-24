@@ -281,7 +281,16 @@ def rule_rows(line, order, product, fm):
             continue
         src = (f"Tech's {line} calc sheet, last run {date}" if kind == 'calc' else f"FRM {date} scan p{page}") + \
               (f" (printed as {printed})" if shown != printed else "")
-        if kind == 'own':
+        if kind == 'calcd':                  # worked out from the line's augers (assign.r4_black_settings), never issued
+            d = page
+            src = f"CALCULATED from {d['template']}; slopes {d['slopes'][0]:g} / {d['slopes'][1]:g} g/min per unit"
+            how = (f"Proposed by rule ({fm['how']}); settings CALCULATED for R4 black: {d['share'][0]:g}% black reclaim + "
+                   f"{d['share'][1]:g}% black colour (James Kuo, 24 Oct 2026), {d['basis']}, {d['T']:,.0f} g/min")
+            note = (f"{x['role']} · PROPOSED BY RULE · CALCULATED SETTINGS, check before running · "
+                    f"R4 black {d['share'][0]:g}% reclaim / {d['share'][1]:g}% colour")
+            marked = marked or 'calculated'
+            date = None
+        elif kind == 'own':
             how = f"By rule ({fm['how']}); settings as last issued for this order"
             note = x['role']
         else:
@@ -332,7 +341,9 @@ def write(today, draft, exceptions, dropped, last, history_dates, by_rule=(), to
     n_orders = len({(r[0], r[1]) for r in draft})
     issues = [["High", "FRM Draft", e[0], e[1], "No formula to propose", e[8], "EXT", None] for e in exceptions]
     issues += [["Medium", "FRM Draft", b[0], b[1], "Proposed by rule, not issued for this order before",
-                f"{b[3]}: {b[4]}; settings as issued on {b[0]} {b[5]} (docs/FORMULA_ASSIGNMENT_RULES.md)", "rules", None] for b in by_rule]
+                f"{b[3]}: {b[4]}; " + ("settings CALCULATED from the line's augers, check before running" if b[5] == 'calculated'
+                                       else f"settings as issued on {b[0]} {b[5]}") + " (docs/FORMULA_ASSIGNMENT_RULES.md)", "rules", None]
+               for b in by_rule]
     issues += [["High", "FRM Draft", s[0], s[1], f"{s[4]} has no settings on the line",
                 f"{s[3]} ({s[4]} of {s[5]}): no FRM page on file and no calc sheet for it on {s[0]} - engineer to set", "rules", None]
                for s in to_set]

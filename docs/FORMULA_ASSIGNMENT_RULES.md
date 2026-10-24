@@ -248,3 +248,24 @@ difficult to control the weight when we're running with reclaim."*
   `test_primary_first_even_without_settings`.
 - The interface page's "Generate the formulation from the schedule" (Daily run tab) no longer proposes from the issue
   history: it shows the rules' answer for the day the page was built for; any other day is decided by the daily run.
+
+## R11. R4 black runs about 98% black reclaim and 2% black colour (24 Oct 2026)
+James, on H6AA173-1 (RPP50KS2219, SE21, PPP P R4R4R4; RU0000KS5 never run there): *"remember the [auger] setting is
+applied universally, right? So you can look at other [auger] setting with similar products such as black productions and
+then put them together. And besides, if it's a R4 black production, it should run about 98% black reclaim and 2% black
+color dye or master batch anyways. So take a look at that and see if you can complete this order for the KS5."*
+- An R4 Primary (RU prefix, with reclaim) takes only R4 rows: reclaim with none of the virgin base (virgin PP,
+  homopolymer, talc) fed - colour masterbatch and CaCO3 at most beside it (`assign.r4_recipe`). Before this, H6AA173-2
+  (RPP40KS1905, R4 black 4 mm, SE21) printed a packaging recipe Tech had issued under FU0041KS4 (virgin 32, mix reclaim
+  70, talc, CaCO3), an old name James folded into RU0000KS4; it now prints Tech's RU0000KS4 of 23-25 Sep (Mix Reclaim on
+  hopper 3 at 99, KS colour on hopper 4 at 10).
+- An R4 black Main with no R4 recipe on the line gets CALCULATED settings (`assign.r4_black_settings`): Tech's latest
+  issued R4 black recipe on the line gives the hoppers; the reclaim hopper stays as Tech runs it and the colour hopper is
+  set for 98/2 with the line's calibration slopes (calc library, "Auger Calibration"). If no R4 black was ever issued on
+  the line: the line's R4 black recipe in Tech's calc sheet for the hoppers and slopes, and the line's black recipes of
+  the same thickness for the throughput. Auger lines only.
+- H6AA173-1, RU0000KS5 on SE21: Mix Reclaim hopper 3 at 99 (87.2 g/min per unit = 8,635 g/min), KS colour hopper 4 at
+  11 (16.1 g/min per unit = 177 g/min): 98.0% / 2.0%. Marked "CALCULATED SETTINGS, check before running" on the Word
+  file and the page; the Draft says how. (Tech's calc sheet has another R4 layout, reclaim on hopper 1 at 65: on that
+  layout 5 mm at SE21's black 5 mm rate would be hopper 1 69, hopper 4 20; the issued pages are newer and win.)
+- Test: `tests/test_assign.py` `test_r4_black`.

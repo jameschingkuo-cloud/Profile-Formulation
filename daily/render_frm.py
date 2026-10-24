@@ -268,6 +268,11 @@ def render(today, lines, exc, out):
     if n_rule:
         tips.append(f'PROPOSED BY RULE ({n_rule} order{"s" if n_rule != 1 else ""}): the order itself was never issued; the formulation is the Main for the '
                     "product (colour, thickness, grade, spec: James Kuo's rules of 23 Oct 2026) with the settings Technical last issued for it on that line. Check these first.")
+    n_calc = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any('CALCULATED SETTINGS' in x['note'] for x in g['forms']))
+    if n_calc:
+        tips.append(f'CALCULATED SETTINGS ({n_calc} order{"s" if n_calc != 1 else ""}): never issued on the line; worked out from the line\'s own auger '
+                    'settings for the same kind of product and its auger calibration (R4 black: 98% black reclaim, 2% black colour - James Kuo, '
+                    '24 Oct 2026). An engineer checks them before the order runs.')
     for t in tips:
         para(doc, '•  ' + t, 10.5, space_after=1)
     if n_exc or n_set:

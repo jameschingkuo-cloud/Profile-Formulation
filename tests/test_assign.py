@@ -347,3 +347,39 @@ def test_line_own_recipe_of_a_folded_formulation():
     assert [f['formula_code'] for f in sec['rows']] == ['FU0021WB4'] and not assign.uses_reclaim(sec['rows'][0])
     fm, _ = assign.formulation(*sched['H6AA017-1'], day, issued)
     assert fm['members'][0]['code'] == 'FUA031KS5' and fm['members'][0]['rows'] is None
+
+
+def test_r4_black():
+    """James, 24 Oct 2026, on H6AA173-1 (RPP50KS2219, SE21, PPP P R4R4R4: RU0000KS5 never run there): "remember the auger
+    setting is applied universally ... look at other auger setting with similar products such as black productions and
+    then put them together. And besides, if it's a R4 black production, it should run about 98% black reclaim and 2% black
+    color dye or master batch". Tech's R4 black on SE21 (RU0000KS4, 23-25 Sep): Mix Reclaim on hopper 3 at 99, KS colour
+    on hopper 4 at 10. The 5 mm order keeps hopper 3 at 99 and sets hopper 4 for 98/2 (slopes 87.2 and 16.1 g/min per
+    unit): 11, marked CALCULATED. The R4 black 4 mm order H6AA173-2 takes Tech's R4 rows, never the packaging recipe
+    printed under the old name FU0041KS4 (virgin 32, mix reclaim 70, talc, CaCO3)."""
+    if not assign.CALC_LIB.exists():
+        import pytest
+        pytest.skip('Formulation Calc Library not built on this PC')
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        packets[d['packet_date']] = d
+    day = datetime.date(2026, 10, 23)
+    before = {d: p for d, p in packets.items() if d < '2026-10-23'}
+    issued = assign.issued_on_line(before)
+    assign.set_pages(before)
+    sched = {r['order']: (pg['line'], r) for pg in packets['2026-10-23']['ext'] for r in pg['rows']}
+    fm, why = assign.formulation(*sched['H6AA173-1'], day, issued)
+    (x,) = fm['members']
+    assert x['code'] == 'RU0000KS5' and x['src'][0] == 'calcd', why
+    fed = {c: v['set'] for c, v in x['rows'][0]['feeders'].items() if v.get('set')}
+    assert fed == {'Hopper 3': '99', 'Hopper 4': '11'}
+    k_r, k_c = x['src'][2]['slopes']
+    assert abs(99 * k_r / (99 * k_r + 11 * k_c) - 0.98) < 0.002
+    fm, _ = assign.formulation(*sched['H6AA173-2'], day, issued)
+    (x,) = fm['members']
+    assert x['code'] == 'RU0000KS4' and all(assign.r4_recipe(f) for f in x['rows'])
+    assert {c: v['set'] for c, v in x['rows'][0]['feeders'].items() if v.get('set')} == {'Hopper 3': '99', 'Hopper 4': '10'}
+    packaging = {'formula_code': 'FU0041KS4', 'note': '', 'feeders': {'Hopper 1': {'material': 'PP Virgin-silo 3 (F6502A)', 'set': '32'},
+                 'Hopper 3': {'material': 'PP Mix Reclaim', 'set': '70'}, 'Hopper 4': {'material': 'KS MB-CR401K', 'set': '35'}}}
+    assert not assign.r4_recipe(packaging)
