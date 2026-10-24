@@ -212,12 +212,15 @@ don't running out of reclaim, then the reclaim primary will be removed and repla
   "FU0041WB4" and SE21's calc "FUA032KS4", recipes without reclaim, are no longer printed as the reclaim Mains.
   `assign.member_settings`.
 - Printed Primary first (its rows in run order, reclaim first), then the Secondary, labelled "If reclaim runs out". A
-  member with no settings on the line prints in its place as one row "ENGINEER TO SET: settings for X on <line> ·
-  <role>", is listed on the FRM Draft's "Settings To Set" sheet and raises a High issue; an order where no member has
-  settings is an Exception. `daily/resolve.py` `rule_rows`, `daily/render_frm.py`, the interface page.
-- 23 Oct: 99 orders, 88 with a formulation (21 with a Primary and a Secondary, 14 members to set), 11 Exceptions.
+  member with no settings on the line prints in its place, under its code, as one row "ENGINEER TO SET: settings for X
+  on <line> · <role>", is listed on the FRM Draft's "Settings To Set" sheet (with James's W% and the order's last issue)
+  and raises a High issue - also when no member has settings there yet: the formulation is decided, only the settings
+  wait for the engineer. An Exception is now only an order the rules cannot decide ("Rules cannot decide: ...").
+  `daily/resolve.py` `rule_rows`, `daily/render_frm.py`, the interface page.
+- 23 Oct: 99 orders, 98 with a formulation by rule (26 with a Primary and a Secondary); 24 of them have a member whose
+  settings an engineer sets (29 members); 1 Exception (RP26826-6, RPP40FW2: no flame-retardant FW 4 mm Main).
 - Backtests see only the pages issued before their day: `HISTORY_BEFORE` now also limits the line's issued groups and
-  feeder layouts. 25 Sep H68A153-1 (FXA020WB4 on SE31) is an Exception there: SE31 first ran FXA020WB4 that day.
+  feeder layouts. 25 Sep H68A153-1: FXA020WB4 with its settings to set, as SE31 first ran FXA020WB4 that day.
 
 ## R10. VOIDFORM never runs reclaim (23 Oct 2026)
 James: *"Also, void form should not use any reclaim. Double check."* - *"There are some old void form formula that have
@@ -231,7 +234,7 @@ difficult to control the weight when we're running with reclaim."*
 - Tech issued reclaim formulations on VOIDFORM orders: FU0011WB5 on SE25 (H64A244-1, H66A116-1, H68A090-1) and FU0061WBD
   on SE22 (H68A053-1); they are no longer printed. 23 Oct: the 6 VOIDFORM orders get FU0022WB3 (SE11), FU0021WB4
   (SE23), FU0051WB5 (SE25, 2 orders) and FU0001WBD (SE32, 2 orders); FU0051WB5 has never run on SE25 nor FU0001WBD on
-  SE32, so those 4 are Exceptions until an engineer sets them.
+  SE32, so those 4 print the code with "ENGINEER TO SET" until an engineer sets them.
 - Tests: `tests/test_assign.py` `test_void_form_never_reclaim`, `test_primary_and_secondary_both_shown`,
   `test_primary_first_even_without_settings`.
 - The interface page's "Generate the formulation from the schedule" (Daily run tab) no longer proposes from the issue

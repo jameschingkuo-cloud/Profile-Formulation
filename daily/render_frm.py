@@ -339,6 +339,9 @@ def render(today, lines, exc, out):
                 if not f['feeders']:            # Primary / Secondary with no settings on this line: written in by the engineer
                     rr.height = Inches(0.45)
                     cell_text(rr.cells[1], f['code'], 11)
+                    lab = when_label(forms, i)
+                    if lab:
+                        para(rr.cells[1], lab, 8.5, bold=True, color=RED if 'runs out' in lab else GREY, align=WD_ALIGN_PARAGRAPH.CENTER)
                     if len(cols) >= 1:
                         wide = rr.cells[2].merge(rr.cells[ncol - 2])
                         shade(wide, 'FBF0DB')

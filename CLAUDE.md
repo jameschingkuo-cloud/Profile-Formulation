@@ -415,8 +415,9 @@ formulation first) and, marked RULES UNDECIDED, where the rules cannot decide (`
   reclaim (FU0011WB5 on SE25, FU0061WBD on SE22) are not printed. Tests: `tests/test_assign.py`.
 - Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name of
   the same composition; else Tech's current calc recipe for it on the line (`out/Formulation Calc Library.xlsx`, marked
-  "settings from the calc sheet"; James, 23 Oct 2026: *"you sure we don't have this one? This is just black"*). A Main never run on the line is not a formulation yet: it stays an Exception that names the code
-  and the W% (the auger calculation from the W% is the next step). The bubble line's BF codes have no W% row: a code
+  "settings from the calc sheet"; James, 23 Oct 2026: *"you sure we don't have this one? This is just black"*). A Main never run on the line prints its code with "ENGINEER TO SET" (Draft sheet "Settings To Set"
+  with James's W%; the auger calculation from the W% is the next step); an Exception is only an order the rules cannot
+  decide. The bubble line's BF codes have no W% row: a code
   already issued on the line for the same fixed parts is taken.
 - The printout uses James's names, never an old code (23 Oct 2026: *"Don't use old formula code in the print out"*):
   an issued code he renamed or folded into a Main (same composition) prints as that Main (`assign.current_name`, and

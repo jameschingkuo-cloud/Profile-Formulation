@@ -207,8 +207,8 @@ def test_draft_prints_james_names(tmp_path):
 def test_rules_first_25_sep(tmp_path):
     """James, 23 Oct 2026: "Moving forward ... we use logic base formulation process. Remove old logic and apply new" and
     "No history process. If logic don't work, ask engineering for help". 25 Sep as that morning, rules first: the two
-    new orders get the codes Tech issued (FU0021WB4, FXA020WB4); every order left to the engineer says why (a Main
-    without settings on the line, or a key the rules cannot decide); nothing is printed "as last issued" by itself."""
+    new orders get the codes Tech issued (FU0021WB4, FXA020WB4; FXA020WB4 with its settings to be set, as SE31 had never
+    run it); an Exception is only an order the rules cannot decide; nothing is printed "as last issued" by itself."""
     out = tmp_path / 'out'
     out.mkdir()
     env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-25',
@@ -226,11 +226,11 @@ def test_rules_first_25_sep(tmp_path):
     assert all(v <= {'By rule', 'Proposed by rule', 'Product to Formula'} for v in hows.values()), hows
     by_rule = {row[1] for row in wb['By Rule'].iter_rows(min_row=2, values_only=True)}
     assert 'H67A120-1' in by_rule
-    exc = {e[1]: str(e[8]) for e in list(wb['Exceptions'].iter_rows(values_only=True))[1:]}
-    # FXA020WB4 had never run on SE31 before 25 Sep: the rule names it, the settings go to the engineer
-    assert exc['H68A153-1'].startswith('Formula FXA020WB4 decided by rule; no settings on SE31'), exc['H68A153-1']
-    for o, why in exc.items():
-        assert why.startswith(('Formula ', 'Rules cannot decide: ')), (o, why)
+    # FXA020WB4 had never run on SE31 before 25 Sep: the rule names it and prints it, its settings go to the engineer
+    to_set = {(s[1], s[3], s[4]) for s in wb['Settings To Set'].iter_rows(min_row=2, values_only=True)}
+    assert ('H68A153-1', 'FXA020WB4', 'Primary') in to_set
+    for e in wb['Exceptions'].iter_rows(min_row=2, values_only=True):
+        assert str(e[8]).startswith('Rules cannot decide: '), e
 
 
 def test_word_marks_rule_rows(tmp_path):

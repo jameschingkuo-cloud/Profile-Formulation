@@ -210,25 +210,21 @@ def main():
             # daily/assign.py formulation() - James's Primary and its Secondary, both printed ("let the production team
             # ... decide whether we have enough of particular material"), each with its rows from this order's own last
             # issue, else the line's, else Tech's calc sheet; a member without settings on the line prints "ENGINEER TO
-            # SET"; no member with settings -> the engineer. VOIDFORM: never reclaim.
+            # SET" under its code (every member, when none has settings here yet). VOIDFORM: never reclaim.
             fm, why = assign.formulation(line, r, datetime.date.fromisoformat(PKT), issued, own=rec) if RULES else (None, 'rules off')
-            if fm and any(x['rows'] for x in fm['members']):
+            if fm:
                 rows_, marked, missing = rule_rows(line, order, product, fm)
                 draft += rows_
                 if marked:
                     by_rule.append([line, order, product, ' + '.join(x['code'] for x in fm['members']), fm['how'], marked])
                 for x in missing:
-                    to_set.append([line, order, product, x['code'], x['role'], fm['how']])
+                    w = ", ".join(f"{k.split(' ')[0]} {v:g}" for k, v in ((x['member'] or {}).get('w') or {}).items() if v)
+                    to_set.append([line, order, product, x['code'], x['role'], fm['how'], w,
+                                   f"{', '.join(f['formula_code'] for f in rec[2])} on {rec[0]}" if rec else ""])
                 continue
             hint = why if why else ""
-            if rec and fm is None:
+            if rec:
                 hint = f"Rules cannot decide ({why}); last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]} - ask engineering"
-            if fm:                               # the formulation is decided, no member has settings on this line
-                hint = f"{fm['how']} by rule; never run on {line}: settings to be set. " + " | ".join(
-                    f"{x['role']} {x['code']} W%: " + ", ".join(f"{k.split(' ')[0]} {v:g}" for k, v in ((x['member'] or {}).get('w') or {}).items() if v)
-                    for x in fm['members'])
-                if rec:
-                    hint += f" | Last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]}"
             hint0 = hint
             hint = ""
             prod_rec = by_product.get((line, product))
@@ -245,9 +241,7 @@ def main():
             reason = "New order on this line: no formula issued for it before"
             if other:
                 reason = f"Order was issued on another line before ({', '.join(other)}), not on {line}"
-            if fm:
-                reason = f"Formula {' + '.join(x['code'] for x in fm['members'])} decided by rule; no settings on {line} yet (never run here)"
-            elif RULES and why and not why.startswith("rules off"):     # the rules' reason first, the history only as context
+            if RULES and why and not why.startswith("rules off"):       # the rules' reason first, the history only as context
                 reason = f"Rules cannot decide: {why}; " + ("issued for this order on this line before (see the suggestion)" if rec
                                                              else reason[0].lower() + reason[1:])
             exceptions.append([line, order, product, r.get("mat_spec", ""), r.get("colors", ""), r.get("thk", ""),
@@ -343,7 +337,8 @@ def write(today, draft, exceptions, dropped, last, history_dates, by_rule=(), to
                 f"{s[3]} ({s[4]} of {s[5]}): no FRM page on file and no calc sheet for it on {s[0]} - engineer to set", "rules", None]
                for s in to_set]
     sheet("By Rule", ["Line Code", "Order", "Product Code", "Formula Code", "How", "Settings issued"], list(by_rule), {"How": 60})
-    sheet("Settings To Set", ["Line Code", "Order", "Product Code", "Formula Code", "Role", "Formulation"], list(to_set), {"Formulation": 60})
+    sheet("Settings To Set", ["Line Code", "Order", "Product Code", "Formula Code", "Role", "Formulation", "James's W%", "Last issued for this order"],
+          list(to_set), {"Formulation": 50, "James's W%": 50, "Last issued for this order": 28})
     issues += [["Info", "FRM Draft", ln, o, f"On the {last} FRM, not on today's schedule", "Dropped since the last issued FRM", f"FRM {last}", None]
                for ln, o in dropped]
     sheet("Issues", ["Severity", "Document", "Line", "Order", "Check", "Detail", "Source", "James / Tech response"], issues,
