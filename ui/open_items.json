@@ -1,6 +1,103 @@
 {
-  "updated": "2026-09-29",
+  "updated": "2026-10-24",
   "groups": [
+    {
+      "owner": "James",
+      "title": "Formula logic - to review Monday 26 Oct",
+      "items": [
+        {
+          "sev": "High",
+          "title": "Lines 12 and 13 (SE42, SE43): dosing system",
+          "detail": "James, 24 Oct: \"line 12 and 13 has some issue with its dosing system\". RP26410-1 (corn box, SE42): the Secondary FU0041WB4 has no settings - Tech never issued a run-out on line 12, and SE42/SE43 have no recipes in Tech's calc workbooks. Weight-% settings could come straight from the W% (V5 Auto ~81, V3 F1203K 10, V1 talc 6, V8 WB 3 if the 5% CaCO3 goes to virgin), or Tech's Primary with the reclaim moved to virgin (V5 Auto 79, V3 10, V1 8, V8 3).",
+          "where": "SE42 / SE43",
+          "source": "23 Oct draft"
+        },
+        {
+          "sev": "High",
+          "title": "Formulas never run on their line: settings to set",
+          "detail": "27 formulas in 22 Friday orders print ENGINEER TO SET: FU0001WBD on SE32 (2 VOIDFORM + 7 Secondaries), FU0031WB4 + FU0014WB4 on SE31 (3), FU0051WB5 VOIDFORM on SE25 (2), RU0000WB4 + RU0022WB4 on SE25, FUA032KS6 / FU0041KS5 / FUA031KS5 + FUA032KS5 / FUA032KS4 on SE21, RU0022WB4 on SE24, FU0041WB4 on SE42. The auger calculation from the W% (backtest: median 1.1 setting points, 63% within 2) needs your OK before it fills them.",
+          "where": "all auger lines",
+          "source": "Settings To Set sheet"
+        },
+        {
+          "sev": "High",
+          "title": "SE21 R4 black: which hopper layout",
+          "detail": "H6AA173-1 (RU0000KS5) is CALCULATED from Tech's issued R4 black on SE21 (RU0000KS4, 23-25 Sep): Mix Reclaim hopper 3 99, KS colour hopper 4 11 (98/2). Tech's calc workbook has reclaim on hopper 1 at 65 instead; on that layout it would be hopper 1 69, hopper 4 20.",
+          "where": "SE21",
+          "source": "R11, 24 Oct"
+        },
+        {
+          "sev": "High",
+          "title": "RPP40FW2 (FW 4 mm, spec F4F4F4): no Main",
+          "detail": "RP26826-6 has no formula: no FR FW 4 mm row in the W% Master. Tech ran this product on SE21 as FR0022WB4 (calc sheet, last RP26708-2, Jul 2026), which you folded into FRA021WB4. Use FRA021WB4, or a new FW 4 mm name like FRA021FW3?",
+          "where": "SE21",
+          "source": "23 Oct draft"
+        },
+        {
+          "sev": "Medium",
+          "title": "RP26717-2 (R4 white 4 mm): RU0000WB4 or RU0001WB4",
+          "detail": "Tech has run it on RU0001WB4 (your \"Main, R2 LTL wrap\", 100% reclaim on SE25) since 23 Sep; the rule gives your R4 Main RU0000WB4 (also 100% reclaim, never run on SE25). The notes do not say LTL or WRAP.",
+          "where": "SE25",
+          "source": "23 Oct draft"
+        },
+        {
+          "sev": "Medium",
+          "title": "RUN WITH NEXT is not read",
+          "detail": "RP26717-1 (SE13) says RUN WITH NEXT; the next order is a sign blank on FUA152WB4, the rule gives FUA151WB4. Should RUN WITH take the partner's formula? (RP26A13-1, RP26901-1, RP26925-3 already match their partner.)",
+          "where": "SE13",
+          "source": "23 Oct schedule"
+        },
+        {
+          "sev": "Medium",
+          "title": "Tech's formulation sheets after 7 Oct",
+          "detail": "The newest Tech FRM pages on file are 7 Oct (2 and 5 Oct still to transcribe). 60 Friday orders take their settings from the 7 Oct pages; anything Tech changed since is not in.",
+          "where": "all lines",
+          "source": "packets"
+        },
+        {
+          "sev": "Medium",
+          "title": "Old calc-sheet recipes used as settings",
+          "detail": "19 Friday orders take settings from Tech's calc workbooks; some last ran long ago: FUA152GS4 on SE21 (Aug 2024), RP26512-1 FU0031WB4 + FU0014WB4 on SE21 (Apr 2025), FU0061WBD on SE32 (Dec 2025, 7 orders), FU0041KS5 and FU0110WB7 (May 2026).",
+          "where": "SE21 / SE22 / SE23 / SE25 / SE32",
+          "source": "By Rule sheet"
+        },
+        {
+          "sev": "Medium",
+          "title": "A line's own recipe vs your W%",
+          "detail": "Where a line ran a code you folded into a Main, that recipe is used: SE25's packaging WB 4 mm (FU0021WB4) runs about 36% reclaim, your FU0031WB4 20%. Keep the line recipes, or align the lines to the Master?",
+          "where": "SE25",
+          "source": "24 Oct change"
+        },
+        {
+          "sev": "Medium",
+          "title": "W% Master draft v2: Open for James",
+          "detail": "Two Mains for KS 3 mm packaging (and KS 6 mm, NS 10 mm UV); FUA001SS6 / FAA051WBA notes without a target; FU00020BF4 / FU001WB5 lengths; FU1400GD4, FU001TLW4, FU001EAW4 spellings; FHA.. names under FE; SE42/SE43 own codes; GT premix; FU0151WB3 for 3 mm VOIDFORM; settings for FU0051WB5 on SE25 and FU0001WBD on SE32.",
+          "where": "W% Master Formulation (draft v2).xlsx",
+          "source": "workspace"
+        },
+        {
+          "sev": "Low",
+          "title": "Notes the rules do not read",
+          "detail": "Customer or tolerance notes (FLEXCON on H69A040-1, Tulsa Plastics hold 6.2-6.5 mm on H67A165-1, GENESIS target 10 mm on H68A020-1) and DO NOT RUN / KEEP RUNNING (RP25710-1, RP26717-2) do not change the formula today. Any customer formulas?",
+          "where": "schedule notes",
+          "source": "23 Oct schedule"
+        },
+        {
+          "sev": "Low",
+          "title": "Friday's issued copy",
+          "detail": "The 23 Oct Word copy emailed by the scheduled run (old process, 58 for the engineer) stays as issued; the rule-based rebuild is on this page and in out/. Reissue only if you ask.",
+          "where": "FRM 23 Oct",
+          "source": "scheduled run"
+        },
+        {
+          "sev": "Low",
+          "title": "Small fixes pending",
+          "detail": "Bubble line H69A350-4/-7 marked PROPOSED BY RULE though they ran BF0000EB3 before (label only). The page's Generate box shows the rules' answer only for the day the page was built (its reader does not read the spec or the notes).",
+          "where": "SE61 / this page",
+          "source": "24 Oct"
+        }
+      ]
+    },
     {
       "owner": "Tech",
       "title": "Formulation",

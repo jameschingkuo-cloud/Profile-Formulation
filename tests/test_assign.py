@@ -125,8 +125,13 @@ def test_roll_and_ltl_orders():
     assert 'roll' in assign.wanted('SE25', roll, datetime.date(2026, 10, 23))[0]
     p, why = assign.propose('SE25', roll, datetime.date(2026, 10, 23), issued)
     assert p['code'] == 'FU0021WB4' and p['settings'] and p['settings'][1] != 'calc', why
-    assert [f['formula_code'] for f in p['settings'][2]] == ['FU0021WB4', 'FU0001WB4']      # the roll row and its run-out partner
+    # James, 24 Oct 2026, on H69A284-3: "Roll formula should only have one primary formula. There shouldn't be a
+    # secondary formula" - the roll row only, not Tech's run-out row printed with it
+    assert [f['formula_code'] for f in p['settings'][2]] == ['FU0021WB4']
     assert 'roll material' in p['settings'][2][0]['note'].lower()
+    fm, why = assign.formulation('SE25', roll, datetime.date(2026, 10, 23), issued)
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0021WB4')], why
+    assert [f['formula_code'] for f in fm['members'][0]['rows']] == ['FU0021WB4']
     ltl = row('RPP40WB1186', 'PPP P R2R2R2', '1 Ticket per pallet & move to repacking area.  LTL MATERIAL')
     assert assign.derive('SE25', ltl)[0] == ('RU', '0', 'WB', '4')
     p, why = assign.propose('SE25', ltl, datetime.date(2026, 10, 23), issued)

@@ -417,6 +417,9 @@ formulation first) and, marked RULES UNDECIDED, where the rules cannot decide (`
   an R4 Primary takes only R4 rows (reclaim, no virgin/homopolymer/talc fed); an R4 black Main never run on the line gets
   CALCULATED settings from Tech's latest R4 black recipe on the line (its reclaim hopper kept, the colour hopper set for
   98/2 with the line's calibration slopes), marked "CALCULATED SETTINGS, check before running".
+- R12 (*"Roll formula should only have one primary formula. There shouldn't be a secondary formula"* - roll, VOIDFORM and
+  other special products run their special formula because of their physical properties): a roll or VOIDFORM order
+  gets its special Main only, no Secondary and no run-out row (`assign.SPECIAL_ONLY`).
 - Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name of
   the same composition, then under an old name he folded into it with another composition (the line's own recipe of the
   Main - James, 24 Oct 2026, on SE25: *"You should have primary formulation for package grade white 4 mm"*; issued pages

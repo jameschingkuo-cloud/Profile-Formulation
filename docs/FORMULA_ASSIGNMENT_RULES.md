@@ -269,3 +269,17 @@ color dye or master batch anyways. So take a look at that and see if you can com
   file and the page; the Draft says how. (Tech's calc sheet has another R4 layout, reclaim on hopper 1 at 65: on that
   layout 5 mm at SE21's black 5 mm rate would be hopper 1 69, hopper 4 20; the issued pages are newer and win.)
 - Test: `tests/test_assign.py` `test_r4_black`.
+
+## R12. Special products run their special formula only: one Main, no Secondary (24 Oct 2026)
+James, on H69A284-3 (RPP40WB890, SE25, ROLLS), printed FU0021WB4 + Secondary FU0014WB4: *"This order is a roll order,
+so it should use a roll formula. Roll formula should only have one primary formula. There shouldn't be a secondary
+formula. It should just be one main formula. Double check, please."* - *"Roll like void form ... They're all order that
+have a special formula use running it because of their unique physical properties. So whenever we encounter specialized
+product, we should use a [special] formula. So double check the roll formula."*
+- A roll or VOIDFORM order gets its special Main only: no Secondary, and not the run-out row Tech prints beside it
+  (SE25's "(For roll material only)" FU0001WB4). `assign.SPECIAL_ONLY`, `secondary_for`, `propose`.
+- Checked: SE25's roll recipe (FU0021WB4 "(For roll material only) Check weight": virgin 40, WB reclaim 60, CaCO3 20,
+  WB colour 15, talc 28) is, with SE25's calibration slopes, virgin 47.3 / reclaim 28.2 / CaCO3 19.1 / talc 3.9 /
+  colour 1.4 % - exactly James's Main roll FU0021WB4 in the W% Master.
+- Open: James also named "square cut" with roll and VOIDFORM; which orders that is (no schedule note says it) is to ask.
+  Corn box keeps its Secondary (James's "Secondary Corn box" FU0041WB4).

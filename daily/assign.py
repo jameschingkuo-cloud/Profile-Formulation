@@ -608,11 +608,13 @@ def propose(line, row, day, issued):
         rec = group_for(line, printed, want, issued)
         if rec:
             # only this formulation's rows of the issued group (a group can hold another order's primary, e.g. the
-            # VOIDFORM run-out FU0022WB3 printed under a FU0042WB3 order); its own run-out partner comes with it
+            # VOIDFORM run-out FU0022WB3 printed under a FU0042WB3 order); its own run-out partner comes with it, except
+            # on a roll or VOIDFORM order: one Main only (James, 24 Oct 2026: "Roll formula should only have one primary formula")
             formulas = [f for f in rec[2] if f['formula_code'] in main['printed']]
             if not formulas:
                 continue
-            formulas += [f for f in rec[2] if f not in formulas and re.search(r'run\s*out', f.get('note') or '', re.I)]
+            if not want & SPECIAL_ONLY:
+                formulas += [f for f in rec[2] if f not in formulas and re.search(r'run\s*out', f.get('note') or '', re.I)]
             return {'code': main['code'], 'main': main, 'settings': (rec[0], rec[1], formulas), 'printed_as': printed, 'season': seas,
                     'how': f"James's Main {main['code']}" + (f' (Tech printed it as {printed})' if printed != main['code'] else ''),
                     'settings_src': f'settings as issued on {line} {rec[0]} (FRM scan p{rec[1]})'}, ''
@@ -630,6 +632,7 @@ def propose(line, row, day, issued):
 
 
 QMARK = ('roll', 'void', 'corn', 'sign', 'ltl')     # qualifiers Tech writes on a page row ("(For roll material only)")
+SPECIAL_ONLY = {'roll', 'void'}                       # special products: their special formula, one Main, no Secondary
 
 
 def secondary_for(main, want, seas, line):
@@ -637,9 +640,15 @@ def secondary_for(main, want, seas, line):
     displayed, and let the production team ... decide whether we have enough of particular material to run it ... if we
     [are] running out of reclaim, then the reclaim primary will be removed and replaced with virgin resin secondary".
     The Secondary James marked for the same colour, thickness, prefix, grade and qualifiers; a qualified order with no
-    Secondary of its own whose Primary runs reclaim takes the plain one (the virgin run-out: rolls -> FU0014WB4, the one
-    James named for Tech's roll run-out FU0001WB4). R10: never one with reclaim on a VOIDFORM order. None if none, or
+    Secondary of its own whose Primary runs reclaim takes the plain one (LTL wrap RU0001WB4 -> RU0022WB4). R10: never one
+    with reclaim on a VOIDFORM order. A roll or VOIDFORM order has none: its special formula only (James, 24 Oct 2026, on
+    H69A284-3: "This order is a roll order, so it should use a roll formula. Roll formula should only have one primary
+    formula. There shouldn't be a secondary formula. It should just be one main formula." - "Roll like void form ...
+    They're all order that have a special formula ... because of their unique physical properties"). None if none, or
     if several different codes would fit."""
+    if want & SPECIAL_ONLY:
+        return None
+
     def fits(m, quals):
         q = set(m['quals'])
         if 'se43' in q:

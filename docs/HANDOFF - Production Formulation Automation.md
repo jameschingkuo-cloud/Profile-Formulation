@@ -2330,11 +2330,18 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   settings: hopper 3 Mix Reclaim 99, hopper 4 KS colour 11 (98.0/2.0 with SE21's slopes 87.2 and 16.1 g/min per unit),
   marked "CALCULATED SETTINGS, check before running". 23 Oct: 22 orders with settings to set (27 members), 1 Exception.
   Artifact v56. pytest 87 passed, 5 skipped.
+- R12, James on H69A284-3 (roll, SE25): *"Roll formula should only have one primary formula. There shouldn't be a
+  secondary formula"*; roll, VOIDFORM and other special products run their special formula. Roll and VOIDFORM orders now
+  get their special Main only (H69A284-3/-4/-5: FU0021WB4 alone). Checked: SE25's roll settings give exactly his Main
+  roll W% (47.3 / 28.2 / 19.1 / 3.9 / 1.4). James's "square cut" (also special) still to identify. Line 12/13 dosing
+  issue, SE21 R4 layout, RPP40FW2 and the other open points are on the page's Open items tab for Monday 26 Oct (13
+  items). Artifact v57.
 
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.67 | 2026-10-24 | Claude Code (local, with James Kuo) | **R12 special products (§7.73)**: roll and VOIDFORM orders run their special Main only, no Secondary; roll recipe checked against the W%; Monday's open items on the page; artifact v57. |
 | 1.66 | 2026-10-24 | Claude Code (local, with James Kuo) | **R11 R4 black 98/2 (§7.73)**: R4 Primaries take only R4 rows (H6AA173-2 corrected); RU0000KS5 on SE21 calculated from Tech's R4 black recipe (hopper 3 99, hopper 4 11), marked CALCULATED; artifact v56. |
 | 1.65 | 2026-10-24 | Claude Code (local, with James Kuo) | **A line's own recipe of a folded formulation (§7.73)**: James on SE25 packaging WB 4 mm; an old name he folded into a Main with another composition gives the Main's settings where Tech issued it (issued pages only); 23 Oct 98 of 99 by rule, 23 with settings to set; artifact v55. |
 | 1.64 | 2026-10-24 | Claude Code (local, with James Kuo) | **R9 Primary + Secondary, R10 VOIDFORM never reclaim (§7.73)**: both members printed (Primary first, ENGINEER TO SET where a member has no settings); no reclaim on VOIDFORM orders; W% Master v2 republished (FU0011WB5 "secondary Voidform" archived); 23 Oct rebuilt (98 of 99 by rule, 24 with settings to set, 1 Exception); interface generator off the issue history; artifact v54. |
