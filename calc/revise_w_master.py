@@ -9,9 +9,9 @@ and applies the Notes column, nothing else:
     the old name is kept as "Printed as" so Tech's pages still match;
   - "replace by / with ..." rows fold into their Main or Secondary (named in the note, or the one of the same colour,
     thickness, prefix and grade with the same words); they are listed on "Replaced" with the composition they had;
-  - archive / remove / obsolete / "???" rows go to "Archived";
+  - archive / remove / obsolete / "???" rows go to "Archived", and so does a VOIDFORM row with reclaim (R10);
   - what could not be resolved goes to "Open for James", with the questions still open from 23 Oct.
-Compositions are James's rounded values. The rules (R1-R5) are only noted here; docs/FORMULA_ASSIGNMENT_RULES.md has them.
+Compositions are James's rounded values. The rules (R1-R10) are only noted here; docs/FORMULA_ASSIGNMENT_RULES.md has them.
 """
 import re
 import sys
@@ -65,6 +65,9 @@ def main():
     for i, r in enumerate(R):
         r['_i'] = i; r['_level'] = assign.level(r['Notes']); r['_final'] = assign.final_code(r)
     keep = [r for r in R if r['_level'] in ('main', 'secondary')]
+    # R10 (James, 23 Oct 2026): "void form should not use any reclaim" - "There are some old void form formula that have
+    # reclaim. I don't want them": a VOIDFORM row with reclaim leaves the Master for "Archived"
+    void_rc = [r for r in keep if 'void' in assign.quals(r['Notes']) and (r.get('Reclaim %') or 0) >= assign.RECLAIM_MIN]
     # fold "replace by" rows into their target: daily/assign.py replace_target, the same logic the daily run uses
     mains = assign.rules()['mains']
     by_main = {}                      # assign's main dict -> our row
@@ -109,10 +112,13 @@ def main():
         ('James\'s notes', 'James Kuo, 23 Oct 2026, in "W Master Formulation draft (version 1).xlsx" (kept as received in data/w_master): Main / Secondary / replace by / archive / remove / rename on every row; compositions rounded. '
                           '"There are too many new product code which make the one to one match not very useful. To make it work, we need to build logic system so that you assign formulation to product base on logic."'),
         ('Revision 2', 'Those notes applied, nothing else: sheet "W% Master v2" keeps the Main and Secondary formulations under the names James gives (old names as "Printed as", so Tech\'s pages still match); '
-                       '"Replaced" lists every row folded into a Main or Secondary; "Archived" the archive / remove / obsolete rows; "Open for James" what the notes do not settle.'),
+                       '"Replaced" lists every row folded into a Main or Secondary; "Archived" the archive / remove / obsolete rows and the VOIDFORM rows with reclaim (R10); "Open for James" what the notes do not settle.'),
         ('Rules', 'R1 colour other than KS/WB is graphic grade (third character A); the bubble line (BF) stays 0. R2 reclaim only in KS/WB. R3 the schedule\'s Spec decides the prefix '
                   '(R1R1R1 FU, R4R4R4 RU, OPOPOP FX, S1S1S1 FS, A1A1A1 FA, U1U1U1 FE - "Extra UV is FE", F.. FR, bubble line BF). R4 the middle digits are a version number. '
-                  'R5 summer formulation 1 Apr - 31 Oct, winter 1 Nov - 31 Mar. Full text and tests: docs/FORMULA_ASSIGNMENT_RULES.md in the formulation-pipeline repo.'),
+                  'R5 summer formulation 1 Apr - 31 Oct, winter 1 Nov - 31 Mar. R6 print James\'s names, never the old codes. R7 slitter / SPA / SPP orders take the sign-blank Main. '
+                  'R8 roll orders take the Main roll, LTL wrap orders RU0001WB4. R9 a formulation with a Primary and a Secondary prints both: production runs the Primary '
+                  '(reclaim) and switches to the virgin Secondary if reclaim runs out. R10 VOIDFORM never runs reclaim ("The reclaim calcium is not stable ... very difficult to control the weight"). '
+                  'Full text and tests: docs/FORMULA_ASSIGNMENT_RULES.md in the formulation-pipeline repo.'),
         ('Used by', 'daily/assign.py: the daily Word formulation proposes the Main for a new order from these rows (rows marked PROPOSED BY RULE).'),
         ('Status', 'DRAFT. Nothing here is approved or in the Formulation Master; James reviews "Open for James" first.'),
     ]:
@@ -126,12 +132,14 @@ def main():
             'Spec on its orders', 'Grade on its orders', 'Grade', 'Colour', 'Thk (mm)'] + W_COLS
            + ['Total', 'Materials', 'Last used', 'Evidence (calc / FRM)'] + RUN_COLS + ["James's note (23 Oct 2026)", 'Change in revision 2'])
     data = []
-    for r in sorted(keep, key=lambda r: ((r['Colour'] or ''), r['Thk (mm)'] or 0, r['_final'], r['_level'])):
+    for r in sorted((r for r in keep if r not in void_rc), key=lambda r: ((r['Colour'] or ''), r['Thk (mm)'] or 0, r['_final'], r['_level'])):
         code = r['_final']
         pre = assign.canon_prefix(code[:2]) if len(code) >= 2 else ''
         change = []
         if r['Formula Code'] != code:
             change.append(f"renamed from {r['Formula Code']}")
+        if (r.get('Reclaim %') or 0) >= assign.RECLAIM_MIN and 'void' in str(r.get('Run: Special Instructions') or '').lower():
+            change.append('R10: never on a VOIDFORM order (it has reclaim; its latest run was one)')
         absorbed = sorted({R[i]['Formula Code'] + f" ({R[i]['Application']}{' ' + R[i]['Version'] if R[i]['Version'] else ''}"
                                                    f"{'' if same[i] else ', other composition'})" for i, t in target.items() if t['_i'] == r['_i']})
         if absorbed:
@@ -171,6 +179,8 @@ def main():
     # ---- Archived
     data = [[r['Formula Code'], r['Application'], r['Version'], r['_level'], r['Colour'], r['Thk (mm)']] + [r.get(c) for c in W_COLS] + [r.get('Materials'), r.get('Last used'), r['Notes']]
             for r in R if r['_level'] in ('archive', 'remove', 'other') or (r['Notes'] or '').strip().startswith('?')]
+    data += [[r['Formula Code'], r['Application'], r['Version'], 'R10: VOIDFORM with reclaim (James, 23 Oct 2026: "void form should not use any reclaim")',
+              r['Colour'], r['Thk (mm)']] + [r.get(c) for c in W_COLS] + [r.get('Materials'), r.get('Last used'), r['Notes']] for r in void_rc]
     s = sheet('Archived', ['Formula Code', 'Application', 'Version', 'Why', 'Colour', 'Thk (mm)'] + W_COLS + ['Materials', 'Last used', "James's note"],
               data, {'Materials': 34, "James's note": 40})
     # ---- Open for James
@@ -199,12 +209,18 @@ def main():
          'the note became "Secondary Packing grade". Also labelled Standard / run-out though their latest run was a VOIDFORM order: FU0011WB5 1 of 2, FUA011WB5 2 of 6, '
          'FU0001WBA, FU0041WBA, FU0001WBD, FU0061WBD (the VOIDFORM-specific rows exist beside them).',
          'FU0151WB3 = "Main SE43" (3 mm WB, void form and packaging), like FU0151KS3 and FU0151WB4?'],
+        ['VOIDFORM without reclaim (R10)',
+         'Tech has run VOIDFORM orders on reclaim formulations: FU0011WB5 on SE25 (H64A244-1, H66A116-1, H68A090-1) and FU0061WBD on SE22 (H68A053-1). Archived: '
+         + ', '.join(f"{r['Formula Code']} \"{r['Notes']}\" ({r.get('Reclaim %'):g}% reclaim)" for r in void_rc)
+         + '. The daily run gives a VOIDFORM order only a Main and Secondary without reclaim: WB 5 mm FU0051WB5, WB 13 mm FU0001WBD. Neither has run on the line '
+         'the 23 Oct schedule puts it on (FU0051WB5 on SE25, FU0001WBD on SE32): those orders print "ENGINEER TO SET".',
+         'Settings for FU0051WB5 on SE25 and FU0001WBD on SE32 (auger calculation)?'],
     ]
     sheet('Open for James', ['Question', 'Detail', 'To decide'], data, {'Question': 30, 'Detail': 110, 'To decide': 40})
     OUT.parent.mkdir(parents=True, exist_ok=True)
     wb.save(OUT)
-    print(f'{OUT}: {len(keep)} Main/Secondary rows, {len(target)} replaced, {len(unresolved)} unresolved, '
-          f'{sum(1 for r in R if r["_level"] in ("archive", "remove", "other"))} archived')
+    print(f'{OUT}: {len(keep) - len(void_rc)} Main/Secondary rows, {len(target)} replaced, {len(unresolved)} unresolved, '
+          f'{sum(1 for r in R if r["_level"] in ("archive", "remove", "other")) + len(void_rc)} archived ({len(void_rc)} VOIDFORM with reclaim)')
 
 
 if __name__ == '__main__':

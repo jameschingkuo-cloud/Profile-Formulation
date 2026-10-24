@@ -135,7 +135,7 @@ Change these only with James's explicit say-so, and log the change in the handof
 | `daily/manual/` | Hand-found issues per day (`manual_issues_<date>.py`) |
 | `daily/cfg/` | Read Me notes per day (`cfg_<date>.json`) |
 | `calc/` | Tech's `SExx Formulation.xls` → `Formulation Calc Library.xlsx` (`parse_fcal.py` → `export_calc_products.py` → `build_formulation_master.py`); `auger_rules.py` |
-| `daily/assign.py` | Formula assignment by rule (James Kuo, 23 Oct 2026): rules R1-R5 + his Main rows -> the code and the line's last issued settings; `docs/FORMULA_ASSIGNMENT_RULES.md` has the rules verbatim and their tests |
+| `daily/assign.py` | Formula assignment by rule (James Kuo, 23 Oct 2026): rules R1-R10 + his Main / Secondary rows -> each order's Primary and Secondary and their settings on the line; `docs/FORMULA_ASSIGNMENT_RULES.md` has the rules verbatim and their tests |
 | `data/w_master/` | James's annotated W% Master (`...James notes 2026-10-23.xlsx`, kept as received: the authority on which code is Main); `calc/revise_w_master.py` builds revision 2 from it (`out/W% Master Formulation (draft v2).xlsx`) |
 | `db/` | `schema.py`: the database described once (workbooks, sheets, columns, keys); `templates` / `check <file>` / `doc`. `preflight.py`: master change control (`check` / `accept`; accepted versions in `data/snapshots/`). `seed_master.py`: one-time Draft seed. Flow and maintenance in `docs/DATABASE.md` (§3, §7) |
 | `product_master/` | `prepare.py`: Product Master → `Product Master - Prepared <date>.xlsx` (code-derived columns, Issues, Verify First, Colour Codes, Import Map; §7.18). A working file, not published |
@@ -399,11 +399,20 @@ process. Remove old logic and apply new"*) `daily/resolve.py` decides every orde
 master row and before the order history, which is used only for the settings (this order's own last issue of the same
 formulation first) and, marked RULES UNDECIDED, where the rules cannot decide (`ASSIGN_RULES=0`: the old draft, for backtests).
 - The code's fixed parts come from the schedule row: prefix from the Spec (R1R1R1 FU, R4R4R4 RU, OPOPOP FX, S1S1S1 FS,
-  A1A1A1 FA, U1U1U1 FH, F.. FR, the bubble line BF); third character `A` for a colour other than KS/WB and for the special
+  A1A1A1 FA, U1U1U1 FE - FH on Tech's older pages, F.. FR, the bubble line BF); third character `A` for a colour other than KS/WB and for the special
   specs, else the schedule's grade (A -> A, P -> 0), always `0` on the bubble line; colour and thickness from the product
   code (6.3 mm runs a ..6 code; 10 mm A, 13 mm D). The middle digits are a version number: James's Main row decides.
-- Qualifiers: VOIDFORM / corn box / sign blank from the special instructions; summer (1 Apr - 31 Oct) or winter Main;
-  an "SE43" Main outranks the general one on SE43; customer-specific, roll, HDPE, PE Mains are never proposed by rule.
+- Qualifiers: VOIDFORM / corn box / sign blank (also SPA/SPP and the slitter, R7) / roll / LTL wrap (R8) from the product
+  and special instructions; summer (1 Apr - 31 Oct) or winter Main; an "SE43" Main outranks the general one on SE43;
+  customer-specific, HDPE, PE Mains are never proposed by rule.
+- R9 (*"When a formulation has primary and secondary ... both of them will need to be displayed"*): an order gets James's
+  Primary and, where he has one, its Secondary (the virgin formulation for when reclaim runs out), each with its own rows
+  on the line - a row belongs to a member when its code is one of the member's names and it feeds reclaim exactly when the
+  member's W% has reclaim. Printed Primary first, then the Secondary ("If reclaim runs out"); a member with no settings on
+  the line prints "ENGINEER TO SET" in its place (Draft sheet "Settings To Set", a High issue).
+- R10 (*"void form should not use any reclaim"* - the reclaim's calcium varies and VOIDFORM is sold by weight): a VOIDFORM
+  order never gets a formulation with reclaim in James's W%, nor a row that feeds reclaim; Tech's old void formulas with
+  reclaim (FU0011WB5 on SE25, FU0061WBD on SE22) are not printed. Tests: `tests/test_assign.py`.
 - Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name of
   the same composition; else Tech's current calc recipe for it on the line (`out/Formulation Calc Library.xlsx`, marked
   "settings from the calc sheet"; James, 23 Oct 2026: *"you sure we don't have this one? This is just black"*). A Main never run on the line is not a formulation yet: it stays an Exception that names the code

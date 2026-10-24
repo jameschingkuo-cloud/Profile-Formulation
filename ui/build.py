@@ -58,7 +58,7 @@ def draft_vs_tech(day, P):
     from resolve import split_feeder
     src = config.OUTPUT_DIR / f'FRM Draft {day}.xlsx'
     if not src.exists():
-        return {'drafted': 0, 'draft_match': 0, 'exceptions': 0}
+        return {'drafted': 0, 'draft_match': 0, 'exceptions': 0, 'to_set': 0, 'rules': False}
     config.record_read(src, 'FRM Draft (interface copy)')
     wb = load_workbook(src, read_only=True)
     rows = list(wb['Draft'].iter_rows(values_only=True)); h = {k: i for i, k in enumerate(rows[0])}
@@ -76,25 +76,31 @@ def draft_vs_tech(day, P):
                 for o in g['orders']:
                     tech.setdefault((pg['line_code'], o), []).append((f['formula_code'], s))
     exc = len(list(wb['Exceptions'].iter_rows(values_only=True))) - 1
-    return {'drafted': len(draft), 'draft_match': sum(1 for k, v in draft.items() if tech.get(k) == v), 'exceptions': exc}
+    to_set = len(list(wb['Settings To Set'].iter_rows(values_only=True))) - 1 if 'Settings To Set' in wb.sheetnames else 0
+    rules = any('by rule' in str(r[h['How Resolved']] or '').lower() for r in rows[1:])     # the rules' draft (23 Oct 2026 on)
+    return {'drafted': len(draft), 'draft_match': sum(1 for k, v in draft.items() if tech.get(k) == v), 'exceptions': exc,
+            'to_set': to_set, 'rules': rules}
 
 
 def draft_lines(day, P, meta):
     """A day with no Tech FRM pages yet (2 Oct 2026: the schedule came alone, as the system's PDFs): the lines from the
-    FRM Draft - each order's formulation as last issued on its line, the same as the Word file (daily/render_frm.py).
-    Orders sharing the same formulas are one group; an Exception (new on its line) has no group: the page shows it as
-    'an engineer completes it'. Feeder columns and notes from Tech's latest page for the line."""
+    FRM Draft - each order's formulation by rule since 23 Oct 2026 (Primary and Secondary, R9), the same as the Word file
+    (daily/render_frm.py). Orders sharing the same formulas are one group; an Exception has no group: the page shows it
+    as 'an engineer completes it', with the reason. A formulation whose settings are not set yet has no feeders (its note
+    says ENGINEER TO SET). Feeder columns and notes from Tech's latest page for the line."""
     from resolve import split_feeder
     src = config.OUTPUT_DIR / f'FRM Draft {day}.xlsx'
     if not src.exists():
         raise SystemExit(f'No FRM pages and no {src.name}: run PKT_DATE={day} python daily/resolve.py first')
     config.record_read(src, 'FRM Draft (interface copy)')
-    rows = list(load_workbook(src, read_only=True)['Draft'].iter_rows(values_only=True))
+    wb = load_workbook(src, read_only=True)
+    rows = list(wb['Draft'].iter_rows(values_only=True))
     h = {k: i for i, k in enumerate(rows[0])}
-    forms = {}                                   # (line, order) -> {formula row: {'code', 'note', 'feeders': {(ext, feeder): (mat, set)}}}
+    exc = {(r[0], r[1]): r[8] for r in list(wb['Exceptions'].iter_rows(values_only=True))[1:]}
+    forms = {}                                   # (line, order) -> {formula row: {'code', 'note', 'role', 'feeders': {(ext, feeder): (mat, set)}}}
     for r in rows[1:]:
         f = forms.setdefault((r[h['Line Code']], r[h['Order']]), {}).setdefault(
-            r[h['Formula Row']], {'code': r[h['Formula Code']], 'note': r[h['Note']] or '', 'feeders': {}})
+            r[h['Formula Row']], {'code': r[h['Formula Code']], 'note': r[h['Note']] or '', 'role': r[h['Variant']] or '', 'feeders': {}})
         f['feeders'][(r[h['Extruder']] or '', r[h['Feeder']])] = (r[h['Material (as issued)']] or '', r[h['Set']] or '')
     lines = []
     for lc in sorted({e['line'] for e in P['ext']}, key=lambda c: LN.get(c, 99)):
@@ -106,7 +112,7 @@ def draft_lines(day, P, meta):
             f = forms.get((lc, r['order']))
             if not f:
                 continue
-            fl = [{'code': x['code'], 'note': x['note'],
+            fl = [{'code': x['code'], 'note': x['note'], 'role': x['role'],
                    'feeders': [{'col': col_of.get(k, ' '.join(p for p in k if p)), 'mat': mat, 'set': st, 'id': MAP.get(mat)}
                                for k, (mat, st) in x['feeders'].items() if mat or st]}
                   for _, x in sorted(f.items())]
@@ -123,7 +129,8 @@ def draft_lines(day, P, meta):
         sched = [{'order': r['order'], 'prod': r['prod_code'], 'colors': r.get('colors'), 'thk': r.get('thk'), 'gsm': r.get('gsm'),
                   'size': f"{r.get('order_width', '')} × {r.get('order_length', '')}", 'die': r.get('die'),
                   'plt': r.get('num_plt'), 'lbs': r.get('weight_lbs'), 'si': r.get('special_instructions') or '',
-                  'hw': r.get('handwritten') or '', 'g': grp_of.get(r['order']), 'plt_real': real_pallets(r)} for r in rows_l]
+                  'hw': r.get('handwritten') or '', 'g': grp_of.get(r['order']), 'plt_real': real_pallets(r),
+                  'exc': exc.get((lc, r['order']))} for r in rows_l]
         lines.append({'code': lc, 'no': LN.get(lc), 'dosing': DOS.get(lc, 'AUGER'), 'cols': cols, 'ac': m.get('ac', ''),
                       'groups': groups, 'notes': m.get('notes', []), 'sched': sched})
     return lines

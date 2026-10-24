@@ -225,9 +225,12 @@ def test_rules_first_25_sep(tmp_path):
         hows.setdefault(d['Order'], set()).add(str(d['How Resolved']).split(' (')[0])
     assert all(v <= {'By rule', 'Proposed by rule', 'Product to Formula'} for v in hows.values()), hows
     by_rule = {row[1] for row in wb['By Rule'].iter_rows(min_row=2, values_only=True)}
-    assert {'H67A120-1', 'H68A153-1'} <= by_rule
-    for e in list(wb['Exceptions'].iter_rows(values_only=True))[1:]:
-        assert str(e[8]).startswith('Formula ') or 'rules:' in str(e[8]), e
+    assert 'H67A120-1' in by_rule
+    exc = {e[1]: str(e[8]) for e in list(wb['Exceptions'].iter_rows(values_only=True))[1:]}
+    # FXA020WB4 had never run on SE31 before 25 Sep: the rule names it, the settings go to the engineer
+    assert exc['H68A153-1'].startswith('Formula FXA020WB4 decided by rule; no settings on SE31'), exc['H68A153-1']
+    for o, why in exc.items():
+        assert why.startswith(('Formula ', 'Rules cannot decide: ')), (o, why)
 
 
 def test_word_marks_rule_rows(tmp_path):
@@ -240,8 +243,84 @@ def test_word_marks_rule_rows(tmp_path):
     from docx import Document
     doc = Document(out / 'FRM Formulation 2026-09-28.docx')
     cells = [c.text for t in doc.tables for row in t.rows for c in row.cells]
-    assert any(c.startswith('PROPOSED BY RULE') for c in cells)
+    assert any('PROPOSED BY RULE' in c for c in cells)
     assert 'PROPOSED BY RULE' in doc.sections[0].footer.paragraphs[0].text
-    for row in (row for t in doc.tables for row in t.rows):           # RP26928-1: FUA060WBA by rule, marked, never silent
-        if row.cells[0].text.startswith('RP26928-1'):
-            assert any('FUA060WBA' in c.text for c in row.cells) and any('PROPOSED BY RULE' in c.text for c in row.cells)
+    rp = [row for t in doc.tables for row in t.rows if row.cells[0].text.startswith('RP26928-1')]
+    for row in rp:                                                    # RP26928-1: FUA060WBA by rule, marked, never silent
+        assert any('FUA060WBA' in c.text for c in row.cells) and any('PROPOSED BY RULE' in c.text for c in row.cells)
+    # R9: the virgin Secondary prints with the Primary, for production to switch to if reclaim runs out
+    assert any('If reclaim runs out' in row.cells[1].text and row.cells[-1].text.startswith('Secondary') for row in rp)
+
+
+def test_primary_and_secondary_both_shown():
+    """R9 (James, 23 Oct 2026): "When a formulation has primary and secondary, it means that both of them will need to be
+    displayed, and let the production team will then decide whether we have enough of particular material to run it or
+    not". RP26928-1 (RPAA0WB318, SE22, 28 Sep): the FUA060WBA Primary with Tech's two reclaim rows (run first, next) and
+    its virgin Secondary, which Tech printed FUA010WBA "in case PP WB Reclaim is run out" - both under James's name."""
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        if d['packet_date'] < '2026-09-28':
+            packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    fm, why = assign.formulation('SE22', row('RPAA0WB318', 'PPP A R1R1R1'), datetime.date(2026, 9, 28), issued)
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FUA060WBA'), ('Secondary', 'FUA060WBA')], why
+    prim, sec = fm['members']
+    assert len(prim['rows']) == 2 and all(assign.uses_reclaim(f) for f in prim['rows'])
+    assert [f['formula_code'] for f in sec['rows']] == ['FUA010WBA'] and not assign.uses_reclaim(sec['rows'][0])
+    assert fm['how'] == "James's Primary FUA060WBA + Secondary FUA060WBA"
+
+
+def test_void_form_never_reclaim():
+    """R10 (James, 23 Oct 2026): "void form should not use any reclaim" - "The reclaim calcium is not stable ... It makes it
+    very difficult to control the weight when we're running with reclaim". A VOIDFORM order never gets a Primary or a
+    Secondary with reclaim in James's W%, nor a row that feeds reclaim; the old void formulas with reclaim (FU0011WB5
+    "secondary Voidform" 35%, Tech's FU0011WB5 / FU0061WBD void groups) are never used."""
+    for key in assign.rules()['by_key']:
+        for line in ('SE25', 'SE43'):
+            for seas in ('summer', 'winter'):
+                main, _ = assign.choose(key, {'void'}, seas, line)
+                if main:
+                    assert not assign.w_reclaim(main), (key, main['code'])
+                    sec = assign.secondary_for(main, {'void'}, seas, line)
+                    assert sec is None or not assign.w_reclaim(sec), (key, sec['code'])
+    main, _ = assign.choose(('FU', '0', 'WB', '5'), {'void'}, 'summer', 'SE25')     # WB 5 mm: FU0051WB5, never FU0011WB5
+    assert main['code'] == 'FU0051WB5' and assign.secondary_for(main, {'void'}, 'summer', 'SE25') is None
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        packets[d['packet_date']] = d
+    day = datetime.date(2026, 10, 23)
+    issued = assign.issued_on_line({d: p for d, p in packets.items() if d < '2026-10-23'})
+    void = []
+    for pg in packets['2026-10-23']['ext']:
+        for r in pg['rows']:
+            if 'void' in assign.wanted(pg['line'], r, day)[0]:
+                fm, why = assign.formulation(pg['line'], r, day, issued)
+                void.append((r['order'], [m['code'] for m in fm['members']]))
+                for m in fm['members']:
+                    assert not assign.w_reclaim(m['member']), (r['order'], m['code'])
+                    assert not any(assign.uses_reclaim(f) for f in m['rows'] or []), (r['order'], m['code'])
+    assert dict(void) == {'H6AA197-1': ['FU0022WB3'], 'H68A091-1': ['FU0021WB4'], 'H68A090-1': ['FU0051WB5'],
+                          'H64A244-1': ['FU0051WB5'], 'H68A053-1': ['FU0001WBD'], 'H6AA097-1': ['FU0001WBD']}
+    # nor from the order's own last issue: a row feeding reclaim is dropped, the settings go to the engineer
+    own = ('2026-10-20', 1, [{'formula_code': 'FU0051WB5', 'note': '', 'feeders': {
+        'Hopper 1': {'material': 'PP Virgin-silo 4 (6502A)', 'set': '60'}, 'Hopper 3': {'material': 'PP WB Reclaim', 'set': '30'}}}])
+    fm, _ = assign.formulation('SE25', row('DPP50WB308', 'PPP P R1R1R1', 'VOIDFORM, PLEASE WATCH WEIGHT'), day, issued, own=own)
+    assert [(m['code'], m['rows']) for m in fm['members']] == [('FU0051WB5', None)]
+
+
+def test_primary_first_even_without_settings():
+    """RP26A15-1 (23 Oct, SE21): James's Primary FUA032KS4 has no settings on SE21 yet, its Secondary FUA152KS4 has. The
+    Primary still comes first, as one "ENGINEER TO SET" row, then the Secondary, printed for when reclaim runs out."""
+    import resolve
+    import render_frm
+    sec = [{'formula_code': 'FUA152KS4', 'note': '', 'feeders': {'Hopper 1': {'material': 'PP Virgin-silo 3 (F6502A)', 'set': '53'}}}]
+    fm = {'how': "James's Primary FUA032KS4 + Secondary FUA152KS4", 'members': [
+        {'role': 'Primary', 'code': 'FUA032KS4', 'member': {'code': 'FUA032KS4'}, 'rows': None, 'src': None},
+        {'role': 'Secondary', 'code': 'FUA152KS4', 'member': {'code': 'FUA152KS4'}, 'rows': sec, 'src': ('line', '2026-10-07', 12)}]}
+    rows, marked, missing = resolve.rule_rows('SE21', 'RP26A15-1', 'RPA40KS744', fm)
+    assert [(r[3], r[4], r[14]) for r in rows] == [('FUA032KS4', 'Primary', 1), ('FUA152KS4', 'Secondary', 2)]
+    assert rows[0][15].startswith('ENGINEER TO SET') and [m['code'] for m in missing] == ['FUA032KS4'] and marked == '2026-10-07'
+    forms = [{'note': rows[0][15], 'feeders': {}}, {'note': rows[1][15], 'feeders': {('', 'Hopper 1'): ('PP Virgin', '53', None)}}]
+    assert [render_frm.when_label(forms, i) for i in range(2)] == ['Run first', 'If reclaim runs out']

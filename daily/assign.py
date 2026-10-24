@@ -246,11 +246,36 @@ def wanted(line, row, day):
     return q, season(day)
 
 
+RECLAIM_MIN = 1.0      # W% points: from this much up a formulation counts as one with reclaim
+
+
+def w_reclaim(m):
+    """James's W% for the formulation carries reclaim."""
+    return (m['w'].get('Reclaim %') or 0) >= RECLAIM_MIN
+
+
+def uses_reclaim(f):
+    """A formula row (issued page or calc sheet) feeds reclaim: a reclaim material with a setting above 0."""
+    for v in f['feeders'].values():
+        mat, s = (v.get('material') or '').lower(), str(v.get('set') or '')
+        try:
+            n = float(s.replace(',', ''))
+        except ValueError:
+            n = 0
+        if 'reclaim' in mat and n > 0:
+            return True
+    return False
+
+
 def choose(key, want, seas, line):
     """The Main for a key and what the order asks for. -> (main, why) with main None when none or several fit."""
     cands = [m for m in rules()['by_key'].get(key, []) if m['level'] == 'main' and not m['restricted']]
+    if 'void' in want:
+        # R10 (James, 23 Oct 2026): "void form should not use any reclaim" - "The reclaim calcium is not stable ... It
+        # makes it very difficult to control the weight when we're running with reclaim". Never a reclaim formulation.
+        cands = [m for m in cands if not w_reclaim(m)]
     if not cands:
-        return None, 'no Main in the W% Master for ' + '/'.join(key)
+        return None, 'no Main in the W% Master for ' + '/'.join(key) + (' without reclaim (VOIDFORM)' if 'void' in want else '')
     def fits(m):
         q = set(m['quals'])
         if 'se43' in q:
@@ -472,6 +497,112 @@ def propose(line, row, day, issued):
                     'settings_src': f"settings from Tech's {line} calc sheet (last run {last}" + (f', as {printed}' if printed != main['code'] else '') + ')'}, ''
     return {'code': main['code'], 'main': main, 'settings': None, 'printed_as': None, 'season': seas, 'how': "James's Main"}, \
         f'{main["code"]} by rule, never run on {line}: no settings on this line (no page, no calc sheet)'
+
+
+QMARK = ('roll', 'void', 'corn', 'sign', 'ltl')     # qualifiers Tech writes on a page row ("(For roll material only)")
+
+
+def secondary_for(main, want, seas, line):
+    """R9 (James, 23 Oct 2026): "When a formulation has primary and secondary, it means that both of them will need to be
+    displayed, and let the production team ... decide whether we have enough of particular material to run it ... if we
+    [are] running out of reclaim, then the reclaim primary will be removed and replaced with virgin resin secondary".
+    The Secondary James marked for the same colour, thickness, prefix, grade and qualifiers; a qualified order with no
+    Secondary of its own whose Primary runs reclaim takes the plain one (the virgin run-out: rolls -> FU0014WB4, the one
+    James named for Tech's roll run-out FU0001WB4). R10: never one with reclaim on a VOIDFORM order. None if none, or
+    if several different codes would fit."""
+    def fits(m, quals):
+        q = set(m['quals'])
+        if 'se43' in q:
+            if line != 'SE43':
+                return False
+            q.discard('se43')
+        if 'summer' in q or 'winter' in q:
+            if seas not in q:
+                return False
+            q -= {'summer', 'winter'}
+        return q == quals
+    base = set(main['quals']) - {'se43', 'summer', 'winter'}
+    cands = [m for m in rules()['by_key'].get(main['key'], []) if m['level'] == 'secondary' and not m['restricted']]
+    if 'void' in want:
+        cands = [m for m in cands if not w_reclaim(m)]
+    fit = [m for m in cands if fits(m, base)]
+    if not fit and base and w_reclaim(main):
+        fit = [m for m in cands if fits(m, set())]
+    if len({m['code'] for m in fit}) > 1:                      # prefer the virgin run-out to a reclaim Primary
+        fit = [m for m in fit if w_reclaim(m) != w_reclaim(main)] or fit
+    return fit[0] if len({m['code'] for m in fit}) == 1 else None
+
+
+def member_settings(line, m, want, issued, own=None):
+    """The rows of one member (Primary or Secondary) on the line: from the order's own last issue, else the line's issued
+    groups (the one Tech noted for the order's qualifier first), else Tech's calc sheet. A row belongs to the member when
+    its code is one of the member's printed names and it feeds reclaim exactly when the member's W% has reclaim (so the
+    Primary and Secondary of one code, FU0011WB5 52% and 0%, each get their own row). -> (rows, (kind, date, page)) or
+    (None, None)."""
+    want_r = w_reclaim(m)
+
+    def pick(fs):
+        return [f for f in fs if f['formula_code'] in m['printed'] and uses_reclaim(f) == want_r]
+
+    if own:
+        rows = pick(own[2])
+        if rows:
+            return rows, ('own', own[0], own[1])
+    groups = sorted({id(g): g for p in m['printed'] for g in _ISSUED_GROUPS.get((line, p), [])}.values(),
+                    key=lambda g: g[0], reverse=True)
+    if not groups:
+        groups = [issued[(line, p)] for p in m['printed'] if (line, p) in issued]
+
+    def notes_q(fs):
+        q = set()
+        for f in fs:
+            q |= {x for x in quals(f.get('note', '')) if x in QMARK}
+        return q
+    marked = {q for q in want if q in QMARK}
+    ordered = ([g for g in groups if marked and notes_q(g[2]) & marked] + [g for g in groups if not notes_q(g[2])] + groups)
+    for g in ordered:
+        rows = pick(g[2])
+        if rows:
+            return rows, ('line', g[0], g[1])
+    for printed in sorted(m['printed'], key=lambda c: c != m['code']):
+        rec = calc_recipes().get((line, printed))
+        if rec:
+            rows = pick(rec[1])
+            if rows:
+                return rows, ('calc', rec[0], 'calc')
+    return None, None
+
+
+def formulation(line, row, day, issued, own=None):
+    """R9: an order's whole formulation - James's Primary (his Main) and, where he has one, its Secondary - each with its
+    rows on the line (member_settings). own: the order's own last issue on this line (date, page, formulas), if any.
+    R10: on a VOIDFORM order no row that feeds reclaim is ever kept. -> (dict(members, key, how), why) or (None, why);
+    members: [dict(role, code, member, rows or None, src)] Primary first."""
+    key, why = derive(line, row)
+    if key is None:
+        return None, why
+    want, seas = wanted(line, row, day)
+    main, why = choose(key, want, seas, line)
+    if main is None:
+        if why.startswith('no Main') and not want:     # the bubble line's BF codes: a code already issued on the line
+            prior = issued_for_key(line, key, issued)
+            if prior:
+                rec, code = prior[0]
+                return {'members': [{'role': 'Primary', 'code': code, 'member': None, 'rows': rec[2], 'src': ('line', rec[0], rec[1])}],
+                        'key': key, 'how': f'code already issued on {line} for {"/".join(key)} (no W% Master row)'}, ''
+        return None, why
+    pair = [('Primary', main)]
+    sec = secondary_for(main, want, seas, line)
+    if sec is not None:
+        pair.append(('Secondary', sec))
+    members = []
+    for role_, m in pair:
+        rows, src = member_settings(line, m, want, issued, own)
+        if rows and 'void' in want:
+            rows = [f for f in rows if not uses_reclaim(f)] or None
+        members.append({'role': role_, 'code': m['code'], 'member': m, 'rows': rows, 'src': src})
+    how = f"James's Primary {main['code']}" + (f" + Secondary {sec['code']}" if sec else '')
+    return {'members': members, 'key': key, 'how': how}, ''
 
 
 if __name__ == '__main__':

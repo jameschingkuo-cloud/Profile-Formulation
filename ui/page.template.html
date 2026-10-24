@@ -318,7 +318,7 @@ nav.tabs .tabsep{align-self:center;margin-left:14px;padding-left:12px;border-lef
     </div>
     <div class="panel" id="gen" style="margin-top:16px">
       <div><h2 style="font-size:24px">Generate the formulation from the schedule</h2>
-        <p class="muted" style="margin:4px 0 0">Drop the extrusion schedule either way: the system's own PDF (BPN9PFR…PDF, read exactly from its text) or the copier scan. For a scan, the page reads each extrusion page's line, order and product with text recognition running in this page (nothing is uploaded; Claude reads it instead where your viewer allows images). It then gives every order the latest formulation issued for it on that line (whatever the schedule's date), the same rule as the pipeline; anything else is left for an engineer. Rows it cannot match to a schedule on file are boxed for you to check against the paper. A check, not an issue: the printed document still comes from the pipeline.</p></div>
+        <p class="muted" style="margin:4px 0 0">Drop the extrusion schedule either way: the system's own PDF (BPN9PFR…PDF, read exactly from its text) or the copier scan. For a scan, the page reads each extrusion page's line, order and product with text recognition running in this page (nothing is uploaded; Claude reads it instead where your viewer allows images). It then shows each order's formulation by rule (James's W% Master, since 23 Oct 2026) as the daily run decided it for the day this page was built for; for any other day the daily run decides by rule and this page checks the reading only. Anything without a formulation is left for an engineer. Rows it cannot match to a schedule on file are boxed for you to check against the paper. A check, not an issue: the printed document still comes from the pipeline.</p></div>
       <div class="genrow">
         <label class="drop" id="drop" for="scanfile">
           <strong>Drop the schedule here (system PDF or scan), or click to choose it</strong>
@@ -370,12 +370,19 @@ const issuesFor = code => D.issues.filter(i => i.sev !== 'Info' && (i.line || ''
 
 // ---- header + strip
 const high = D.issues.filter(i => i.sev === 'High').length;
-const DRAFT = D.stats.source === 'draft';      // no Tech FRM pages for the day yet: formulation as last issued (2 Oct 2026)
+const DRAFT = D.stats.source === 'draft';      // no Tech FRM pages for the day yet: the FRM Draft (2 Oct 2026)
+// by rule since 23 Oct 2026 (James Kuo: "we use logic base formulation process. Remove old logic and apply new")
+const RULES = DRAFT && !!D.stats.rules;
 $('#sub').innerHTML = `Packet ${fmtDate(D.day)} 2026 · <span class="mono">${esc(D.scans.packet)}</span>` + (DRAFT
-  ? ' · no Tech FRM pages yet: formulation as last issued on each line (draft)' : ` + FRM <span class="mono">${esc(D.scans.frm)}</span>`);
+  ? (RULES ? ' · formulation by rule from James’s W% Master (draft for an engineer to check)' : ' · no Tech FRM pages yet: formulation as last issued on each line (draft)')
+  : ` + FRM <span class="mono">${esc(D.scans.frm)}</span>`);
 $('#strip').innerHTML = [
-  ['acc', D.stats.orders, `orders on ${D.stats.lines || D.lines.length} lines`, DRAFT ? `${D.stats.exceptions} new on their line, for an engineer` : 'every one has a formula on its line page'],
-  DRAFT ? ['ok', `${D.stats.drafted}/${D.stats.orders}`, 'orders with a formulation', 'as last issued on their line; Tech has not issued the day yet']
+  ['acc', D.stats.orders, `orders on ${D.stats.lines || D.lines.length} lines`, DRAFT ? (RULES
+    ? `${D.stats.exceptions} for an engineer${D.stats.to_set ? ` · ${D.stats.to_set} formulation${D.stats.to_set === 1 ? '' : 's'} with settings to set` : ''}`
+    : `${D.stats.exceptions} new on their line, for an engineer`) : 'every one has a formula on its line page'],
+  DRAFT ? ['ok', `${D.stats.drafted}/${D.stats.orders}`, 'orders with a formulation', RULES
+    ? 'by rule; where James has a Secondary it is shown under the Primary, for when reclaim runs out'
+    : 'as last issued on their line; Tech has not issued the day yet']
         : ['ok', `${D.stats.draft_match}/${D.stats.drafted}`, 'draft matched Tech', `${D.stats.exceptions} new orders went to an engineer`],
   ['crit', high, 'material issues', 'formulas using materials IWPFT062 does not allow'],
   ['ok', D.master.changes, 'unlogged master changes', `pre-flight clean · accepted ${D.master.accepted}`],
@@ -428,8 +435,9 @@ function renderLine(){
     ${iss.length ? `<div class="legend">${iss.map(i => `<span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span> ${esc(i.check)}`).join(' &nbsp; ')}</div>` : ''}
     ${l.groups.map(g => `<div class="group">
       <div class="orders">${g.orders.map(o => `<div class="order"><span class="o">${esc(o.order)}</span><span class="p"><span class="mono">${esc(o.prod || '')}</span>${o.colors ? ' · ' + esc(o.colors) : ''}${o.thk ? ' · ' + esc(o.thk) + ' mm' : ''}</span></div>`).join('')}</div>
-      ${g.formulas.map((f, i) => `<div class="formula"><div class="fhead"><span class="code">${esc(f.code)}</span><span class="chip ${i ? 'var' : 'ok'}">${i ? 'Alternate' : 'Primary'}</span>${f.note ? `<span class="note">${esc(f.note)}</span>` : ''}</div>
-        ${l.dosing === 'WEIGHT' ? weightBars(f) : `<div class="feeders">${l.cols.map(c => { const x = f.feeders.find(y => y.col === c); return x ? tile(x, false) : `<div class="tile empty"><div class="pos"><span class="caps">${esc(c)}</span></div><div class="mat">not used</div></div>`; }).join('')}</div>`}
+      ${g.formulas.map((f, i) => `<div class="formula"><div class="fhead"><span class="code">${esc(f.code)}</span><span class="chip ${(f.role ? f.role === 'Secondary' : i) ? 'var' : 'ok'}">${f.role ? esc(f.role) : (i ? 'Alternate' : 'Primary')}</span>${f.note ? `<span class="note">${esc(f.note)}</span>` : ''}</div>
+        ${!f.feeders.length ? '<div class="noform">No settings for it on this line yet: an engineer sets them before it runs.</div>'
+          : l.dosing === 'WEIGHT' ? weightBars(f) : `<div class="feeders">${l.cols.map(c => { const x = f.feeders.find(y => y.col === c); return x ? tile(x, false) : `<div class="tile empty"><div class="pos"><span class="caps">${esc(c)}</span></div><div class="mat">not used</div></div>`; }).join('')}</div>`}
       </div>`).join('')}</div>`).join('')}
     ${l.notes.length ? `<div class="foot">${l.notes.map(esc).join('<br>')}</div>` : ''}`;
 }
@@ -463,7 +471,8 @@ $('#proto').textContent = `Copy of the published files after the ${fmtDate(D.day
 $('#flow').innerHTML = [
   ['done', 'Scan', `Schedule ${D.scans.packet}; ${DRAFT ? 'no Tech FRM pages yet' : 'FRM ' + D.scans.frm}`],
   ['done', 'Transcribe + check', `${D.stats.orders} orders; glyph reader cross-check; line totals tie`],
-  ['done', 'Draft', DRAFT ? `${D.stats.drafted} orders as last issued; ${D.stats.exceptions} exceptions for an engineer` : `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
+  ['done', 'Draft', DRAFT ? (RULES ? `${D.stats.drafted} orders by rule; ${D.stats.exceptions} exceptions and ${D.stats.to_set} settings to set by an engineer`
+    : `${D.stats.drafted} orders as last issued; ${D.stats.exceptions} exceptions for an engineer`) : `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
   ['done', 'Publish', 'EXT, CNV, FRM workbooks; Product Master merged'],
   ['done', 'Records', 'Appended to the three history records'],
   ['done', 'Interface copy', 'Saved to Daily Formulation Report \ Interface Copy (no Tech sign-off: James, 29 Sep 2026)'],
@@ -525,12 +534,17 @@ const num = s => { const v = parseFloat(String(s ?? '').replace(/,/g, '')); retu
 const isReclaim = f => f.feeders.some(x => /reclaim/i.test(x.mat || '') && (num(x.set) || 0) > 0);
 const APPS = [[/void\s*form/i, 'VOIDFORM'], [/sign\s*blank/i, 'Sign blank'], [/corn\s*box/i, 'Corn box'], [/roll/i, 'Roll material']];
 function whenLabel(f, i, all){
+  // R9 (James Kuo, 23 Oct 2026): a Primary and its Secondary both show; production switches to the virgin Secondary
+  // when reclaim runs out
+  if (f.role === 'Secondary') return 'Secondary · if reclaim runs out';
+  if (f.role === 'Primary') return i ? 'Primary · next' + (isReclaim(f) ? ' · less reclaim' : '') : (all.length > 1 ? 'Primary · run first' : 'Formulation');
   if (/run\s*out/i.test(f.note)) return 'If PP WB Reclaim runs out';
   if (i === 0) return all.length > 1 ? (isReclaim(f) ? 'Run first · uses reclaim' : 'Run first') : 'Formulation';
   if (isReclaim(f)) return 'Next · less reclaim';
   return all.slice(0, i).some(isReclaim) ? 'If reclaim runs out' : 'Alternative';
 }
 function setRows(f, weight){
+  if (!f.feeders.length) return '<tr><td colspan="3" class="noform">No settings for it on this line yet: an engineer sets them before it runs.</td></tr>';
   const byExt = {};
   f.feeders.forEach(x => { const e = (x.col.replace('Extruder ', '').match(/^([A-D]) /) || [, ''])[1]; (byExt[e] = byExt[e] || []).push(x); });
   return Object.entries(byExt).map(([e, list]) => {
@@ -552,7 +566,8 @@ function renderOp(){
   const watch = /watch|weight|range|void\s*form|corn\s*box|roll|check/i;
   $('#opline').innerHTML = `<div class="ophead"><div><div class="caps">Line ${l.no}${l.ac ? ' · ' + esc(l.ac) : ''} · ${fmtDate(D.day)}</div><h2>${l.code} · ${l.sched.length} order${l.sched.length === 1 ? '' : 's'}</h2>
       <p>${weight ? 'Weight blender: every setting is <b>weight %</b>. Each extruder adds up to 100; Auto takes the rest.' : 'Auger feeders: every setting is <b>motor speed, 0 to 100</b>. It is not a percentage.'}
-      Where an order has more than one formulation, they are shown in run order: reclaim first (use up the scrap before virgin PP), then down the list.</p></div>
+      Where an order has more than one formulation, they are shown in run order: reclaim first (use up the scrap before virgin PP), then down the list.${RULES
+        ? ' A Secondary is the virgin formulation for the same order: switch to it when reclaim runs out.' : ''}</p></div>
       <span class="chip ${weight ? 'weight' : 'auger'}" style="font-size:13px">${weight ? 'Weight blender' : 'Auger dosing'}</span></div>
     <div class="opcards">${l.sched.map((o, n) => {
       const g = o.g == null ? null : l.groups[o.g];
@@ -563,7 +578,8 @@ function renderOp(){
         ${o.si ? `<div class="si ${watch.test(o.si) ? 'watch' : ''}">${esc(o.si)}</div>` : ''}
         ${g ? `<div class="forms">${g.formulas.map((f, i, all) => `<div class="form ${i === 0 ? 'first' : ''}"><div class="fhead"><span class="when">${whenLabel(f, i, all)}</span><span class="code">${esc(f.code)}</span></div>
             ${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></div>`).join('')}</div>`
-          : `<div class="noform">${DRAFT ? 'New on this line: no formulation issued for it yet. An engineer completes it; ask before starting.' : 'No formulation on the FRM for this order. Ask Tech before starting.'}</div>`}
+          : `<div class="noform">${DRAFT ? (o.exc ? `An engineer completes it: ${esc(o.exc)}. Ask before starting.`
+            : 'New on this line: no formulation issued for it yet. An engineer completes it; ask before starting.') : 'No formulation on the FRM for this order. Ask Tech before starting.'}</div>`}
       </article>`; }).join('')}</div>
     ${l.notes.length ? `<div class="foot" style="margin-top:12px">${l.notes.map(esc).join('<br>')}</div>` : ''}`;
 }
@@ -928,22 +944,17 @@ async function generate(files){
 
 const fkey = f => f.code + '|' + f.feeders.map(x => `${x.col}=${x.mat}=${x.set}`).sort().join(';');
 const same = (a, b) => a.length === b.length && a.every((f, i) => fkey(f) === fkey(b[i]));
-// run order: reclaim formulas first, then without reclaim, a 'run out' note last (James Kuo, 30 Sep 2026: "we always want to
-// use up our scrap first before using Virgin PP"); Tech's page order otherwise
-const usesReclaim = f => f.feeders.some(x => /reclaim/i.test(x.mat || '') && (parseFloat(String(x.set ?? '').replace(/,/g, '')) || 0) > 0);
-const runOrder = fs => fs.map((f, i) => [f, i]).sort(([a, i], [b, j]) =>
-  (/run\s*out/i.test(a.note || '') - /run\s*out/i.test(b.note || '')) || (!usesReclaim(a) - !usesReclaim(b)) || (i - j)).map(([f]) => f);
 function lookup(line, order, prod, date){
-  // the latest formulation on file, whatever the schedule's date (James Kuo, 30 Sep 2026: "Always provide up to date formulation")
-  const dates = Object.keys(D.issued || {}).sort().reverse();
-  for (const d of dates) { const g = (D.issued[d][line] || []).find(g => g.orders.includes(order)); if (g) return {how: 'last', date: d, formulas: runOrder(g.formulas)}; }
+  // by rule since 23 Oct 2026 (James Kuo: "we use logic base formulation process. Remove old logic and apply new" - "No
+  // history process. If logic don't work, ask engineering for help"). The rules run in the daily run (daily/assign.py);
+  // the page carries their answer for the day it was built for. An engineer's approved decision stands on any day.
   const ap = (D.approved || {})[line + '|' + prod];
   if (ap?.length) return {how: 'approved', formulas: ap};
-  for (const d of dates) {
-    const other = Object.entries(D.issued[d]).find(([ln, gs]) => ln !== line && gs.some(g => g.orders.includes(order)));
-    if (other) return {how: 'exception', why: `Last issued on ${other[0]} (${fmtDate(d)}); a formula belongs to its line`};
-  }
-  return {how: 'exception', why: 'New order on this line: no formula issued for it before'};
+  const l = RULES && date === D.day ? D.lines.find(x => x.code === line) : null, o = l?.sched.find(x => x.order === order);
+  if (o && o.g != null) return {how: 'rule', formulas: l.groups[o.g].formulas};
+  if (o) return {how: 'exception', why: o.exc || 'No formulation by rule: an engineer decides it'};
+  return {how: 'exception', why: RULES && date === D.day ? `Not on the ${line} schedule the daily run read: check the line and order on the paper`
+    : `Decided by rule in the daily run; this page carries the rules' answer for ${fmtDate(D.day)} only`};
 }
 const STATUS_CHIP = {
   'from the PDF text': () => '<span class="chip ok" title="Read from the text of the system PDF">PDF text</span>',
@@ -992,7 +1003,7 @@ function render(reads, date, nPages){
       const form = r.how === 'exception'
         ? `<span class="noform">ENGINEER TO COMPLETE</span><div class="muted" style="font-size:13px">${esc(r.why)}</div>`
         : `<div class="fl">${r.formulas.map((f, k, all) => `<details><summary>${esc(whenLabel(f, k, all))} · ${esc(f.code)}</summary>${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></details>`).join('')}
-           <div class="muted" style="font-size:12px">${r.how === 'last' ? `As issued ${fmtDate(r.date)}` : 'Engineer decision (approved in the master)'}</div></div>`;
+           <div class="muted" style="font-size:12px">${r.how === 'rule' ? 'By rule, as the daily run decided it' : 'Engineer decision (approved in the master)'}</div></div>`;
       const chip = (STATUS_CHIP[o.status] || (() => ''))(o);
       let orderCell = `<b class="mono">${esc(o.order)}</b> ${chip}`, prodCell = `${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
       if (flagged) {
@@ -1069,7 +1080,7 @@ const colKey = c => { const m = /^(?:Extruder )?([A-D]) (.+)$/.exec(String(c).tr
 const colHead = k => { const [e, f] = k.split('|'); return e ? `Extruder ${e} · ${f}` : f; };
 function docWhen(forms, i){
   const f = forms[i], reclaim = f.feeders.some(x => /reclaim/i.test(x.mat || '') && (num(x.set) || 0) > 0);
-  if (/run\s*out/i.test(f.note || '')) return 'If reclaim runs out';
+  if (f.role === 'Secondary' || /run\s*out/i.test(f.note || '')) return 'If reclaim runs out';
   if (forms.length === 1) return '';
   if (i === 0) return 'Run first';
   if (reclaim) return 'Next';

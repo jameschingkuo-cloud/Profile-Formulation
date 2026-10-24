@@ -184,11 +184,12 @@ def main():
     by_order, by_product = issued_history(packets, cut)                  # latest issue on file, any date
     history_dates = sorted(d for d in packets if packets[d]["frm"] and (cut is None or d < cut))
     approved, _ = approved_master()
-    issued = assign.issued_on_line(packets) if RULES else {}
+    seen_pk = {d: p for d, p in packets.items() if cut is None or d < cut}     # backtests: only what was issued by then
+    issued = assign.issued_on_line(seen_pk) if RULES else {}
     if RULES:
-        assign.set_pages(packets)            # the lines' feeder columns and wording, for settings taken from the calc sheets
+        assign.set_pages(seen_pk)            # the lines' feeder columns and wording, for settings taken from the calc sheets
 
-    draft, exceptions, by_rule = [], [], []
+    draft, exceptions, by_rule, to_set = [], [], [], []
     for pg in today["ext"]:
         for r in pg["rows"]:
             line, order, product = pg["line"], r["order"], r["prod_code"]
@@ -204,39 +205,30 @@ def main():
             if (line, product) in approved:      # an engineer decided it in the master: outranks the rules
                 draft += master_rows(line, order, product, approved[(line, product)])
                 continue
-            # The rules first (James Kuo, 23 Oct 2026: "Moving forward, including today we use logic base formulation
-            # process. Remove old logic and apply new"): the Main for this product's fixed parts (daily/assign.py). Its
-            # settings: this order's own last issue when that is the same formulation (continuity on the floor), else
-            # the line's latest issue of it, else Tech's calc sheet. An order whose last issue was a formulation James
-            # replaced gets the Main, and goes to the engineer if the line has no settings for it yet.
-            prop, why = assign.propose(line, r, datetime.date.fromisoformat(PKT), issued) if RULES else (None, 'rules off')
-            if prop and rec and prop['main'] and any(f['formula_code'] in prop['main']['printed'] for f in rec[2]):
-                own = [f for f in rec[2] if f['formula_code'] in prop['main']['printed']]
-                names = {f['formula_code']: prop['code'] for f in own}
-                for row in draft_rows(line, order, product, (rec[0], rec[1], own), names):
-                    row[11] = f"By rule ({prop['how'].split(';')[0]}); settings as last issued for this order"
-                    draft.append(row)
+            # The rules (James Kuo, 23 Oct 2026: "Moving forward, including today we use logic base formulation process.
+            # Remove old logic and apply new"; "No history process. If logic don't work, ask engineering for help"):
+            # daily/assign.py formulation() - James's Primary and its Secondary, both printed ("let the production team
+            # ... decide whether we have enough of particular material"), each with its rows from this order's own last
+            # issue, else the line's, else Tech's calc sheet; a member without settings on the line prints "ENGINEER TO
+            # SET"; no member with settings -> the engineer. VOIDFORM: never reclaim.
+            fm, why = assign.formulation(line, r, datetime.date.fromisoformat(PKT), issued, own=rec) if RULES else (None, 'rules off')
+            if fm and any(x['rows'] for x in fm['members']):
+                rows_, marked, missing = rule_rows(line, order, product, fm)
+                draft += rows_
+                if marked:
+                    by_rule.append([line, order, product, ' + '.join(x['code'] for x in fm['members']), fm['how'], marked])
+                for x in missing:
+                    to_set.append([line, order, product, x['code'], x['role'], fm['how']])
                 continue
-            if prop and prop['settings']:
-                date, page, formulas = prop['settings']
-                names = {f['formula_code']: prop['code'] for f in formulas if prop['main'] and f['formula_code'] in prop['main']['printed']}
-                for row in draft_rows(line, order, product, (date, page, formulas), names):
-                    row[11] = f"Proposed by rule ({prop['how']})"
-                    row[13] = f"rule R1-R7 + {prop['settings_src']}" + (f", printed as {prop['printed_as']}" if prop['printed_as'] != prop['code'] and page != 'calc' else "")
-                    row[15] = "PROPOSED BY RULE" + (" · settings from the calc sheet" if page == 'calc' else "") + (f" · {row[15]}" if row[15] else "")
-                    draft.append(row)
-                by_rule.append([line, order, product, prop['code'], prop['how'], date])
-                continue
-            # James, 23 Oct 2026: "No history process. If logic don't work, ask engineering for help": an order the rules
-            # cannot decide goes to the engineer, with what Tech last issued for it as a note, never as the formulation.
             hint = why if why else ""
-            if rec and prop is None:
+            if rec and fm is None:
                 hint = f"Rules cannot decide ({why}); last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]} - ask engineering"
-            if prop:                             # the code is decided, its settings on this line are not
-                hint = f"Formula {prop['code']} by rule ({prop['how']}); never run on {line}: settings to be set. " \
-                       f"W%: " + ", ".join(f"{k.split(' ')[0]} {v:g}" for k, v in (prop['main']['w'] or {}).items() if v)
+            if fm:                               # the formulation is decided, no member has settings on this line
+                hint = f"{fm['how']} by rule; never run on {line}: settings to be set. " + " | ".join(
+                    f"{x['role']} {x['code']} W%: " + ", ".join(f"{k.split(' ')[0]} {v:g}" for k, v in ((x['member'] or {}).get('w') or {}).items() if v)
+                    for x in fm['members'])
                 if rec:
-                    hint += f" | Last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]} - a formulation James replaced"
+                    hint += f" | Last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]}"
             hint0 = hint
             hint = ""
             prod_rec = by_product.get((line, product))
@@ -253,10 +245,11 @@ def main():
             reason = "New order on this line: no formula issued for it before"
             if other:
                 reason = f"Order was issued on another line before ({', '.join(other)}), not on {line}"
-            if prop:
-                reason = f"Formula {prop['code']} decided by rule; no settings on {line} yet (never run here)"
-            elif RULES and why and not why.startswith("rules off"):
-                reason += f"; rules: {why}"
+            if fm:
+                reason = f"Formula {' + '.join(x['code'] for x in fm['members'])} decided by rule; no settings on {line} yet (never run here)"
+            elif RULES and why and not why.startswith("rules off"):     # the rules' reason first, the history only as context
+                reason = f"Rules cannot decide: {why}; " + ("issued for this order on this line before (see the suggestion)" if rec
+                                                             else reason[0].lower() + reason[1:])
             exceptions.append([line, order, product, r.get("mat_spec", ""), r.get("colors", ""), r.get("thk", ""),
                                r.get("gsm", ""), (r.get("special_instructions") or "")[:160], reason, hint, None, None])
 
@@ -265,10 +258,54 @@ def main():
     dropped = sorted({(pg["line_code"], o) for pg in packets[last]["frm"] for g in pg["groups"] for o in g["orders"]}
                      - today_orders) if last else []
 
-    write(today, draft, exceptions, dropped, last, history_dates, by_rule)
+    write(today, draft, exceptions, dropped, last, history_dates, by_rule, to_set)
 
 
-def write(today, draft, exceptions, dropped, last, history_dates, by_rule=()):
+def rule_rows(line, order, product, fm):
+    """Draft rows for a formulation decided by the rules (assign.formulation): the Primary, then its Secondary (R9), each
+    member's formula rows in run order (reclaim first, a run-out note last: James Kuo, 30 Sep 2026), under James's name
+    with its role and where its settings came from; a member without settings on the line gets one row "ENGINEER TO SET"
+    in its place. -> (rows, settings date of the rows marked PROPOSED BY RULE or None, members without settings)."""
+    entries, missing = [], []
+    for x in fm['members']:
+        if x['rows']:
+            entries += run_order([dict(f, _x=x) for f in x['rows']])
+        else:
+            missing.append(x)
+            entries.append(dict(formula_code=x['code'], feeders={}, note='', _x=x))
+    rows, marked = [], None
+    for i, f in enumerate(entries):
+        x = f['_x']
+        kind, date, page = x['src'] or (None, None, None)
+        printed = f['formula_code']
+        shown = x['code'] if x['member'] else printed
+        if not f['feeders']:                 # a member without settings on this line
+            rows.append([line, order, product, shown, x['role'], None, None, None, None, None, None,
+                         f"Proposed by rule ({fm['how']}); no settings for {shown} on {line}: engineer to set", None,
+                         f"no settings for {shown} on {line} (no FRM page on file, no calc sheet)", i + 1,
+                         f"ENGINEER TO SET: settings for {shown} on {line} · {x['role']}"])
+            continue
+        src = (f"Tech's {line} calc sheet, last run {date}" if kind == 'calc' else f"FRM {date} scan p{page}") + \
+              (f" (printed as {printed})" if shown != printed else "")
+        if kind == 'own':
+            how = f"By rule ({fm['how']}); settings as last issued for this order"
+            note = x['role']
+        else:
+            how = f"Proposed by rule ({fm['how']}); " + (f"settings from Tech's {line} calc sheet" if kind == 'calc' else f"settings as issued on {line} {date}")
+            note = f"{x['role']} · PROPOSED BY RULE" + (" · settings from the calc sheet" if kind == 'calc' else "")
+            marked = marked or date
+        note += f" · {f.get('note')}" if f.get('note') else ""
+        for col, v in f["feeders"].items():
+            if not (v.get("material") or v.get("set")):
+                continue
+            ext, feeder = split_feeder(col)
+            last = datetime.date.fromisoformat(date) if kind != 'calc' and date else None
+            rows.append([line, order, product, shown, x['role'], ext, feeder, None, v.get("material", ""), v.get("set", ""),
+                         None, how, last, src, i + 1, note])
+    return rows, marked, missing
+
+
+def write(today, draft, exceptions, dropped, last, history_dates, by_rule=(), to_set=()):
     F = "Arial"
     hfont, hfill, body = Font(name=F, bold=True, color="FFFFFF", size=10), PatternFill("solid", fgColor="1F3864"), Font(name=F, size=10)
     wb = Workbook()
@@ -302,7 +339,11 @@ def write(today, draft, exceptions, dropped, last, history_dates, by_rule=()):
     issues = [["High", "FRM Draft", e[0], e[1], "No formula to propose", e[8], "EXT", None] for e in exceptions]
     issues += [["Medium", "FRM Draft", b[0], b[1], "Proposed by rule, not issued for this order before",
                 f"{b[3]}: {b[4]}; settings as issued on {b[0]} {b[5]} (docs/FORMULA_ASSIGNMENT_RULES.md)", "rules", None] for b in by_rule]
+    issues += [["High", "FRM Draft", s[0], s[1], f"{s[4]} has no settings on the line",
+                f"{s[3]} ({s[4]} of {s[5]}): no FRM page on file and no calc sheet for it on {s[0]} - engineer to set", "rules", None]
+               for s in to_set]
     sheet("By Rule", ["Line Code", "Order", "Product Code", "Formula Code", "How", "Settings issued"], list(by_rule), {"How": 60})
+    sheet("Settings To Set", ["Line Code", "Order", "Product Code", "Formula Code", "Role", "Formulation"], list(to_set), {"Formulation": 60})
     issues += [["Info", "FRM Draft", ln, o, f"On the {last} FRM, not on today's schedule", "Dropped since the last issued FRM", f"FRM {last}", None]
                for ln, o in dropped]
     sheet("Issues", ["Severity", "Document", "Line", "Order", "Check", "Detail", "Source", "James / Tech response"], issues,

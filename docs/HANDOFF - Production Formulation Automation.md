@@ -2294,11 +2294,32 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   and the run-out row Tech prints with it); LTL wrap (LTL / WRAP) takes RU0001WB4 "Main, R2 LTL wrap". An order with a
   qualifier now takes the issued group Tech noted for it, not the newest group under the code. 23 Oct, final: 90 of 99
   by rule (36 own last issue, 33 the line's, 21 calc sheets), 9 for the engineer; artifact refreshed again. pytest 82.
+- R9 (James: *"When a formulation has primary and secondary, it means that both of them will need to be displayed, and let
+  the production team will then decide whether we have enough of particular material to run it or not"*): an order now
+  gets James's Primary and, where he has one, its Secondary (the virgin run-out), each with its own rows on the line (a
+  row belongs to a member when it feeds reclaim exactly when the member's W% does - so SE31's calc "FU0041WB4" and SE21's
+  "FUA032KS4", recipes without reclaim, are no longer printed as reclaim Mains). Printed Primary first, then the
+  Secondary "If reclaim runs out"; a member with no settings on the line prints "ENGINEER TO SET" in its place (Draft
+  sheet "Settings To Set", a High issue). Backtests now see only the pages issued before their day (the line's groups
+  and layouts too): 25 Sep H68A153-1 (FXA020WB4, first run on SE31 that day) is an Exception there.
+- R10 (James: *"void form should not use any reclaim"* - *"The reclaim calcium is not stable ... It makes it very difficult
+  to control the weight when we're running with reclaim"*): no VOIDFORM order gets a formulation with reclaim, from any
+  source; Tech's reclaim formulations on VOIDFORM orders (FU0011WB5 on SE25 for H64A244-1, H66A116-1, H68A090-1;
+  FU0061WBD on SE22 for H68A053-1) are not printed. W% Master v2 republished: "secondary Voidform" FU0011WB5 (35%)
+  archived, FU0011WB5 / FU0041WBA / FU0061WBD marked "never on a VOIDFORM order", "Open for James" asks for the settings
+  of FU0051WB5 on SE25 and FU0001WBD on SE32.
+- 23 Oct with R9/R10 (rebuilt 24 Oct, not re-issued): 99 orders, 88 with a formulation (21 Primary + Secondary), 14
+  members to set, 11 Exceptions (H6AA017-1 FUA031KS5+FUA032KS5 and H6AA173-1 RU0000KS5 on SE21; RP26717-2
+  RU0000WB4+RU0022WB4; RP26826-6 RPP40FW2 undecided; the 4 VOIDFORM orders on SE25/SE32; 3 orders FU0031WB4+FU0014WB4
+  on SE31). Interface page: Primary / Secondary labels, "no settings for it on this line yet", each Exception's reason;
+  its "Generate the formulation" box no longer proposes from the issue history (rules' answer for the built day only).
+  Artifact v53. pytest 85 passed, 5 skipped.
 
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.64 | 2026-10-24 | Claude Code (local, with James Kuo) | **R9 Primary + Secondary, R10 VOIDFORM never reclaim (§7.73)**: both members printed (Primary first, ENGINEER TO SET where a member has no settings); no reclaim on VOIDFORM orders; W% Master v2 republished (FU0011WB5 "secondary Voidform" archived); 23 Oct rebuilt (88 of 99, 14 to set, 11 Exceptions); interface generator off the issue history; artifact v53. |
 | 1.63 | 2026-10-23 | Claude Code (local, with James Kuo) | **23 Oct daily run (§7.72)**: schedule emails 13:03/13:04; formulation emailed (41 as issued, 58 for the engineer); 99 EXT + 65 CNV rows built, published and recorded; artifact v48; 0 new High. |
 | 1.62 | 2026-10-22 | Claude Code (local, with James Kuo) | **22 Oct daily run (§7.71)**: schedule emails 13:36/13:37; formulation emailed (43 as issued, 43 for the engineer); 86 EXT + 66 CNV rows built, published and recorded; artifact v47; 0 new High. |
 | 1.61 | 2026-10-21 | Claude Code (local, with James Kuo) | **21 Oct daily run (§7.70)**: schedule email 12:53; formulation emailed (44 as issued, 35 for the engineer); 79 EXT + 68 CNV rows built, published and recorded; artifact v46; 0 new High. |

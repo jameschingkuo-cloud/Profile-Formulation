@@ -102,6 +102,8 @@ def build_lines(today, draft, exc, page):
         f = forms.setdefault((r['Line Code'], r['Order']), {}).setdefault(r['Formula Row'], {'code': r['Formula Code'], 'note': r['Note'] or '', 'feeders': {}})
         mat = r['Material (as issued)'] or ''
         shown = repl.get(mat) or PRINT_AS.get(mat, mat)
+        if r['Feeder'] is None:          # a Primary / Secondary with no settings on the line: printed "ENGINEER TO SET"
+            continue
         f['feeders'][(r['Extruder'] or '', r['Feeder'])] = (shown, r['Set'], mat if mat in repl else None)
     exc_by = {(e['Line Code'], e['Order']): e for e in exc}
     lines = []
@@ -204,10 +206,11 @@ def page_field(p):
 # ---- the document --------------------------------------------------------------------------------------------------
 def when_label(forms, i):
     """Forms are in run order (resolve.run_order: reclaim first). A formula without reclaim after one with reclaim runs when
-    the reclaim runs out (James Kuo, 30 Sep 2026: "we always want to use up our scrap first before using Virgin PP")."""
+    the reclaim runs out (James Kuo, 30 Sep 2026: "we always want to use up our scrap first before using Virgin PP"); so
+    does James's Secondary, also when its Primary has no settings yet (R9, 23 Oct 2026)."""
     uses = lambda f: any('reclaim' in (m or '').lower() and (num(s) or 0) > 0 for (m, s, _) in f['feeders'].values())
     f = forms[i]
-    if re.search(r'run\s*out', f['note'], re.I):
+    if re.search(r'run\s*out', f['note'], re.I) or re.search(r'(?:^|· )Secondary\b', f['note']):
         return 'If reclaim runs out'
     if len(forms) == 1:
         return ''
@@ -223,6 +226,7 @@ def render(today, lines, exc, out):
     us = f'{day.month}/{day.day}/{day:%y}'
     n_orders = sum(len(g['orders']) for ln in lines for g in ln['groups'])
     n_exc = sum(len(g['orders']) for ln in lines for g in ln['groups'] if not g['forms'])
+    n_set = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any(not x['feeders'] for x in g['forms']))
     doc = Document()
     sec = doc.sections[0]
     sec.orientation = WD_ORIENT.LANDSCAPE
@@ -232,13 +236,13 @@ def render(today, lines, exc, out):
     sec.top_margin, sec.bottom_margin = Inches(0.45), Inches(0.5)
     st = doc.styles['Normal']; st.font.name = FONT; st.font.size = Pt(10)
     st.element.rPr.rFonts.set(qn('w:eastAsia'), FONT)
-    status = 'DRAFT' if n_exc else 'READY TO ISSUE'
+    status = 'DRAFT' if n_exc or n_set else 'READY TO ISSUE'
     # header / footer on every page
     hp = sec.header.paragraphs[0]; hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run(hp, f'{status} · not for production until issued by Technical (IWPFO055 §5.3)' if n_exc else
-        'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=RED if n_exc else GREY)
+    run(hp, f'{status} · not for production until issued by Technical (IWPFO055 §5.3)' if n_exc or n_set else
+        'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=RED if n_exc or n_set else GREY)
     fp = sec.footer.paragraphs[0]
-    n_rule = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any(x['note'].startswith('PROPOSED BY RULE') for x in g['forms']))
+    n_rule = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any('PROPOSED BY RULE' in x['note'] for x in g['forms']))
     run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation by the rules of 23 Oct 2026 (James Kuo's W% Master), settings as Technical last issued them on the line"
             + (' · rows marked PROPOSED BY RULE: this order never ran that formulation here before' if n_rule else '') + ' · page ', 8, color=GREY)
     page_field(fp)
@@ -248,10 +252,10 @@ def render(today, lines, exc, out):
     para(doc, f'Extrusion Formulations · {us}', 26, bold=True, space_after=2)
     para(doc, f"{len(lines)} lines · {n_orders} orders · from the extrusion schedule {today.get('source_scan', '')}", 12, space_after=8)
     box = doc.add_table(rows=1, cols=1); box.alignment = WD_TABLE_ALIGNMENT.LEFT
-    c = box.rows[0].cells[0]; shade(c, 'F8E0DE' if n_exc else 'DFF1E6')
-    cell_text(c, f'{status}', 16, True, RED if n_exc else RGBColor(0x2A, 0x72, 0x48), WD_ALIGN_PARAGRAPH.LEFT)
-    para(c, (f'{n_exc} order{"s" if n_exc != 1 else ""} have no formulation yet. An engineer completes them (table below), '
-             'then Technical signs the issue block. Until then, do not run from this copy.') if n_exc else
+    c = box.rows[0].cells[0]; shade(c, 'F8E0DE' if n_exc or n_set else 'DFF1E6')
+    cell_text(c, f'{status}', 16, True, RED if n_exc or n_set else RGBColor(0x2A, 0x72, 0x48), WD_ALIGN_PARAGRAPH.LEFT)
+    para(c, (f'{n_exc} order{"s" if n_exc != 1 else ""} have no formulation yet' + (f'; {n_set} have a Primary or Secondary with no settings on its line' if n_set else '') +
+             '. An engineer completes them (table below), then Technical signs the issue block. Until then, do not run from this copy.') if n_exc or n_set else
          'Every order has its formulation. Technical checks and signs the issue block, then it goes to the floor.', 11)
     para(doc, '', space_after=4)
     para(doc, 'How to read the line pages', 12, bold=True, space_after=2)
@@ -259,12 +263,14 @@ def render(today, lines, exc, out):
             'Weight blender lines (Line 7, 12, 13, 16): Set is weight %; each extruder adds to 100; Auto takes the balance.',
             'Where an order lists more than one formulation, they are printed in run order: reclaim first (use up the scrap before virgin PP), then down the list (James Kuo, 29 and 30 Sep 2026).',
             'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.']
+    tips.append("Primary and Secondary (James Kuo, 23 Oct 2026): where an order shows both, both are its formulation. Production decides by the "
+                "material on hand: when reclaim runs out, the reclaim formula is replaced by the virgin-resin one. VOIDFORM orders never run reclaim (weight).")
     if n_rule:
         tips.append(f'PROPOSED BY RULE ({n_rule} order{"s" if n_rule != 1 else ""}): the order itself was never issued; the formulation is the Main for the '
                     "product (colour, thickness, grade, spec: James Kuo's rules of 23 Oct 2026) with the settings Technical last issued for it on that line. Check these first.")
     for t in tips:
         para(doc, '•  ' + t, 10.5, space_after=1)
-    if n_exc:
+    if n_exc or n_set:
         para(doc, '', space_after=4)
         para(doc, 'Orders an engineer must complete', 12, bold=True, space_after=2)
         t = doc.add_table(rows=1, cols=6); t.style = 'Table Grid'
@@ -275,6 +281,14 @@ def render(today, lines, exc, out):
         for ln in lines:
             for g in ln['groups']:
                 if g['forms']:
+                    for x in g['forms']:
+                        if x['feeders']:
+                            continue
+                        for o in g['orders']:
+                            rr = t.add_row(); no_split(rr)
+                            vals = [ln['line'], o['order'], o['prod_code'], f"Settings for {x['code']} to be set on this line ({x['note'].split(' · ')[-1]})", '', '']
+                            for i, v in enumerate(vals):
+                                cell_text(rr.cells[i], str(v), 9.5, i == 1, align=WD_ALIGN_PARAGRAPH.LEFT)
                     continue
                 for o in g['orders']:
                     e = (g['exc'] or [None])[0] or {}
@@ -322,6 +336,15 @@ def render(today, lines, exc, out):
                     cell_text(wide, 'ENGINEER TO COMPLETE: formula code and settings', 10, True, AMBER, WD_ALIGN_PARAGRAPH.LEFT)
                     cell_text(rr.cells[ncol - 1], (g['exc'][0] or {}).get('Reason', '') if g['exc'] else '', 8.5, color=AMBER)
                     continue
+                if not f['feeders']:            # Primary / Secondary with no settings on this line: written in by the engineer
+                    rr.height = Inches(0.45)
+                    cell_text(rr.cells[1], f['code'], 11)
+                    if len(cols) >= 1:
+                        wide = rr.cells[2].merge(rr.cells[ncol - 2])
+                        shade(wide, 'FBF0DB')
+                        cell_text(wide, f"ENGINEER TO SET: settings for {f['code']} on this line", 10, True, AMBER, WD_ALIGN_PARAGRAPH.LEFT)
+                    cell_text(rr.cells[ncol - 1], f['note'], 8.5, color=AMBER)
+                    continue
                 cp = cell_text(rr.cells[1], f['code'], 11)
                 lab = when_label(forms, i)
                 if lab:
@@ -362,7 +385,7 @@ def render(today, lines, exc, out):
         fp2 = para(doc, '', space_after=0)
         run(fp2, 'Tech. Department', 10); run(fp2, f"        Effective Date: {ln['effective']}" if ln['effective'] else '', 10)
     doc.save(out)
-    return n_orders, n_exc
+    return n_orders, n_exc + n_set
 
 
 def main():

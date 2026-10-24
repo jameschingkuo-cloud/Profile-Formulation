@@ -196,3 +196,43 @@ rules had no roll qualifier and treated his "Main roll" rows as restricted, so t
   only) Check weight" with its run-out partner FU0001WB4 on SE25, 23-30 Sep 2026); LTL wrap takes RU0001WB4 "Main, R2
   LTL wrap" (Tech issued it for RP26923-1 on 25 Sep). The run-out row Tech prints with a Main now travels with it.
   `daily/assign.py` `wanted` / `derive`.
+
+## R9. A Primary and its Secondary are both printed (23 Oct 2026)
+James: *"When a formulation has primary and secondary, it means that both of them will need to be displayed, and let the
+production team will then decide whether we have enough of particular material to run it or not. For example, if we
+don't running out of reclaim, then the reclaim primary will be removed and replaced with virgin resin secondary."*
+- An order's formulation is James's Primary (his Main) and, where he marked one for the same colour, thickness, prefix,
+  grade and qualifiers, its Secondary. A qualified order without a Secondary of its own whose Primary runs reclaim takes
+  the plain one (rolls: FU0014WB4). In every pair the rules give, the Primary has reclaim and the Secondary none (16
+  pairs in the W% Master v2). `daily/assign.py` `secondary_for`, `formulation`.
+- Each member gets its own rows on the line: the order's own last issue, then the line's issued groups (the one Tech
+  noted for the order's qualifier first), then Tech's calc sheet. A row belongs to a member when its code is one of the
+  member's printed names and it feeds reclaim exactly when the member's W% has reclaim (1 point or more), so the Primary
+  and Secondary of one code (FUA060WBA, 44.5% and 0% reclaim) each get their own row. This is also why SE31's calc
+  "FU0041WB4" and SE21's calc "FUA032KS4", recipes without reclaim, are no longer printed as the reclaim Mains.
+  `assign.member_settings`.
+- Printed Primary first (its rows in run order, reclaim first), then the Secondary, labelled "If reclaim runs out". A
+  member with no settings on the line prints in its place as one row "ENGINEER TO SET: settings for X on <line> ·
+  <role>", is listed on the FRM Draft's "Settings To Set" sheet and raises a High issue; an order where no member has
+  settings is an Exception. `daily/resolve.py` `rule_rows`, `daily/render_frm.py`, the interface page.
+- 23 Oct: 99 orders, 88 with a formulation (21 with a Primary and a Secondary, 14 members to set), 11 Exceptions.
+- Backtests see only the pages issued before their day: `HISTORY_BEFORE` now also limits the line's issued groups and
+  feeder layouts. 25 Sep H68A153-1 (FXA020WB4 on SE31) is an Exception there: SE31 first ran FXA020WB4 that day.
+
+## R10. VOIDFORM never runs reclaim (23 Oct 2026)
+James: *"Also, void form should not use any reclaim. Double check."* - *"There are some old void form formula that have
+reclaim. I don't want them. The reclaim calcium is not stable. There are batches that have more calcium sometimes, there
+are batches that have less calcium sometimes. Because void form, like I said, need to watch the weight. It makes it very
+difficult to control the weight when we're running with reclaim."*
+- A VOIDFORM order never gets a Primary or Secondary with reclaim in James's W%, nor a row that feeds reclaim from any
+  source (its own last issue included). `assign.choose`, `secondary_for`, `formulation`.
+- W% Master v2: James's "secondary Voidform" FU0011WB5 (35% reclaim) is archived; FU0011WB5 (52%), FU0041WBA (34%) and
+  FU0061WBD (58%) stay as packaging Mains, marked "R10: never on a VOIDFORM order" (each last ran on one).
+- Tech issued reclaim formulations on VOIDFORM orders: FU0011WB5 on SE25 (H64A244-1, H66A116-1, H68A090-1) and FU0061WBD
+  on SE22 (H68A053-1); they are no longer printed. 23 Oct: the 6 VOIDFORM orders get FU0022WB3 (SE11), FU0021WB4
+  (SE23), FU0051WB5 (SE25, 2 orders) and FU0001WBD (SE32, 2 orders); FU0051WB5 has never run on SE25 nor FU0001WBD on
+  SE32, so those 4 are Exceptions until an engineer sets them.
+- Tests: `tests/test_assign.py` `test_void_form_never_reclaim`, `test_primary_and_secondary_both_shown`,
+  `test_primary_first_even_without_settings`.
+- The interface page's "Generate the formulation from the schedule" (Daily run tab) no longer proposes from the issue
+  history: it shows the rules' answer for the day the page was built for; any other day is decided by the daily run.
