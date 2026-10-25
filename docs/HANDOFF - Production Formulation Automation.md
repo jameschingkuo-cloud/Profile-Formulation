@@ -2336,6 +2336,17 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   roll W% (47.3 / 28.2 / 19.1 / 3.9 / 1.4). James's "square cut" (also special) still to identify. Line 12/13 dosing
   issue, SE21 R4 layout, RPP40FW2 and the other open points are on the page's Open items tab for Monday 26 Oct (13
   items). Artifact v57.
+- 25 Oct, James: *"Do some simulator. Use the last week of orders"* / *"Just use the order schedule and apply the logic.
+  See what other gap do we have"*. `work/sim_week.py` (19-23 Oct, each day as that morning, calc library copied into
+  work/sim/<day>): 79-99 orders a day, all with a formula but RPP40FW2 (22-23 Oct); 8-22 a day with settings to set; no
+  order changes formula or settings from day to day; no product code / spec mismatch; no VOIDFORM with reclaim; rolls one
+  Main. Found: (1) winter from 1 Nov - every FUA152WB4 / FUA151WB4 recipe on file is 15% homopolymer, so the winter
+  Main (8%) would print with summer settings (about 20 orders a day); (2) RUN WITH pairs of a sign blank and a graphic
+  order (SE13 RP26717-1 + RP26327-1, SE24 RP26604-1 + RP26803-2). `work/gap_scan.py` (every product scheduled in 12
+  months, spec from the Product Master: 616 products, 1,687 orders): 420 fully covered; 31 products / 72 orders with no
+  Main (R4 black 8 mm, bubble KS 5 mm, JG 4 mm, WB 10 mm VOIDFORM without reclaim, pink 2 mm anti-static, opaque 3 mm
+  sign, FW 4 mm ...), 11 / 31 with two Mains, 153 / 352 with no settings on their line (Tech's pages before 23 Sep are
+  not on file), spec R9RDRD without a prefix rule. All on the page's Open items tab (20 items). Artifact v58.
 
 ## Revision history
 

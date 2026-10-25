@@ -21,6 +21,55 @@
         },
         {
           "sev": "High",
+          "title": "Winter starts Sunday 1 Nov: no winter settings on file",
+          "detail": "From 1 Nov the rules print your winter Main FUA152WB4 (W%: 8% homopolymer) for graphic WB 4 mm - about 20 orders on Friday's schedule. Every FUA152WB4 / FUA151WB4 recipe on file (Tech's pages and calc sheets, SE13/21/22/24/31/32/43) is the 15% homopolymer one, so the winter name would print with the summer settings. Before Mon 2 Nov: keep Tech's 15% recipe, or set winter settings (8%) per line?",
+          "where": "graphic WB 4 mm, all lines",
+          "source": "simulation 24 Oct"
+        },
+        {
+          "sev": "High",
+          "title": "Products with no Main in the W% Master (last 12 months)",
+          "detail": "Applying the logic to every product scheduled since Oct 2025 (616 products, 1,687 orders): 31 products / 72 orders have no Main - R4 black 8 mm on SE11 (RPP80KS239, 20 orders), bubble KS 5 mm on SE61 (11), JG 4 mm graphic on SE13 (8), WB 10 mm VOIDFORM without reclaim on SE22 (7: the only WB 10 mm Main has reclaim), anti-static pink 2 mm on SE11 (6), opaque WB 3 mm sign blank on SE31 (5), FW 4 mm FR on SE21 (4), UV black 4 mm on SE12 (2), and 9 single orders. Spec R9RDRD (bubble) has no prefix rule.",
+          "where": "W% Master",
+          "source": "work/gap_scan.py"
+        },
+        {
+          "sev": "Medium",
+          "title": "Keys with two Mains (last 12 months)",
+          "detail": "KS 3 mm packaging FU0032KS3 or FU0051KS3 (SE11/SE42, 20 orders); NS 10 mm UV FEA001NSA or FHA001NSA (SE22, 9); KS 6 mm packaging FU0041KS6 or FU0062KS6 (SE21, 2).",
+          "where": "W% Master",
+          "source": "work/gap_scan.py"
+        },
+        {
+          "sev": "High",
+          "title": "Settings coverage by line (last 12 months)",
+          "detail": "153 products / 352 orders get a Main with no settings on their line, mostly because Tech's formulation sheets before 23 Sep 2026 are not on file: SE13 FU0031WB4 + FU0014WB4 (51 orders), SE43 FU0031WB4 + FU0014WB4 (39), SE21 FUA032KS4 (37), SE43 FU0032WB3 (33), SE21 FUA032KS6 (16), SE24 RU0022WB4 (12), SE43 FUA152WB4 sign (12), SE23 FU0031WB4 (12), SE21 FUA011EA5 (12), SE31 FU0031WB4 + FU0014WB4 (11). The auger calculation, or Tech's older pages, would fill them.",
+          "where": "all lines",
+          "source": "work/gap_scan.py"
+        },
+        {
+          "sev": "Medium",
+          "title": "RUN WITH pairs: sign blank with a graphic order",
+          "detail": "SE13 RP26717-1 (RPA40WB3051, FUA151WB4) RUN WITH NEXT and RP26327-1 (SPA40WB772, sign blank FUA152WB4) RUN WITH ABOVE; SE24 RP26604-1 (SPA40WB755, sign blank) RUN WITH RPA40WB3051 (RP26803-2, FUA151WB4). They run as one: which formula? The other RUN WITH pairs of the week match.",
+          "where": "SE13 / SE24",
+          "source": "simulation 19-23 Oct"
+        },
+        {
+          "sev": "Low",
+          "title": "\"Signs 365\" on a 10 mm graphic order",
+          "detail": "H69A058-1 (RPAA0WB387, SE22): \"Signs 365, sheets must be clean, flat and smooth\". The rules read only SIGN BLANK / SLITTER / SPA as sign blank, so it runs the graphic Main FUA060WBA. Sign formula for sign customers?",
+          "where": "SE22",
+          "source": "schedule 19-21 Oct"
+        },
+        {
+          "sev": "Low",
+          "title": "Orders that changed line during the week",
+          "detail": "H68A053-1 (VOIDFORM 13 mm) SE22 -> SE32 on 23 Oct (note: MUST PRINT TICKET ON LINE SE22); RP26811-1 SE43 -> SE11 on 21 Oct. Settings follow the new line (FU0001WBD has none on SE32).",
+          "where": "SE22 / SE32 / SE11 / SE43",
+          "source": "simulation 19-23 Oct"
+        },
+        {
+          "sev": "High",
           "title": "SE21 R4 black: which hopper layout",
           "detail": "H6AA173-1 (RU0000KS5) is CALCULATED from Tech's issued R4 black on SE21 (RU0000KS4, 23-25 Sep): Mix Reclaim hopper 3 99, KS colour hopper 4 11 (98/2). Tech's calc workbook has reclaim on hopper 1 at 65 instead; on that layout it would be hopper 1 69, hopper 4 20.",
           "where": "SE21",
