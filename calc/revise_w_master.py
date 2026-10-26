@@ -61,7 +61,7 @@ def main():
     config.record_read(SRC, "W% Master with James's notes (revision 2)")
     ws = load_workbook(SRC, read_only=True, data_only=True)['Formulation + Latest Run']
     rows = list(ws.iter_rows(values_only=True))
-    R = [dict(zip(rows[0], r)) for r in rows[1:] if r[0]]
+    R = assign.apply_later_notes([dict(zip(rows[0], r)) for r in rows[1:] if r[0]])
     for i, r in enumerate(R):
         r['_i'] = i; r['_level'] = assign.level(r['Notes']); r['_final'] = assign.final_code(r)
     keep = [r for r in R if r['_level'] in ('main', 'secondary')]
@@ -113,6 +113,8 @@ def main():
                           '"There are too many new product code which make the one to one match not very useful. To make it work, we need to build logic system so that you assign formulation to product base on logic."'),
         ('Revision 2', 'Those notes applied, nothing else: sheet "W% Master v2" keeps the Main and Secondary formulations under the names James gives (old names as "Printed as", so Tech\'s pages still match); '
                        '"Replaced" lists every row folded into a Main or Secondary; "Archived" the archive / remove / obsolete rows and the VOIDFORM rows with reclaim (R10); "Open for James" what the notes do not settle.'),
+        ('Later notes', 'Notes James gave after his 23 Oct file, applied the same way (daily/assign.py LATER_NOTES): '
+                        + '; '.join(f'{code} "{old}" -> {new}' for code, old, new in assign.LATER_NOTES) + '.'),
         ('Rules', 'R1 colour other than KS/WB is graphic grade (third character A); the bubble line (BF) stays 0. R2 reclaim only in KS/WB. R3 the schedule\'s Spec decides the prefix '
                   '(R1R1R1 FU, R4R4R4 RU, OPOPOP FX, S1S1S1 FS, A1A1A1 FA, U1U1U1 FE - "Extra UV is FE", F.. FR, bubble line BF). R4 the middle digits are a version number. '
                   'R5 summer formulation 1 Apr - 31 Oct, winter 1 Nov - 31 Mar. R6 print James\'s names, never the old codes. R7 slitter / SPA / SPP orders take the sign-blank Main. '
@@ -192,7 +194,8 @@ def main():
             several[(assign.canon_prefix(r['_final'][:2]), r['_final'][2], (r['Colour'] or '')[:2], r['Thk (mm)'])].append(r['_final'])
     data = []
     for k, codes in sorted(several.items()):
-        if len(set(codes)) > 1:
+        fe = {c for c in codes if c[:2] == 'FE'}
+        if len(set(codes)) > 1 and not (k[0] == 'FE' and len(fe) == 1):     # FE key: the FE-named one (James, 26 Oct: "U1 is for FEA")
             data.append(['Two Mains for one key', f'{k[2]} {k[3]:g} mm {k[0]} {"graphic" if k[1] == "A" else "packaging"}: {", ".join(sorted(set(codes)))}', 'Which is the Main?'])
     for r in unresolved:
         data.append(['Replace-by note without a target', f"{r['Formula Code']} {r['Application']} {r['Version'] or ''}: \"{r['Notes']}\"", 'Which code replaces it?'])

@@ -2347,11 +2347,22 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   Main (R4 black 8 mm, bubble KS 5 mm, JG 4 mm, WB 10 mm VOIDFORM without reclaim, pink 2 mm anti-static, opaque 3 mm
   sign, FW 4 mm ...), 11 / 31 with two Mains, 153 / 352 with no settings on their line (Tech's pages before 23 Sep are
   not on file), spec R9RDRD without a prefix rule. All on the page's Open items tab (20 items). Artifact v58.
+- 26 Oct, James on DPPA0NS75/76 (U1U1U1, NS 10 mm): *"U1 is for FEA"*. In an FE key his FE-named Main wins over one under
+  the old letter FH (`assign.choose`), and a row is a formula's settings only when it feeds every UV / anti-static /
+  flame-retardant additive the formula lists, by number (`assign.feeds_additives`): FEA001NSA takes SE21's recipe
+  (UV-N26257A); SE22's FH0001NSA recipe is the N26177A one (FHA001NSA), so on SE22 it is ENGINEER TO SET. Two-Main
+  keys 11 -> 9 products. Artifact v59. FHA001NSA (anti-static, FA by the spec rule?) still open.
+- 26 Oct, James on the FU0032KS3 2016 "Main, Packaging grade" row (black 3 mm packaging, two Mains with FU0051KS3):
+  *"obsolete this one"*. Notes after his 23 Oct file go in `assign.LATER_NOTES`, applied on read by `rules()` and
+  calc/revise_w_master.py (his file stays as received; Read Me "Later notes"). Black 3 mm packaging now runs FU0051KS3
+  (SE11 calc recipe Jun 2020, SE21 Oct 2022; SE42 / SE22 to set); SE43 keeps FU0151KS3; FU0032KS3 Vistech stays a
+  customer Main. W% v2 regenerated ("Archived" row 9; the NS 10 mm two-Main item dropped too). pytest 89 passed, 5 skipped.
 
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.68 | 2026-10-26 | Claude Code (local, with James Kuo) | **U1 = FEA, black 3 mm = FU0051KS3 (§7.73)**: FE-named Main wins in an FE key, settings must feed the formula's additives; FU0032KS3 2016 packaging row obsolete via `assign.LATER_NOTES`; W% v2 regenerated; artifact v59. |
 | 1.67 | 2026-10-24 | Claude Code (local, with James Kuo) | **R12 special products (§7.73)**: roll and VOIDFORM orders run their special Main only, no Secondary; roll recipe checked against the W%; Monday's open items on the page; artifact v57. |
 | 1.66 | 2026-10-24 | Claude Code (local, with James Kuo) | **R11 R4 black 98/2 (§7.73)**: R4 Primaries take only R4 rows (H6AA173-2 corrected); RU0000KS5 on SE21 calculated from Tech's R4 black recipe (hopper 3 99, hopper 4 11), marked CALCULATED; artifact v56. |
 | 1.65 | 2026-10-24 | Claude Code (local, with James Kuo) | **A line's own recipe of a folded formulation (§7.73)**: James on SE25 packaging WB 4 mm; an old name he folded into a Main with another composition gives the Main's settings where Tech issued it (issued pages only); 23 Oct 98 of 99 by rule, 23 with settings to set; artifact v55. |

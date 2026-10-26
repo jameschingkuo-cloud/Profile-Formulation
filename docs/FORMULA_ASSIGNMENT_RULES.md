@@ -294,3 +294,15 @@ all "Send to Rotary"): *"U1 is for FEA"*.
   formula's W% lists, by number (`assign.feeds_additives`): SE22's FH0001NSA recipe (N26177A) is FHA001NSA's, so
   FEA001NSA has no SE22 settings yet; SE21 has its recipe (H1 virgin 67, H2 talc 8, H3 UV-N26257A 3, H4 AS-N40095A 17).
 - Test `test_u1_natural_10mm_is_fea`. Last week's simulation unchanged; 12 months: two-Main keys 11 -> 9 products.
+
+## Black 3 mm packaging is FU0051KS3 (26 Oct 2026)
+James, shown the two plain Mains for KS 3 mm packaging (FU0032KS3 "Main, Packaging grade", 30.5% reclaim, 2016; FU0051KS3
+"Main KS Packing", 40% reclaim, Jun 2020), on the FU0032KS3 2016 row: *"obsolete this one"*.
+- Notes James gives after his 23 Oct file go in `assign.LATER_NOTES` (code, note in the file, note now); `rules()` and
+  calc/revise_w_master.py apply them on read, and the 23 Oct file stays as received. The row is on "Archived" in W% v2.
+- Black 3 mm packaging (R1R1R1, 20 orders in 12 months, 18 on SE11) now runs FU0051KS3: SE11 from its calc-sheet recipe
+  (Jun 2020: H1 KS 26, H2 talc 17, H3 reclaim 35, H4 virgin 44, H5 CaCO3 13), SE21 its own (Oct 2022); SE42 and SE22
+  have none ("ENGINEER TO SET"). SE43 keeps its own FU0151KS3. FU0032KS3 Vistech stays a customer Main, never proposed.
+- FU0051KS3 has no Secondary in the W% Master (no virgin black 3 mm packaging row besides SE43's FU0151KS3), so R9 prints
+  the Primary only.
+- Test `test_ks_3mm_packaging_is_fu0051ks3`. Two-Main keys left in W% v2: KS 6 mm (FU0041KS6 / FU0062KS6).

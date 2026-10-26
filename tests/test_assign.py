@@ -89,8 +89,8 @@ def test_james_main_rows_decide():
     assert p['code'] == 'FUA152WB4'
     p, _ = assign.propose('SE31', row('SPA40WM8', 'PPP A R1R1R1', 'SEND TO SLITTER'), datetime.date(2026, 10, 23), issued)
     assert p['code'] == 'FUA151WM4'
-    # a key with two plain Mains is not decided (KS 3 mm packaging: James to say)
-    p, why = assign.propose('SE11', row('RPP30KS948', 'PPP P R1R1R1'), datetime.date(2026, 10, 23), issued)
+    # a key with two plain Mains is not decided (KS 6 mm packaging: James to say; KS 3 mm he settled on 26 Oct)
+    p, why = assign.propose('SE11', row('RPP60KS100', 'PPP P R1R1R1'), datetime.date(2026, 10, 23), issued)
     assert p is None and why.startswith('several Mains')
     # a customer-specific Main is never proposed by rule
     assert all(not m['restricted'] or m['code'] not in ('FU0001BLA',) for m in assign.rules()['mains'] if m['code'] == 'FU0001BLA' and not m['restricted'])
@@ -411,3 +411,28 @@ def test_u1_natural_10mm_is_fea():
     (x,) = fm['members']
     assert x['code'] == 'FEA001NSA' and x['src'][0] == 'calc'
     assert any('N26257A' in v['material'] for v in x['rows'][0]['feeders'].values() if v.get('set'))
+
+
+def test_ks_3mm_packaging_is_fu0051ks3():
+    """James, 26 Oct 2026, on the 2016 FU0032KS3 "Main, Packaging grade" row: "obsolete this one" (assign.LATER_NOTES; his
+    23 Oct file stays as received). Black 3 mm packaging (RPP30KS948, R1R1R1) then has one Main, FU0051KS3: SE11 takes its
+    calc-sheet recipe (Jun 2020), SE43 keeps its own FU0151KS3; FU0032KS3 Vistech stays a customer Main, never proposed."""
+    R = assign.rules()
+    plain = {m['code'] for m in R['by_key'][('FU', '0', 'KS', '3')] if not m['quals'] and not m['restricted']}
+    assert plain == {'FU0051KS3'}
+    assert any(m['code'] == 'FU0032KS3' and m['restricted'] for m in R['mains'])
+    if not assign.CALC_LIB.exists():
+        import pytest
+        pytest.skip('Formulation Calc Library not built on this PC')
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    assign.set_pages(packets)
+    r = row('RPP30KS948', 'PPP P R1R1R1', '')
+    fm, why = assign.formulation('SE11', r, datetime.date(2026, 10, 26), issued)
+    (x,) = fm['members']
+    assert x['code'] == 'FU0051KS3' and x['src'][0] == 'calc', why
+    fm, why = assign.formulation('SE43', r, datetime.date(2026, 10, 26), issued)
+    assert [m['code'] for m in fm['members']] == ['FU0151KS3'], why

@@ -32,6 +32,21 @@ import config  # noqa: E402
 import product_code as pc  # noqa: E402
 
 W_MASTER = config.ROOT / 'data' / 'w_master' / 'W Master Formulation draft (version 1) - James notes 2026-10-23.xlsx'
+# James's notes given after that file (it stays as received): (code, its note in the file, the note now). Applied on read
+# by rules() and calc/revise_w_master.py, so the daily run and the W% v2 revision agree.
+LATER_NOTES = [
+    ('FU0032KS3', 'Main, Packaging grade',
+     'obsolete (James, 26 Oct 2026: "obsolete this one"; 23 Oct note: Main, Packaging grade)'),
+]
+
+
+def apply_later_notes(R):
+    """Rewrite the Notes of the W% Master rows James re-noted after 23 Oct (LATER_NOTES)."""
+    for r in R:
+        for code, old, new in LATER_NOTES:
+            if r['Formula Code'] == code and (r['Notes'] or '').strip() == old:
+                r['Notes'] = new
+    return R
 
 PREFIX = {'R1R1R1': 'FU', 'R3R3R3': 'FU', 'R2R2R2': 'FU', 'R4R4R4': 'RU', 'OPOPOP': 'FX', 'S1S1S1': 'FS',
           'A1A1A1': 'FA', 'U1U1U1': 'FE', 'F1F1F1': 'FR', 'F4F4F4': 'FR', 'R6R6R6': 'BF', 'RDRDRD': 'BF', 'RMR6R6': 'BF'}
@@ -109,7 +124,7 @@ def rules():
     config.record_read(W_MASTER, "W% Master with James's notes (formula assignment)")
     ws = load_workbook(W_MASTER, read_only=True, data_only=True)['Formulation + Latest Run']
     rows = list(ws.iter_rows(values_only=True))
-    R = [dict(zip(rows[0], r)) for r in rows[1:] if r[0]]
+    R = apply_later_notes([dict(zip(rows[0], r)) for r in rows[1:] if r[0]])
     mains, by_key = [], defaultdict(list)
     for r in R:
         lv = level(r['Notes'])

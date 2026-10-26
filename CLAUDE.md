@@ -420,6 +420,10 @@ formulation first) and, marked RULES UNDECIDED, where the rules cannot decide (`
 - R12 (*"Roll formula should only have one primary formula. There shouldn't be a secondary formula"* - roll, VOIDFORM and
   other special products run their special formula because of their physical properties): a roll or VOIDFORM order
   gets its special Main only, no Secondary and no run-out row (`assign.SPECIAL_ONLY`).
+- James's notes after his 23 Oct W% file go in `assign.LATER_NOTES` (code, note in the file, note now), applied on read
+  by `rules()` and calc/revise_w_master.py; the file stays as received (26 Oct: FU0032KS3 2016 packaging row obsolete,
+  so black 3 mm packaging is FU0051KS3). In an FE key the FE-named Main wins (*"U1 is for FEA"*); settings rows must feed
+  the formula's UV / AS / FR additives (`assign.feeds_additives`).
 - Settings: the formulation's rows as Tech last issued them on that line, under James's name or any old printed name of
   the same composition, then under an old name he folded into it with another composition (the line's own recipe of the
   Main - James, 24 Oct 2026, on SE25: *"You should have primary formulation for package grade white 4 mm"*; issued pages
