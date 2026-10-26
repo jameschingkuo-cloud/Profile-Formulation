@@ -2441,6 +2441,11 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   FU0002WBD is available, if it is, make it the secondary. and copy the void form fomula over"*: FU0002WBD unused (14 workbooks, pages, code);
   LATER_NOTES renames the W% row FU0001WBD "Secondary Packing grade" to FU0002WBD (the new note must not contain the word void). W% Master v2
   republished. Today: 5 orders for an engineer. Word file work/fix1026j (out/ copy open in Word); artifact v68. pytest 95 passed.
+- James on SE25: *"the last two order are void form so we have the 5mm white void form. and RP26717-2 is just R4, which is the 100% reclaim
+  one. check again and complete them"*. `assign.own_equivalent`: a member with no settings under its own names takes the order's own last issue
+  row of the same colour/thickness that is that formulation (R4: the pure-reclaim row, RU0001WB4 "PP WB Reclaim 99" -> RU0000WB4; VOIDFORM:
+  the virgin row of its VOIDFORM group, FUA011WB5 52/26/16/32 -> FU0051WB5; Tech's row has no CaCO3, the W% has 5%). Left: RU0022WB4 on SE25.
+  Roll: no Secondary per James 24 Oct ("Roll formula should only have one primary formula"); Tech prints FU0001WB4 roll run-out - asked.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

@@ -540,3 +540,23 @@ def test_secondary_takes_techs_run_out_row_under_the_primary_code():
     assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0061WBD'), ('Secondary', 'FU0002WBD')], why
     sec = fm['members'][1]['rows']
     assert sec and len(sec) == 1 and not assign.uses_reclaim(sec[0]) and 'VOIDFORM' not in sec[0]['note']
+
+
+def test_r4_and_voidform_take_the_orders_own_equivalent_row():
+    """James, 26 Oct 2026, on SE25: "the last two order are void form so we have the 5mm white void form. and RP26717-2 is
+    just R4, which is the 100% reclaim one". RU0000WB4 takes the order's own pure-reclaim row (Tech printed RU0001WB4
+    "PP WB Reclaim 99"); FU0051WB5 on a VOIDFORM order takes the virgin row of its own VOIDFORM group (FUA011WB5)."""
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        if d['packet_date'] <= '2026-10-23':
+            packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    own = lambda o: next((d, pg['scan_page'], g['formulas']) for d in ['2026-10-23'] for pg in packets[d]['frm']
+                         if pg['line_code'] == 'SE25' for g in pg['groups'] if o in g['orders'])
+    fm, why = assign.formulation('SE25', row('RPP40WB1625', 'PPP P R4R4R4'), datetime.date(2026, 10, 26), issued, own('RP26717-2'))
+    p = fm['members'][0]
+    assert p['code'] == 'RU0000WB4' and [f['formula_code'] for f in p['rows']] == ['RU0001WB4'], why
+    fm, why = assign.formulation('SE25', row('DPP50WB308', 'PPP P R1R1R1', 'VOIDFORM'), datetime.date(2026, 10, 26), issued, own('H68A090-1'))
+    p = fm['members'][0]
+    assert p['code'] == 'FU0051WB5' and len(p['rows']) == 1 and not assign.uses_reclaim(p['rows'][0]), why

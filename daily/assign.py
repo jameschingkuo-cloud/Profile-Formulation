@@ -864,6 +864,8 @@ def formulation(line, row, day, issued, own=None):
         rows, src = member_settings(line, m, want, issued, own)
         if rows is None and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
             rows, src = r4_black_settings(line, m)          # James, 24 Oct 2026: R4 black, 98% reclaim + 2% colour
+        if rows is None:
+            rows, src = own_equivalent(m, want, own)
         if rows is None and role_ == 'Secondary' and w_reclaim(main):
             # the W% Secondary has no settings under its own names on the line: Tech's virgin run-out row printed under the
             # Primary's code is that formulation (James, 26 Oct 2026, on SE32 H6AA042-1 ...: "There should be WB D white
@@ -928,6 +930,28 @@ def tech_run_out(line, main, want, own=None, within=False):
             return {'role': 'Secondary', 'code': name, 'shown': name, 'member': None, 'rows': one_row(outs, code),
                     'src': ('own' if own is not None and g is own else 'line', g[0], g[1])}
     return None
+
+
+def own_equivalent(m, want, own):
+    """A member with no settings under its own names on the line: the order's own last issue there, a row of the same
+    colour and thickness that is this formulation - for an R4 member the pure-reclaim row, for a VOIDFORM order's virgin
+    member the virgin row - never from a group noted for a qualifier the order lacks. James, 26 Oct 2026, on SE25: "the
+    last two order are void form so we have the 5mm white void form. and RP26717-2 is just R4, which is the 100% reclaim
+    one" (Tech's 23 Oct page: RU0001WB4 "PP WB Reclaim 99"; the VOIDFORM group's virgin FUA011WB5 row).
+    -> (rows, ('own', date, page)) or (None, None)."""
+    if not own:
+        return None, None
+    marked = {q for q in want if q in QMARK}
+    if {x for f in own[2] for x in quals(f.get('note', '')) if x in QMARK} - marked:
+        return None, None
+    same = [f for f in own[2] if len(f['formula_code']) == 9 and f['formula_code'][6:] == m['code'][6:]]
+    if m['key'][0] == 'RU' and w_reclaim(m):
+        rows = [f for f in same if r4_recipe(f)]
+    elif 'void' in want and not w_reclaim(m):
+        rows = [f for f in same if not uses_reclaim(f)]
+    else:
+        rows = []
+    return (one_row(rows, m['code']), ('own', own[0], own[1])) if rows else (None, None)
 
 
 def one_row(rows, code):
