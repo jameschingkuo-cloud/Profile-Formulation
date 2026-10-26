@@ -2357,11 +2357,23 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   calc/revise_w_master.py (his file stays as received; Read Me "Later notes"). Black 3 mm packaging now runs FU0051KS3
   (SE11 calc recipe Jun 2020, SE21 Oct 2022; SE42 / SE22 to set); SE43 keeps FU0151KS3; FU0032KS3 Vistech stays a
   customer Main. W% v2 regenerated ("Archived" row 9; the NS 10 mm two-Main item dropped too). pytest 89 passed, 5 skipped.
+- 26 Oct, James sent Tech's FRM pages for 8, 9, 12, 13, 14, 19, 21, 22 and 23 Oct (copier scan doc05420520261026095633.pdf,
+  118 pages; 23 Oct has two SE21 pages): *"some of these may be a bit off from your side. as i am going through cleaning
+  these up"* / *"you use it to check auger as well as how we use our hopper"* / *"the data we provide you is more correct.
+  but use this time to see if there are other formulation we are missing. like last time you were missing void form
+  formulation"*. Read by eye into data/frm_text (five readers in parallel); every value not already seen on an earlier
+  issue re-checked on the page image (`work/frm_text_diff.py all <date>`); written into the packets with
+  `daily/frm_from_text.py --write` (14 Oct has no schedule packet: text only, every value already seen on other days).
+  `frm_from_text.py`: the draft's ENGINEER TO SET rows count as left to the engineer; a line on two pages continues the
+  order's formulas. Tests follow the newer issues (backtest now 249 cases: 75% same, 18% different, as rates).
+  `work/auger_hopper_check.py` -> out/Auger and Hopper Check.xlsx (auger check against James's W%, bias by hopper, hopper
+  use with uncalibrated materials, formulations missing from the W% Master). Findings for James in the reply of 26 Oct.
 
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.69 | 2026-10-26 | Claude Code (local, with James Kuo) | **Tech's 8-23 Oct FRM pages (§7.73)**: 9 days transcribed, checked against the images and written into the packets; frm_from_text fixes; auger / hopper / missing-formulation check (work/auger_hopper_check.py). |
 | 1.68 | 2026-10-26 | Claude Code (local, with James Kuo) | **U1 = FEA, black 3 mm = FU0051KS3 (§7.73)**: FE-named Main wins in an FE key, settings must feed the formula's additives; FU0032KS3 2016 packaging row obsolete via `assign.LATER_NOTES`; W% v2 regenerated; artifact v59. |
 | 1.67 | 2026-10-24 | Claude Code (local, with James Kuo) | **R12 special products (§7.73)**: roll and VOIDFORM orders run their special Main only, no Secondary; roll recipe checked against the W%; Monday's open items on the page; artifact v57. |
 | 1.66 | 2026-10-24 | Claude Code (local, with James Kuo) | **R11 R4 black 98/2 (§7.73)**: R4 Primaries take only R4 rows (H6AA173-2 corrected); RU0000KS5 on SE21 calculated from Tech's R4 black recipe (hopper 3 99, hopper 4 11), marked CALCULATED; artifact v56. |

@@ -114,13 +114,15 @@ def norm(s):
 
 def tech_formulas(pages):
     """(line, order) -> [(code, {column: (material, set)})] in page order."""
-    out = {}
+    out, seen = {}, {}
     for pg in pages:
         for g in pg['groups']:
             fs = [(f['formula_code'], {c: (v['material'], v['set']) for c, v in f['feeders'].items() if v['material'] or v['set']})
                   for f in g['formulas']]
             for o in g['orders']:
-                out[(pg['line_code'], o)] = fs
+                # a line on two pages (SE21, 23 Oct 2026): the second page's rows continue the order's formulas
+                out[(pg['line_code'], o)] = out.get((pg['line_code'], o), []) + fs if seen.get((pg['line_code'], o)) != pg['scan_page'] else fs
+                seen[(pg['line_code'], o)] = pg['scan_page']
     return out
 
 
@@ -134,14 +136,17 @@ def draft_formulas(date):
     wb = openpyxl.load_workbook(f, read_only=True)
     rows = list(wb['Draft'].iter_rows(values_only=True))
     h = rows[0]
-    out = {}
+    out, to_set = {}, set()
     for r in rows[1:]:
         d = dict(zip(h, r))
         key = (d['Line Code'], d['Order'])
+        if not d['Feeder']:                  # an ENGINEER TO SET row (a decided formulation with no settings on the line)
+            to_set.add(key)
+            continue
         fs = out.setdefault(key, {})
         col = (f"{d['Extruder']} {d['Feeder']}" if d['Extruder'] else d['Feeder']).strip()
         fs.setdefault((d['Formula Row'], d['Formula Code']), {})[col] = (d['Material (as issued)'] or '', str(d['Set'] or ''))
-    exc = {(r[0], r[1]) for r in list(wb['Exceptions'].iter_rows(values_only=True))[1:]}
+    exc = {(r[0], r[1]) for r in list(wb['Exceptions'].iter_rows(values_only=True))[1:]} | (to_set - set(out))
     return {k: [(code, cols) for (_, code), cols in sorted(v.items())] for k, v in out.items()}, exc
 
 

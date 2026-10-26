@@ -1,0 +1,140 @@
+# Tech's FRM pages for 19 Oct 2026, read by eye from doc05420520261026095633.pdf (James Kuo, sent 26 Oct 2026), pages 67-79.
+# Format: daily/frm_from_text.py. "## scan page | line code | line no | date | header note | columns | effective date"
+# then "foot:", "hand:", "unclear:" lines, "> orders" starts a group, one formula per line:
+# code ; feeder ; feeder ... [; # note]   feeder = "material @ set", "-" = empty cell, "COL=material @ set" for wide pages.
+
+## 67 | SE11 | 1 | 10/19/26 | AC = 1 | H5 | 06/06/00
+foot: Note: For KS orders, increase Hopper 1 setting if the board looks too gray, because the PP Mix Reclaim from the boxes/silo 8 might be too much WB (or others) colored. | Note: CaCO3 means calcium carbonate.
+unclear: Row H69A357-1, Note: prints "GPP3003MP" (one zero fewer than the Hopper 5 material FR-GPP30003MP); kept as printed.
+> H69A357-1
+FR0021WB3 ; WB-W26038A @ 56 ; HiTalc ZS (or N40109A) @ 30 ; F1203K @ 17 ; PP Virgin-silo 3 (F6502A) @ 45 ; FR-GPP30003MP @ 46 ; # Set Die head temps 190°C, Spinneret 195°C Seal the plastic bag of GPP3003MP well to prevent moisture
+> H69A039-1
+FU0022WB3 ; WB-W26038A @ 50 ; HiTalc ZS (or N40109A) @ 15 ; F1203K @ 16 ; PP Virgin-silo 3 (6502A) @ 45 ; CaCO3 –Heritage HM-10MAX @ 6 ; # (For VOIDFORM order only)
+> H69A220-1, H69A221-1
+FU0042WB3 ; WB-W26038A @ 41 ; HiTalc ZS (or N40109A) @ 10 ; PP WB Reclaim @ 31 ; PP Virgin-silo 3 (6502A) @ 30 ; CaCO3 –Heritage HM-10MAX @ 23
+FU0022WB3 ; WB-W26038A @ 50 ; HiTalc ZS (or N40109A) @ 10 ; F1203K @ 16 ; PP Virgin-silo 3 (6502A) @ 45 ; CaCO3 –Heritage HM-10MAX @ 6 ; # (Use this formula in case PP WB Reclaim is run out)
+
+## 68 | SE12 | 2 | 10/19/26 | AC = 90 | H5 | 06/06/00
+foot: Note: CaCO3 means calcium carbonate.
+> RP26728-4, RP26511-1
+FUA152WB4 ; WB-W26038A @ 50 ; HiTalc ZS (or N40109A) @ 41 ; F1203K @ 20 ; PP Virgin-silo 3 (6502A) @ 71 ; - ; # (For sign blank orders only)
+> RP26821-1
+FUA152WB4 ; WB-W26038A @ 50 ; HiTalc ZS (or N40109A) @ 27 ; F1203K @ 14 ; PP Virgin-silo 3 (6502A) @ 71 ; -
+
+## 69 | SE13 | 3 | 10/19/26 | AC = 90 | H5 | 06/06/00
+foot: Note: CaCO3 means calcium carbonate.
+> H6AA077-5, H69A181-2
+FU0041WB4 ; - ; HiTalc ZS (or N40109A) @ 26 ; PP WB Reclaim @ 56 ; PP Virgin-silo 3 (6502A) @ 37 ; WB-W26038A @ 15
+FU0151WB4 ; - ; HiTalc ZS (or N40109A) @ 26 ; F1203K @ 14 ; PP Virgin-silo 3 (6502A) @ 55 ; WB-W26038A @ 15 ; # (Use this formula in case PP WB Reclaim is run out)
+> RP26506-5, RP25522-4, RP26618-2, RP26618-3, RP26717-1, RP26327-1
+FUA152WB4 ; - ; HiTalc ZS (or N40109A) @ 60 ; F1203K @ 33 ; PP Virgin-silo 3 (F6502A) @ 45 ; WB-W26038A @ 16 ; # (For sign blank orders only)
+> RP24C18-4
+FUA152WB4 ; - ; HiTalc ZS (or N40109A) @ 48 ; F1203K @ 25 ; PP Virgin-silo 3 (F6502A) @ 48 ; WB-W26038A @ 15
+
+## 70 | SE21 | 4 | 10/19/26 |  | H5 | 5/30/00
+foot: Note: For KS orders, increase Hopper 4 setting if the board looks too gray, because the PP Mix Reclaim from the boxes/silo 8 might be too much WB (or others) colored. | Note: CaCO3 means calcium carbonate.
+> RP25818-2, RP26527-1, RP26424-2
+FUA152WB4 ; PP Virgin-silo 3 (F-6502A) @ 47 ; HiTalc ZS (or N40109A) @ 8 ; F1203K @ 25 ; WB-W26038A @ 21 ; -
+> RP26512-1
+FU0041WB4 ; PP Virgin-silo 3 (F6502A) @ 40 ; HiTalc ZS (or N40109A) @ 5 ; PP WB Reclaim @ 30 ; WB-W26038A @ 16 ; CaCO3 -Heritage HM-10MAX @ 18
+FU0031WB4 ; PP Virgin-silo 3 (F6502A) @ 80 ; HiTalc ZS (or N40109A) @ 10 ; PP WB Reclaim @ 60 ; WB-W26038A @ 32 ; CaCO3 -Heritage HM-10MAX @ 36
+FU0011WB4 ; PP Virgin-silo 3 (F6502A) @ 48 ; HiTalc ZS (or N40109A) @ 5 ; F1203K @ 16 ; WB-W26038A @ 24 ; CaCO3 -Heritage HM-10MAX @ 22 ; # (Use this formula in case PP WB Reclaim is run out)
+
+## 71 | SE22 | 5 | 10/19/26 |  | H5 | 5/30/00
+foot: Note: CaCO3 means calcium carbonate.
+> H69A288-11
+FUA002OFA ; PP Virgin-silo 3 (6502A) @ 62 ; HiTalc ZS (or N40109A) @ 8 ; - ; OF-PP-R34874 @ 12 ; CaCO3 -Heritage HM-10MAX @ 9 ; # Match color and opacity with QC sample
+> H6AA043-1, H6AA043-2, H69A058-1, RP26928-1
+FUA060WBA ; PP Virgin-silo 3 (6502A) @ 20 ; HiTalc ZS (or N40109A) @ 5 ; PP WB Reclaim @ 90 ; WB-W26038A @ 7 ; CaCO3 -Heritage HM-10MAX @ 4
+FUA060WBA ; PP Virgin-silo 3 (6502A) @ 30 ; HiTalc ZS (or N40109A) @ 5 ; PP WB Reclaim @ 75 ; WB-W26038A @ 7 ; CaCO3 -Heritage HM-10MAX @ 4
+FUA010WBA ; PP Virgin-silo 3 (6502A) @ 70 ; HiTalc ZS (or N40109A) @ 6 ; - ; WB-W26038A @ 15 ; CaCO3 -Heritage HM-10MAX @ 5 ; # (Use this formula in case PP WB Reclaim is run out)
+> H6AA080-1, H6AA080-2
+FU0041WBA ; PP Virgin-silo 3 (6502A) @ 40 ; HiTalc ZS (or N40109A) @ 5 ; PP WB Reclaim @ 60 ; WB-W26038A @ 7 ; CaCO3 -Heritage HM-10MAX @ 4
+FU0001WBA ; PP Virgin-silo 3 (6502A) @ 56 ; HiTalc ZS (or N40109A) @ 4 ; - ; WB-W26038A @ 15 ; CaCO3 -Heritage HM-10MAX @ 4 ; # (Use this formula in case PP WB Reclaim is run out)
+> H68A053-1
+FU0001WBD ; PP Virgin-silo 3 (6502A) @ 64 ; HiTalc ZS (or N40109A) @ 4 ; - ; WB-W26038A @ 13 ; CaCO3 -Heritage HM-10MAX @ 4 ; # For VOIDFORM order only
+FU0061WBD ; PP Virgin-silo 3 (6502A) @ 22 ; HiTalc ZS (or N40109A) @ 4 ; PP WB Reclaim @ 99 ; WB-W26038A @ 6 ; CaCO3 –Heritage HM-10MAX @ 4
+
+## 72 | SE23 | 6 | 10/19/26 | AC = 1 | H5 | 5/30/00
+foot: Note: CaCO3 means calcium carbonate.
+> RP26902-1
+FU0021WB4 ; PP Virgin @ 35 ; HiTalc ZS (or N40109A) @ 10 ; PP WB Reclaim @ 45 ; WB-W26038A @ 20 ; F1203K @ 80 ; # (CORN BOX FORMULA)
+FU0021WB4 ; PP Virgin @ 45 ; HiTalc ZS (or N40109A) @ 10 ; PP WB Reclaim @ 60 ; WB-W26038A @ 20 ; - ; # (CORN BOX FORMULA)
+FU0021WB4 ; PP Virgin @ 99 ; HiTalc ZS (or N40109A) @ 14 ; F1203K @ 32 ; WB-W26038A @ 28 ; - ; # (CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)
+> H68A091-1
+FU0021WB4 ; PP Virgin-silo 4 (6502A) @ 85 ; HiTalc ZS (or N40109A) @ 12 ; F1203K @ 28 ; WB-W26038A @ 24 ; - ; # For VOIDFORM order only
+> RP26821-2, RP26202-1
+FUA152WB4 ; PP Virgin-silo 4 (F6502A) @ 99 ; HiTalc ZS (or N40109A) @ 18 ; F1203K @ 54 ; WB-W26038A @ 43 ; -
+
+## 73 | SE24 | 7 | 10/19/26 |  | EX13 | 6/15/00
+foot: Note: CaCO3 means calcium carbonate.
+> RP26901-1, RP26803-2, RP26604-1
+FUA152WB4 ; Extruder A V1=WB-W26038A @ 2.7 ; Extruder A V3=HiTalc ZS (or N40109A) @ 9 ; Extruder A V4=PP Virgin-silo 4 (6502A) @ 73.3 ; Extruder A V5=F1203K @ 15
+> RP26514-1
+FSA200WB4 ; Extruder A V2=FOAM – Bergen XO-256 @ 1.0 ; Extruder A V3=CaCO3 -Heritage HM-10HP @ 10 ; Extruder A V4=PP Virgin-silo 4 (F6502A) @ 89 ; Extruder B V1=WB-W26038A @ 6 ; Extruder B V3=HiTalc ZS (or N40109A) @ 30 ; Extruder B V4=PP Virgin-silo 4 (F6502A) @ 64 ; Extruder C V1=WB-W26038A @ 6 ; Extruder C V3=HiTalc ZS (or N40109A) @ 30 ; Extruder C V4=PP Virgin-silo 4 (F6502A) @ 64
+> RP25710-1
+RU0000WB4 ; Extruder A V4=PP WB Reclaim @ 100
+
+## 74 | SE31 | 8 | 10/19/26 |  | ABC13 | 6/15/00
+foot: Note: CaCO3 means calcium carbonate.
+unclear: Row RP26A09-3/RP26A01-1, A V5: printed "NPC NPC PE-W22151" (word doubled on the page); kept as printed. The Note column's cells sit about half a row lower than the formula rows: "(Please use W26038A if NPC PE-W22151 is run out" (bracket not closed on the page) taken with the FXA020WB4 group, "New formulation for sign blank" with RP26413-1, as on the 14 Oct page.
+> RP26A09-3, RP26A01-1
+FXA020WB4 ; A V1=PP Virgin-silo 4 (6502A) @ 60 ; A V2=F1203K @ 23 ; A V3=HiTalc ZS (or N40109A) @ 18 ; A V4=WB-W40020M @ 60 ; A V5=NPC NPC PE-W22151 @ 26 ; # (Please use W26038A if NPC PE-W22151 is run out
+> RP26413-1
+FUA152WB4 ; A V1=PP Virgin-silo 4 (6502A) @ 45 ; A V2=F1203K @ 33 ; A V3=HiTalc ZS (or N40109A) @ 11 ; A V4=WB-W26038A @ 18 ; # New formulation for sign blank
+> H6AA034-1, H6AA033-1, H6AA123-1
+FU0041WB4 ; A V1=PP Virgin-silo 4 (F6502A) @ 40 ; A V2=PP WB Reclaim @ 72 ; A V3=HiTalc ZS (or N40109A) @ 8 ; A V4=WB-W26038A @ 13 ; A V5=CaCO3 - Heritage HM-10MAX @ 28
+FU0021WB4 ; A V1=PP Virgin-silo 4 (F6502A) @ 69 ; A V2=F1203K @ 24 ; A V3=HiTalc ZS (or N40109A) @ 9 ; A V4=WB-W26038A @ 22 ; A V5=CaCO3 - Heritage HM-10MAX @ 32
+> H69A289-1, RP26120-1, RP26925-3
+FUA152WB4 ; A V1=PP Virgin-silo 4 (6502A) @ 48 ; A V2=F1203K @ 26 ; A V3=HiTalc ZS (or N40109A) @ 8 ; A V4=WB-W26038A @ 20
+
+## 75 | SE32 | 9 | 10/19/26 |  | ABC13 | 6/15/00
+foot: Note: CaCO3 means calcium carbonate.
+> RP26A13-1, RP26731-1
+FUA152WB4 ; A V1=PP Virgin-silo 4 (6502A) @ 48 ; A V2=F1203K @ 16 ; A V3=HiTalc ZS (or N40109A) @ 9 ; A V4=WB-W26038A @ 18
+> RP26525-3
+FUA152WB4 ; A V1=PP Virgin-silo 4 (6502A) @ 40 ; A V2=F1203K @ 18 ; A V3=HiTalc ZS (or N40109A) @ 10 ; A V4=WB-W26038A @ 17 ; # SIGN BLANK
+
+## 76 | SE25 | 10 | 10/19/26 | AC = 1 | H5 | 5/30/00
+foot: Note: CaCO3 means calcium carbonate.
+> H69A116-2, H69A116-3
+FU0021WB4 ; PP Virgin-silo 4 (F6502A) @ 40 ; PP WB Reclaim @ 60 ; - ; WB-W26038A @ 16 ; HiTalc ZS (or N40109A) @ 16
+FU0021WB4 ; PP Virgin-silo 4 (F6502A) @ 45 ; F1203K @ 16 ; - ; WB-W26038A @ 16 ; HiTalc ZS (or N40109A) @ 16 ; # (Use this formula in case PP WB Reclaim is run out)
+> H69A044-1
+FU0021WB4 ; PP Virgin-silo 4 (F6502A) @ 45 ; F1203K @ 16 ; - ; WB-W26038A @ 16 ; HiTalc ZS (or N40109A) @ 16 ; # For VOIDFORM
+> H69A181-1
+FU0110WB7 ; PP Virgin-silo 4 (F6502A) @ 64 ; F1203K @ 21 ; - ; WB-W26038A @ 13 ; HiTalc ZS (or N40109A) @ 54
+> RP26717-2
+RU0001WB4 ; PP WB Reclaim @ 99 ; - ; - ; - ; -
+> H69A284-3, H69A284-4
+FU0021WB4 ; PP Virgin-silo 4 (6502A) @ 40 ; PP WB Reclaim @ 60 ; CaCO3 -Heritage HM-10MAX @ 20 ; WB-W26038A @ 15 ; HiTalc ZS (or N40109A) @ 28 ; # (For roll material only) Check weight
+FU0001WB4 ; PP Virgin-silo 4 (F6502A) @ 45 ; F1203K @ 22 ; CaCO3 -Heritage HM-10MAX @ 17 ; WB-W26038A @ 17 ; HiTalc ZS (or N40109A) @ 28 ; # (For roll material only) (Use this formula in case PP WB Reclaim is run out)
+> H68A090-1
+FU0011WB5 ; PP Virgin-silo 3 (F6502A) @ 40 ; PP WB Reclaim @ 60 ; CaCO3 -Heritage HM-10HP @ 3 ; WB-W26038A @ 10 ; HiTalc ZS (or N40109A) @ 10 ; # (Foe VOIDFORM orders only)
+FUA011WB5 ; PP Virgin-silo 4 (F6502A) @ 52 ; F1203K @ 26 ; - ; WB-W26038A @ 16 ; HiTalc ZS (or N40109A) @ 32
+> H64A244-1
+FU0011WB5 ; PP Virgin-silo 3 (F6502A) @ 40 ; PP WB Reclaim @ 60 ; CaCO3 -Heritage HM-10HP @ 3 ; WB-W26038A @ 10 ; HiTalc ZS (or N40109A) @ 10 ; # (Foe VOIDFORM orders only)
+FUA011WB5 ; PP Virgin-silo 4 (F6502A) @ 52 ; F1203K @ 26 ; - ; WB-W26038A @ 16 ; HiTalc ZS (or N40109A) @ 32
+
+## 77 | SE42 | 12 | 10/19/26 |  | V9 | 6/15/00
+> RP26410-1
+FU0021WB4 ; V1=HiTalc ZS (or N40109A) @ 8 ; V3=F1203K @ 10 ; V5=PP Virgin (F6502A) @ 49 ; V7=White Reclaim @ 30 ; V8=WB-W26038A @ 3
+
+## 78 | SE43 | 13 | 10/19/26 |  | V9 | 6/15/00
+unclear: Row RP26911-2 (FUA151WB3) prints one material row and two set rows (6 / 76.3 / 15 / 2.7, then 5 / 77.5 / 15 / 2.5) with no material row of its own for the second; written as two formulas with the same code and the same materials. The colour (WB) prints in the V8 column on every row.
+> RP26911-2
+FUA151WB3 ; V1=HiTalc ZS (or N40109A) @ 6 ; V5=PP Virgin (F6502A) @ 76.3 ; V7=F1102K @ 15 ; V8=WB-W26038A @ 2.7
+FUA151WB3 ; V1=HiTalc ZS (or N40109A) @ 5 ; V5=PP Virgin (F6502A) @ 77.5 ; V7=F1102K @ 15 ; V8=WB-W26038A @ 2.5
+> RP26811-1
+FUA151WB2 ; V1=HiTalc ZS (or N40109A) @ 5 ; V3=Exxon - Vistamaxx 6102FL @ 5 ; V5=PP Virgin (F6502A) @ 71.5 ; V7=F1203K @ 15 ; V8=WB-W26038A @ 3.5
+> RP26915-1, RP26415-1, RP26218-1, RP26526-2
+FUA151WB4 ; V1=HiTalc ZS (or N40109A) @ 8 ; V5=PP Virgin (F6502A) @ 74.0 ; V7=F1203K @ 15 ; V8=WB-W26038A @ 3.0
+
+## 79 | SE61 | 16 | 10/19/26 |  | SE61 | 6/15/00
+unclear: The KS material names (A 3, C 6) are in very small print; read with the same wording as earlier issues.
+> H68A020-1
+BF0000KSA ; A 1=PP Mix Reclaim @ 50 ; A 2=F6502A @ Auto ; A 3=KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F) @ 1.0 ; A 4=HiTalc ZS (or N40109A) @ 10 ; B 1=PP Yungsox 5050S @ 100 ; C 2=F6502A @ Auto ; C 4=HiTalc ZS (or N40109A) @ 5 ; C 6=KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F) @ 2.0 ; D 1=PP Yungsox 5050S @ 100
+> H69A350-3, H69A350-4, H69A350-7, H69A132-1, H6AA048-1, H6AA047-1, H6AA124-1, H6AA124-2, H6AA124-3, H6AA124-4, H6AA124-5, H6AA124-6, H6AA060-1, H6AA060-2, H6AA060-3, H6AA063-1
+BF0000EB3 ; A 1=PP Mix Reclaim @ 50 ; A 2=F6502A @ Auto ; A 3=KS- NPC PE90000F (or Spartech B60009 or MDI PE-500) @ 2.0 ; A 4=HiTalc ZS (or N40109A) @ 10 ; B 1=Adsyl 5C30F @ 100 ; C 2=F6502A @ Auto ; C 3=OG-D26074A @ 3.0 ; C 4=HiTalc ZS (or N40109A) @ 5 ; D 1=Adsyl 5C30F @ 100
+> RP26826-1
+BF0000EB5 ; A 1=PP Mix Reclaim @ 50 ; A 2=F6502A @ Auto ; A 3=KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F) @ 2.0 ; A 4=HiTalc ZS (or N40109A) @ 10 ; B 1=PP Yungsox 5050S @ 100 ; C 2=F6502A @ Auto ; C 3=OG-D26074A @ 3.0 ; C 4=HiTalc ZS (or N40109A) @ 5 ; D 1=PP Yungsox 5050S @ 100

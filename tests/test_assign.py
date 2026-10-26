@@ -162,7 +162,8 @@ def test_settings_from_tech_calc_sheet():
 
 def test_backtest_against_tech_issues():
     """As each morning before Tech issued: for the orders the issue history could not answer, the rule names the
-    formulation Tech issued that day in at least 95 of the ~145 cases, and a different one in at most 35. "Different"
+    formulation Tech issued that day in at least 70% of the cases and a different one in at most 24% (23 Sep - 7 Oct:
+    ~145 cases; with Tech's 8-23 Oct pages, 26 Oct 2026: 249 cases, 75% / 18%). "Different"
     includes Tech printing a code James replaced by another composition (his cleanup of 23 Oct: FU0041WB4 -> FU0031WB4,
     FU0011WB5 -> FU0051WB5 ...): the rule follows James's Main there, by design."""
     packets = {}
@@ -186,7 +187,8 @@ def test_backtest_against_tech_issues():
                     continue
                 names = (p['main']['printed'] if p['main'] else set()) | {p['code']}
                 tot['same' if any(c in names for c in tech[k]) else 'different'] += 1
-    assert tot['same'] >= 95 and tot['different'] <= 35, dict(tot)
+    n = sum(tot.values())
+    assert n >= 140 and tot['same'] >= 0.70 * n and tot['different'] <= 0.24 * n, dict(tot)
 
 
 def test_draft_prints_james_names(tmp_path):
@@ -348,7 +350,7 @@ def test_line_own_recipe_of_a_folded_formulation():
     prim, sec = fm['members']
     assert (prim['code'], sec['code']) == ('FU0031WB4', 'FU0014WB4'), why
     assert [f['formula_code'] for f in prim['rows']] == ['FU0021WB4'] and assign.uses_reclaim(prim['rows'][0])
-    assert prim['src'] == ('line', '2026-09-30', 10)
+    assert prim['src'][0] == 'line' and prim['src'][1] >= '2026-09-30'      # SE25's latest issue of FU0021WB4
     assert [f['formula_code'] for f in sec['rows']] == ['FU0021WB4'] and not assign.uses_reclaim(sec['rows'][0])
     fm, _ = assign.formulation(*sched['H6AA017-1'], day, issued)
     assert fm['members'][0]['code'] == 'FUA031KS5' and fm['members'][0]['rows'] is None
@@ -416,7 +418,7 @@ def test_u1_natural_10mm_is_fea():
 def test_ks_3mm_packaging_is_fu0051ks3():
     """James, 26 Oct 2026, on the 2016 FU0032KS3 "Main, Packaging grade" row: "obsolete this one" (assign.LATER_NOTES; his
     23 Oct file stays as received). Black 3 mm packaging (RPP30KS948, R1R1R1) then has one Main, FU0051KS3: SE11 takes its
-    calc-sheet recipe (Jun 2020), SE43 keeps its own FU0151KS3; FU0032KS3 Vistech stays a customer Main, never proposed."""
+    issue of 12-13 Oct (H6AA077-11), SE43 keeps its own FU0151KS3; FU0032KS3 Vistech stays a customer Main, never proposed."""
     R = assign.rules()
     plain = {m['code'] for m in R['by_key'][('FU', '0', 'KS', '3')] if not m['quals'] and not m['restricted']}
     assert plain == {'FU0051KS3'}
@@ -433,6 +435,6 @@ def test_ks_3mm_packaging_is_fu0051ks3():
     r = row('RPP30KS948', 'PPP P R1R1R1', '')
     fm, why = assign.formulation('SE11', r, datetime.date(2026, 10, 26), issued)
     (x,) = fm['members']
-    assert x['code'] == 'FU0051KS3' and x['src'][0] == 'calc', why
+    assert x['code'] == 'FU0051KS3' and x['src'][:2] == ('line', '2026-10-13'), why     # Tech ran it on SE11, 12-13 Oct
     fm, why = assign.formulation('SE43', r, datetime.date(2026, 10, 26), issued)
     assert [m['code'] for m in fm['members']] == ['FU0151KS3'], why
