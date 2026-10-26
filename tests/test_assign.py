@@ -240,7 +240,7 @@ def test_rules_first_25_sep(tmp_path):
         assert str(e[8]).startswith('Rules cannot decide: '), e
 
 
-def test_word_marks_rule_rows(tmp_path):
+def test_word_rule_rows(tmp_path):
     out = tmp_path / 'out'
     out.mkdir()
     env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28')
@@ -250,14 +250,16 @@ def test_word_marks_rule_rows(tmp_path):
     from docx import Document
     doc = Document(out / 'FRM Formulation 2026-09-28.docx')
     cells = [c.text for t in doc.tables for row in t.rows for c in row.cells]
-    assert any('PROPOSED BY RULE' in c for c in cells)
-    assert 'PROPOSED BY RULE' in doc.sections[0].footer.paragraphs[0].text
+    # every formulation is by rule: no "PROPOSED BY RULE" mark (James, 26 Oct 2026: "no need to say that. everything is
+    # now rule base remember?")
+    assert not any('PROPOSED BY RULE' in c for c in cells)
+    assert 'PROPOSED BY RULE' not in doc.sections[0].footer.paragraphs[0].text
     # RP26928-1 shares its cell with RP26311-1, the same formulation (James, 26 Oct 2026: "since these two are the same
-    # formula, they should share the same cell"); the rule mark goes under the order
+    # formula, they should share the same cell")
     rp = [row for t in doc.tables for row in t.rows if 'RP26928-1' in row.cells[0].text]
     assert rp and 'RP26311-1' in rp[0].cells[0].text
-    for row in rp:                                                    # RP26928-1: FUA060WBA by rule, marked, never silent
-        assert any('FUA060WBA' in c.text for c in row.cells) and any('PROPOSED BY RULE' in c.text for c in row.cells)
+    for row in rp:                                                    # RP26928-1: FUA060WBA by rule
+        assert any('FUA060WBA' in c.text for c in row.cells)
     # R9: the virgin Secondary prints with the Primary, for production to switch to if reclaim runs out
     assert any('If reclaim runs out' in row.cells[1].text and row.cells[-1].text.startswith('Secondary') for row in rp)
 

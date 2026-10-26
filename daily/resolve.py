@@ -259,7 +259,7 @@ def rule_rows(line, order, product, fm):
     """Draft rows for a formulation decided by the rules (assign.formulation): the Primary, then its Secondary (R9), each
     member's formula rows in run order (reclaim first, a run-out note last: James Kuo, 30 Sep 2026), under James's name
     with its role and where its settings came from; a member without settings on the line gets one row "ENGINEER TO SET"
-    in its place. -> (rows, settings date of the rows marked PROPOSED BY RULE or None, members without settings)."""
+    in its place. -> (rows, settings date of the rows proposed from the line or None, members without settings)."""
     entries, missing = [], []
     for x in fm['members']:
         if x['rows']:
@@ -286,7 +286,7 @@ def rule_rows(line, order, product, fm):
             src = f"CALCULATED from {d['template']}; slopes {d['slopes'][0]:g} / {d['slopes'][1]:g} g/min per unit"
             how = (f"Proposed by rule ({fm['how']}); settings CALCULATED for R4 black: {d['share'][0]:g}% black reclaim + "
                    f"{d['share'][1]:g}% black colour (James Kuo, 24 Oct 2026), {d['basis']}, {d['T']:,.0f} g/min")
-            note = (f"{x['role']} · PROPOSED BY RULE · CALCULATED SETTINGS, check before running · "
+            note = (f"{x['role']} · CALCULATED SETTINGS, check before running · "
                     f"R4 black {d['share'][0]:g}% reclaim / {d['share'][1]:g}% colour")
             marked = marked or 'calculated'
             date = None
@@ -295,7 +295,9 @@ def rule_rows(line, order, product, fm):
             note = x['role']
         else:
             how = f"Proposed by rule ({fm['how']}); " + (f"settings from Tech's {line} calc sheet" if kind == 'calc' else f"settings as issued on {line} {date}")
-            note = f"{x['role']} · PROPOSED BY RULE" + (" · settings from the calc sheet" if kind == 'calc' else "")
+            # no "PROPOSED BY RULE" on the row: every formulation is by rule (James, 26 Oct 2026: "no need to say that.
+            # everything is now rule base remember?"); where the settings came from stays in How Resolved / Source
+            note = x['role'] + (" · settings from the calc sheet" if kind == 'calc' else "")
             marked = marked or date
         note += f" · {f.get('note')}" if f.get('note') else ""
         for col, v in f["feeders"].items():
@@ -364,7 +366,7 @@ def write(today, draft, exceptions, dropped, last, history_dates, by_rule=(), to
         ["Orders proposed", f"{n_orders} of {n_orders + len(exceptions)}"],
         ["Proposed by rule", f"{len(by_rule)} (sheet By Rule; James Kuo's rules of 23 Oct 2026, docs/FORMULA_ASSIGNMENT_RULES.md: "
                              "the Main he marked in the W% Master for the product's colour, thickness, grade and spec, with the settings "
-                             "Tech last issued for that formulation on the line; every such row says PROPOSED BY RULE)"],
+                             "Tech last issued for that formulation on the line; How Resolved says where each row's settings came from)"],
         ["Exceptions", len(exceptions)],
         ["Settings", "As last issued. Auger lines: Set is motor speed 0-100 (not %). Weight lines (SE24, SE42, SE43, SE61): Set is weight %, Auto = balance."],
         ["Run", RUN_DATE],

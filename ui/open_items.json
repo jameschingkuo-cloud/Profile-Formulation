@@ -141,7 +141,7 @@
         {
           "sev": "Low",
           "title": "Small fixes pending",
-          "detail": "Bubble line H69A350-4/-7 marked PROPOSED BY RULE though they ran BF0000EB3 before (label only). The page's Generate box shows the rules' answer only for the day the page was built (its reader does not read the spec or the notes).",
+          "detail": "The page's Generate box shows the rules' answer only for the day the page was built (its reader does not read the spec or the notes).",
           "where": "SE61 / this page",
           "source": "24 Oct"
         }

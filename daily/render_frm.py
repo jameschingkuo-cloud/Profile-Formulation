@@ -95,9 +95,6 @@ def load():
     return today, draft, exc, page
 
 
-RULE_TAG = ' · PROPOSED BY RULE'
-
-
 def build_lines(today, draft, exc, page):
     repl = replaced()
     forms = OrderedDict()       # (line, order) -> {row: {'code', 'note', 'feeders': {(ext, feeder): (mat, set, printed)}}}
@@ -122,17 +119,15 @@ def build_lines(today, draft, exc, page):
         groups = OrderedDict()   # formula signature -> {'orders': [...], 'forms': [...]}
         for r in by_line[line]:
             f = forms.get((line, r['order']))
-            # the same formulation shares one cell whether the order ran it before or the rules propose it (James, 26 Oct
-            # 2026, RP26717-1 and RP24C18-4, both FUA151WB4 48/25/48/15: "since these two are the same formula, they
-            # should share the same cell"); "proposed by rule" is printed under the order instead
-            rule = bool(f) and any(RULE_TAG in x['note'] for x in f.values())
+            # the same formulation shares one cell (James, 26 Oct 2026, RP26717-1 and RP24C18-4, both FUA151WB4
+            # 48/25/48/15: "since these two are the same formula, they should share the same cell")
             if f:
-                fl = [dict(f[k], note=f[k]['note'].replace(RULE_TAG, '')) for k in sorted(f)]
+                fl = [f[k] for k in sorted(f)]
                 sig = json.dumps([(x['code'], x['note'], sorted((list(k), list(v)) for k, v in x['feeders'].items())) for x in fl])
             else:
                 fl, sig = None, 'EXC:' + r['order']
             g = groups.setdefault(sig, {'orders': [], 'forms': fl, 'exc': [] if f else [exc_by.get((line, r['order']))]})
-            g['orders'].append(dict(r, _rule=rule))
+            g['orders'].append(r)
         used = {k for g in groups.values() if g['forms'] for x in g['forms'] for k in x['feeders']}
         if not cols:
             cols = sorted(used)
@@ -249,9 +244,7 @@ def render(today, lines, exc, out):
     run(hp, f'{status} · not for production until issued by Technical (IWPFO055 §5.3)' if n_exc or n_set else
         'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=RED if n_exc or n_set else GREY)
     fp = sec.footer.paragraphs[0]
-    n_rule = sum(1 for ln in lines for g in ln['groups'] for o in g['orders'] if o['_rule'])
-    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation by the rules of 23 Oct 2026 (James Kuo's W% Master), settings as Technical last issued them on the line"
-            + (' · rows marked PROPOSED BY RULE: this order never ran that formulation here before' if n_rule else '') + ' · page ', 8, color=GREY)
+    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation by the rules of 23 Oct 2026 (James Kuo's W% Master), settings as Technical last issued them on the line · page", 8, color=GREY)
     page_field(fp)
 
     # ---- cover
@@ -272,9 +265,6 @@ def render(today, lines, exc, out):
             'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.']
     tips.append("Primary and Secondary (James Kuo, 23 Oct 2026): where an order shows both, both are its formulation. Production decides by the "
                 "material on hand: when reclaim runs out, the reclaim formula is replaced by the virgin-resin one. VOIDFORM orders never run reclaim (weight).")
-    if n_rule:
-        tips.append(f'PROPOSED BY RULE ({n_rule} order{"s" if n_rule != 1 else ""}): the order itself was never issued; the formulation is the Main for the '
-                    "product (colour, thickness, grade, spec: James Kuo's rules of 23 Oct 2026) with the settings Technical last issued for it on that line. Check these first.")
     n_calc = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any('CALCULATED SETTINGS' in x['note'] for x in g['forms']))
     if n_calc:
         tips.append(f'CALCULATED SETTINGS ({n_calc} order{"s" if n_calc != 1 else ""}): never issued on the line; worked out from the line\'s own auger '
@@ -390,9 +380,6 @@ def render(today, lines, exc, out):
                 run(p, o['order'], 10.5, True)
                 q = oc.add_paragraph(); q.alignment = WD_ALIGN_PARAGRAPH.CENTER; q.paragraph_format.space_after = Pt(1)
                 run(q, o['prod_code'], 7.5, color=GREY)
-                if o['_rule']:
-                    q = oc.add_paragraph(); q.alignment = WD_ALIGN_PARAGRAPH.CENTER; q.paragraph_format.space_after = Pt(1)
-                    run(q, 'PROPOSED BY RULE', 7, True, color=AMBER)
             oc.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
         usable = 10.1
         w_order, w_code, w_note = 1.55, 1.25, 1.45

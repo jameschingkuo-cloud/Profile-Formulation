@@ -2404,6 +2404,10 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   formulation; "PROPOSED BY RULE" goes under the order, not in the Note. (3) Replay 8-23 Oct: formulation same 598/684 unchanged, settings same
   573 -> 565: Tech ran RP26717-1 at talc 60 (sign-blank group) every day since 24 Sep; now 48 by James's rule (+ SE23 H68A143-1 13 Oct to set).
   Word file and FRM Draft rebuilt in out/ (13:44 originals in work/fix1026), page rebuilt, artifact v62. pytest 90 passed, 5 skipped.
+- James, on "PROPOSED BY RULE" under RP26717-1: *"no need to say that. everything is now rule base remember?"*. The mark is gone from the
+  draft's Note (resolve.py `rule_rows`), the Word file (order cell, footer, cover tip; render_frm.py) and the page's open items; How Resolved /
+  Source keep where settings came from; CALCULATED SETTINGS / ENGINEER TO SET stay. Word file rebuilt (work/fix1026b: out/ copy open in Word),
+  artifact v63.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 
