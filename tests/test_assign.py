@@ -252,7 +252,10 @@ def test_word_marks_rule_rows(tmp_path):
     cells = [c.text for t in doc.tables for row in t.rows for c in row.cells]
     assert any('PROPOSED BY RULE' in c for c in cells)
     assert 'PROPOSED BY RULE' in doc.sections[0].footer.paragraphs[0].text
-    rp = [row for t in doc.tables for row in t.rows if row.cells[0].text.startswith('RP26928-1')]
+    # RP26928-1 shares its cell with RP26311-1, the same formulation (James, 26 Oct 2026: "since these two are the same
+    # formula, they should share the same cell"); the rule mark goes under the order
+    rp = [row for t in doc.tables for row in t.rows if 'RP26928-1' in row.cells[0].text]
+    assert rp and 'RP26311-1' in rp[0].cells[0].text
     for row in rp:                                                    # RP26928-1: FUA060WBA by rule, marked, never silent
         assert any('FUA060WBA' in c.text for c in row.cells) and any('PROPOSED BY RULE' in c.text for c in row.cells)
     # R9: the virgin Secondary prints with the Primary, for production to switch to if reclaim runs out

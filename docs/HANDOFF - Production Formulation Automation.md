@@ -2397,6 +2397,13 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   (Tech's SE13 23 Oct sign-blank group). Fixed in `assign.member_settings` (own issue only if its notes ask for nothing the order lacks) and
   `assign.names_for_issued` (the order's qualifiers, not the page note, R6). Today: only RP26717-1 changes (48/25/48/15, PROPOSED BY RULE).
   FRM Draft rebuilt in out/; the Word file rebuilt in work/fix1026 (out/ copy was open in Word), originals kept there as "(built 13-44)".
+- Same session, more on it. (1) The same mistake through the line-group fallback: SE32 plain orders (H6AA042-1/-2/-3, H69A341-1, H6AA155-1/-2,
+  H69A342-1) took Secondary FU0001WBD from Tech's "(For VOIDFORM order only)" group. `member_settings` now never takes a group noted for a
+  qualifier the order lacks: calc sheet, else ENGINEER TO SET (those 7 now ENGINEER TO SET; 14 orders for an engineer today).
+  (2) James: *"since these two are the same formula, they should share the same cell"* (RP26717-1 and RP24C18-4). `render_frm.py` groups by
+  formulation; "PROPOSED BY RULE" goes under the order, not in the Note. (3) Replay 8-23 Oct: formulation same 598/684 unchanged, settings same
+  573 -> 565: Tech ran RP26717-1 at talc 60 (sign-blank group) every day since 24 Sep; now 48 by James's rule (+ SE23 H68A143-1 13 Oct to set).
+  Word file and FRM Draft rebuilt in out/ (13:44 originals in work/fix1026), page rebuilt, artifact v62. pytest 90 passed, 5 skipped.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

@@ -748,8 +748,11 @@ def member_settings(line, m, want, issued, own=None):
                         key=lambda g: g[0], reverse=True)
         if not groups:
             groups = [issued[(line, p)] for p in names if (line, p) in issued]
+        # never a group noted for a qualifier the order lacks (a plain SE32 order took FU0001WBD from Tech's "(For
+        # VOIDFORM order only)" group; James, 26 Oct 2026, on RP26717-1 in a sign-blank group: "why is it using sign
+        # blank formula?") - then the calc sheet, else the engineer sets it
         ordered = ([g for g in groups if marked and notes_q(g[2]) & marked] + [g for g in groups if not notes_q(g[2])]
-                   + ([] if own_recipe else groups))
+                   + ([] if own_recipe else [g for g in groups if notes_q(g[2]) <= marked]))
         for g in ordered:
             rows = pick(g[2])
             if rows:
