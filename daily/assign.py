@@ -39,6 +39,13 @@ LATER_NOTES = [
      'obsolete (James, 26 Oct 2026: "obsolete this one"; 23 Oct note: Main, Packaging grade)'),
 ]
 
+# codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
+# gets the row at the clean-up)
+LATER_RENAMES = {
+    'FR0021FW4': ('FRA021FW4', 'James, 26 Oct 2026, on RP26826-6 (SE21 FW 4 mm flame retardant): "ok we need to change '
+                               'it to FRA as well. make a notes, we will clean up after"'),
+}
+
 
 def apply_later_notes(R):
     """Rewrite the Notes of the W% Master rows James re-noted after 23 Oct (LATER_NOTES)."""
@@ -162,6 +169,8 @@ def current_name(code):
     not a current Main / Secondary name anywhere (FU0014BA4 -> FUA014BA4, FH0012WB4 -> FHA012WB4, RO000WB4 -> RU0000WB4)
     becomes the name he gave it; a name still current (FUA152WB4 is his winter name and the sign-blank Main) or one that
     points to several Mains stays as printed."""
+    if code in LATER_RENAMES:
+        return LATER_RENAMES[code][0]
     R = rules()
     if 'rename' not in R:
         current = {m['code'] for m in R['mains']}
@@ -644,7 +653,7 @@ def propose(line, row, day, issued):
             prior = issued_for_key(line, key, issued)
             if prior:
                 rec, code = prior[0]
-                return {'code': code, 'main': None, 'settings': rec, 'printed_as': code, 'season': seas,
+                return {'code': current_name(code), 'main': None, 'settings': rec, 'printed_as': code, 'season': seas,
                         'how': f'code already issued on {line} for {"/".join(key)} (no W% Master row)',
                         'settings_src': f'settings as issued on {line} {rec[0]} (FRM scan p{rec[1]})'}, ''
         return None, why
@@ -789,7 +798,8 @@ def formulation(line, row, day, issued, own=None):
             prior = issued_for_key(line, key, issued)
             if prior:
                 rec, code = prior[0]
-                return {'members': [{'role': 'Primary', 'code': code, 'member': None, 'rows': rec[2], 'src': ('line', rec[0], rec[1])}],
+                rows = one_row([f for f in rec[2] if f['formula_code'] == code], code)
+                return {'members': [{'role': 'Primary', 'code': current_name(code), 'member': None, 'rows': rows, 'src': ('line', rec[0], rec[1])}],
                         'key': key, 'how': f'code already issued on {line} for {"/".join(key)} (no W% Master row)'}, ''
         return None, why
     pair = [('Primary', main)]
@@ -803,9 +813,20 @@ def formulation(line, row, day, issued, own=None):
             rows, src = r4_black_settings(line, m)          # James, 24 Oct 2026: R4 black, 98% reclaim + 2% colour
         if rows and 'void' in want:
             rows = [f for f in rows if not uses_reclaim(f)] or None
+        rows = one_row(rows, m['code'])
         members.append({'role': role_, 'code': m['code'], 'member': m, 'rows': rows, 'src': src})
     how = f"James's Primary {main['code']}" + (f" + Secondary {sec['code']}" if sec else '')
     return {'members': members, 'key': key, 'how': how}, ''
+
+
+def one_row(rows, code):
+    """One formula row per member: the Primary once and the Secondary once (James, 26 Oct 2026, on RP26512-1, where
+    Tech's SE21 page printed the same formulation twice, as FU0041WB4 and FU0031WB4: "i dont think we go with triple
+    formulation now, just one primary and one secondary"). The row printed under James's own name first, else the
+    first in Tech's order."""
+    if not rows:
+        return rows
+    return [next((f for f in rows if f['formula_code'] == code), rows[0])]
 
 
 if __name__ == '__main__':

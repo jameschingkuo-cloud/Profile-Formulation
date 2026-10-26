@@ -218,7 +218,8 @@ def test_print_formulation_docx(tmp_path):
     assert 'DRAFT' in ' '.join(cells) and 'DRAFT' in doc.sections[0].header.paragraphs[0].text
     rows = [row for t in doc.tables for row in t.rows]
     assert sum(any('ENGINEER TO COMPLETE' in c.text for c in row.cells) for row in rows) == 16   # the 16 Exceptions
-    assert any('F1203K' in c and 'replaces Q1203K' in c for c in cells)           # SE42 V3
+    # SE42 V3: an obsolete number prints as F1203K with no note (James, 26 Oct 2026: "No need to talk about replacing")
+    assert any('F1203K' in c for c in cells) and not any('replaces' in c or 'Q1203K' in c or 'F1102K' in c for c in cells)
     assert not any('XO-256' in c for c in cells) and any('X0-256' in c for c in cells)
     assert any('If reclaim runs out' in c for c in cells) and any('Run first' in c for c in cells)
     for row in rows:                                                          # an exception is never filled from a suggestion

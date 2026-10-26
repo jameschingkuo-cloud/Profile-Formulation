@@ -1,6 +1,26 @@
 {
-  "updated": "2026-10-24",
+  "updated": "2026-10-26",
   "groups": [
+    {
+      "owner": "James",
+      "title": "Clean-up after (James, 26 Oct: \"make a notes, we will clean up after\")",
+      "items": [
+        {
+          "sev": "Low",
+          "title": "FR0021FW4 -> FRA021FW4",
+          "detail": "SE21 FW 4 mm flame retardant (RP26826-6). James: \"ok we need to change it to FRA as well\". Printed as FRA021FW4 now (assign.LATER_RENAMES); the W% Master has no FW 4 mm row yet - add FRA021FW4 (FR0021WB4 / FRA021WB4 is the row that runs on FW orders). Tech's SE21 page still prints FR0021FW4.",
+          "where": "W% Master / FRM SE21",
+          "source": "26 Oct"
+        },
+        {
+          "sev": "Low",
+          "title": "F1102K / Q1203K on Tech's pages",
+          "detail": "Obsolete numbers the engineer has not cleaned up yet (e.g. SE21 FR0021FW4 Hopper 3). Printed as F1203K with no note.",
+          "where": "FRM pages",
+          "source": "26 Oct"
+        }
+      ]
+    },
     {
       "owner": "James",
       "title": "Formula logic - to review Monday 26 Oct",
@@ -167,8 +187,8 @@
         },
         {
           "sev": "Medium",
-          "title": "F1102K on a new formula",
-          "detail": "FU0012BL5 (new on 29 Sep) Hopper 3 prints F1102K, which is obsolete (replaced by F1203K). Recorded as F1203K; Tech to correct the formula. BayShore BI-113 on the same formula (CaCO3) is not on IWPFT062.",
+          "title": "BayShore BI-113 not on IWPFT062",
+          "detail": "FU0012BL5 (new on 29 Sep): BayShore BI-113 (CaCO3) is not on IWPFT062.",
           "where": "FRM SE21",
           "source": "FRM 29 Sep p4"
         },

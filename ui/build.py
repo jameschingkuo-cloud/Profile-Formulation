@@ -53,6 +53,17 @@ def replaced():
     return {}
 
 
+REPL_NOW = {k: v['now'] for k, v in replaced().items()}
+
+
+def current(mat):
+    """An obsolete number a page still prints (F1102K, Q1203K) -> the material loaded now; anything else as it is. The
+    page shows only the current name (James, 26 Oct 2026: "No need to talk about replacing F1102K that number is
+    obsolete, engineer just never had the chance to clean it up")."""
+    r = REPL_NOW.get(mat)
+    return r.split(' (')[0] if r else mat
+
+
 def draft_vs_tech(day, P):
     """Orders the FRM Draft proposed, how many equal Tech's issue field for field, and the Exceptions."""
     from resolve import split_feeder
@@ -117,7 +128,7 @@ def draft_lines(day, P, meta):
             if not f:
                 continue
             fl = [{'code': x['code'], 'note': x['note'], 'role': x['role'],
-                   'feeders': [{'col': col_of.get(k, ' '.join(p for p in k if p)), 'mat': mat, 'set': st, 'id': MAP.get(mat)}
+                   'feeders': [{'col': col_of.get(k, ' '.join(p for p in k if p)), 'mat': current(mat), 'set': st, 'id': MAP.get(current(mat))}
                                for k, (mat, st) in x['feeders'].items() if mat or st]}
                   for _, x in sorted(f.items())]
             sig = json.dumps(fl, sort_keys=True)
@@ -302,7 +313,7 @@ def main():
         groups = [{'orders': [{'order': o, 'prod': ext.get(o, {}).get('prod_code'), 'colors': ext.get(o, {}).get('colors'),
                                'thk': ext.get(o, {}).get('thk')} for o in g['orders']],
                    'formulas': [{'code': f['formula_code'], 'note': f.get('note', ''),
-                                 'feeders': [{'col': c, 'mat': v['material'], 'set': v['set'], 'id': MAP.get(v['material'])}
+                                 'feeders': [{'col': c, 'mat': current(v['material']), 'set': v['set'], 'id': MAP.get(current(v['material']))}
                                              for c, v in f['feeders'].items() if v['material'] or v['set']]}
                                 for f in g['formulas']]}
                   for g in pg['groups']]
@@ -333,7 +344,7 @@ def main():
             # transcribed schedule by date (to check the page's reading), known product codes, approved decisions
             'issued': {d: {pg['line_code']: [{'orders': g['orders'],
                                               'formulas': [{'code': f['formula_code'], 'note': f.get('note', ''),
-                                                            'feeders': [{'col': c, 'mat': v['material'], 'set': v['set'], 'id': MAP.get(v['material'])}
+                                                            'feeders': [{'col': c, 'mat': current(v['material']), 'set': v['set'], 'id': MAP.get(current(v['material']))}
                                                                         for c, v in f['feeders'].items() if v['material'] or v['set']]}
                                                            for f in g['formulas']]} for g in pg['groups']]
                            for pg in p['frm']} for d, p in pk.items() if p['frm']},

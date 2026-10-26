@@ -2413,6 +2413,12 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   missed it. Now on an always-graphic key (a colour, or FX/FS/FA/FE/FR) Tech's '0' name counts. Today: FR0021FW4 with SE21's 23 Oct settings,
   0 exceptions, 13 for an engineer. Replay: only change is 23 Oct RP26826-6, now same as Tech. W% Master has no FW 4 mm row (FR0021WB4 /
   FRA021WB4 runs on FW orders per its own check column): for James. Word file in work/fix1026c (out/ copy open in Word), artifact v64.
+- James: *"yes the new one is correct now. No need to talk about replacing F1102K that number is obsolete..."* - an obsolete number Tech's page
+  prints now shows as F1203K with no note (render_frm.py, ui/build.py `current`). *"ok we need to change it to FRA as well. make a notes, we will
+  clean up after"* - FR0021FW4 prints as FRA021FW4 (`assign.LATER_RENAMES`, `current_name`); clean-up list on the page's open items (W% Master
+  row FRA021FW4; F1102K/Q1203K on Tech's pages). *"i dont think we go with triple formulation now, just one primary and one secondary"* (RP26512-1:
+  Tech's SE21 23 Oct page printed the formulation twice) - `assign.one_row`: one row per member. Replay 8-23 Oct: formulation same 599, settings
+  same 566 (unchanged). Word file out/FRM Formulation 2026-10-26.docx rebuilt (13 for an engineer, 0 without formula), artifact v65. pytest 91 passed.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

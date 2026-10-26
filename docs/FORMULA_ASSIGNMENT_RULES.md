@@ -210,6 +210,9 @@ rules had no roll qualifier and treated his "Main roll" rows as restricted, so t
   `daily/assign.py` `wanted` / `derive`.
 
 ## R9. A Primary and its Secondary are both printed (23 Oct 2026)
+26 Oct 2026, on RP26512-1 (Tech's SE21 page printed the same formulation twice, FU0041WB4 and FU0031WB4, as "run first"
+/ "next"): *"i dont think we go with triple formulation now, just one primary and one secondary"*. Each member prints one
+row: the one under James's own name, else Tech's first (`assign.one_row`).
 James: *"When a formulation has primary and secondary, it means that both of them will need to be displayed, and let the
 production team will then decide whether we have enough of particular material to run it or not. For example, if we
 don't running out of reclaim, then the reclaim primary will be removed and replaced with virgin resin secondary."*

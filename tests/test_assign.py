@@ -278,7 +278,8 @@ def test_primary_and_secondary_both_shown():
     fm, why = assign.formulation('SE22', row('RPAA0WB318', 'PPP A R1R1R1'), datetime.date(2026, 9, 28), issued)
     assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FUA060WBA'), ('Secondary', 'FUA060WBA')], why
     prim, sec = fm['members']
-    assert len(prim['rows']) == 2 and all(assign.uses_reclaim(f) for f in prim['rows'])
+    # one row each (James, 26 Oct 2026: "just one primary and one secondary"): Tech's first reclaim row
+    assert len(prim['rows']) == 1 and assign.uses_reclaim(prim['rows'][0])
     assert [f['formula_code'] for f in sec['rows']] == ['FUA010WBA'] and not assign.uses_reclaim(sec['rows'][0])
     assert fm['how'] == "James's Primary FUA060WBA + Secondary FUA060WBA"
 

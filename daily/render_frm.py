@@ -101,10 +101,13 @@ def build_lines(today, draft, exc, page):
     for r in draft:
         f = forms.setdefault((r['Line Code'], r['Order']), {}).setdefault(r['Formula Row'], {'code': r['Formula Code'], 'note': r['Note'] or '', 'feeders': {}})
         mat = r['Material (as issued)'] or ''
+        # an obsolete number Tech's page still prints (F1102K, Q1203K) prints as what is loaded now, with no note: James,
+        # 26 Oct 2026: "No need to talk about replacing F1102K that number is obsolete, engineer just never had the
+        # chance to clean it up"
         shown = repl.get(mat) or PRINT_AS.get(mat, mat)
         if r['Feeder'] is None:          # a Primary / Secondary with no settings on the line: printed "ENGINEER TO SET"
             continue
-        f['feeders'][(r['Extruder'] or '', r['Feeder'])] = (shown, r['Set'], mat if mat in repl else None)
+        f['feeders'][(r['Extruder'] or '', r['Feeder'])] = (shown, r['Set'], None)
     exc_by = {(e['Line Code'], e['Order']): e for e in exc}
     lines = []
     for e_pg in sorted(today['ext'], key=lambda p: p['scan_page']):
@@ -262,7 +265,7 @@ def render(today, lines, exc, out):
     tips = ['Auger lines: Set is the auger motor speed, 0 to 100. It is not a percentage.',
             'Weight blender lines (Line 7, 12, 13, 16): Set is weight %; each extruder adds to 100; Auto takes the balance.',
             'Where an order lists more than one formulation, they are printed in run order: reclaim first (use up the scrap before virgin PP), then down the list (James Kuo, 29 and 30 Sep 2026).',
-            'A material printed in bold with "(replaces …)" is the approved replacement for what older pages printed.']
+]
     tips.append("Primary and Secondary (James Kuo, 23 Oct 2026): where an order shows both, both are its formulation. Production decides by the "
                 "material on hand: when reclaim runs out, the reclaim formula is replaced by the virgin-resin one. VOIDFORM orders never run reclaim (weight).")
     n_calc = sum(len(g['orders']) for ln in lines for g in ln['groups'] if g['forms'] and any('CALCULATED SETTINGS' in x['note'] for x in g['forms']))
