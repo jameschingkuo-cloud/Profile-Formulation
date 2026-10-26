@@ -438,3 +438,23 @@ def test_ks_3mm_packaging_is_fu0051ks3():
     assert x['code'] == 'FU0051KS3' and x['src'][:2] == ('line', '2026-10-13'), why     # Tech ran it on SE11, 12-13 Oct
     fm, why = assign.formulation('SE43', r, datetime.date(2026, 10, 26), issued)
     assert [m['code'] for m in fm['members']] == ['FU0151KS3'], why
+
+
+def test_draft_vs_tech_23_oct(tmp_path):
+    """How close (James Kuo, 26 Oct 2026: "do a comparison see how close are we"): the 23 Oct draft as that morning
+    against Tech's 23 Oct pages - 91 of 98 orders the same formulation, 78 also the same settings; Tech's old names
+    and spellings (FUA152WB4 / FUA151WB4, 6502A / F6502A, '-' / '–') are not differences (daily/compare_tech.py)."""
+    import shutil
+    import compare_tech
+    calc = config.OUTPUT_DIR / 'Formulation Calc Library.xlsx'
+    if calc.exists():
+        shutil.copy2(calc, tmp_path / calc.name)
+    env = dict(os.environ, PYTHONUTF8='1', PKT_DATE='2026-10-23', HISTORY_BEFORE='2026-10-23', OUTPUT_DIR=str(tmp_path),
+               WORK_DIR=str(tmp_path / 'work'))
+    r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    P = json.loads((config.PACKETS_DIR / 'packet_2026-10-23.json').read_text(encoding='utf-8'))
+    s = compare_tech.summary(compare_tech.compare('2026-10-23', P, tmp_path / 'FRM Draft 2026-10-23.xlsx'))
+    assert s['compared'] == 98 and s['formula_same'] >= 88 and s['settings_same'] >= 75 and s['different'] <= 3, s
+    assert compare_tech.same_mat('CaCO3 –Heritage HM-10MAX', 'CaCO3 -Heritage HM-10MAX')
+    assert compare_tech.same_mat('Q1203K', 'F1203K') and not compare_tech.same_mat('KS MB-CR401K', 'F1203K')

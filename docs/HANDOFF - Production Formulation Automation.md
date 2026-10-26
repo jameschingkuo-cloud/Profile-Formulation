@@ -2368,11 +2368,21 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   order's formulas. Tests follow the newer issues (backtest now 249 cases: 75% same, 18% different, as rates).
   `work/auger_hopper_check.py` -> out/Auger and Hopper Check.xlsx (auger check against James's W%, bias by hopper, hopper
   use with uncalibrated materials, formulations missing from the W% Master). Findings for James in the reply of 26 Oct.
+- 26 Oct, James: *"go ahead. and do a comparison see how close are we"*. `daily/compare_tech.py` compares a draft with
+  Tech's page order by order: formulation under James's names (an old name / same-composition printed name counts as the
+  same; "James replaced", VOIDFORM R10, "Tech's Primary is our Secondary" kept apart from "different"), then each common
+  formula's feeders, spelling aside. `work/compare_draft_tech.py` replays every day with Tech pages as that morning
+  (HISTORY_BEFORE) -> out/Draft vs Tech.xlsx. 8-23 Oct, 684 order-days: formulation same 598 (87%), settings also the
+  same 573 (84%); by James's W% decisions 42, Tech ran our Secondary 13, different 26 (7 distinct orders), Exception 5.
+  The page's numbers use it (`ui/build.py` `draft_vs_tech` 'close'); out/FRM Draft 2026-10-23.xlsx is now the replay
+  (the 08:36 build kept in work/cmp). Artifact v60 = 23 Oct with Tech's pages, 91/98 same formulation, 78 same settings.
+  The SharePoint Interface Copy of 23 Oct stays as issued (publish.py refused; --reissue only if James asks).
 
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.70 | 2026-10-26 | Claude Code (local, with James Kuo) | **Draft vs Tech (§7.73)**: daily/compare_tech.py, work/compare_draft_tech.py (every Tech day replayed: 8-23 Oct 87% same formulation, 84% same settings); the page shows it; artifact v60 (23 Oct). |
 | 1.69 | 2026-10-26 | Claude Code (local, with James Kuo) | **Tech's 8-23 Oct FRM pages (§7.73)**: 9 days transcribed, checked against the images and written into the packets; frm_from_text fixes; auger / hopper / missing-formulation check (work/auger_hopper_check.py). |
 | 1.68 | 2026-10-26 | Claude Code (local, with James Kuo) | **U1 = FEA, black 3 mm = FU0051KS3 (§7.73)**: FE-named Main wins in an FE key, settings must feed the formula's additives; FU0032KS3 2016 packaging row obsolete via `assign.LATER_NOTES`; W% v2 regenerated; artifact v59. |
 | 1.67 | 2026-10-24 | Claude Code (local, with James Kuo) | **R12 special products (§7.73)**: roll and VOIDFORM orders run their special Main only, no Secondary; roll recipe checked against the W%; Monday's open items on the page; artifact v57. |

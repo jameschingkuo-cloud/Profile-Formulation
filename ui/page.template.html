@@ -383,7 +383,10 @@ $('#strip').innerHTML = [
   DRAFT ? ['ok', `${D.stats.drafted}/${D.stats.orders}`, 'orders with a formulation', RULES
     ? 'by rule; where James has a Secondary it is shown under the Primary, for when reclaim runs out'
     : 'as last issued on their line; Tech has not issued the day yet']
-        : ['ok', `${D.stats.draft_match}/${D.stats.drafted}`, 'draft matched Tech', `${D.stats.exceptions} new orders went to an engineer`],
+        : D.stats.close
+          ? ['ok', `${D.stats.close.formula_same}/${D.stats.close.compared}`, 'draft formulation same as Tech',
+             `settings the same on ${D.stats.close.settings_same}; ${D.stats.close.by_james} by James’s W% decisions; ${D.stats.close.tech_secondary} Tech ran our Secondary; ${D.stats.close.different} different; ${D.stats.close.exception} for an engineer`]
+          : ['ok', `${D.stats.draft_match}/${D.stats.drafted}`, 'draft matched Tech', `${D.stats.exceptions} new orders went to an engineer`],
   ['crit', high, 'material issues', 'formulas using materials IWPFT062 does not allow'],
   ['ok', D.master.changes, 'unlogged master changes', `pre-flight clean · accepted ${D.master.accepted}`],
 ].map(([c, b, t, s]) => `<div class="${c}"><span class="caps">${t}</span><b>${b}</b><small>${s}</small></div>`).join('');
@@ -472,7 +475,9 @@ $('#flow').innerHTML = [
   ['done', 'Scan', `Schedule ${D.scans.packet}; ${DRAFT ? 'no Tech FRM pages yet' : 'FRM ' + D.scans.frm}`],
   ['done', 'Transcribe + check', `${D.stats.orders} orders; glyph reader cross-check; line totals tie`],
   ['done', 'Draft', DRAFT ? (RULES ? `${D.stats.drafted} orders by rule; ${D.stats.exceptions} exceptions and ${D.stats.to_set} settings to set by an engineer`
-    : `${D.stats.drafted} orders as last issued; ${D.stats.exceptions} exceptions for an engineer`) : `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
+    : `${D.stats.drafted} orders as last issued; ${D.stats.exceptions} exceptions for an engineer`)
+    : D.stats.close ? `by rule: formulation same as Tech on ${D.stats.close.formula_same} of ${D.stats.close.compared} orders, settings the same on ${D.stats.close.settings_same}; ${D.stats.exceptions} exceptions`
+    : `${D.stats.draft_match} of ${D.stats.drafted} matched Tech; ${D.stats.exceptions} exceptions`],
   ['done', 'Publish', 'EXT, CNV, FRM workbooks; Product Master merged'],
   ['done', 'Records', 'Appended to the three history records'],
   ['done', 'Interface copy', 'Saved to Daily Formulation Report \ Interface Copy (no Tech sign-off: James, 29 Sep 2026)'],

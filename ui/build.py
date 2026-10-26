@@ -78,8 +78,12 @@ def draft_vs_tech(day, P):
     exc = len(list(wb['Exceptions'].iter_rows(values_only=True))) - 1
     to_set = len(list(wb['Settings To Set'].iter_rows(values_only=True))) - 1 if 'Settings To Set' in wb.sheetnames else 0
     rules = any('by rule' in str(r[h['How Resolved']] or '').lower() for r in rows[1:])     # the rules' draft (23 Oct 2026 on)
+    # how close (James Kuo, 26 Oct 2026: "do a comparison see how close are we"): formulation under James's names, then
+    # the settings of the same formulations, spelling aside (daily/compare_tech.py)
+    import compare_tech
+    close = compare_tech.summary(compare_tech.compare(day, P, src)) if P['frm'] else None
     return {'drafted': len(draft), 'draft_match': sum(1 for k, v in draft.items() if tech.get(k) == v), 'exceptions': exc,
-            'to_set': to_set, 'rules': rules}
+            'to_set': to_set, 'rules': rules, 'close': close}
 
 
 def draft_lines(day, P, meta):
