@@ -53,6 +53,7 @@ PREFIX = {'R1R1R1': 'FU', 'R3R3R3': 'FU', 'R2R2R2': 'FU', 'R4R4R4': 'RU', 'OPOPO
 OLD_PREFIX = {'FE': ('FH',)}            # James, 23 Oct 2026: "Extra UV is FE"; Tech's older pages print FH for it
 SPECIAL = {'OPOPOP', 'S1S1S1', 'A1A1A1', 'U1U1U1', 'F1F1F1', 'F4F4F4'}      # always graphic grade 'A'
 BLACK_WHITE = {'KS', 'WB'}
+ALWAYS_A = {PREFIX[s] for s in SPECIAL}                 # FX FS FA FE FR: R1, always graphic grade 'A'
 CODE_RX = re.compile(r'\b([A-Z]{2}[A-Z0-9]{3,5}[A-Z]{2,3}[0-9A-Z])\b')
 RENAME_RX = re.compile(r'(?:change (?:name )?to|replace name with|change)\s+([A-Z]{2}[A-Z0-9]{3,5}[A-Z]{2,3}[0-9A-Z])', re.I)
 W_COLS = ['Virgin PP %', 'Homo PP (F1203K) %', 'Reclaim %', 'Talc %', 'CaCO3 %', 'Colour MB %', 'Vistamaxx %',
@@ -618,9 +619,14 @@ def group_for(line, printed, want, issued):
 
 def issued_for_key(line, key, issued):
     """Codes Tech has issued on the line whose fixed parts (R1, R3, colour, thickness) are the key: the W% Master has
-    no row for some of them (the bubble line's BF0000EB3 / EB5 are co-extrusion, 'Not computed'). Latest issue first."""
+    no row for some of them (the bubble line's BF0000EB3 / EB5 are co-extrusion, 'Not computed'). Latest issue first.
+    Where R1 makes the order graphic 'A' whatever its grade (a colour, or a special spec), Tech's older '0' name counts
+    too: James renames those 0 -> A (FR0021FW3 -> FRA021FW3, FR0021WB4 -> FRA021WB4). James, 26 Oct 2026, on RP26826-6
+    (RPP40FW2, F4F4F4, SE21): "you should have Flame retardent formulation for this. look at FR0021FW4"."""
+    grades = {key[1]} | ({'0'} if key[1] == 'A' and (key[2] not in BLACK_WHITE or key[0] in ALWAYS_A) else set())
     hits = [(rec, code) for (ln, code), rec in issued.items()
-            if ln == line and len(code) == 9 and (canon_prefix(code[:2]) + code[2], code[6:8], code[8]) == (key[0] + key[1], key[2], key[3])]
+            if ln == line and len(code) == 9 and code[2] in grades
+            and (canon_prefix(code[:2]), code[6:8], code[8]) == (key[0], key[2], key[3])]
     return sorted(hits, key=lambda x: x[0][0], reverse=True)
 
 

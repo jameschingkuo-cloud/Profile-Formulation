@@ -2408,6 +2408,11 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   draft's Note (resolve.py `rule_rows`), the Word file (order cell, footer, cover tip; render_frm.py) and the page's open items; How Resolved /
   Source keep where settings came from; CALCULATED SETTINGS / ENGINEER TO SET stay. Word file rebuilt (work/fix1026b: out/ copy open in Word),
   artifact v63.
+- James, on SE21 RP26826-6 (RPP40FW2, F4F4F4, ENGINEER TO COMPLETE): *"you should have Flame retardent formulation for this. look at FR0021FW4"*.
+  R1 makes the order FR/A/FW/4; the W% Master has no Main for it and Tech's SE21 code is the older '0' name FR0021FW4, so `issued_for_key`
+  missed it. Now on an always-graphic key (a colour, or FX/FS/FA/FE/FR) Tech's '0' name counts. Today: FR0021FW4 with SE21's 23 Oct settings,
+  0 exceptions, 13 for an engineer. Replay: only change is 23 Oct RP26826-6, now same as Tech. W% Master has no FW 4 mm row (FR0021WB4 /
+  FRA021WB4 runs on FW orders per its own check column): for James. Word file in work/fix1026c (out/ copy open in Word), artifact v64.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

@@ -463,3 +463,13 @@ def test_draft_vs_tech_23_oct(tmp_path):
     assert s['compared'] == 98 and s['formula_same'] >= 88 and s['settings_same'] >= 75 and s['different'] <= 3, s
     assert compare_tech.same_mat('CaCO3 –Heritage HM-10MAX', 'CaCO3 -Heritage HM-10MAX')
     assert compare_tech.same_mat('Q1203K', 'F1203K') and not compare_tech.same_mat('KS MB-CR401K', 'F1203K')
+
+
+def test_always_graphic_takes_techs_old_0_name():
+    """RP26826-6 (RPP40FW2, PPP P F4F4F4, SE21): R1 makes it FR/A/FW/4 and the W% Master has no Main for it; Tech issued
+    FR0021FW4 on SE21. James, 26 Oct 2026: "you should have Flame retardent formulation for this. look at FR0021FW4".
+    On an always-graphic order Tech's older '0' name counts; on a black or white packaging key it does not."""
+    rec = ('2026-10-23', 56, [])
+    issued = {('SE21', 'FR0021FW4'): rec, ('SE21', 'FU0021WB4'): rec}
+    assert assign.issued_for_key('SE21', ('FR', 'A', 'FW', '4'), issued) == [(rec, 'FR0021FW4')]
+    assert assign.issued_for_key('SE21', ('FU', 'A', 'WB', '4'), issued) == []
