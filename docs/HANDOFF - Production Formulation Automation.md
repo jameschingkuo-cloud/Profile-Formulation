@@ -2446,6 +2446,20 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   row of the same colour/thickness that is that formulation (R4: the pure-reclaim row, RU0001WB4 "PP WB Reclaim 99" -> RU0000WB4; VOIDFORM:
   the virgin row of its VOIDFORM group, FUA011WB5 52/26/16/32 -> FU0051WB5; Tech's row has no CaCO3, the W% has 5%). Left: RU0022WB4 on SE25.
   Roll: no Secondary per James 24 Oct ("Roll formula should only have one primary formula"); Tech prints FU0001WB4 roll run-out - asked.
+- End of 26 Oct session with James (all in `daily/assign.py` unless noted; pytest 97 passed):
+  * Roll orders now show Tech's roll run-out as the Secondary (James: "yes"; SPECIAL_ONLY = VOIDFORM only).
+  * `calc_auger_settings`: a member with no settings on an auger line gets its W% on the line's calibration, throughput of Tech's latest
+    virgin row of the same colour/thickness ("CALCULATED SETTINGS, check before running", kind 'calcw' in resolve.py). RU0022WB4 on SE25:
+    41/14/3/13/31 on FU0021WB4's (= FU0014WB4 composition) 45/16/16/16, ~11,870 g/min. James: "i will see if its correct or close".
+  * Qualified Mains print the application note when Tech's row lacks it (`QUAL_NOTE`; James: "shouldnt it said something like for void form
+    order only in the notes?") - only when the W% Main is marked for it.
+  * SE42 / SE43 weight-by-weight layouts from every Tech page (SE42 V1 talc, V3 F1203K, V5 virgin, V7 reclaim, V8 colour; SE43 V1 talc,
+    V5 virgin, V7 F1203K, V8 colour). No CaCO3 on either (confirmed: no CaCO3 on any SE42/SE43 page, record, or SE43 calc row 2015-2026;
+    James: "SE42 and SE43 cant take CACO3"): CaCO3 left out, virgin takes the balance (`NO_CACO3`). James: "take SE43 and put it on SE42":
+    "Main SE43" formulations apply on SE42 too.
+  * Today final: 82 orders, 1 for the engineer (SE21 RP26A15-1 FUA032KS4). Word file work/fix1026final (out/ copy open in Word); artifact v71.
+  * James: "we will improve this more tomorrow". Open: out/ Word copy to replace once Word releases it; SharePoint copy of today's Word file
+    (published by the morning run) is the old version - ask before replacing; replay Draft vs Tech after today's rule changes.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

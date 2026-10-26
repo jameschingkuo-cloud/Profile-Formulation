@@ -380,11 +380,21 @@ def slope(line, column, reclaim):
 # weight-by-weight lines: the setting is the weight %, so a formulation's W% is its settings (James, 26 Oct 2026: "line 7 is
 # weight by weight dosing system. so it does not need calculation. you can just put, AV1 as color, V2 as talc, V3 caco3,
 # v4 PP virgin, V5 as F1203K")
+WEIGHT_LINES = ('SE24', 'SE42', 'SE43', 'SE61')
 W_LAYOUT = {'SE24': [('Extruder A V1', 'Colour MB %', None), ('Extruder A V2', 'Talc %', r'talc'),
                      ('Extruder A V3', 'CaCO3 %', r'caco3'), ('Extruder A V4', 'Virgin PP %', r'virgin'),
-                     ('Extruder A V5', 'Homo PP (F1203K) %', r'1203k')]}
+                     ('Extruder A V5', 'Homo PP (F1203K) %', r'1203k')],
+            # lines 12 and 13 as every Tech page on file feeds them (23 Sep - 23 Oct 2026); neither takes CaCO3 (James, 26
+            # Oct 2026: "if i recall SE42 and SE43 cant take CACO3" - no CaCO3 on any SE42/SE43 page or W% run on file)
+            'SE42': [('V1', 'Talc %', r'talc'), ('V3', 'Homo PP (F1203K) %', r'1203k'), ('V5', 'Virgin PP %', r'virgin'),
+                     ('V7', 'Reclaim %', r'reclaim'), ('V8', 'Colour MB %', None)],
+            'SE43': [('V1', 'Talc %', r'talc'), ('V5', 'Virgin PP %', r'virgin'), ('V7', 'Homo PP (F1203K) %', r'1203k'),
+                     ('V8', 'Colour MB %', None)]}
+# lines with no CaCO3 feeder (confirmed 26 Oct 2026: none on any SE42/SE43 page, record or SE43 calc sheet 2015-2026); James:
+# "if confirmed, then take SE43 and put it on SE42" - the "Main SE43" formulations (CaCO3 removed) run on SE42 too
+NO_CACO3 = ('SE42', 'SE43')
 W_WORDING = {r'talc': 'HiTalc ZS (or N40109A)', r'caco3': 'CaCO3 -Heritage HM-10HP', r'virgin': 'PP Virgin-silo 4 (F6502A)',
-             r'1203k': 'F1203K'}
+             r'1203k': 'F1203K', r'reclaim': 'White Reclaim'}
 
 
 def w_settings(line, m):
@@ -395,7 +405,10 @@ def w_settings(line, m):
     if not layout:
         return None, None
     w = {c: float(v) for c, v in m['w'].items() if v}
-    if not w or set(w) - {c for _, c, _ in layout}:
+    # SE42 / SE43 cannot take CaCO3: it is left out and virgin PP takes the balance (James, 26 Oct 2026: "thats why we
+    # have some formulation where we remove CACO3 just for SE43")
+    no_caco3 = line in NO_CACO3 and w.pop('CaCO3 %', None) is not None
+    if not w or set(w) - {c for _, c, _ in layout} or (no_caco3 and 'Virgin PP %' not in w):
         return None, None
     printed = [v['material'] for g in (_PAGES.get(line) or {}).get('groups', []) for f in g['formulas']
                for v in f['feeders'].values() if v.get('material')]
@@ -414,7 +427,7 @@ def w_settings(line, m):
         mat = colour if rx is None else next((p for p in reversed(printed) if re.search(rx, p, re.I)), W_WORDING[rx])
         v = round(100 - sum(x for c, x in w.items() if c != wc), 1) if wc == 'Virgin PP %' else w[wc]   # virgin: the balance to 100
         feeders[col] = {'material': mat, 'set': f"{v:g}"}
-    return [{'formula_code': m['code'], 'feeders': feeders, 'note': ''}], ('w', None, None)
+    return [{'formula_code': m['code'], 'feeders': feeders, 'note': ''}], ('w', None, {'no_caco3': no_caco3})
 
 
 def r4_black_settings(line, m):
@@ -494,6 +507,92 @@ def r4_black_settings(line, m):
                                    'slopes': (float(rec['Calibration Slope (g/min per unit)']), float(col['Calibration Slope (g/min per unit)']))}))
 
 
+# W% part -> (material class in Tech's auger calibration, words in a page's material)
+W_PARTS = {'Virgin PP %': ('VIRGIN PP', r'virgin'), 'Homo PP (F1203K) %': ('1203K', r'1203k'), 'Talc %': ('TALC', r'talc'),
+           'CaCO3 %': ('CACO3', r'caco3'), 'Colour MB %': ('COLOR', None)}
+
+
+def class_slope(line, hopper, cls):
+    """The calibration slope of a line's hopper ('H3') for a material class, the most used row -> (slope, uses) or (None, 0)."""
+    slope(line, 'Hopper 1', False)                          # loads _SLOPES
+    rs = [d for d in _SLOPES.get((line, hopper), []) if cls in str(d['Material Class']).upper()]
+    rs.sort(key=lambda d: (int(d['Calc Blocks'] or 0), str(d['Last Used'] or '')), reverse=True)
+    return (float(rs[0]['Current Slope (g/min per unit)']), int(rs[0]['Calc Blocks'] or 0)) if rs else (None, 0)
+
+
+def calc_auger_settings(line, m):
+    """A member with no settings on an auger line: its W% turned into auger speeds on the line's own calibration.
+    Template: Tech's latest issued virgin row on the line of the same colour and thickness with no qualifier note (the
+    hoppers it uses, their wording, and its throughput = sum of setting x slope); each W% part goes on the template's
+    hopper for it, a part the template lacks on the free hopper the line runs it on most (calibration);
+    setting = W% x throughput / slope. James, 26 Oct 2026, on RU0022WB4 for RP26717-2 on SE25: "do it. i will see if its
+    correct or close" - "it should be very similar to ... FU0014WB4" (SE25's virgin row is FU0014WB4's composition).
+    -> (rows, ('calcw', template date, detail)) or (None, None)."""
+    if line in WEIGHT_LINES or line in W_LAYOUT:
+        return None, None
+    w = {c: float(v) for c, v in m['w'].items() if v}
+    if not w or set(w) - set(W_PARTS):
+        return None, None
+    best = None
+    for (ln, _), gs in _ISSUED_GROUPS.items():
+        if ln != line:
+            continue
+        for date, page, fs in gs:
+            for f in fs:
+                c = f['formula_code']
+                cols = list(f['feeders'])
+                if (len(c) == 9 and c[6:] == m['code'][6:] and not uses_reclaim(f) and cols
+                        and all(re.fullmatch(r'Hopper \d', x) for x in cols)
+                        and not {x for x in quals(f.get('note', '')) if x in QMARK}
+                        and (best is None or date > best[0])):
+                    best = (date, page, f)
+    if best is None:
+        return None, None
+    date, page, f = best
+    hop, T = {}, 0.0                                         # W% part -> (column, material, slope)
+    for col, v in f['feeders'].items():
+        mat, st = v.get('material') or '', str(v.get('set') or '').strip()
+        if not mat or not st or st == '-':
+            continue
+        part = next((p for p, (_, rx) in W_PARTS.items() if rx and re.search(rx, mat, re.I)), None) or \
+            ('Colour MB %' if re.match(r'^[A-Z]{2}[- ]', mat) else None)
+        if part is None:
+            return None, None
+        k, _ = class_slope(line, 'H' + col.split()[-1], W_PARTS[part][0])
+        if not k:
+            return None, None
+        T += float(st) * k
+        hop[part] = (col, mat, k)
+    used = {c for c, _, _ in hop.values()}
+    printed = [(c, v['material']) for g in (_PAGES.get(line) or {}).get('groups', []) for x in g['formulas']
+               for c, v in x['feeders'].items() if v.get('material')]
+    for part in w:
+        if part in hop:
+            continue
+        cands = []
+        for i in range(1, 6):
+            col = f'Hopper {i}'
+            k, n = class_slope(line, f'H{i}', W_PARTS[part][0])
+            if k and col not in used:
+                cands.append((n, k, col))
+        if not cands:
+            return None, None
+        _, k, col = max(cands)
+        rx = W_PARTS[part][1]
+        mat = next((mm for c, mm in reversed(printed) if c == col and rx and re.search(rx, mm, re.I)), None) or \
+            next((mm for c, mm in reversed(printed) if rx and re.search(rx, mm, re.I)), None)
+        if not mat:
+            return None, None
+        hop[part] = (col, mat, k)
+        used.add(col)
+    feeders = {}
+    for part, (col, mat, k) in sorted(hop.items(), key=lambda x: x[1][0]):
+        if part in w:
+            feeders[col] = {'material': mat, 'set': str(round(w[part] / 100 * T / k))}
+    return ([{'formula_code': m['code'], 'feeders': feeders, 'note': ''}],
+            ('calcw', date, {'template': f"{f['formula_code']} as issued on {line} {date} (scan p{page})", 'T': T}))
+
+
 def choose(key, want, seas, line):
     """The Main for a key and what the order asks for. -> (main, why) with main None when none or several fit."""
     cands = [m for m in rules()['by_key'].get(key, []) if m['level'] == 'main' and not m['restricted']]
@@ -506,7 +605,7 @@ def choose(key, want, seas, line):
     def fits(m):
         q = set(m['quals'])
         if 'se43' in q:
-            if line != 'SE43':
+            if line not in NO_CACO3:            # SE43 formulations: SE42 too (no CaCO3 on either)
                 return False
             q.discard('se43')
         if ('summer' in q or 'winter' in q):
@@ -515,7 +614,7 @@ def choose(key, want, seas, line):
             q -= {'summer', 'winter'}
         return q == want
     fit = [m for m in cands if fits(m)]
-    if line == 'SE43' and any('se43' in m['quals'] for m in fit):
+    if line in NO_CACO3 and any('se43' in m['quals'] for m in fit):
         fit = [m for m in fit if 'se43' in m['quals']]           # James: "Main SE43" / "Main SE43 only" outranks the general Main there
     if not fit and want:                                   # e.g. VOIDFORM with no VOIDFORM Main: the plain Main
         fit = [m for m in cands if fits_plain(m, seas, line)]
@@ -533,7 +632,7 @@ def choose(key, want, seas, line):
 
 def fits_plain(m, seas, line):
     q = set(m['quals']) - {'summer', 'winter', 'se43'}
-    if 'se43' in m['quals'] and line != 'SE43':
+    if 'se43' in m['quals'] and line not in NO_CACO3:
         return False
     if ('summer' in m['quals'] or 'winter' in m['quals']) and seas not in m['quals']:
         return False
@@ -737,8 +836,14 @@ def propose(line, row, day, issued):
         f'{main["code"]} by rule, never run on {line}: no settings on this line (no page, no calc sheet)'
 
 
+# the note a qualified order's rows carry when Tech's own row does not say it (James, 26 Oct 2026, on FU0051WB5 for the
+# VOIDFORM orders H68A090-1 / H64A244-1: "shouldnt it said something like for void form order only in the notes?")
+QUAL_NOTE = {'void': 'For VOIDFORM order only', 'corn': '(CORN BOX FORMULA)', 'sign': '(For sign blank orders only)',
+             'roll': '(For roll material only)'}
 QMARK = ('roll', 'void', 'corn', 'sign', 'ltl')     # qualifiers Tech writes on a page row ("(For roll material only)")
-SPECIAL_ONLY = {'roll', 'void'}                       # special products: their special formula, one Main, no Secondary
+SPECIAL_ONLY = {'void'}                               # VOIDFORM: its special formula, one Main, no Secondary
+# (roll had none too, James 24 Oct 2026; 26 Oct 2026, asked whether roll orders show Tech's roll run-out FU0001WB4 "(For roll
+# material only) (Use this formula in case PP WB Reclaim is run out)" as the Secondary: "yes")
 
 
 def secondary_for(main, want, seas, line):
@@ -758,7 +863,7 @@ def secondary_for(main, want, seas, line):
     def fits(m, quals):
         q = set(m['quals'])
         if 'se43' in q:
-            if line != 'SE43':
+            if line not in NO_CACO3:            # SE43 formulations: SE42 too (no CaCO3 on either)
                 return False
             q.discard('se43')
         if 'summer' in q or 'winter' in q:
@@ -876,6 +981,8 @@ def formulation(line, row, day, issued, own=None):
                 rows, src = ro['rows'], ro['src']
         if rows is None:
             rows, src = w_settings(line, m)                 # weight-by-weight line: the W% is the settings
+        if rows is None:
+            rows, src = calc_auger_settings(line, m)        # auger line: the W% on the line's calibration (CALCULATED)
         if rows and 'void' in want:
             rows = [f for f in rows if not uses_reclaim(f)] or None
         rows = one_row(rows, m['code'])
@@ -895,7 +1002,7 @@ def formulation(line, row, day, issued, own=None):
         if run_out:
             members.append(run_out)
     how = f"James's Primary {main['code']}" + (f" + Secondary {sec['code']}" if sec else '') +         (f" + Secondary {run_out['code']} (Tech's run-out on {line}; no Secondary in the W% Master)" if run_out else '')
-    return {'members': members, 'key': key, 'how': how}, ''
+    return {'members': members, 'key': key, 'how': how, 'want': want}, ''
 
 
 def tech_run_out(line, main, want, own=None, within=False):

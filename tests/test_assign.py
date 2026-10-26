@@ -125,13 +125,14 @@ def test_roll_and_ltl_orders():
     assert 'roll' in assign.wanted('SE25', roll, datetime.date(2026, 10, 23))[0]
     p, why = assign.propose('SE25', roll, datetime.date(2026, 10, 23), issued)
     assert p['code'] == 'FU0021WB4' and p['settings'] and p['settings'][1] != 'calc', why
-    # James, 24 Oct 2026, on H69A284-3: "Roll formula should only have one primary formula. There shouldn't be a
-    # secondary formula" - the roll row only, not Tech's run-out row printed with it
-    assert [f['formula_code'] for f in p['settings'][2]] == ['FU0021WB4']
+    # roll had one Main only (James, 24 Oct 2026); since 26 Oct Tech's roll run-out is its Secondary ("yes")
+    assert [f['formula_code'] for f in p['settings'][2]] == ['FU0021WB4', 'FU0001WB4']
     assert 'roll material' in p['settings'][2][0]['note'].lower()
     fm, why = assign.formulation('SE25', roll, datetime.date(2026, 10, 23), issued)
-    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0021WB4')], why
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0021WB4'), ('Secondary', 'FU0001WB4')], why
     assert [f['formula_code'] for f in fm['members'][0]['rows']] == ['FU0021WB4']
+    sec = fm['members'][1]['rows']
+    assert len(sec) == 1 and not assign.uses_reclaim(sec[0]) and 'roll' in sec[0]['note'].lower()
     ltl = row('RPP40WB1186', 'PPP P R2R2R2', '1 Ticket per pallet & move to repacking area.  LTL MATERIAL')
     assert assign.derive('SE25', ltl)[0] == ('RU', '0', 'WB', '4')
     p, why = assign.propose('SE25', ltl, datetime.date(2026, 10, 23), issued)
@@ -316,11 +317,13 @@ def test_void_form_never_reclaim():
                     assert not any(assign.uses_reclaim(f) for f in m['rows'] or []), (r['order'], m['code'])
     assert dict(void) == {'H6AA197-1': ['FU0022WB3'], 'H68A091-1': ['FU0021WB4'], 'H68A090-1': ['FU0051WB5'],
                           'H64A244-1': ['FU0051WB5'], 'H68A053-1': ['FU0001WBD'], 'H6AA097-1': ['FU0001WBD']}
-    # nor from the order's own last issue: a row feeding reclaim is dropped, the settings go to the engineer
+    # nor from the order's own last issue: a row feeding reclaim is dropped; the settings are then CALCULATED from the
+    # W% on the line's calibration (assign.calc_auger_settings), never with reclaim
     own = ('2026-10-20', 1, [{'formula_code': 'FU0051WB5', 'note': '', 'feeders': {
         'Hopper 1': {'material': 'PP Virgin-silo 4 (6502A)', 'set': '60'}, 'Hopper 3': {'material': 'PP WB Reclaim', 'set': '30'}}}])
     fm, _ = assign.formulation('SE25', row('DPP50WB308', 'PPP P R1R1R1', 'VOIDFORM, PLEASE WATCH WEIGHT'), day, issued, own=own)
-    assert [(m['code'], m['rows']) for m in fm['members']] == [('FU0051WB5', None)]
+    (m,) = fm['members']
+    assert m['code'] == 'FU0051WB5' and m['src'][0] == 'calcw' and not any(assign.uses_reclaim(f) for f in m['rows'])
 
 
 def test_primary_first_even_without_settings():
@@ -560,3 +563,15 @@ def test_r4_and_voidform_take_the_orders_own_equivalent_row():
     fm, why = assign.formulation('SE25', row('DPP50WB308', 'PPP P R1R1R1', 'VOIDFORM'), datetime.date(2026, 10, 26), issued, own('H68A090-1'))
     p = fm['members'][0]
     assert p['code'] == 'FU0051WB5' and len(p['rows']) == 1 and not assign.uses_reclaim(p['rows'][0]), why
+
+
+def test_se42_takes_se43_formulations_and_no_caco3():
+    """SE42 and SE43 have no CaCO3 feeder (no CaCO3 on any SE42/SE43 page, record or SE43 calc sheet 2015-2026). James, 26
+    Oct 2026: "thats why we have some formulation where we remove CACO3 just for SE43" - "if confirmed, then take SE43 and
+    put it on SE42". A "Main SE43" formulation runs on SE42 too; a W% with CaCO3 goes on with virgin PP taking its share."""
+    m = next(x for x in assign.rules()['mains'] if x['code'] == 'FU0041WB4' and x['level'] == 'secondary')
+    rows, src = assign.w_settings('SE42', m)
+    f = {k: float(v['set']) for k, v in rows[0]['feeders'].items()}
+    assert src[2]['no_caco3'] and set(f) == {'V1', 'V3', 'V5', 'V8'} and abs(sum(f.values()) - 100) < 1e-9
+    main, _ = assign.choose(('FU', 'A', 'WB', '3'), set(), 'summer', 'SE42')
+    assert main and 'se43' in main['quals'], main

@@ -290,10 +290,18 @@ def rule_rows(line, order, product, fm):
                     f"R4 black {d['share'][0]:g}% reclaim / {d['share'][1]:g}% colour")
             marked = marked or 'calculated'
             date = None
+        elif kind == 'calcw':                # the W% on the line's auger calibration (assign.calc_auger_settings), never issued
+            d = page
+            src = f"CALCULATED from the W% of {shown} on {line}'s auger calibration; throughput of {d['template']}, {d['T']:,.0f} g/min"
+            how = f"Proposed by rule ({fm['how']}); settings CALCULATED: W% x {d['T']:,.0f} g/min / each hopper's slope"
+            note = f"{x['role']} · CALCULATED SETTINGS, check before running"
+            marked = marked or 'calculated'
+            date = None
         elif kind == 'w':                    # weight-by-weight line: the W% on James's feeder layout (assign.w_settings)
-            src = f"W% Master {shown}: {line} weight by weight, A V1 colour, V2 talc, V3 CaCO3, V4 virgin PP, V5 F1203K (James Kuo, 26 Oct 2026)"
+            src = f"W% Master {shown}: {line} weight by weight, {', '.join(c for c, _, _ in assign.W_LAYOUT[line])} (James Kuo, 26 Oct 2026)"
             how = f"Proposed by rule ({fm['how']}); settings = the W% on {line} (weight by weight)"
-            note = x['role'] + " · settings from the W%"
+            note = x['role'] + " · settings from the W%" + \
+                (f" · no CaCO3 on {line} (virgin PP takes its share)" if (page or {}).get('no_caco3') else "")
             date = None
         elif kind == 'own':
             how = f"By rule ({fm['how']}); settings as last issued for this order"
@@ -305,6 +313,9 @@ def rule_rows(line, order, product, fm):
             note = x['role'] + (" · settings from the calc sheet" if kind == 'calc' else "")
             marked = marked or date
         note += f" · {f.get('note')}" if f.get('note') else ""
+        for q in sorted(set(fm.get('want', ())) & set((x['member'] or {}).get('quals', ()))):   # the Main is for it
+            if q in assign.QUAL_NOTE and q not in assign.quals(note):
+                note += f" · {assign.QUAL_NOTE[q]}"
         for col, v in f["feeders"].items():
             if not (v.get("material") or v.get("set")):
                 continue
