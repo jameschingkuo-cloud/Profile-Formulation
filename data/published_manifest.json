@@ -515,11 +515,11 @@
   "sha256": "4e5781f776f7b4ce1d178c3170a71dc1414592d7a49b1ccba1650270da1005df"
  },
  "workspace/W% Master Formulation (draft v2).xlsx": {
-  "bytes": 60614,
-  "content": "4162e49d5b34bc731175b33fc078fba755ba0870c6800d665315e3712e166e23",
+  "bytes": 60719,
+  "content": "ffd0ff39c26fa50c0335398a2d2812168ee9acc48d1a369f6917932e28a0fb9e",
   "from": "W% Master Formulation (draft v2).xlsx",
-  "published_at": "2026-10-26T15:36:04",
-  "sha256": "199029f917f96ba8511c6686821397da7e02119e77555bdf3817cdf1751bdbdc"
+  "published_at": "2026-10-26T15:51:35",
+  "sha256": "7f57e904652dcb79e15db887c4724a5c3a1e46bb4f6b2787021ecdbc32071caf"
  },
  "workspace/auger_rules.py": {
   "bytes": 4885,

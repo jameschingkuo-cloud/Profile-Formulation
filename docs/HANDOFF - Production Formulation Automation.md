@@ -2435,6 +2435,12 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   calculation. you can just put, AV1 as color, V2 as talc, V3 caco3, v4 PP virgin, V5 as F1203K"* - `assign.W_LAYOUT` / `w_settings`: a member
   with no settings on SE24 takes its W% on that layout (virgin = balance to 100; materials worded as SE24's page prints them, colour from the
   W% row). Only SE24 so far (SE42/SE43/SE61 layouts not given). Today: RU0022WB4 1.9 / 6.8 / 5 / 76.3 / 10. 12 for an engineer. artifact v67.
+- James on SE32 H6AA042-1 ... (FU0001WBD Secondary ENGINEER TO SET): *"There should be WB D white secondary formulation"*. SE32 prints FU0001WBD only
+  "For VOIDFORM order only"; for these orders Tech prints the virgin run-out under the Primary's code (FU0061WBD "(Use this formula in case PP WB
+  Reclaim is run out)" 64/4/13/25). `formulation`: a W% Secondary with no settings under its own names takes that run-out row. Then *"see if
+  FU0002WBD is available, if it is, make it the secondary. and copy the void form fomula over"*: FU0002WBD unused (14 workbooks, pages, code);
+  LATER_NOTES renames the W% row FU0001WBD "Secondary Packing grade" to FU0002WBD (the new note must not contain the word void). W% Master v2
+  republished. Today: 5 orders for an engineer. Word file work/fix1026j (out/ copy open in Word); artifact v68. pytest 95 passed.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

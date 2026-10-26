@@ -37,6 +37,11 @@ W_MASTER = config.ROOT / 'data' / 'w_master' / 'W Master Formulation draft (vers
 LATER_NOTES = [
     ('FU0032KS3', 'Main, Packaging grade',
      'obsolete (James, 26 Oct 2026: "obsolete this one"; 23 Oct note: Main, Packaging grade)'),
+    # WB 13 mm: FU0001WBD stays "Main Voidform"; its packaging Secondary twin (same W%) gets the unused name FU0002WBD.
+    # James, 26 Oct 2026: "see if FU0002WBD is available, if it is, make it the secondary. and copy the void form fomula
+    # over" (the new note must not name the qualifier, or the row would read as one)
+    ('FU0001WBD', 'Secondary Packing grade',
+     'Secondary Packing grade, change name to FU0002WBD (James, 26 Oct 2026; same W% as FU0001WBD)'),
 ]
 
 # codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
@@ -859,6 +864,14 @@ def formulation(line, row, day, issued, own=None):
         rows, src = member_settings(line, m, want, issued, own)
         if rows is None and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
             rows, src = r4_black_settings(line, m)          # James, 24 Oct 2026: R4 black, 98% reclaim + 2% colour
+        if rows is None and role_ == 'Secondary' and w_reclaim(main):
+            # the W% Secondary has no settings under its own names on the line: Tech's virgin run-out row printed under the
+            # Primary's code is that formulation (James, 26 Oct 2026, on SE32 H6AA042-1 ...: "There should be WB D white
+            # secondary formulation" - Tech prints FU0061WBD "(Use this formula in case PP WB Reclaim is run out)" at the
+            # settings of FU0001WBD, his Secondary)
+            ro = tech_run_out(line, main, want, own)
+            if ro:
+                rows, src = ro['rows'], ro['src']
         if rows is None:
             rows, src = w_settings(line, m)                 # weight-by-weight line: the W% is the settings
         if rows and 'void' in want:

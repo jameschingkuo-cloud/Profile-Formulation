@@ -520,3 +520,23 @@ def test_weight_by_weight_line_takes_the_w_percent():
     assert f['Extruder A V1'] == ('WB-W26038A', 1.9) and f['Extruder A V2'][1] == 6.8 and f['Extruder A V3'][1] == 5
     assert f['Extruder A V5'] == ('F1203K', 10) and abs(sum(x for _, x in f.values()) - 100) < 1e-9
     assert assign.w_settings('SE31', m) == (None, None)                       # auger line: no
+
+
+def test_secondary_takes_techs_run_out_row_under_the_primary_code():
+    """SE32 H6AA042-1 (RPPD0WB166): Primary FU0061WBD, Secondary FU0001WBD (W% 90.2 virgin, no reclaim). SE32 prints
+    FU0001WBD only "For VOIDFORM order only"; for these orders Tech's page has the virgin row under the Primary's code,
+    FU0061WBD "(Use this formula in case PP WB Reclaim is run out)" at FU0001WBD's settings. James, 26 Oct 2026: "There
+    should be WB D white secondary formulation"."""
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        if d['packet_date'] <= '2026-10-23':
+            packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    fm, why = assign.formulation('SE32', row('RPPD0WB166', 'PPP P R1R1R1', 'MUST BE ON HEAT TREATED PALLETS'),
+                                 datetime.date(2026, 10, 26), issued)
+    # the Secondary is FU0002WBD, the VOIDFORM formulation under the unused name (James, 26 Oct 2026: "see if FU0002WBD is
+    # available, if it is, make it the secondary. and copy the void form fomula over")
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0061WBD'), ('Secondary', 'FU0002WBD')], why
+    sec = fm['members'][1]['rows']
+    assert sec and len(sec) == 1 and not assign.uses_reclaim(sec[0]) and 'VOIDFORM' not in sec[0]['note']
