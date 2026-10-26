@@ -478,18 +478,15 @@ def fits_plain(m, seas, line):
 
 
 def names_for_issued(line, row, day, formulas):
-    """printed code -> James's name for an order's issued formulas (R6). The Main that lends its name is the one for the
-    formulation Tech actually printed: the page's own note decides (a "(For sign blank orders only)" group is the
-    sign-blank formulation whatever the product), else the order's own qualifiers. James, 23 Oct 2026, on RP26717-1 (an
-    RPA order Tech grouped with the sign blanks): it must print as the sign-blank Main, not be renamed to the summer one."""
+    """printed code -> James's name for an order's issued formulas (R6). The order's own qualifiers decide, not the
+    note of the group Tech put it in: James, 26 Oct 2026, on RP26717-1 (RPA40WB3051, which Tech grouped with the sign
+    blanks): "order RP26717-1 is just standard graphic 40. why is it using sign blank formula?" A page note counts only
+    when the order asks for it too."""
     key, why = derive(line, row)
     if key is None:
         return {}
     want, seas = wanted(line, row, day)
-    page_q = set()
-    for f in formulas:
-        page_q |= {q for q in quals(f.get('note', '')) if q in ('sign', 'void', 'corn')}
-    main, _ = choose(key, page_q or want, seas, line)
+    main, _ = choose(key, want, seas, line)
     if main is None:
         return {}
     return {f['formula_code']: main['code'] for f in formulas if f['formula_code'] in main['printed']}
@@ -740,7 +737,10 @@ def member_settings(line, m, want, issued, own=None):
             return [f for f in fs if f['formula_code'] in names and uses_reclaim(f) == want_r and (not r4 or r4_recipe(f))
                     and feeds_additives(f, m)]
 
-        if own:
+        # the order's own last issue only when its notes ask for no qualifier the order lacks (James, 26 Oct 2026, on
+        # RP26717-1: "order RP26717-1 is just standard graphic 40. why is it using sign blank formula?" - Tech had
+        # grouped it with the sign blanks on 23 Oct; a plain order takes a plain group's settings)
+        if own and notes_q(own[2]) <= marked:
             rows = pick(own[2])
             if rows:
                 return rows, ('own', own[0], own[1])

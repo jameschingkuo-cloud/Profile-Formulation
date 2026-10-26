@@ -2392,6 +2392,11 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
 - James, 26 Oct: *"network is down today scan copy only"* / *"go through and produce todays formation"* (copier scan doc05424120261026133655.pdf,
   24 pages = the same BPN9PFR run 10/26/26 14:23:06, 16 EXT + 8 CNV pages; SE13 and SE25 checked line by line, identical, no handwriting).
   Nothing rebuilt: the formulation Word file and FRM Draft of the run sent to James in chat.
+- James, 26 Oct, on the Word file: *"order RP26717-1 is just standard graphic 40. why is it using sign blank formula?"* / *"formulation is wrong
+  too. it should use 48 tlc not 60"*. The code was FUA151WB4, but its settings and the "(For sign blank orders only)" note came from its own last issue
+  (Tech's SE13 23 Oct sign-blank group). Fixed in `assign.member_settings` (own issue only if its notes ask for nothing the order lacks) and
+  `assign.names_for_issued` (the order's qualifiers, not the page note, R6). Today: only RP26717-1 changes (48/25/48/15, PROPOSED BY RULE).
+  FRM Draft rebuilt in out/; the Word file rebuilt in work/fix1026 (out/ copy was open in Word), originals kept there as "(built 13-44)".
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

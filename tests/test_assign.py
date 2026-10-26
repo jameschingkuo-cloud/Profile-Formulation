@@ -52,12 +52,12 @@ def test_print_james_names_not_old_codes():
 
 def test_issued_name_follows_the_page_note():
     """RP26717-1 (RPA40WB3051, SE13): Tech grouped it with the sign blanks, "(For sign blank orders only)" FUA152WB4.
-    James, 23 Oct 2026: "RP26717-1 Sign blank why is that order sign blank. It's an RPA. Check logic system". The rules
-    do not call it a sign blank; the name printed follows the formulation Tech issued: FUA152WB4, not the summer FUA151WB4."""
+    James, 26 Oct 2026: "order RP26717-1 is just standard graphic 40. why is it using sign blank formula?" The order's
+    own qualifiers decide: FUA151WB4 whatever group Tech put it in."""
     r = row('RPA40WB3051', 'PPP A R1R1R1', 'RUN WITH NEXT')
     assert assign.wanted('SE13', r, datetime.date(2026, 10, 23))[0] == set()
     sign_group = [{'formula_code': 'FUA152WB4', 'note': '(For sign blank orders only)', 'feeders': {}}]
-    assert assign.names_for_issued('SE13', r, datetime.date(2026, 10, 23), sign_group) == {'FUA152WB4': 'FUA152WB4'}
+    assert assign.names_for_issued('SE13', r, datetime.date(2026, 10, 23), sign_group) == {'FUA152WB4': 'FUA151WB4'}
     plain_group = [{'formula_code': 'FUA152WB4', 'note': '', 'feeders': {}}]
     assert assign.names_for_issued('SE13', r, datetime.date(2026, 10, 23), plain_group) == {'FUA152WB4': 'FUA151WB4'}
 

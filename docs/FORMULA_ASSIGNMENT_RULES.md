@@ -171,8 +171,11 @@ James, 23 Oct 2026: *"The slitter should use the same formula like SPA signs bla
   logic system"*): the rules do not call it a sign blank (RPA, "RUN WITH NEXT"); the "(For sign blank orders only)"
   note and the FUA152WB4 settings are Tech's own 6-7 Oct SE13 page, where Tech grouped this order with the SPA sign
   blanks (as last issued). The naming had then wrongly renamed it to the summer FUA151WB4 by the printed code alone.
-  Now the name follows the formulation the page printed: a group noted sign blank / VOIDFORM / corn box takes that
-  Main's name (`assign.names_for_issued`); only a plain group takes the order's own Main. "RUN WITH NEXT" (run on the
+  26 Oct 2026, James on the same order: *"order RP26717-1 is just standard graphic 40. why is it using sign blank
+  formula?"* / *"formulation is wrong too. it should use 48 tlc not 60"*. The order's own qualifiers decide, never the
+  note of the group Tech put it in: it prints FUA151WB4 (`assign.names_for_issued`), and its own last issue lends its
+  settings only when that group's notes ask for nothing the order lacks (`assign.member_settings`); otherwise a plain
+  group on the line (SE13 23 Oct: talc 48, F1203K 25, virgin 48, WB 15). "RUN WITH NEXT" (run on the
   next order's formulation) is not read by the rules yet - noted for James.
 
 ## Settings sources, in order (23 Oct 2026)
