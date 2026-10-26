@@ -2419,6 +2419,17 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   row FRA021FW4; F1102K/Q1203K on Tech's pages). *"i dont think we go with triple formulation now, just one primary and one secondary"* (RP26512-1:
   Tech's SE21 23 Oct page printed the formulation twice) - `assign.one_row`: one row per member. Replay 8-23 Oct: formulation same 599, settings
   same 566 (unchanged). Word file out/FRM Formulation 2026-10-26.docx rebuilt (13 for an engineer, 0 without formula), artifact v65. pytest 91 passed.
+- James on RP26707-2 (FUA051KSA, SE22): *"no secondary for this one? i recall black graphic has option to go virgin PP with no reclaim for
+  secondary"* - `assign.tech_run_out`: a reclaim Primary with no W% Secondary takes the virgin run-out Tech prints with it on the line (same
+  grade, colour, thickness): FUA001KSA. On corn box RP26902-1: *"there should be a PPvirgin only formulation for corn box under the old FU0021WB4.
+  Double check. should stay within cornbox formulation"* - a qualified order takes Tech's run-out from its qualifier's own group first (SE23
+  FU0021WB4 "(CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)"), before the W% Secondary FU0041WB4. *"FU0041WB4 as
+  Secondary Corn box, make sure that is on your new W by W excel. will review them later"* - W% Master v2 "Open for James": corn box
+  Secondary, FW 4 mm FRA021FW4, KS 10 mm FUA001KSA; republished to the workspace. pytest 93 passed.
+- James: *"can you see is the name FU0022WB4 used? if its not use, set it up as corn box secondary formula"* / *"the new secondary cornbox
+  formulation is correct. just need a new update. check FU0022WB4"*. FU0022WB4 / FUA022WB4 found nowhere (W% Master, Calc Library, packets,
+  frm_text, published Formulation / Product masters). Tech's virgin corn box run-out (printed FU0021WB4) prints as FU0022WB4
+  (`assign.RUN_OUT_NAMES`, member 'shown'). W% Master v2 Open for James updated and republished; Word file work/fix1026h; artifact v66.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 

@@ -18,6 +18,20 @@
           "detail": "Obsolete numbers the engineer has not cleaned up yet (e.g. SE21 FR0021FW4 Hopper 3). Printed as F1203K with no note.",
           "where": "FRM pages",
           "source": "26 Oct"
+        },
+        {
+          "sev": "Low",
+          "title": "W% Master: FUA001KSA as the Secondary of FUA051KSA",
+          "detail": "Black graphic 10 mm has no Secondary row. James: \"i recall black graphic has option to go virgin PP with no reclaim for secondary\". The rules now take Tech's SE22 run-out FUA001KSA (assign.tech_run_out: a reclaim Primary with no W% Secondary takes the virgin run-out Tech prints with it, same grade, colour and thickness).",
+          "where": "W% Master",
+          "source": "26 Oct"
+        },
+        {
+          "sev": "Low",
+          "title": "Corn box Secondary is FU0022WB4",
+          "detail": "James: \"the new secondary cornbox formulation is correct\" / \"if its not use, set it up as corn box secondary formula\". FU0022WB4 was unused; Tech's virgin-only corn box run-out (printed FU0021WB4) now prints as FU0022WB4. W% Master: add the FU0022WB4 row; FU0041WB4 \"Secondary Corn box\" to review (W% Master v2 \"Open for James\").",
+          "where": "W% Master v2",
+          "source": "26 Oct"
         }
       ]
     },

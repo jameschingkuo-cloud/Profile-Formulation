@@ -272,7 +272,7 @@ def rule_rows(line, order, product, fm):
         x = f['_x']
         kind, date, page = x['src'] or (None, None, None)
         printed = f['formula_code']
-        shown = x['code'] if x['member'] else assign.current_name(printed)
+        shown = x.get('shown') or (x['code'] if x['member'] else assign.current_name(printed))
         if not f['feeders']:                 # a member without settings on this line
             rows.append([line, order, product, shown, x['role'], None, None, None, None, None, None,
                          f"Proposed by rule ({fm['how']}); no settings for {shown} on {line}: engineer to set", None,

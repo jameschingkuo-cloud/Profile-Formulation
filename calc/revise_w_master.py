@@ -219,6 +219,24 @@ def main():
          + '. The daily run gives a VOIDFORM order only a Main and Secondary without reclaim: WB 5 mm FU0051WB5, WB 13 mm FU0001WBD. Neither has run on the line '
          'the 23 Oct schedule puts it on (FU0051WB5 on SE25, FU0001WBD on SE32): those orders print "ENGINEER TO SET".',
          'Settings for FU0051WB5 on SE25 and FU0001WBD on SE32 (auger calculation)?'],
+        # James, 26 Oct 2026: "FU0041WB4 as Secondary Corn box, make sure that is on your new W by W excel. will review them later"
+        ['Corn box Secondary (26 Oct)',
+         'This file has FU0041WB4 "Secondary Corn box" (virgin 77.1, F1203K 9.7, talc 5.5, CaCO3 5, colour 2.8). Tech’s corn box run-out is the '
+         'virgin-only FU0021WB4 "(CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)" (SE23, no CaCO3). James, 26 Oct: "there '
+         'should be a PPvirgin only formulation for corn box under the old FU0021WB4 ... should stay within cornbox formulation". The daily run '
+         'now prints Tech’s corn box run-out as the Secondary where Tech has one (SE23 RP26902-1); FU0041WB4 only where it has none (SE42 RP26410-1). '
+         'James, 26 Oct: "can you see is the name FU0022WB4 used? if its not use, set it up as corn box secondary formula" - FU0022WB4 was used '
+         'nowhere (this file, Tech’s calc workbooks, pages on file, masters): Tech’s virgin corn box row now prints as FU0022WB4 '
+         '(daily/assign.py RUN_OUT_NAMES). "the new secondary cornbox formulation is correct".',
+         'Add FU0022WB4 "Secondary Corn box" (W% from Tech’s SE23 row); FU0041WB4 -> archive or keep?'],
+        ['FW 4 mm flame retardant (26 Oct)',
+         'No FW 4 mm row. Tech issues FR0021FW4 on SE21 (RP26826-6 RPP40FW2, WB:IS premix, FR-GPP3003MP); James: "ok we need to change it to FRA '
+         'as well" - printed as FRA021FW4 (daily/assign.py LATER_RENAMES). FR0021WB4 / FRA021WB4 is the row whose orders are FW.',
+         'Add FRA021FW4 as the FW 4 mm Main (and FR0021WB4 / FRA021WB4 -> ?)'],
+        ['Black graphic 10 mm Secondary (26 Oct)',
+         'FUA051KSA (reclaim) has no Secondary row. James: "i recall black graphic has option to go virgin PP with no reclaim for secondary". The '
+         'daily run takes Tech’s SE22 run-out FUA001KSA (virgin, "in case PP MIX Reclaim is run out") as the Secondary.',
+         'Add FUA001KSA as "Secondary, Graphic" for KS 10 mm?'],
     ]
     sheet('Open for James', ['Question', 'Detail', 'To decide'], data, {'Question': 30, 'Detail': 110, 'To decide': 40})
     OUT.parent.mkdir(parents=True, exist_ok=True)

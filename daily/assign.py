@@ -46,6 +46,14 @@ LATER_RENAMES = {
                                'it to FRA as well. make a notes, we will clean up after"'),
 }
 
+# a run-out Tech prints under the Primary's own code inside a qualifier's group, given its own name by James (the name was
+# unused: not in the W% Master, Tech's calc workbooks, pages on file or the masters)
+RUN_OUT_NAMES = {
+    ('FU0021WB4', 'corn'): ('FU0022WB4', 'James, 26 Oct 2026: "can you see is the name FU0022WB4 used? if its not use, set it up as '
+                                         'corn box secondary formula" - Tech’s virgin-only "(CORN BOX FORMULA) (Use this formula in '
+                                         'case PP WB Reclaim is run out)" FU0021WB4 row'),
+}
+
 
 def apply_later_notes(R):
     """Rewrite the Notes of the W% Master rows James re-noted after 23 Oct (LATER_NOTES)."""
@@ -815,8 +823,56 @@ def formulation(line, row, day, issued, own=None):
             rows = [f for f in rows if not uses_reclaim(f)] or None
         rows = one_row(rows, m['code'])
         members.append({'role': role_, 'code': m['code'], 'member': m, 'rows': rows, 'src': src})
-    how = f"James's Primary {main['code']}" + (f" + Secondary {sec['code']}" if sec else '')
+    run_out = None
+    marked = {q for q in want if q in QMARK}
+    if w_reclaim(main) and not want & SPECIAL_ONLY:
+        if marked:
+            # a qualified order: Tech's run-out within the qualifier's own formulation comes first, before a W% Secondary
+            # (corn box: Tech’s virgin-only FU0021WB4 run-out, not FU0041WB4 "Secondary Corn box" with CaCO3)
+            run_out = tech_run_out(line, main, want, own, within=True)
+            if run_out:
+                members = [x for x in members if x['role'] != 'Secondary']
+                sec = None
+        elif sec is None:
+            run_out = tech_run_out(line, main, want, own)
+        if run_out:
+            members.append(run_out)
+    how = f"James's Primary {main['code']}" + (f" + Secondary {sec['code']}" if sec else '') +         (f" + Secondary {run_out['code']} (Tech's run-out on {line}; no Secondary in the W% Master)" if run_out else '')
     return {'members': members, 'key': key, 'how': how}, ''
+
+
+def tech_run_out(line, main, want, own=None, within=False):
+    """A reclaim Primary with no Secondary in the W% Master: the virgin formula Tech prints with it on the line "in case
+    PP ... Reclaim is run out" is its Secondary (James, 26 Oct 2026, on RP26707-2 FUA051KSA, SE22: "no secondary for this
+    one? i recall black graphic has option to go virgin PP with no reclaim for secondary" - Tech prints FUA001KSA). The
+    order's own last issue first, then the line's newest group with the Primary; never a group noted for a qualifier
+    the order lacks. within: only a group noted for the order's own qualifier (James, 26 Oct 2026, on corn box RP26902-1:
+    "there should be a PPvirgin only formulation for corn box under the old FU0021WB4 ... should stay within cornbox
+    formulation" - Tech's "(CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)" FU0021WB4 row).
+    -> a Secondary member (member None) or None."""
+    marked = {q for q in want if q in QMARK}
+
+    def notes_q(fs):
+        return {x for f in fs for x in quals(f.get('note', '')) if x in QMARK}
+    groups = ([own] if own else []) + sorted({id(g): g for p in main['printed'] for g in _ISSUED_GROUPS.get((line, p), [])}.values(),
+                                             key=lambda g: g[0], reverse=True)
+    for g in groups:
+        fs = g[2]
+        if not any(f['formula_code'] in main['printed'] for f in fs) or not notes_q(fs) <= marked:
+            continue
+        if within and not notes_q(fs) & marked:
+            continue
+        # same grade, colour and thickness as the Primary (SE11's packaging FU0051KS3 run-out is the graphic FUA022KS3: not taken)
+        outs = [f for f in fs if not uses_reclaim(f)
+                and re.search(r'run\s*out', f.get('note') or '', re.I)
+                and len(f['formula_code']) == 9 and (f['formula_code'][2], f['formula_code'][6:]) == (main['code'][2], main['code'][6:])]
+        if outs:
+            code = outs[0]['formula_code']
+            name = next((RUN_OUT_NAMES[(code, q)][0] for q in sorted(notes_q(fs) & marked) if (code, q) in RUN_OUT_NAMES),
+                        current_name(code))
+            return {'role': 'Secondary', 'code': name, 'shown': name, 'member': None, 'rows': one_row(outs, code),
+                    'src': ('own' if own is not None and g is own else 'line', g[0], g[1])}
+    return None
 
 
 def one_row(rows, code):

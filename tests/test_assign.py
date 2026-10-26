@@ -474,3 +474,37 @@ def test_always_graphic_takes_techs_old_0_name():
     issued = {('SE21', 'FR0021FW4'): rec, ('SE21', 'FU0021WB4'): rec}
     assert assign.issued_for_key('SE21', ('FR', 'A', 'FW', '4'), issued) == [(rec, 'FR0021FW4')]
     assert assign.issued_for_key('SE21', ('FU', 'A', 'WB', '4'), issued) == []
+
+
+def test_tech_run_out_is_the_secondary_when_w_master_has_none():
+    """RP26707-2 (RPAA0KS73, SE22): James's Main FUA051KSA has reclaim and the W% Master has no Secondary for KS 10 mm
+    graphic; Tech prints FUA001KSA "(Use this formula in case PP MIX Reclaim is run out)" with it. James, 26 Oct 2026:
+    "no secondary for this one? i recall black graphic has option to go virgin PP with no reclaim for secondary"."""
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        if d['packet_date'] <= '2026-10-23':
+            packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    fm, why = assign.formulation('SE22', row('RPAA0KS73', 'PPP A R1R1R1'), datetime.date(2026, 10, 26), issued)
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FUA051KSA'), ('Secondary', 'FUA001KSA')], why
+    sec = fm['members'][1]
+    assert len(sec['rows']) == 1 and not assign.uses_reclaim(sec['rows'][0])
+
+
+def test_corn_box_secondary_stays_within_corn_box():
+    """RP26902-1 (DPP40WB1235, CORN BOX, SE23). James, 26 Oct 2026: "there should be a PPvirgin only formulation for corn
+    box under the old FU0021WB4. Double check. should stay within cornbox formulation" - Tech's SE23 page prints FU0021WB4
+    "(CORN BOX FORMULA) (Use this formula in case PP WB Reclaim is run out)", virgin only; it is the Secondary, not the
+    W% Master's FU0041WB4."""
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        if d['packet_date'] <= '2026-10-23':
+            packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    fm, why = assign.formulation('SE23', row('DPP40WB1235', 'PPP P R1R1R1', 'CORN BOX'), datetime.date(2026, 10, 26), issued)
+    # named FU0022WB4 (James, 26 Oct 2026: "if its not use, set it up as corn box secondary formula")
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0021WB4'), ('Secondary', 'FU0022WB4')], why
+    sec = fm['members'][1]['rows']
+    assert len(sec) == 1 and not assign.uses_reclaim(sec[0]) and 'CORN BOX' in sec[0]['note']
