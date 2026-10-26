@@ -372,6 +372,46 @@ def slope(line, column, reclaim):
     return float(rs[0]['Current Slope (g/min per unit)']) if rs else None
 
 
+# weight-by-weight lines: the setting is the weight %, so a formulation's W% is its settings (James, 26 Oct 2026: "line 7 is
+# weight by weight dosing system. so it does not need calculation. you can just put, AV1 as color, V2 as talc, V3 caco3,
+# v4 PP virgin, V5 as F1203K")
+W_LAYOUT = {'SE24': [('Extruder A V1', 'Colour MB %', None), ('Extruder A V2', 'Talc %', r'talc'),
+                     ('Extruder A V3', 'CaCO3 %', r'caco3'), ('Extruder A V4', 'Virgin PP %', r'virgin'),
+                     ('Extruder A V5', 'Homo PP (F1203K) %', r'1203k')]}
+W_WORDING = {r'talc': 'HiTalc ZS (or N40109A)', r'caco3': 'CaCO3 -Heritage HM-10HP', r'virgin': 'PP Virgin-silo 4 (F6502A)',
+             r'1203k': 'F1203K'}
+
+
+def w_settings(line, m):
+    """A member with no settings on a weight-by-weight line: its W% on James's feeder layout. Materials worded as the
+    line's latest page prints them (the colour from the W% row's Materials). Only when every part of the W% has a feeder
+    in the layout. -> (rows, ('w', None, None)) or (None, None)."""
+    layout = W_LAYOUT.get(line)
+    if not layout:
+        return None, None
+    w = {c: float(v) for c, v in m['w'].items() if v}
+    if not w or set(w) - {c for _, c, _ in layout}:
+        return None, None
+    printed = [v['material'] for g in (_PAGES.get(line) or {}).get('groups', []) for f in g['formulas']
+               for v in f['feeders'].values() if v.get('material')]
+    colour = None
+    if 'Colour MB %' in w:
+        for part in str(m.get('materials') or '').split(','):
+            mm = re.match(r'\s*(.+?)\s+([\d.]+)\s*$', part)
+            if mm and abs(float(mm.group(2)) - w['Colour MB %']) < 0.05:
+                colour = mm.group(1)
+        if not colour:
+            return None, None
+    feeders = {}
+    for col, wc, rx in layout:
+        if wc not in w:
+            continue
+        mat = colour if rx is None else next((p for p in reversed(printed) if re.search(rx, p, re.I)), W_WORDING[rx])
+        v = round(100 - sum(x for c, x in w.items() if c != wc), 1) if wc == 'Virgin PP %' else w[wc]   # virgin: the balance to 100
+        feeders[col] = {'material': mat, 'set': f"{v:g}"}
+    return [{'formula_code': m['code'], 'feeders': feeders, 'note': ''}], ('w', None, None)
+
+
 def r4_black_settings(line, m):
     """Calculated settings for an R4 black Main with no R4 recipe on the line. James, 24 Oct 2026, on H6AA173-1 (RU0000KS5,
     SE21): "remember the [auger] setting is applied universally ... look at other [auger] setting with similar products
@@ -819,6 +859,8 @@ def formulation(line, row, day, issued, own=None):
         rows, src = member_settings(line, m, want, issued, own)
         if rows is None and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
             rows, src = r4_black_settings(line, m)          # James, 24 Oct 2026: R4 black, 98% reclaim + 2% colour
+        if rows is None:
+            rows, src = w_settings(line, m)                 # weight-by-weight line: the W% is the settings
         if rows and 'void' in want:
             rows = [f for f in rows if not uses_reclaim(f)] or None
         rows = one_row(rows, m['code'])

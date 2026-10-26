@@ -290,6 +290,11 @@ def rule_rows(line, order, product, fm):
                     f"R4 black {d['share'][0]:g}% reclaim / {d['share'][1]:g}% colour")
             marked = marked or 'calculated'
             date = None
+        elif kind == 'w':                    # weight-by-weight line: the W% on James's feeder layout (assign.w_settings)
+            src = f"W% Master {shown}: {line} weight by weight, A V1 colour, V2 talc, V3 CaCO3, V4 virgin PP, V5 F1203K (James Kuo, 26 Oct 2026)"
+            how = f"Proposed by rule ({fm['how']}); settings = the W% on {line} (weight by weight)"
+            note = x['role'] + " · settings from the W%"
+            date = None
         elif kind == 'own':
             how = f"By rule ({fm['how']}); settings as last issued for this order"
             note = x['role']

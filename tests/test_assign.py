@@ -508,3 +508,15 @@ def test_corn_box_secondary_stays_within_corn_box():
     assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0021WB4'), ('Secondary', 'FU0022WB4')], why
     sec = fm['members'][1]['rows']
     assert len(sec) == 1 and not assign.uses_reclaim(sec[0]) and 'CORN BOX' in sec[0]['note']
+
+
+def test_weight_by_weight_line_takes_the_w_percent():
+    """SE24 (line 7) is weight by weight. James, 26 Oct 2026: "it does not need calculation. you can just put, AV1 as color,
+    V2 as talc, V3 caco3, v4 PP virgin, V5 as F1203K". RU0022WB4 (Secondary R4, never run on SE24) takes its W%."""
+    m = next(x for x in assign.rules()['mains'] if x['code'] == 'RU0022WB4')
+    rows, src = assign.w_settings('SE24', m)
+    assert src[0] == 'w'
+    f = {k: (v['material'], float(v['set'])) for k, v in rows[0]['feeders'].items()}
+    assert f['Extruder A V1'] == ('WB-W26038A', 1.9) and f['Extruder A V2'][1] == 6.8 and f['Extruder A V3'][1] == 5
+    assert f['Extruder A V5'] == ('F1203K', 10) and abs(sum(x for _, x in f.values()) - 100) < 1e-9
+    assert assign.w_settings('SE31', m) == (None, None)                       # auger line: no

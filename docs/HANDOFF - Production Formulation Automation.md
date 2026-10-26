@@ -2430,6 +2430,11 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
   formulation is correct. just need a new update. check FU0022WB4"*. FU0022WB4 / FUA022WB4 found nowhere (W% Master, Calc Library, packets,
   frm_text, published Formulation / Product masters). Tech's virgin corn box run-out (printed FU0021WB4) prints as FU0022WB4
   (`assign.RUN_OUT_NAMES`, member 'shown'). W% Master v2 Open for James updated and republished; Word file work/fix1026h; artifact v66.
+- James on RP25710-1 (SE24, RU0022WB4 ENGINEER TO SET): *"do we have a R4 secondary white that use virgin PP?"* - yes, RU0022WB4 "Secondary
+  R4" (virgin 76.4, F1203K 10, talc 6.8, CaCO3 5, WB 1.9), run only on SE31. *"line 7 is weight by weight dosing system. so it does not need
+  calculation. you can just put, AV1 as color, V2 as talc, V3 caco3, v4 PP virgin, V5 as F1203K"* - `assign.W_LAYOUT` / `w_settings`: a member
+  with no settings on SE24 takes its W% on that layout (virgin = balance to 100; materials worded as SE24's page prints them, colour from the
+  W% row). Only SE24 so far (SE42/SE43/SE61 layouts not given). Today: RU0022WB4 1.9 / 6.8 / 5 / 76.3 / 10. 12 for an engineer. artifact v67.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 
