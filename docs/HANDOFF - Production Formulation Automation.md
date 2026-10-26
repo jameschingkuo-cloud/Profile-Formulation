@@ -2389,6 +2389,9 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
 - **Step 2 and daily run**: converting schedule 60 rows on 8 pages (no new orders; gone: H5CA088-1, H69A075-1, H6AA080-1, H6AA080-2).
   Manual issues and cfg written, EXT/CNV workbooks and Product Master built and published, records appended (82 EXT, 60 CNV; no FRM rows), interface copy
   published, artifact v61. `new_highs.py`: 10 High, the same 10 as 23 Oct, 0 new. pytest 90 passed, 5 skipped.
+- James, 26 Oct: *"network is down today scan copy only"* / *"go through and produce todays formation"* (copier scan doc05424120261026133655.pdf,
+  24 pages = the same BPN9PFR run 10/26/26 14:23:06, 16 EXT + 8 CNV pages; SE13 and SE25 checked line by line, identical, no handwriting).
+  Nothing rebuilt: the formulation Word file and FRM Draft of the run sent to James in chat.
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 
