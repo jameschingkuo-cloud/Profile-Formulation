@@ -283,3 +283,14 @@ product, we should use a [special] formula. So double check the roll formula."*
   colour 1.4 % - exactly James's Main roll FU0021WB4 in the W% Master.
 - Open: James also named "square cut" with roll and VOIDFORM; which orders that is (no schedule note says it) is to ask.
   Corn box keeps its Secondary (James's "Secondary Corn box" FU0041WB4).
+
+## U1 natural 10 mm is FEA001NSA (26 Oct 2026)
+James, shown FEA001NSA (UV-N26257A 1.4%, AS-N40095A 1.8%; SE21 Feb 2023) and FHA001NSA (UV-N26177A 4.8%, AS-N40095A
+1.8%; SE22, Nov 2025 - Jan 2026), both printed FH0001NSA by Tech, for DPPA0NS75/76 (spec U1U1U1, 9 orders in 12 months,
+all "Send to Rotary"): *"U1 is for FEA"*.
+- Where James's FE-named Main competes with one kept under the old letter FH for the same key, the FE one is the Main
+  (`assign.choose`).
+- A row counts as a formula's settings only when it feeds every additive (UV, anti-static, flame retardant) the
+  formula's W% lists, by number (`assign.feeds_additives`): SE22's FH0001NSA recipe (N26177A) is FHA001NSA's, so
+  FEA001NSA has no SE22 settings yet; SE21 has its recipe (H1 virgin 67, H2 talc 8, H3 UV-N26257A 3, H4 AS-N40095A 17).
+- Test `test_u1_natural_10mm_is_fea`. Last week's simulation unchanged; 12 months: two-Main keys 11 -> 9 products.

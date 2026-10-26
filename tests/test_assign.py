@@ -388,3 +388,26 @@ def test_r4_black():
     packaging = {'formula_code': 'FU0041KS4', 'note': '', 'feeders': {'Hopper 1': {'material': 'PP Virgin-silo 3 (F6502A)', 'set': '32'},
                  'Hopper 3': {'material': 'PP Mix Reclaim', 'set': '70'}, 'Hopper 4': {'material': 'KS MB-CR401K', 'set': '35'}}}
     assert not assign.r4_recipe(packaging)
+
+
+def test_u1_natural_10mm_is_fea():
+    """James, 26 Oct 2026: "U1 is for FEA". DPPA0NS75 (spec U1U1U1, NS 10 mm) runs FEA001NSA (UV-N26257A 1.4%, anti-static
+    1.8%), not FHA001NSA (UV-N26177A 4.8%, anti-static) - both printed FH0001NSA by Tech. FEA001NSA's settings are only
+    a recipe with its UV-N26257A: SE21's (Feb 2023); SE22's FH0001NSA recipe is the N26177A one, so on SE22 they are
+    still to be set."""
+    if not assign.CALC_LIB.exists():
+        import pytest
+        pytest.skip('Formulation Calc Library not built on this PC')
+    packets = {}
+    for pth in config.packet_files():
+        d = json.loads(pth.read_text(encoding='utf-8'))
+        packets[d['packet_date']] = d
+    issued = assign.issued_on_line(packets)
+    assign.set_pages(packets)
+    r = row('DPPA0NS75', 'PPP P U1U1U1', 'Send to Rotary. Mark lead & make sure of pc count.')
+    fm, why = assign.formulation('SE22', r, datetime.date(2026, 10, 26), issued)
+    assert [(m['code'], m['rows']) for m in fm['members']] == [('FEA001NSA', None)], why
+    fm, why = assign.formulation('SE21', r, datetime.date(2026, 10, 26), issued)
+    (x,) = fm['members']
+    assert x['code'] == 'FEA001NSA' and x['src'][0] == 'calc'
+    assert any('N26257A' in v['material'] for v in x['rows'][0]['feeders'].values() if v.get('set'))

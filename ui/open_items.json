@@ -36,7 +36,7 @@
         {
           "sev": "Medium",
           "title": "Keys with two Mains (last 12 months)",
-          "detail": "KS 3 mm packaging FU0032KS3 or FU0051KS3 (SE11/SE42, 20 orders); NS 10 mm UV FEA001NSA or FHA001NSA (SE22, 9); KS 6 mm packaging FU0041KS6 or FU0062KS6 (SE21, 2).",
+          "detail": "KS 3 mm packaging FU0032KS3 or FU0051KS3 (SE11/SE42, 20 orders); KS 6 mm packaging FU0041KS6 or FU0062KS6 (SE21, 2). Decided 26 Oct: NS 10 mm U1 runs FEA001NSA (\"U1 is for FEA\"); it has no settings on SE22 yet (SE22's FH0001NSA recipe is the anti-static FHA001NSA, UV-N26177A) - 9 orders in 12 months.",
           "where": "W% Master",
           "source": "work/gap_scan.py"
         },
@@ -272,6 +272,11 @@
     }
   ],
   "resolved": [
+    {
+      "date": "2026-10-26",
+      "title": "U1 natural 10 mm runs FEA001NSA",
+      "detail": "James: \"U1 is for FEA\". FHA001NSA (UV-N26177A 4.8%) stays the anti-static formula; a recipe counts as a formula's settings only with its own additives."
+    },
     {
       "date": "2026-09-29",
       "title": "Q1203K replaced by F1203K",

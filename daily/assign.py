@@ -290,6 +290,28 @@ def r4_recipe(f):
     return True
 
 
+ADDITIVE_RX = re.compile(r'\b(?:UV|AS|FR)[- ]?N?(\d{5})', re.I)
+
+
+def feeds_additives(f, m):
+    """A row carries every additive (UV, anti-static, flame retardant) the member's W% lists, by its number: FEA001NSA
+    (UV-N26257A) and FHA001NSA (UV-N26177A) were both printed FH0001NSA, so SE22's FH0001NSA recipe (N26177A) is
+    FHA001NSA's, not FEA001NSA's (James, 26 Oct 2026: "U1 is for FEA")."""
+    need = set(ADDITIVE_RX.findall(m.get('materials') or ''))
+    if not need:
+        return True
+    fed = set()
+    for v in f['feeders'].values():
+        s = str(v.get('set') or '').strip().lower()
+        try:
+            on = s == 'auto' or float(s.replace(',', '')) > 0
+        except ValueError:
+            on = False
+        if on:
+            fed |= set(re.findall(r'(\d{5})', v.get('material') or ''))
+    return need <= fed
+
+
 R4_BLACK = (98.0, 2.0)     # % black reclaim, % black colour MB (James, 24 Oct 2026)
 _SLOPES = None
 
@@ -419,6 +441,10 @@ def choose(key, want, seas, line):
         fit = [m for m in fit if 'se43' in m['quals']]           # James: "Main SE43" / "Main SE43 only" outranks the general Main there
     if not fit and want:                                   # e.g. VOIDFORM with no VOIDFORM Main: the plain Main
         fit = [m for m in cands if fits_plain(m, seas, line)]
+    if len({m['code'] for m in fit}) > 1 and key[0] == 'FE':
+        # James, 26 Oct 2026, on NS 10 mm FEA001NSA / FHA001NSA: "U1 is for FEA" - his FE name outranks one kept under
+        # the old letter FH (FHA001NSA is the anti-static formula)
+        fit = [m for m in fit if m['code'][:2] == 'FE'] or fit
     codes = {m['code'] for m in fit}
     if len(codes) == 1:
         return fit[0], ''
@@ -696,7 +722,8 @@ def member_settings(line, m, want, issued, own=None):
             continue
 
         def pick(fs):
-            return [f for f in fs if f['formula_code'] in names and uses_reclaim(f) == want_r and (not r4 or r4_recipe(f))]
+            return [f for f in fs if f['formula_code'] in names and uses_reclaim(f) == want_r and (not r4 or r4_recipe(f))
+                    and feeds_additives(f, m)]
 
         if own:
             rows = pick(own[2])
