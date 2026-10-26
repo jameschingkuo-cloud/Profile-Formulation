@@ -2373,7 +2373,7 @@ summer from 1 Apr, winter from 1 Nov (a composition switch: 15% vs 8% homopolyme
   same; "James replaced", VOIDFORM R10, "Tech's Primary is our Secondary" kept apart from "different"), then each common
   formula's feeders, spelling aside. `work/compare_draft_tech.py` replays every day with Tech pages as that morning
   (HISTORY_BEFORE) -> out/Draft vs Tech.xlsx. 8-23 Oct, 684 order-days: formulation same 598 (87%), settings also the
-  same 573 (84%); by James's W% decisions 42, Tech ran our Secondary 13, different 26 (7 distinct orders), Exception 5.
+  same 573 (84%); by James's W% decisions 42, Tech ran our Secondary 13, different 26 (8 distinct orders), Exception 5.
   The page's numbers use it (`ui/build.py` `draft_vs_tech` 'close'); out/FRM Draft 2026-10-23.xlsx is now the replay
   (the 08:36 build kept in work/cmp). Artifact v60 = 23 Oct with Tech's pages, 91/98 same formulation, 78 same settings.
   The SharePoint Interface Copy of 23 Oct stays as issued (publish.py refused; --reissue only if James asks).
