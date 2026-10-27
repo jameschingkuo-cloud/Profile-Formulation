@@ -570,7 +570,7 @@ def test_se42_takes_se43_formulations_and_no_caco3():
     """SE42 and SE43 have no CaCO3 feeder (no CaCO3 on any SE42/SE43 page, record or SE43 calc sheet 2015-2026). James, 26
     Oct 2026: "thats why we have some formulation where we remove CACO3 just for SE43" - "if confirmed, then take SE43 and
     put it on SE42". A "Main SE43" formulation runs on SE42 too; a W% with CaCO3 goes on with virgin PP taking its share."""
-    m = next(x for x in assign.rules()['mains'] if x['code'] == 'FU0041WB4' and x['level'] == 'secondary')
+    m = next(x for x in assign.rules()['mains'] if x['code'] == 'FU0022WB4' and x['level'] == 'secondary')
     rows, src = assign.w_settings('SE42', m)
     f = {k: float(v['set']) for k, v in rows[0]['feeders'].items()}
     assert src[2]['no_caco3'] and set(f) == {'V1', 'V3', 'V5', 'V8'} and abs(sum(f.values()) - 100) < 1e-9
