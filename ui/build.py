@@ -372,6 +372,20 @@ def main():
             'rules_by_date': rules_by_date(pk, day, line_layout({d: p for d, p in pk.items() if d <= day})),
             'linemeta': line_layout(pk),
             'code_rule': {'colours': sorted(product_code.COLOURS), 'families': sorted(product_code.FAMILIES)}}
+    # every formulation shows its weight % (James, 27 Oct 2026: "make sure this weight is display on every one so i can
+    # easily monitor them"): on an auger line each feeder's share = setting x the hopper's calibration slope over the total
+    from render_frm import weight_pct, PRINT_AS
+    for ln in data['lines']:
+        for g in ln['groups']:
+            for f in g['formulas']:
+                for x in f['feeders']:
+                    x['mat'] = PRINT_AS.get(x['mat'], x['mat'])      # as the Word file prints it (the black: KS NPC PE-B9000F)
+                if ln['dosing'] == 'WEIGHT':
+                    continue
+                pct, why = weight_pct(ln['code'], {('', x['col']): (x['mat'], x['set'], None) for x in f['feeders']})
+                f['wnote'] = why
+                for x in f['feeders']:
+                    x['w'] = (pct or {}).get(('', x['col']))
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')
     t = t.replace('/*__READER__*/', (ROOT / 'ui' / 'reader.js').read_text(encoding='utf-8'))   # the scan reader (tested on its own)
     blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')

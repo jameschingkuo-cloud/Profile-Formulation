@@ -8,8 +8,8 @@
   --bg:#EDF0F3; --panel:#FFFFFF; --panel-2:#F6F8FA; --ink:#15202B; --muted:#5A6774; --line:#D3DAE1;
   --accent:#1F4FA3; --accent-soft:#E2EAF7; --warn:#9A6212; --warn-soft:#FBF0DB; --crit:#B3261E; --crit-soft:#F8E0DE;
   --ok:#2A7248; --ok-soft:#DFF1E6; --info:#4F5D6B; --info-soft:#E9EDF1; --seg-ink:#15202B;
-  --r-virgin:#C9D6EA; --r-homo:#B9CFE0; --r-talc:#DCDCD3; --r-caco3:#E6E1D4; --r-colour:#C8D8F2; --r-reclaim:#D5DDD0;
-  --r-modifier:#E4D5E8; --r-skin:#D0E4E0; --r-foam:#F0E2C8; --r-other:#DDE2E7;
+  --r-virgin:#8FB4E8; --r-homo:#7FD1C4; --r-talc:#E3CF7A; --r-caco3:#E8A98A; --r-colour:#C4A3E6; --r-reclaim:#9CCF86;
+  --r-modifier:#EE9BC0; --r-skin:#94CFE0; --r-foam:#F2C27E; --r-other:#C9D1D9; --r-ink:#15202B;
   --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --f-body:"Barlow","Segoe UI",Arial,sans-serif; --f-mono:"JetBrains Mono",Consolas,monospace;
   --r:6px;
 }
@@ -17,14 +17,14 @@
   --bg:#0E141A; --panel:#161F28; --panel-2:#1B2631; --ink:#E4EAF0; --muted:#95A3B1; --line:#2A3743;
   --accent:#86ABF2; --accent-soft:#1B2944; --warn:#E3AE55; --warn-soft:#382A11; --crit:#F29189; --crit-soft:#3C1B19;
   --ok:#74CD98; --ok-soft:#163022; --info:#A9B5C1; --info-soft:#22303C; --seg-ink:#E4EAF0;
-  --r-virgin:#2B3B55; --r-homo:#27404F; --r-talc:#3A3A33; --r-caco3:#3F3A2E; --r-colour:#2A3C5C; --r-reclaim:#33402E;
-  --r-modifier:#43334A; --r-skin:#284540; --r-foam:#4A3C22; --r-other:#2E3842; color-scheme:dark}}
+  --r-virgin:#3B6DB3; --r-homo:#1B7A70; --r-talc:#7A6620; --r-caco3:#A65A3A; --r-colour:#7A4FA8; --r-reclaim:#367A2C;
+  --r-modifier:#A8406F; --r-skin:#296F84; --r-foam:#8F6219; --r-other:#56636F; --r-ink:#FFFFFF; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E141A; --panel:#161F28; --panel-2:#1B2631; --ink:#E4EAF0; --muted:#95A3B1; --line:#2A3743;
   --accent:#86ABF2; --accent-soft:#1B2944; --warn:#E3AE55; --warn-soft:#382A11; --crit:#F29189; --crit-soft:#3C1B19;
   --ok:#74CD98; --ok-soft:#163022; --info:#A9B5C1; --info-soft:#22303C; --seg-ink:#E4EAF0;
-  --r-virgin:#2B3B55; --r-homo:#27404F; --r-talc:#3A3A33; --r-caco3:#3F3A2E; --r-colour:#2A3C5C; --r-reclaim:#33402E;
-  --r-modifier:#43334A; --r-skin:#284540; --r-foam:#4A3C22; --r-other:#2E3842; color-scheme:dark}
+  --r-virgin:#3B6DB3; --r-homo:#1B7A70; --r-talc:#7A6620; --r-caco3:#A65A3A; --r-colour:#7A4FA8; --r-reclaim:#367A2C;
+  --r-modifier:#A8406F; --r-skin:#296F84; --r-foam:#8F6219; --r-other:#56636F; --r-ink:#FFFFFF; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);margin:0}
 .wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:18px 40px;display:grid;gap:16px}
@@ -87,7 +87,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .extrow{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start}
 .extrow .xl{font-family:var(--f-display);font-weight:600;font-size:20px;color:var(--muted);line-height:26px;text-align:center}
 .bar{display:flex;height:28px;border-radius:4px;overflow:hidden;border:1px solid var(--line);margin-bottom:6px}
-.bar span{display:flex;align-items:center;justify-content:center;font:600 12px var(--f-display);color:var(--seg-ink);min-width:0;overflow:hidden;white-space:nowrap;border-right:2px solid var(--panel);font-variant-numeric:tabular-nums}
+.bar span{display:flex;align-items:center;justify-content:center;font:600 12px var(--f-display);color:var(--r-ink);min-width:0;overflow:hidden;white-space:nowrap;border-right:2px solid var(--panel);font-variant-numeric:tabular-nums}
 .bar span:last-child{border-right:0}
 .legend{font-size:12.5px;color:var(--muted)}
 .foot{font-size:12.5px;color:var(--muted);display:grid;gap:2px;border-top:1px solid var(--line);padding-top:10px}
@@ -410,10 +410,31 @@ function tile(f, weight){
   const unit = weight ? (v.toLowerCase() === 'auto' ? 'balance' : '%') : 'speed';
   const gauge = !weight && !isNaN(num) ? `<div class="gauge" title="Auger motor speed ${num} of 100"><i style="width:${Math.min(100, num)}%"></i></div>` : '';
   return `<div class="tile ${fl ? 'flag-' + fl.cls : ''}">
-    <div class="pos"><span class="caps">${esc(f.col.replace('Extruder ', ''))}</span>${fl ? `<span class="chip ${fl.cls}">${fl.text}</span>` : `<span class="chip var" style="background:var(${ROLEVAR[role]});color:var(--seg-ink);border:0">${role.toLowerCase()}</span>`}</div>
+    <div class="pos"><span class="caps">${esc(f.col.replace('Extruder ', ''))}</span>${fl ? `<span class="chip ${fl.cls}">${fl.text}</span>` : `<span class="chip var" style="background:var(${ROLEVAR[role]});color:var(--r-ink);border:0">${role.toLowerCase()}</span>`}</div>
     <div class="mat">${sw ? `<span class="sw" style="background:var(${sw[1]})"></span>` : ''}<span>${esc(f.mat || '—')}</span></div>
     <div class="setv">${esc(v)}<small>${unit}</small></div>${gauge}
     <div class="id">${f.id ? esc(f.id) + (m?.code ? ' · ' + esc(m.code) : '') : 'no IWPFT062 no.'}</div></div>`;
+}
+function pctBar(segs, label){   // segs: [{mat, p, role, auto}] -> one stacked weight % bar
+  return `<div class="bar" role="img" aria-label="${esc(label)}: ${segs.map(s => `${esc(s.mat)} ${Math.round(s.p * 10) / 10}%`).join(', ')}">${segs.filter(s => s.p > 0).map(s =>
+    `<span style="flex:${s.p};background:var(${ROLEVAR[s.role]})" title="${esc(s.mat)} ${s.p.toFixed(1)}%${s.auto ? ' (Auto)' : ''}">${s.p >= 4 ? (Math.round(s.p * 10) / 10) + '%' : ''}</span>`).join('')}</div>`;
+}
+// auger line: weight % from each hopper's calibration (build.py), so every formulation shows its blend (James, 27 Oct 2026:
+// "make sure this weight is display on every one so i can easily monitor them")
+function augerBar(f){
+  const segs = f.feeders.filter(x => x.w != null).map(x => ({mat: x.mat, p: parseFloat(x.w) || 0, role: matOf(x)?.role || 'OTHER'}));
+  if (!segs.length) return f.wnote ? `<p class="muted" style="font-size:13px;margin:0 0 6px">Weight % not worked out: ${esc(f.wnote)}</p>` : '';
+  return `<div class="caps" style="margin:2px 0 4px">Weight % (auger speed × hopper calibration)</div>${pctBar(segs, 'Blend by weight')}`;
+}
+function weightPct(f){           // weight line: one bar per extruder, no tiles (operator view)
+  const by = {};
+  f.feeders.forEach(x => { const e = (x.col.replace('Extruder ', '').match(/^([A-D]) /) || [, ''])[1]; (by[e] = by[e] || []).push(x); });
+  return Object.entries(by).map(([e, list]) => {
+    const fixed = list.filter(x => String(x.set).toLowerCase() !== 'auto').reduce((a, x) => a + (parseFloat(x.set) || 0), 0);
+    const segs = list.map(x => { const auto = String(x.set).toLowerCase() === 'auto';
+      return {mat: x.mat, p: auto ? Math.max(0, 100 - fixed) : parseFloat(x.set) || 0, role: matOf(x)?.role || 'OTHER', auto}; });
+    return (e ? `<div class="caps" style="margin:2px 0 4px">Extruder ${e}</div>` : '') + pctBar(segs, `Extruder ${e || 'main'} blend`);
+  }).join('');
 }
 function weightBars(fs){
   const by = {};
@@ -422,8 +443,7 @@ function weightBars(fs){
     const fixed = list.filter(f => String(f.set).toLowerCase() !== 'auto').reduce((a, f) => a + (parseFloat(f.set) || 0), 0);
     const segs = list.map(f => { const auto = String(f.set).toLowerCase() === 'auto'; const p = auto ? Math.max(0, 100 - fixed) : parseFloat(f.set) || 0;
       const role = matOf(f)?.role || 'OTHER'; return {f, p, auto, role}; });
-    const bar = `<div class="bar" role="img" aria-label="Extruder ${x || 'main'} blend: ${segs.map(s => `${s.f.mat} ${Math.round(s.p * 10) / 10}%`).join(', ')}">${segs.filter(s => s.p > 0).map(s =>
-      `<span style="flex:${s.p};background:var(${ROLEVAR[s.role]})" title="${esc(s.f.mat)} ${s.p.toFixed(1)}%${s.auto ? ' (Auto)' : ''}">${s.p >= 6 ? (Math.round(s.p * 10) / 10) + '%' : ''}</span>`).join('')}</div>`;
+    const bar = pctBar(segs.map(s => ({mat: s.f.mat, p: s.p, role: s.role, auto: s.auto})), `Extruder ${x || 'main'} blend`);
     return `<div class="extrow"><div class="xl">${x || '·'}</div><div>${bar}<div class="feeders">${list.map(f => tile(f, true)).join('')}</div></div></div>`;
   }).join('');
 }
@@ -441,7 +461,7 @@ function renderLine(){
       <div class="orders">${g.orders.map(o => `<div class="order"><span class="o">${esc(o.order)}</span><span class="p"><span class="mono">${esc(o.prod || '')}</span>${o.colors ? ' · ' + esc(o.colors) : ''}${o.thk ? ' · ' + esc(o.thk) + ' mm' : ''}</span></div>`).join('')}</div>
       ${g.formulas.map((f, i) => `<div class="formula"><div class="fhead"><span class="code">${esc(f.code)}</span><span class="chip ${(f.role ? f.role === 'Secondary' : i) ? 'var' : 'ok'}">${f.role ? esc(f.role) : (i ? 'Alternate' : 'Primary')}</span>${f.note ? `<span class="note">${esc(f.note)}</span>` : ''}</div>
         ${!f.feeders.length ? '<div class="noform">No settings for it on this line yet: an engineer sets them before it runs.</div>'
-          : l.dosing === 'WEIGHT' ? weightBars(f) : `<div class="feeders">${l.cols.map(c => { const x = f.feeders.find(y => y.col === c); return x ? tile(x, false) : `<div class="tile empty"><div class="pos"><span class="caps">${esc(c)}</span></div><div class="mat">not used</div></div>`; }).join('')}</div>`}
+          : l.dosing === 'WEIGHT' ? weightBars(f) : augerBar(f) + `<div class="feeders">${l.cols.map(c => { const x = f.feeders.find(y => y.col === c); return x ? tile(x, false) : `<div class="tile empty"><div class="pos"><span class="caps">${esc(c)}</span></div><div class="mat">not used</div></div>`; }).join('')}</div>`}
       </div>`).join('')}</div>`).join('')}
     ${l.notes.length ? `<div class="foot">${l.notes.map(esc).join('<br>')}</div>` : ''}`;
 }
@@ -583,7 +603,7 @@ function renderOp(){
           <span>Size <b>${esc(o.size)}</b></span><span>GSM <b>${esc(o.gsm || '')}</b></span><span>Pallets <b>${o.plt_real ? o.plt_real.toLocaleString() : esc(o.plt || '')}</b>${o.plt_real ? ' <span class="muted">(AS400 prints 999)</span>' : ''}</span><span>Die <b class="mono">${esc(o.die || '')}</b></span></div></div>
         ${o.si ? `<div class="si ${watch.test(o.si) ? 'watch' : ''}">${esc(o.si)}</div>` : ''}
         ${g ? `<div class="forms">${g.formulas.map((f, i, all) => `<div class="form ${i === 0 ? 'first' : ''}"><div class="fhead"><span class="when">${whenLabel(f, i, all)}</span><span class="code">${esc(f.code)}</span></div>
-            ${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></div>`).join('')}</div>`
+            ${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}${weight ? weightPct(f) : augerBar(f)}<table class="sets">${setRows(f, weight)}</table></div>`).join('')}</div>`
           : `<div class="noform">${DRAFT ? (o.exc ? `An engineer completes it: ${esc(o.exc)}. Ask before starting.`
             : 'New on this line: no formulation issued for it yet. An engineer completes it; ask before starting.') : 'No formulation on the FRM for this order. Ask Tech before starting.'}</div>`}
       </article>`; }).join('')}</div>
