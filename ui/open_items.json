@@ -224,6 +224,11 @@
   "resolved": [
     {
       "date": "2026-10-27",
+      "title": "Floor cover RPP40WB1625: RU0000WB4 only, no Secondary",
+      "detail": "James, 27 Oct (\"Key-in only\" on SE24 RP25710-1 in the printed 26 Oct copy): \"Product RPP40WB1625, have it only run with RU0000WB4 only. RPP40WB1625 is call floor cover. we use it to cover the floor so if we dont use reclaim, we are wasting money.\" The RU0022WB4 Secondary no longer prints for it (SE24 RP25710-1, SE25 RP26717-2)."
+    },
+    {
+      "date": "2026-10-27",
       "title": "Corn box: DPP40WB1235 always; Secondary FU0022WB4; SE23 at 60 reclaim",
       "detail": "James's review of the printed 26 Oct copy. DPP40WB1235 is corn box on every line even when the order does not say CORN BOX (SE21 RP26512-1 now FU0021WB4 + FU0022WB4). \"use FU0022WB4 as corn box secondary everywhere\" (W% row FU0041WB4 \"Secondary Corn box\" carries the new name). SE23 FU0021WB4 is Tech's older 45/10/60/20 recipe (on file since 23 Sep), not 35/10/45/20 + F1203K 80: \"we can be more agressive with white reclaim when it comes to cornbox\" - \"lets use the older one with 60 speed on reclaim\"."
     },

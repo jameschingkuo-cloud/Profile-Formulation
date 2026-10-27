@@ -867,6 +867,10 @@ QUAL_NOTE = {'void': 'For VOIDFORM order only', 'corn': '(CORN BOX FORMULA)', 's
              'roll': '(For roll material only)'}
 QMARK = ('roll', 'void', 'corn', 'sign', 'ltl')     # qualifiers Tech writes on a page row ("(For roll material only)")
 SPECIAL_ONLY = {'void'}                               # VOIDFORM: its special formula, one Main, no Secondary
+# Products that run their Primary only, no Secondary: James, 27 Oct 2026, on SE24 RP25710-1 (R4, "Key-in only" on the
+# printed copy): "Product RPP40WB1625, have it only run with RU0000WB4 only. RPP40WB1625 is call floor cover. we use it
+# to cover the floor so if we dont use reclaim, we are wasting money."
+PRIMARY_ONLY = {'RPP40WB1625': 'floor cover: reclaim only, no Secondary'}
 # (roll had none too, James 24 Oct 2026; 26 Oct 2026, asked whether roll orders show Tech's roll run-out FU0001WB4 "(For roll
 # material only) (Use this formula in case PP WB Reclaim is run out)" as the Secondary: "yes")
 
@@ -1030,6 +1034,9 @@ def formulation(line, row, day, issued, own=None):
             run_out = tech_run_out(line, main, want, own)
         if run_out:
             members.append(run_out)
+    if (row.get('prod_code') or '') in PRIMARY_ONLY:
+        members = [x for x in members if x['role'] == 'Primary']
+        sec = run_out = None
     how = f"James's Primary {main['code']}" + (f" + Secondary {sec['code']}" if sec else '') +         (f" + Secondary {run_out['code']} (Tech's run-out on {line}; no Secondary in the W% Master)" if run_out else '')
     return {'members': members, 'key': key, 'how': how, 'want': want}, ''
 

@@ -609,3 +609,15 @@ def test_chosen_recipe_fua060wba():
     f = lambda h1, h3: {'formula_code': 'FUA060WBA', 'feeders': {'Hopper 1': {'set': h1}, 'Hopper 3': {'set': h3}}}
     assert assign.one_row([f('20', '90'), f('30', '75')], 'FUA060WBA')[0]['feeders']['Hopper 3']['set'] == '75'
     assert assign.one_row([f('20', '90')], 'FUA060WBA')[0]['feeders']['Hopper 3']['set'] == '90'
+
+
+def test_floor_cover_primary_only():
+    # James, 27 Oct 2026: "Product RPP40WB1625, have it only run with RU0000WB4 only ... floor cover"
+    import resolve
+    pk = resolve.load_packets()
+    issued = assign.issued_on_line(pk)
+    assign.set_pages(pk)
+    r = {'order': 'NEW-1', 'prod_code': 'RPP40WB1625', 'mat_spec': 'PPP P R4R4R4', 'special_instructions': '',
+         'thk': '4.0', 'colors': 'WB WB WB'}
+    fm, _ = assign.formulation('SE25', r, datetime.date(2026, 11, 2), issued)
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'RU0000WB4')]
