@@ -42,7 +42,9 @@ WEIGHT = {'SE24', 'SE42', 'SE43', 'SE61'}
 LINE_NO = {'SE11': 1, 'SE12': 2, 'SE13': 3, 'SE21': 4, 'SE22': 5, 'SE23': 6, 'SE24': 7, 'SE31': 8, 'SE32': 9, 'SE25': 10,
            'SE42': 12, 'SE43': 13, 'SE61': 16}
 FONT = 'Times New Roman'          # as on Tech's pages
-GREY, AMBER, RED = RGBColor(0x55, 0x5F, 0x6B), RGBColor(0x9A, 0x62, 0x12), RGBColor(0xB3, 0x26, 0x1E)
+# Black and white only: production prints on a black-and-white printer (James Kuo, 27 Oct 2026: "no BLACK, make everything
+# black and white"). Emphasis is bold / italic, never colour or shading.
+BLACK = RGBColor(0, 0, 0)
 
 
 # Printed as decided by James (29 Sep 2026), without a "(replaces ...)" note: spelling / naming only, same material.
@@ -155,13 +157,6 @@ def build_lines(today, draft, exc, page):
 
 
 # ---- docx helpers --------------------------------------------------------------------------------------------------
-def shade(cell, hex_fill):
-    tcPr = cell._tc.get_or_add_tcPr()
-    shd = OxmlElement('w:shd')
-    shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), hex_fill)
-    tcPr.append(shd)
-
-
 def para(cell_or_doc, text='', size=10, bold=False, color=None, align=None, italic=False, space_after=0):
     p = cell_or_doc.add_paragraph()
     if align is not None:
@@ -257,18 +252,18 @@ def render(today, lines, exc, out):
     # header / footer on every page
     hp = sec.header.paragraphs[0]; hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     run(hp, f'{status} · not for production until issued by Technical (IWPFO055 §5.3)' if n_exc or n_set else
-        'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=RED if n_exc or n_set else GREY)
+        'Prepared by the formulation pipeline · issued only when signed by Technical (IWPFO055 §5.3)', 8, color=BLACK)
     fp = sec.footer.paragraphs[0]
-    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation by the rules of 23 Oct 2026 (James Kuo's W% Master), settings as Technical last issued them on the line · page", 8, color=GREY)
+    run(fp, f"Schedule {today.get('source_scan', '')} · packet {PKT}{' (step 1: read by the scan reader)' if today.get('stage') == 1 else ''} · formulation by the rules of 23 Oct 2026 (James Kuo's W% Master), settings as Technical last issued them on the line · page", 8, color=BLACK)
     page_field(fp)
 
     # ---- cover
-    para(doc, 'Inteplast Profile Plant · WPJK · Technical', 10, color=GREY)
+    para(doc, 'Inteplast Profile Plant · WPJK · Technical', 10, color=BLACK)
     para(doc, f'Extrusion Formulations · {us}', 26, bold=True, space_after=2)
     para(doc, f"{len(lines)} lines · {n_orders} orders · from the extrusion schedule {today.get('source_scan', '')}", 12, space_after=8)
     box = doc.add_table(rows=1, cols=1); box.alignment = WD_TABLE_ALIGNMENT.LEFT
-    c = box.rows[0].cells[0]; shade(c, 'F8E0DE' if n_exc or n_set else 'DFF1E6')
-    cell_text(c, f'{status}', 16, True, RED if n_exc or n_set else RGBColor(0x2A, 0x72, 0x48), WD_ALIGN_PARAGRAPH.LEFT)
+    c = box.rows[0].cells[0]
+    cell_text(c, f'{status}', 16, True, BLACK, WD_ALIGN_PARAGRAPH.LEFT)
     para(c, (f'{n_exc} order{"s" if n_exc != 1 else ""} have no formulation yet' + (f'; {n_set} have a Primary or Secondary with no settings on its line' if n_set else '') +
              '. An engineer completes them (table below), then Technical signs the issue block. Until then, do not run from this copy.') if n_exc or n_set else
          'Every order has its formulation. Technical checks and signs the issue block, then it goes to the floor.', 11)
@@ -293,7 +288,7 @@ def render(today, lines, exc, out):
         t = doc.add_table(rows=1, cols=6); t.style = 'Table Grid'
         hdr = ['Line', 'Order', 'Product', 'Why', 'Suggestion (not used)', 'Formula decided / by']
         for i, hd in enumerate(hdr):
-            cell_text(t.rows[0].cells[i], hd, 9.5, True); shade(t.rows[0].cells[i], 'E9EDF1')
+            cell_text(t.rows[0].cells[i], hd, 9.5, True)
         repeat_header(t.rows[0])
         for ln in lines:
             for g in ln['groups']:
@@ -318,7 +313,7 @@ def render(today, lines, exc, out):
     para(doc, 'Issue (IWPFO055 §5.3 – §5.5)', 12, bold=True, space_after=2)
     it = doc.add_table(rows=2, cols=4); it.style = 'Table Grid'
     for i, hd in enumerate(['Issued by (Technical)', 'Signature', 'Date / time', 'Copy in "Schedule" binder (§5.4)']):
-        cell_text(it.rows[0].cells[i], hd, 9.5, True); shade(it.rows[0].cells[i], 'E9EDF1')
+        cell_text(it.rows[0].cells[i], hd, 9.5, True)
     it.rows[1].height = Inches(0.45)
     cell_text(it.rows[1].cells[3], '☐', 14)
     set_widths(it, [Inches(2.6), Inches(2.6), Inches(2.0), Inches(2.9)])
@@ -332,13 +327,13 @@ def render(today, lines, exc, out):
         run(mp, us, 11, True)          # Tech's "AC = 1 / 90" not printed (James, 27 Oct 2026: "lets take it out. not sure what it is")
         para(doc, ('Weight blender: Set = weight %. Each extruder adds to 100; Auto = the balance.' if ln['weight'] else
                    'Auger feeders: Set = auger speed, 0 to 100 (not %).') + '  Several formulations: run the first while reclaim lasts, then the next.',
-             9.5, italic=True, color=GREY, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=4)
+             9.5, italic=True, color=BLACK, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=4)
         cols = ln['cols']
         ncol = 3 + len(cols)
         t = doc.add_table(rows=1, cols=ncol); t.style = 'Table Grid'; t.alignment = WD_TABLE_ALIGNMENT.CENTER
         heads = ['Order #', 'Formula Code'] + [(f'Extruder {e} · {f}' if e else f) for e, f in cols] + ['Note']
         for i, hd in enumerate(heads):
-            cell_text(t.rows[0].cells[i], hd, 9.5 if len(cols) > 6 else 11, True); shade(t.rows[0].cells[i], 'E9EDF1')
+            cell_text(t.rows[0].cells[i], hd, 9.5 if len(cols) > 6 else 11, True)
         repeat_header(t.rows[0])
         for g in ln['groups']:
             first_row = None
@@ -349,26 +344,24 @@ def render(today, lines, exc, out):
                 if f is None:   # no formulation: one wide cell to write it in by hand, never a guess
                     rr.height = Inches(0.55)
                     wide = rr.cells[1].merge(rr.cells[ncol - 2])
-                    shade(wide, 'FBF0DB'); shade(rr.cells[ncol - 1], 'FBF0DB')
-                    cell_text(wide, 'ENGINEER TO COMPLETE: formula code and settings', 10, True, AMBER, WD_ALIGN_PARAGRAPH.LEFT)
-                    cell_text(rr.cells[ncol - 1], (g['exc'][0] or {}).get('Reason', '') if g['exc'] else '', 8.5, color=AMBER)
+                    cell_text(wide, 'ENGINEER TO COMPLETE: formula code and settings', 10, True, BLACK, WD_ALIGN_PARAGRAPH.LEFT)
+                    cell_text(rr.cells[ncol - 1], (g['exc'][0] or {}).get('Reason', '') if g['exc'] else '', 8.5, color=BLACK)
                     continue
                 if not f['feeders']:            # Primary / Secondary with no settings on this line: written in by the engineer
                     rr.height = Inches(0.45)
                     cell_text(rr.cells[1], f['code'], 11)
                     lab = when_label(forms, i)
                     if lab:
-                        para(rr.cells[1], lab, 8.5, bold=True, color=RED if 'runs out' in lab else GREY, align=WD_ALIGN_PARAGRAPH.CENTER)
+                        para(rr.cells[1], lab, 8.5, bold=True, color=BLACK, align=WD_ALIGN_PARAGRAPH.CENTER)
                     if len(cols) >= 1:
                         wide = rr.cells[2].merge(rr.cells[ncol - 2])
-                        shade(wide, 'FBF0DB')
-                        cell_text(wide, f"ENGINEER TO SET: settings for {f['code']} on this line", 10, True, AMBER, WD_ALIGN_PARAGRAPH.LEFT)
-                    cell_text(rr.cells[ncol - 1], f['note'], 8.5, color=AMBER)
+                        cell_text(wide, f"ENGINEER TO SET: settings for {f['code']} on this line", 10, True, BLACK, WD_ALIGN_PARAGRAPH.LEFT)
+                    cell_text(rr.cells[ncol - 1], f['note'], 8.5, color=BLACK)
                     continue
                 cp = cell_text(rr.cells[1], f['code'], 11)
                 lab = when_label(forms, i)
                 if lab:
-                    para(rr.cells[1], lab, 8.5, bold=True, color=RED if 'runs out' in lab else GREY, align=WD_ALIGN_PARAGRAPH.CENTER)
+                    para(rr.cells[1], lab, 8.5, bold=True, color=BLACK, align=WD_ALIGN_PARAGRAPH.CENTER)
                 for ci, key in enumerate(cols, start=2):
                     v = f['feeders'].get(key)
                     if not v:
@@ -377,7 +370,7 @@ def render(today, lines, exc, out):
                     mat, st_, printed = v
                     cell_text(rr.cells[ci], mat, 9 if len(cols) > 6 else 10, bool(printed))
                     if printed:
-                        para(rr.cells[ci], f'(replaces {printed})', 7.5, italic=True, color=AMBER, align=WD_ALIGN_PARAGRAPH.CENTER)
+                        para(rr.cells[ci], f'(replaces {printed})', 7.5, italic=True, color=BLACK, align=WD_ALIGN_PARAGRAPH.CENTER)
                     sv = str(st_ or '')
                     if ln['weight'] and sv.lower() == 'auto':
                         ext = key[0]
@@ -394,7 +387,7 @@ def render(today, lines, exc, out):
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER; p.paragraph_format.space_after = Pt(0)
                 run(p, o['order'], 10.5, True)
                 q = oc.add_paragraph(); q.alignment = WD_ALIGN_PARAGRAPH.CENTER; q.paragraph_format.space_after = Pt(1)
-                run(q, o['prod_code'], 7.5, color=GREY)
+                run(q, o['prod_code'], 7.5, color=BLACK)
             oc.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
         usable = 10.1
         w_order, w_code, w_note = 1.55, 1.25, 1.45
