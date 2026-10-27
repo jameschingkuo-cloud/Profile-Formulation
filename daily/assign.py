@@ -42,6 +42,10 @@ LATER_NOTES = [
     # over" (the new note must not name the qualifier, or the row would read as one)
     ('FU0001WBD', 'Secondary Packing grade',
      'Secondary Packing grade, change name to FU0002WBD (James, 26 Oct 2026; same W% as FU0001WBD)'),
+    # corn box Secondary: James, 27 Oct 2026: "use FU0022WB4 as corn box secondary everywhere" (FU0022WB4 is also the name
+    # of Tech's virgin-only corn box run-out, RUN_OUT_NAMES)
+    ('FU0041WB4', 'Secondary Corn box',
+     'Secondary Corn box, change name to FU0022WB4 (James, 27 Oct 2026: "use FU0022WB4 as corn box secondary everywhere")'),
 ]
 
 # codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
