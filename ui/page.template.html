@@ -433,7 +433,7 @@ function renderLine(){
   const n = l.groups.reduce((a, g) => a + g.orders.length, 0);
   const iss = issuesFor(l.code);
   $('#line').innerHTML = `
-    <div class="linehead"><div><div class="caps">Line ${l.no}${l.ac ? ' · ' + esc(l.ac) : ''}</div><h2>${l.code} · ${n} order${n > 1 ? 's' : ''}</h2>
+    <div class="linehead"><div><div class="caps">Line ${l.no}</div><h2>${l.code} · ${n} order${n > 1 ? 's' : ''}</h2>
       <p>${l.dosing === 'WEIGHT' ? 'Weight blender: Set is weight %, each extruder adds to 100, Auto takes the balance.' : 'Auger dosing: Set is motor speed 0–100, not a percentage. Weight % needs the hopper\'s calibration slope.'}</p></div>
       <span class="chip ${l.dosing === 'WEIGHT' ? 'weight' : 'auger'}">${l.dosing === 'WEIGHT' ? 'Weight blender' : 'Auger'}</span></div>
     ${iss.length ? `<div class="legend">${iss.map(i => `<span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span> ${esc(i.check)}`).join(' &nbsp; ')}</div>` : ''}
@@ -570,7 +570,7 @@ function renderOp(){
   if (!l) { $('#opline').innerHTML = '<p class="muted">No line on this day’s schedule.</p>'; return; }
   const weight = l.dosing === 'WEIGHT';
   const watch = /watch|weight|range|void\s*form|corn\s*box|roll|check/i;
-  $('#opline').innerHTML = `<div class="ophead"><div><div class="caps">Line ${l.no}${l.ac ? ' · ' + esc(l.ac) : ''} · ${fmtDate(D.day)}</div><h2>${l.code} · ${l.sched.length} order${l.sched.length === 1 ? '' : 's'}</h2>
+  $('#opline').innerHTML = `<div class="ophead"><div><div class="caps">Line ${l.no} · ${fmtDate(D.day)}</div><h2>${l.code} · ${l.sched.length} order${l.sched.length === 1 ? '' : 's'}</h2>
       <p>${weight ? 'Weight blender: every setting is <b>weight %</b>. Each extruder adds up to 100; Auto takes the rest.' : 'Auger feeders: every setting is <b>motor speed, 0 to 100</b>. It is not a percentage.'}
       Where an order has more than one formulation, they are shown in run order: reclaim first (use up the scrap before virgin PP), then down the list.${RULES
         ? ' A Secondary is the virgin formulation for the same order: switch to it when reclaim runs out.' : ''}</p></div>

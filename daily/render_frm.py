@@ -329,7 +329,7 @@ def render(today, lines, exc, out):
         tp = para(doc, '', align=WD_ALIGN_PARAGRAPH.CENTER)
         run(tp, f"Line {ln['no']} ({ln['line']})  Formulations", 22, True)
         mp = para(doc, '', align=WD_ALIGN_PARAGRAPH.RIGHT)
-        run(mp, (ln['ac'] + '    ' if ln['ac'] else '') + us, 11, True)
+        run(mp, us, 11, True)          # Tech's "AC = 1 / 90" not printed (James, 27 Oct 2026: "lets take it out. not sure what it is")
         para(doc, ('Weight blender: Set = weight %. Each extruder adds to 100; Auto = the balance.' if ln['weight'] else
                    'Auger feeders: Set = auger speed, 0 to 100 (not %).') + '  Several formulations: run the first while reclaim lasts, then the next.',
              9.5, italic=True, color=GREY, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=4)
