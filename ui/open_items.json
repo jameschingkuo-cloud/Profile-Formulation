@@ -7,20 +7,6 @@
       "items": [
         {
           "sev": "Low",
-          "title": "FR0021FW4 -> FRA021FW4",
-          "detail": "SE21 FW 4 mm flame retardant (RP26826-6). James: \"ok we need to change it to FRA as well\". Printed as FRA021FW4 now (assign.LATER_RENAMES); the W% Master has no FW 4 mm row yet - add FRA021FW4 (FR0021WB4 / FRA021WB4 is the row that runs on FW orders). Tech's SE21 page still prints FR0021FW4.",
-          "where": "W% Master / FRM SE21",
-          "source": "26 Oct"
-        },
-        {
-          "sev": "Low",
-          "title": "F1102K / Q1203K on Tech's pages",
-          "detail": "Obsolete numbers the engineer has not cleaned up yet (e.g. SE21 FR0021FW4 Hopper 3). Printed as F1203K with no note.",
-          "where": "FRM pages",
-          "source": "26 Oct"
-        },
-        {
-          "sev": "Low",
           "title": "Black sources: Tech's pages vs IWPFT062",
           "detail": "Tech's SE11, SE21, SE42, SE43 and SE61 pages print the black as \"NPC PE90000F (or Spartech B60009 or MDI PE-500)\" and similar. IWPFT062 rev 18 lists CR400K NPC PE-B9000F with approved second sources Avient 3800 Black PEC, MDI Black PE-500 and Ampacet 19501 Black PE MB; Spartech B60009 and PolyOne LD-250 are not on it. James, 27 Oct: \"we should follow it\". The Word file and this page now print the IWPFT062 sources (the source Tech names first stays first). Tech's pages to be updated.",
           "where": "FRM pages",
@@ -118,38 +104,10 @@
         },
         {
           "sev": "High",
-          "title": "SE21 R4 black: which hopper layout",
-          "detail": "H6AA173-1 (RU0000KS5) is CALCULATED from Tech's issued R4 black on SE21 (RU0000KS4, 23-25 Sep): Mix Reclaim hopper 3 99, KS colour hopper 4 11 (98/2). Tech's calc workbook has reclaim on hopper 1 at 65 instead; on that layout it would be hopper 1 69, hopper 4 20.",
-          "where": "SE21",
-          "source": "R11, 24 Oct"
-        },
-        {
-          "sev": "High",
           "title": "RPP40FW2 (FW 4 mm, spec F4F4F4): no Main",
           "detail": "RP26826-6 has no formula: no FR FW 4 mm row in the W% Master. Tech ran this product on SE21 as FR0022WB4 (calc sheet, last RP26708-2, Jul 2026), which you folded into FRA021WB4. Use FRA021WB4, or a new FW 4 mm name like FRA021FW3?",
           "where": "SE21",
           "source": "23 Oct draft"
-        },
-        {
-          "sev": "Medium",
-          "title": "RP26717-2 (R4 white 4 mm): RU0000WB4 or RU0001WB4",
-          "detail": "Tech has run it on RU0001WB4 (your \"Main, R2 LTL wrap\", 100% reclaim on SE25) since 23 Sep; the rule gives your R4 Main RU0000WB4 (also 100% reclaim, never run on SE25). The notes do not say LTL or WRAP.",
-          "where": "SE25",
-          "source": "23 Oct draft"
-        },
-        {
-          "sev": "Medium",
-          "title": "RUN WITH NEXT is not read",
-          "detail": "RP26717-1 (SE13) says RUN WITH NEXT; the next order is a sign blank on FUA152WB4, the rule gives FUA151WB4. Should RUN WITH take the partner's formula? (RP26A13-1, RP26901-1, RP26925-3 already match their partner.)",
-          "where": "SE13",
-          "source": "23 Oct schedule"
-        },
-        {
-          "sev": "Medium",
-          "title": "Tech's formulation sheets after 7 Oct",
-          "detail": "The newest Tech FRM pages on file are 7 Oct (2 and 5 Oct still to transcribe). 60 Friday orders take their settings from the 7 Oct pages; anything Tech changed since is not in.",
-          "where": "all lines",
-          "source": "packets"
         },
         {
           "sev": "Medium",
@@ -178,20 +136,6 @@
           "detail": "Customer or tolerance notes (FLEXCON on H69A040-1, Tulsa Plastics hold 6.2-6.5 mm on H67A165-1, GENESIS target 10 mm on H68A020-1) and DO NOT RUN / KEEP RUNNING (RP25710-1, RP26717-2) do not change the formula today. Any customer formulas?",
           "where": "schedule notes",
           "source": "23 Oct schedule"
-        },
-        {
-          "sev": "Low",
-          "title": "Friday's issued copy",
-          "detail": "The 23 Oct Word copy emailed by the scheduled run (old process, 58 for the engineer) stays as issued; the rule-based rebuild is on this page and in out/. Reissue only if you ask.",
-          "where": "FRM 23 Oct",
-          "source": "scheduled run"
-        },
-        {
-          "sev": "Low",
-          "title": "Small fixes pending",
-          "detail": "The page's Generate box shows the rules' answer only for the day the page was built (its reader does not read the spec or the notes).",
-          "where": "SE61 / this page",
-          "source": "24 Oct"
         }
       ]
     },
@@ -277,7 +221,7 @@
         {
           "sev": "Medium",
           "title": "Name the 12 customer-specific formulas",
-          "detail": "VOIDFORM, sign blank, corn box and roll formulas share codes with ordinary formulas (FUA152WB4 on SE12/13/31/32, FU0021WB4 on SE23/SE25) and are told apart only by the FRM note. Each gets its own code. The list, with the sequence numbers already taken, is on the Customer formulas tab. IWPFT057 describes a 7-digit code while 222 of 236 codes in use have 9 characters, so IWPFT057 needs revising alongside.",
+          "detail": "VOIDFORM, sign blank, corn box and roll formulas still share codes with other formulas in the W% Master and on Tech's pages: FU0021WB4 is VOIDFORM, corn box and roll; FUA152WB4 is the winter Main and sign blank (SE12/13/31/32). They are told apart by the note (the Word file prints it). Each gets its own code; the list, with the sequence numbers already taken, is on the Customer formulas tab. Since: FU0022WB4 (corn box Secondary) and FU0002WBD (WB 13 mm Secondary) named 26 Oct. IWPFT057 rev 5.0 (26 Oct) now gives the nine-digit code.",
           "where": "Customer formulas tab",
           "source": "James, 29 Sep 2026"
         },
@@ -320,6 +264,46 @@
     }
   ],
   "resolved": [
+    {
+      "date": "2026-10-27",
+      "title": "FW prints as grade A (FRA021FW4)",
+      "detail": "James, 27 Oct: \"all the FW (not black and white) product need to be A (graphic grade anyways\". Every FW code Tech prints with grade 0 prints as A (daily/assign.py GRADE_A_COLOURS; SE21 FR0021FW4 -> FRA021FW4). The W% Master FW row is already FRA021FW3; FRA021FW4 (FW 4 mm) and its W% stay on the W% Master v2 \"Open for James\" sheet."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "SE21 R4 black: hoppers 3 and 4, 98/2",
+      "detail": "James, 27 Oct, on Tech's RU0000KS4 (hopper 3 reclaim 99 / hopper 4 KS 10, 23 Sep - 13 Oct): \"this one is correct. use 3 and 4. weight rate is 98% to 2%\". SE21 R4 black now prints hopper 3 Mix Reclaim 99, hopper 4 KS 11 (98/2 on the line calibration), before Tech's rows; Tech's 23 Oct issues with reclaim on hopper 1 at 65 (H6AA173-1/-2) are not followed."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "Tech's formulation sheets on file to 23 Oct",
+      "detail": "Tech's FRM pages are on file for every day through 23 Oct (all 13 lines; 6-13, 19, 21-23 Oct added since). Days that came as the schedule only, with no Tech pages: 2, 5, 15, 16, 20 and 26 Oct. Settings come from the latest issue on file (23 Oct), so nothing Tech issued before then is missing."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "RP26717-2 is R4: RU0000WB4",
+      "detail": "James, 27 Oct: \"LTL is internal, we produce it to wrap our product. while R4 is external, we sell them to customer where they can use it as floor cover or some use where it doesnt require good board.\" RP26717-2 is a customer order, so R4 RU0000WB4 by rule is right; RU0001WB4 (LTL wrap) is for our own wrap."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "RUN WITH: the pair takes the stricter formulation",
+      "detail": "James, 27 Oct: two products run side by side on one line and are cut to size after; \"the formulation of the product should be identical\". Where the rules give the pair different formulations, both take the stricter one (\"Take the stricter one\"): RP26717-1 (graphic) RUN WITH NEXT RP26327-1 (sign blank) now runs FUA152WB4, noted on the row. Neither stricter: each keeps its own, noted for an engineer."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "F1102K / Q1203K print as F1203K",
+      "detail": "Obsolete numbers on Tech's pages (e.g. SE21 FR0021FW4 Hopper 3) print as F1203K in the Word file and on this page, with no note (James, 26 Oct: \"No need to talk about replacing F1102K\"). Tech's pages to be cleaned up by the engineer."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "23 Oct reissued by rule",
+      "detail": "James, 27 Oct: \"reissue it\". 23 Oct rebuilt with the current rules: 99 orders on 13 lines, 2 for an engineer (SE21 H6AA017-1 FUA031KS5 and RP26A15-1 FUA032KS4, no settings on SE21). Emailed to James as REPLACES the earlier copy (old process, 58 for the engineer) and published to Daily Formulation Report."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "Generate box: the rules' answer for any schedule on file",
+      "detail": "The Generate box gave the rules' answer only for the day the page was built. It now carries the rules' answer for every schedule on file (ui/rules_days.py runs the current rules over each day, about 30 s a day; the page says which date the rules are from). A date with no schedule on file says the daily run decides it. The page's Word export no longer says \"as last issued by Tech\"."
+    },
     {
       "date": "2026-10-26",
       "title": "U1 natural 10 mm runs FEA001NSA",

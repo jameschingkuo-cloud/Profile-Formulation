@@ -953,14 +953,22 @@ const same = (a, b) => a.length === b.length && a.every((f, i) => fkey(f) === fk
 function lookup(line, order, prod, date){
   // by rule since 23 Oct 2026 (James Kuo: "we use logic base formulation process. Remove old logic and apply new" - "No
   // history process. If logic don't work, ask engineering for help"). The rules run in the daily run (daily/assign.py);
-  // the page carries their answer for the day it was built for. An engineer's approved decision stands on any day.
+  // the page carries their answer for the day it was built for, and for every other schedule on file (ui/rules_days.py,
+  // the rules as of the date it ran). An engineer's approved decision stands on any day.
   const ap = (D.approved || {})[line + '|' + prod];
   if (ap?.length) return {how: 'approved', formulas: ap};
-  const l = RULES && date === D.day ? D.lines.find(x => x.code === line) : null, o = l?.sched.find(x => x.order === order);
-  if (o && o.g != null) return {how: 'rule', formulas: l.groups[o.g].formulas};
-  if (o) return {how: 'exception', why: o.exc || 'No formulation by rule: an engineer decides it'};
-  return {how: 'exception', why: RULES && date === D.day ? `Not on the ${line} schedule the daily run read: check the line and order on the paper`
-    : `Decided by rule in the daily run; this page carries the rules' answer for ${fmtDate(D.day)} only`};
+  if (RULES && date === D.day) {
+    const l = D.lines.find(x => x.code === line), o = l?.sched.find(x => x.order === order);
+    if (o && o.g != null) return {how: 'rule', formulas: l.groups[o.g].formulas};
+    if (o) return {how: 'exception', why: o.exc || 'No formulation by rule: an engineer decides it'};
+    return {how: 'exception', why: `Not on the ${line} schedule the daily run read: check the line and order on the paper`};
+  }
+  const R = (D.rules_by_date || {})[date];
+  if (!R) return {how: 'exception', why: `No schedule on file for ${fmtDate(date)}: the daily run decides it once the schedule comes in`};
+  const L = R.lines[line], v = L?.ord[order];
+  if (typeof v === 'number') return {how: 'rule', formulas: L.groups[v], asof: R.asof};
+  if (v != null) return {how: 'exception', why: v || 'No formulation by rule: an engineer decides it'};
+  return {how: 'exception', why: `Not on the ${line} schedule on file for ${fmtDate(date)}: check the line and order on the paper`};
 }
 const STATUS_CHIP = {
   'from the PDF text': () => '<span class="chip ok" title="Read from the text of the system PDF">PDF text</span>',
@@ -1009,7 +1017,7 @@ function render(reads, date, nPages){
       const form = r.how === 'exception'
         ? `<span class="noform">ENGINEER TO COMPLETE</span><div class="muted" style="font-size:13px">${esc(r.why)}</div>`
         : `<div class="fl">${r.formulas.map((f, k, all) => `<details><summary>${esc(whenLabel(f, k, all))} · ${esc(f.code)}</summary>${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></details>`).join('')}
-           <div class="muted" style="font-size:12px">${r.how === 'rule' ? 'By rule, as the daily run decided it' : 'Engineer decision (approved in the master)'}</div></div>`;
+           <div class="muted" style="font-size:12px">${r.how === 'rule' ? (r.asof ? `By rule (the rules as of ${fmtDate(r.asof)})` : 'By rule, as the daily run decided it') : 'Engineer decision (approved in the master)'}</div></div>`;
       const chip = (STATUS_CHIP[o.status] || (() => ''))(o);
       let orderCell = `<b class="mono">${esc(o.order)}</b> ${chip}`, prodCell = `${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
       if (flagged) {
@@ -1160,7 +1168,7 @@ async function buildDocx(plan){
   cover.push(P(T(''), {after: 6}), P(T('Issue (IWPFO055 §5.3 – §5.5)', {size: 12, bold: true}), {after: 2}),
     tbl(iw, [new TableRow({children: ['Issued by (Technical)', 'Signature', 'Date / time', 'Copy in "Schedule" binder (§5.4)'].map((h, i) => C([P(T(h, {size: 9.5, bold: true}), {align: AlignmentType.CENTER})], {w: IN(iw[i]), fill: 'E9EDF1'}))}),
              new TableRow({height: {value: IN(0.45), rule: 'atLeast'}, children: iw.map((x, i) => C([P(T(i === 3 ? '☐' : '', {size: 14}), {align: AlignmentType.CENTER})], {w: IN(x)}))})]),
-    P(T(`Generated in the Profile Formulation page on ${new Date().toLocaleString()} from ${plan.source || 'the schedule'}. Formulation: the latest issued by Tech for each order on its line.`, {size: 9, color: GREY}), {after: 0}));
+    P(T(`Generated in the Profile Formulation page on ${new Date().toLocaleString()} from ${plan.source || 'the schedule'}. Formulation by the rules of 23 Oct 2026 (James Kuo's W% Master), settings as Technical last issued them on the line.`, {size: 9, color: GREY}), {after: 0}));
 
   const pages = lines.flatMap(ln => {
     const cols = ln.cols, ncol = 3 + cols.length, wOrder = 1.55, wCode = 1.25, wNote = 1.45, wFeed = (USABLE - wOrder - wCode - wNote) / Math.max(1, cols.length);
@@ -1213,7 +1221,7 @@ async function buildDocx(plan){
   const doc = new Document({sections: [{
     properties: {page: {size: {width: 12240, height: 15840, orientation: PageOrientation.LANDSCAPE}, margin: {top: IN(0.45), bottom: IN(0.5), left: IN(0.45), right: IN(0.45)}}},
     headers: {default: new Header({children: [P(T(draft ? `${status} · not for production until issued by Technical (IWPFO055 §5.3)` : 'Prepared in the Profile Formulation page · issued only when signed by Technical (IWPFO055 §5.3)', {size: 8, color: draft ? RED : GREY}), {align: AlignmentType.RIGHT})]})},
-    footers: {default: new Footer({children: [new Paragraph({children: [T(`From ${plan.source || 'the schedule'} · schedule date ${plan.date} · formulation as last issued by Tech for each order on its line · page `, {size: 8, color: GREY}),
+    footers: {default: new Footer({children: [new Paragraph({children: [T(`From ${plan.source || 'the schedule'} · schedule date ${plan.date} · formulation by rule (James Kuo's W% Master) · page `, {size: 8, color: GREY}),
       new TextRun({children: [PageNumber.CURRENT], font: FONT, size: 16, color: GREY})]})]})},
     children: [...cover, ...pages],
   }]});

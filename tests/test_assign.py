@@ -395,7 +395,8 @@ def test_r4_black():
     fm, _ = assign.formulation(*sched['H6AA173-2'], day, issued)
     (x,) = fm['members']
     assert x['code'] == 'RU0000KS4' and all(assign.r4_recipe(f) for f in x['rows'])
-    assert {c: v['set'] for c, v in x['rows'][0]['feeders'].items() if v.get('set')} == {'Hopper 3': '99', 'Hopper 4': '10'}
+    # SE21: James's hoppers 3 and 4 at 98/2 before Tech's rows (James, 27 Oct 2026: "use 3 and 4. weight rate is 98% to 2%")
+    assert {c: v['set'] for c, v in x['rows'][0]['feeders'].items() if v.get('set')} == {'Hopper 3': '99', 'Hopper 4': '11'}
     packaging = {'formula_code': 'FU0041KS4', 'note': '', 'feeders': {'Hopper 1': {'material': 'PP Virgin-silo 3 (F6502A)', 'set': '32'},
                  'Hopper 3': {'material': 'PP Mix Reclaim', 'set': '70'}, 'Hopper 4': {'material': 'KS MB-CR401K', 'set': '35'}}}
     assert not assign.r4_recipe(packaging)

@@ -46,10 +46,11 @@ LATER_NOTES = [
 
 # codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
 # gets the row at the clean-up)
-LATER_RENAMES = {
-    'FR0021FW4': ('FRA021FW4', 'James, 26 Oct 2026, on RP26826-6 (SE21 FW 4 mm flame retardant): "ok we need to change '
-                               'it to FRA as well. make a notes, we will clean up after"'),
-}
+LATER_RENAMES = {}
+# FW is not black or white: an FW product is graphic grade 'A', so a '0' name Tech prints for it prints as 'A' (James,
+# 26 Oct 2026, on RP26826-6, SE21 FR0021FW4: "ok we need to change it to FRA as well"; 27 Oct 2026: "all the FW (not
+# black and white) product need to be A (graphic grade anyways")
+GRADE_A_COLOURS = ('FW',)
 
 # a run-out Tech prints under the Primary's own code inside a qualifier's group, given its own name by James (the name was
 # unused: not in the W% Master, Tech's calc workbooks, pages on file or the masters)
@@ -184,6 +185,8 @@ def current_name(code):
     points to several Mains stays as printed."""
     if code in LATER_RENAMES:
         return LATER_RENAMES[code][0]
+    if len(code) == 9 and code[2] == '0' and code[6:8] in GRADE_A_COLOURS:
+        return code[:2] + 'A' + code[3:]
     R = rules()
     if 'rename' not in R:
         current = {m['code'] for m in R['mains']}
@@ -351,6 +354,10 @@ def feeds_additives(f, m):
 
 
 R4_BLACK = (98.0, 2.0)     # % black reclaim, % black colour MB (James, 24 Oct 2026)
+# The hoppers an R4 black runs on, where James set them: SE21 reclaim on hopper 3, KS colour on hopper 4 (James, 27 Oct
+# 2026, on Tech's RU0000KS4 at hopper 3 99 / hopper 4 10, 23 Sep - 13 Oct: "this one is correct. use 3 and 4. weight rate
+# is 98% to 2%"; Tech's 23 Oct issues with reclaim on hopper 1 at 65 are not followed)
+R4_BLACK_HOPPERS = {'SE21': ('Hopper 3', 'Hopper 4')}
 _SLOPES = None
 
 
@@ -449,7 +456,10 @@ def r4_black_settings(line, m):
             continue
         for date, page, fs in gs:
             for f in fs:
-                if f['formula_code'][-3:-1] == 'KS' and r4_recipe(f) and (best is None or date > best[0]):
+                hop = R4_BLACK_HOPPERS.get(line)
+                used = {c for c, v in f['feeders'].items() if v.get('material') and str(v.get('set') or '').strip() not in ('', '0')}
+                if (f['formula_code'][-3:-1] == 'KS' and r4_recipe(f) and (hop is None or used == set(hop))
+                        and (best is None or date > best[0])):
                     best = (date, page, f)
     if best:
         date, page, f = best
@@ -966,7 +976,11 @@ def formulation(line, row, day, issued, own=None):
         pair.append(('Secondary', sec))
     members = []
     for role_, m in pair:
-        rows, src = member_settings(line, m, want, issued, own)
+        rows = None
+        if line in R4_BLACK_HOPPERS and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
+            rows, src = r4_black_settings(line, m)          # James's R4 black hoppers and 98/2, before Tech's rows
+        if rows is None:
+            rows, src = member_settings(line, m, want, issued, own)
         if rows is None and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
             rows, src = r4_black_settings(line, m)          # James, 24 Oct 2026: R4 black, 98% reclaim + 2% colour
         if rows is None:

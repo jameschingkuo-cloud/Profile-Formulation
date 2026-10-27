@@ -97,14 +97,14 @@ def draft_vs_tech(day, P):
             'to_set': to_set, 'rules': rules, 'close': close}
 
 
-def draft_lines(day, P, meta):
+def draft_lines(day, P, meta, src=None):
     """A day with no Tech FRM pages yet (2 Oct 2026: the schedule came alone, as the system's PDFs): the lines from the
     FRM Draft - each order's formulation by rule since 23 Oct 2026 (Primary and Secondary, R9), the same as the Word file
     (daily/render_frm.py). Orders sharing the same formulas are one group; an Exception has no group: the page shows it
     as 'an engineer completes it', with the reason. A formulation whose settings are not set yet has no feeders (its note
     says ENGINEER TO SET). Feeder columns and notes from Tech's latest page for the line."""
     from resolve import split_feeder
-    src = config.OUTPUT_DIR / f'FRM Draft {day}.xlsx'
+    src = src or config.OUTPUT_DIR / f'FRM Draft {day}.xlsx'
     if not src.exists():
         raise SystemExit(f'No FRM pages and no {src.name}: run PKT_DATE={day} python daily/resolve.py first')
     config.record_read(src, 'FRM Draft (interface copy)')
@@ -149,6 +149,23 @@ def draft_lines(day, P, meta):
         lines.append({'code': lc, 'no': LN.get(lc), 'dosing': DOS.get(lc, 'AUGER'), 'cols': cols, 'ac': m.get('ac', ''),
                       'groups': groups, 'notes': m.get('notes', []), 'sched': sched})
     return lines
+
+
+def rules_by_date(pk, day, meta):
+    """The rules' answer for every other schedule on file, for the Generate box (ui/rules_days.py writes them to
+    work/rules/): date -> {'asof': when the rules ran, 'lines': {line: {'groups': [formulas], 'ord': {order: group index,
+    or the Exception's reason}}}}. The built day is the page's own lines."""
+    out = {}
+    for d in sorted(pk):
+        src = ROOT / 'work' / 'rules' / f'FRM Draft {d}.xlsx'
+        if d == day or not src.exists():
+            continue
+        ls = {}
+        for ln in draft_lines(d, pk[d], meta, src):
+            ls[ln['code']] = {'groups': [g['formulas'] for g in ln['groups']],
+                              'ord': {o['order']: o['g'] if o['g'] is not None else (o['exc'] or '') for o in ln['sched']}}
+        out[d] = {'asof': datetime.datetime.fromtimestamp(src.stat().st_mtime).strftime('%Y-%m-%d'), 'lines': ls}
+    return out
 
 
 def record_rows():
@@ -352,6 +369,7 @@ def main():
             'products': product_codes(),
             'hist_pairs': history_pairs(),
             'approved': approved_decisions(sheet),
+            'rules_by_date': rules_by_date(pk, day, line_layout({d: p for d, p in pk.items() if d <= day})),
             'linemeta': line_layout(pk),
             'code_rule': {'colours': sorted(product_code.COLOURS), 'families': sorted(product_code.FAMILIES)}}
     t = (ROOT / 'ui' / 'page.template.html').read_text(encoding='utf-8')

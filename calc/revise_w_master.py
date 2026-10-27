@@ -231,8 +231,10 @@ def main():
          'Add FU0022WB4 "Secondary Corn box" (W% from Tech’s SE23 row); FU0041WB4 -> archive or keep?'],
         ['FW 4 mm flame retardant (26 Oct)',
          'No FW 4 mm row. Tech issues FR0021FW4 on SE21 (RP26826-6 RPP40FW2, WB:IS premix, FR-GPP3003MP); James: "ok we need to change it to FRA '
-         'as well" - printed as FRA021FW4 (daily/assign.py LATER_RENAMES). FR0021WB4 / FRA021WB4 is the row whose orders are FW.',
-         'Add FRA021FW4 as the FW 4 mm Main (and FR0021WB4 / FRA021WB4 -> ?)'],
+         'as well"; 27 Oct: "all the FW (not black and white) product need to be A (graphic grade anyways" - every FW code prints with grade A '
+         '(daily/assign.py GRADE_A_COLOURS; FR0021FW4 -> FRA021FW4). This file’s FW row is already FRA021FW3. Tech’s SE21 recipe: virgin 20, talc 16, '
+         'F1203K 25, WB:IS 9:1 premix 17, FR-GPP3003MP 89 (auger speeds).',
+         'Add FRA021FW4 as the FW 4 mm Main: its W%?'],
         ['Black graphic 10 mm Secondary (26 Oct)',
          'FUA051KSA (reclaim) has no Secondary row. James: "i recall black graphic has option to go virgin PP with no reclaim for secondary". The '
          'daily run takes Tech’s SE22 run-out FUA001KSA (virgin, "in case PP MIX Reclaim is run out") as the Secondary.',

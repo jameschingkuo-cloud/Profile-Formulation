@@ -155,6 +155,13 @@
   "published_at": "2026-10-26T13:46:39",
   "sha256": "b173504ea42c92af7cacefefde5880347ecf1f4f68d77052179df36fdb68f95f"
  },
+ "Daily Formulation Report/FRM Formulation 2026-10-23.docx": {
+  "bytes": 50562,
+  "content": "538a0b6b43c94d76761da3aa8eceab7b85b38bb5670df485b8f2bc7b0212de64",
+  "from": "FRM Formulation 2026-10-23.docx",
+  "published_at": "2026-10-27T08:15:42",
+  "sha256": "538a0b6b43c94d76761da3aa8eceab7b85b38bb5670df485b8f2bc7b0212de64"
+ },
  "Daily Formulation Report/FRM Formulation 2026-10-26.docx": {
   "bytes": 49387,
   "content": "ca0a9f6385a8d3062930d36b8dc2403d7e2331aca7cd05c8240a03d8675b8522",
@@ -515,11 +522,11 @@
   "sha256": "4e5781f776f7b4ce1d178c3170a71dc1414592d7a49b1ccba1650270da1005df"
  },
  "workspace/W% Master Formulation (draft v2).xlsx": {
-  "bytes": 60719,
-  "content": "ffd0ff39c26fa50c0335398a2d2812168ee9acc48d1a369f6917932e28a0fb9e",
+  "bytes": 60820,
+  "content": "410ef39d098f55d42091a921816845e8256f65d924bff35c8ff586c188335f7d",
   "from": "W% Master Formulation (draft v2).xlsx",
-  "published_at": "2026-10-26T15:51:35",
-  "sha256": "7f57e904652dcb79e15db887c4724a5c3a1e46bb4f6b2787021ecdbc32071caf"
+  "published_at": "2026-10-27T08:49:18",
+  "sha256": "bd3f355e077e74c4e26996b337a2ba3cb2860729f16386b58f8cc8045dcc7d96"
  },
  "workspace/auger_rules.py": {
   "bytes": 4885,
