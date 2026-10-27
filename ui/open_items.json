@@ -41,13 +41,6 @@
       "items": [
         {
           "sev": "Medium",
-          "title": "RUN WITH: two products side by side on one line",
-          "detail": "Reopened 27 Oct at James's request. So far each order keeps the formulation of its own product code and spec, and the floor runs the stricter one (James, 27 Oct: \"graphic stay with graphic. sign blank stay with sign blank\"). 26 Oct schedule, 11 RUN WITH orders. Pairs on different formulas: SE13 RP26717-1 (RPA40WB3051 graphic, FUA151WB4) RUN WITH NEXT RP26327-1 (SPA40WB772 sign blank, FUA152WB4); SE24 RP26604-1 (SPA40WB755 sign blank, FUA152WB4) RUN WITH RPA40WB3051 (graphic FUA151WB4; RP26901-1 RPA40WB3630 on SE24 also runs with it). Pairs on the same formula: SE12 RP26728-4; SE13 RP26506-5 + RP25522-4, RP26618-2 + RP26618-3 (all sign blank FUA152WB4); SE31 RP26925-3 and SE32 RP26A13-1 (graphic FUA151WB4).",
-          "where": "EXT schedule, Special Instructions",
-          "source": "27 Oct"
-        },
-        {
-          "sev": "Medium",
           "title": "Formulas never run on their line: settings to set",
           "detail": "Down from 27 formulas in 22 orders (23 Oct, before the 26 Oct rules). Now one formula prints ENGINEER TO SET on 26 Oct: SE21 RP26A15-1 FUA032KS4 (Primary; its Secondary FUA152KS4 has settings). 23 Oct also had SE21 H6AA017-1 FUA031KS5. Neither has been run on SE21.",
           "where": "all auger lines",
@@ -229,6 +222,11 @@
     }
   ],
   "resolved": [
+    {
+      "date": "2026-10-27",
+      "title": "RUN WITH: one formulation per sheet, sign blank over regular white",
+      "detail": "James, 27 Oct (reversing the earlier decision): \"If it says run with next. put them the same formula and sign blank superseed regular white formula\"; for RUN WITH <product>: \"pair them the same way\". Orders linked by RUN WITH NEXT (the next order on the line) or RUN WITH <product> (that product's orders on the line) take one formulation; the stricter one wins (sign blank FUA152WB4 over graphic FUA151WB4), noted on the row \"RUN WITH <order>: same sheet, same formulation\". 26 Oct: SE13 RP26717-1 (RPA40WB3051) runs FUA152WB4 with RP26327-1; SE24 RP26803-2 (RPA40WB3051) and RP26901-1 (RPA40WB3630) run FUA152WB4 with sign blank RP26604-1. The other pairs already matched."
+    },
     {
       "date": "2026-10-27",
       "title": "Housekeeping: stale workspace copies removed, branch merged",

@@ -576,3 +576,22 @@ def test_se42_takes_se43_formulations_and_no_caco3():
     assert src[2]['no_caco3'] and set(f) == {'V1', 'V3', 'V5', 'V8'} and abs(sum(f.values()) - 100) < 1e-9
     main, _ = assign.choose(('FU', 'A', 'WB', '3'), set(), 'summer', 'SE42')
     assert main and 'se43' in main['quals'], main
+
+
+def test_run_with_next_takes_sign_blank():
+    # James, 27 Oct 2026: "If it says run with next. put them the same formula and sign blank superseed regular white
+    # formula"; RUN WITH <product>: "pair them the same way". Linked orders are one group.
+    import resolve
+    fm = lambda code, want: {'members': [{'code': code}], 'want': frozenset(want), 'how': 'rule'}
+    today = {'ext': [{'line': 'SE13', 'rows': [
+        {'order': 'A-1', 'special_instructions': 'RUN WITH NEXT 86 PLTS DONE'},
+        {'order': 'B-1', 'special_instructions': 'RUN WITH ABOVE'},
+        {'order': 'C-1', 'special_instructions': 'RUN WITH SPA40WB772'},
+        {'order': 'D-1', 'prod_code': 'SPA40WB772', 'special_instructions': ''}]}]}
+    pre = {('SE13', 'A-1'): (fm('FUA151WB4', ()), ''), ('SE13', 'B-1'): (fm('FUA152WB4', ('sign',)), ''),
+           ('SE13', 'C-1'): (fm('FUA151WB4', ()), ''), ('SE13', 'D-1'): (fm('FUA152WB4', ('sign',)), '')}
+    resolve.run_with(today, pre)
+    assert pre[('SE13', 'A-1')][0]['members'][0]['code'] == 'FUA152WB4'
+    assert pre[('SE13', 'B-1')][0]['members'][0]['code'] == 'FUA152WB4'
+    assert pre[('SE13', 'C-1')][0]['members'][0]['code'] == 'FUA152WB4'
+    assert pre[('SE13', 'C-1')][0]['run_with'] == 'RUN WITH D-1: same sheet, same formulation'

@@ -137,7 +137,7 @@ for f in frm_rows:
         is_A = len(code)>2 and code[2]=='A'
         if (grade=='A')!=is_A and f['row_in_group']==1:
             ri='RUN WITH' in r['special_instructions'].upper()
-            add('Info' if ri else 'Medium','EXT vs FRM',f['line'],o,'Formula grade vs order grade',f'Order grade {grade} ({r["mat_spec"]}) but primary formula {code}'+(' — order is RUN WITH another order (two products side by side on the line; James, 27 Oct 2026: not a formulation matter)' if ri else ''),f"FRM p{f['scan_page']}")
+            add('Info' if ri else 'Medium','EXT vs FRM',f['line'],o,'Formula grade vs order grade',f'Order grade {grade} ({r["mat_spec"]}) but primary formula {code}'+(' — order is RUN WITH another order (two products side by side on one sheet; RUN WITH NEXT pairs take one formulation, sign blank over regular white: James, 27 Oct 2026)' if ri else ''),f"FRM p{f['scan_page']}")
         if spec.startswith('R4') and not code.startswith('RU') and f['row_in_group']==1:
             add('Medium','EXT vs FRM',f['line'],o,'R4 spec vs formula family',f'Order spec {spec} but primary formula {code} (R4 orders elsewhere get RU…)',f"FRM p{f['scan_page']}")
 # 3. FRM internal -- the check depends on the line's dosing type (load.DOSING, James 26 Sep 2026)

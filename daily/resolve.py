@@ -43,6 +43,60 @@ VARIANT_RULES = [  # note text on the FRM row -> variant (db/schema.py VARIANTS)
     (re.compile(r"roll", re.I), "Roll"),
 ]
 RUN_WITH = re.compile(r"RUN\s+WI(?:TH|HT)\s+([A-Z]{3}[0-9A-Z]{2}[A-Z]{2}\d+)", re.I)   # "RUN WIHT" printed 28 Sep
+RUN_WITH_NEXT = re.compile(r"RUN\s+WI(?:TH|HT)\s+NEXT", re.I)
+
+
+def run_with(today, pre):
+    """RUN WITH: orders that run side by side on one sheet (cut to size after) take one formulation, and sign blank
+    supersedes the regular white formula (James Kuo, 27 Oct 2026: "If it says run with next. put them the same formula and
+    sign blank superseed regular white formula"; asked about RUN WITH <product>: "pair them the same way"). RUN WITH NEXT
+    links an order to the next one on the line; RUN WITH <product> to that product's orders on the line. Linked orders form
+    one group (SE24 RP26803-2 runs with two orders), and the strictest formulation wins: the one whose order has every
+    qualifier the others have. No single strictest: each keeps its own and the note says to check. Changes
+    pre[(line, order)] = (fm, why) in place."""
+    by_line = {}
+    for pg in today["ext"]:
+        by_line.setdefault(pg["line"], []).extend(pg["rows"])
+    for line, rows in by_line.items():
+        group = {r["order"]: {r["order"]} for r in rows}
+        def link(a, b):
+            g = group[a] | group[b]
+            for o in g:
+                group[o] = g
+        for i, r in enumerate(rows):
+            si = r.get("special_instructions") or ""
+            if RUN_WITH_NEXT.search(si):
+                partners = rows[i + 1:i + 2]
+            elif RUN_WITH.search(si):
+                prod = RUN_WITH.search(si).group(1).upper()
+                partners = [x for x in rows if x.get("prod_code") == prod and x is not r]
+            else:
+                continue
+            for p in partners:
+                link(r["order"], p["order"])
+        done = set()
+        for o, g in group.items():
+            if len(g) < 2 or o in done:
+                continue
+            done |= g
+            fms = {x: (pre.get((line, x)) or (None, ""))[0] for x in g}
+            fms = {x: f for x, f in fms.items() if f}
+            codes = {x: [m["code"] for m in f["members"]] for x, f in fms.items()}
+            if len({tuple(c) for c in codes.values()}) < 2:
+                continue
+            q = {x: set(f["want"]) & set(assign.QMARK) for x, f in fms.items()}
+            top = [x for x in fms if all(q[y] <= q[x] for y in fms)]
+            if not top or len({tuple(codes[x]) for x in top}) > 1:
+                for x, f in fms.items():
+                    others = ", ".join(sorted(g - {x}))
+                    pre[(line, x)] = (dict(f, run_with=f"RUN WITH {others}: different formulation, engineer to check"), "")
+                continue
+            so = sorted(top)[0]
+            strong = fms[so]
+            for x, f in fms.items():
+                if codes[x] != codes[so]:
+                    pre[(line, x)] = (dict(strong, want=f["want"], how=f"{strong['how']}; RUN WITH {so}: the stricter formulation of the group",
+                                           run_with=f"RUN WITH {so}: same sheet, same formulation"), "")
 
 
 def variant(note, first):
@@ -190,10 +244,14 @@ def main():
         assign.set_pages(seen_pk)            # the lines' feeder columns and wording, for settings taken from the calc sheets
 
     draft, exceptions, by_rule, to_set = [], [], [], []
-    # RUN WITH (two products side by side on one sheet) changes nothing here: each order takes the formulation of its own
-    # product code and spec; the floor runs the stricter one (James Kuo, 27 Oct 2026: "graphic stay with graphic. sign blank
-    # stay with sign blank. Operation know to use the stricter one ... just provide the right formulation base on product
-    # code/spec is enough")
+    pre = {}                                     # (line, order) -> the rules' (formulation, why), before RUN WITH pairs
+    if RULES:
+        for pg in today["ext"]:
+            for r in pg["rows"]:
+                if not r.get("read_check") and (pg["line"], r["prod_code"]) not in approved:
+                    pre[(pg["line"], r["order"])] = assign.formulation(pg["line"], r, datetime.date.fromisoformat(PKT), issued,
+                                                                       own=by_order.get((pg["line"], r["order"])))
+        run_with(today, pre)
     for pg in today["ext"]:
         for r in pg["rows"]:
             line, order, product = pg["line"], r["order"], r["prod_code"]
@@ -215,7 +273,7 @@ def main():
             # ... decide whether we have enough of particular material"), each with its rows from this order's own last
             # issue, else the line's, else Tech's calc sheet; a member without settings on the line prints "ENGINEER TO
             # SET" under its code (every member, when none has settings here yet). VOIDFORM: never reclaim.
-            fm, why = assign.formulation(line, r, datetime.date.fromisoformat(PKT), issued, own=rec) if RULES else (None, 'rules off')
+            fm, why = pre[(line, order)] if RULES else (None, 'rules off')
             if fm:
                 rows_, marked, missing = rule_rows(line, order, product, fm)
                 draft += rows_
@@ -317,6 +375,7 @@ def rule_rows(line, order, product, fm):
             note = x['role'] + (" · settings from the calc sheet" if kind == 'calc' else "")
             marked = marked or date
         note += f" · {f.get('note')}" if f.get('note') else ""
+        note += f" · {fm['run_with']}" if fm.get('run_with') else ""
         for q in sorted(set(fm.get('want', ())) & set((x['member'] or {}).get('quals', ()))):   # the Main is for it
             if q in assign.QUAL_NOTE and q not in assign.quals(note):
                 note += f" · {assign.QUAL_NOTE[q]}"
