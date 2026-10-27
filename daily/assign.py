@@ -1094,7 +1094,10 @@ def own_equivalent(m, want, own):
 # James, 27 Oct 2026, SE22 RP26928-1: Tech's FUA060WBA at 20/5/90/7/4 and at 30/5/75/7/4 - "replace the primary (which
 # was 1) with 2 (the one with 75 speed) moving forward for FUA060WBA" - "We dont need to be that aggressive when it comes to
 # consuming white reclaim"
-CHOSEN_RECIPE = {'FUA060WBA': {'Hopper 1': '30', 'Hopper 3': '75'}}
+# SE23 corn box RP26902-1, James's marks on the printed 26 Oct copy (27 Oct 2026): FU0021WB4 "Replace" 35 -> 45, 45 -> 60,
+# Hopper 5 F1203K 80 struck out: Tech's second FU0021WB4 corn box recipe there (45/10/60/20)
+CHOSEN_RECIPE = {'FUA060WBA': {'Hopper 1': '30', 'Hopper 3': '75'},
+                 'FU0021WB4': {'Hopper 1': '45', 'Hopper 3': '60'}}
 
 
 def one_row(rows, code):
