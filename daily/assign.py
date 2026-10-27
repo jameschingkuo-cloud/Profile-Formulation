@@ -1095,7 +1095,8 @@ def own_equivalent(m, want, own):
 # was 1) with 2 (the one with 75 speed) moving forward for FUA060WBA" - "We dont need to be that aggressive when it comes to
 # consuming white reclaim"
 # SE23 corn box RP26902-1, James's marks on the printed 26 Oct copy (27 Oct 2026): FU0021WB4 "Replace" 35 -> 45, 45 -> 60,
-# Hopper 5 F1203K 80 struck out: Tech's second FU0021WB4 corn box recipe there (45/10/60/20)
+# Hopper 5 F1203K 80 struck out: Tech's FU0021WB4 corn box recipe there since 23 Sep (45/10/60/20; the 35/10/45/20 + F1203K 80
+# one came 9 Oct). "we can be more agressive with white reclaim when it comes to cornbox"
 CHOSEN_RECIPE = {'FUA060WBA': {'Hopper 1': '30', 'Hopper 3': '75'},
                  'FU0021WB4': {'Hopper 1': '45', 'Hopper 3': '60'}}
 
