@@ -44,6 +44,10 @@ LATER_NOTES = [
      'Secondary Packing grade, change name to FU0002WBD (James, 26 Oct 2026; same W% as FU0001WBD)'),
     # corn box Secondary: James, 27 Oct 2026: "use FU0022WB4 as corn box secondary everywhere" (FU0022WB4 is also the name
     # of Tech's virgin-only corn box run-out, RUN_OUT_NAMES)
+    # corn box Primary: its own code, apart from FU0021WB4 (roll, VOIDFORM): James, 27 Oct 2026: "lets create primary and
+    # secondary cornbox formula and make them indepent from the rest" - "keep it clean and separated" (FU0023WB4 unused)
+    ('FU0021WB4', 'Main Cornbox',
+     'Main Cornbox, change name to FU0023WB4 (James, 27 Oct 2026: corn box Primary apart from FU0021WB4)'),
     ('FU0041WB4', 'Secondary Corn box',
      'Secondary Corn box, change name to FU0022WB4 (James, 27 Oct 2026: "use FU0022WB4 as corn box secondary everywhere")'),
 ]
@@ -776,6 +780,7 @@ def calc_recipes():
 
 
 _ISSUED_GROUPS = defaultdict(list)     # (line, printed code) -> every issued group with it, newest first
+_CORN_GROUPS = set()                   # id() of the issued groups' formula lists that were for a corn box order
 
 
 def issued_on_line(packets):
@@ -784,9 +789,14 @@ def issued_on_line(packets):
     roll group "(For roll material only)" of FU0021WB4 on SE25, not the plain packaging group under the same code."""
     out = {}
     _ISSUED_GROUPS.clear()
+    _CORN_GROUPS.clear()
     for date in sorted(packets):
+        ext = {r['order']: r for p in packets[date]['ext'] for r in p['rows']}
         for pg in packets[date]['frm']:
             for g in pg['groups']:
+                if any(o in ext and ('CORN' in (ext[o].get('special_instructions') or '').upper()
+                                     or ext[o]['prod_code'] in CORN_BOX) for o in g.get('orders', [])):
+                    _CORN_GROUPS.add(id(g['formulas']))       # a group Tech issued for a corn box order
                 for f in g['formulas']:
                     out[(pg['line_code'], f['formula_code'])] = (date, pg['scan_page'], g['formulas'])
                     _ISSUED_GROUPS[(pg['line_code'], f['formula_code'])].insert(0, (date, pg['scan_page'], g['formulas']))
@@ -877,6 +887,7 @@ def propose(line, row, day, issued):
 QUAL_NOTE = {'void': 'For VOIDFORM order only', 'corn': '(CORN BOX FORMULA)', 'sign': '(For sign blank orders only)',
              'roll': '(For roll material only)'}
 QMARK = ('roll', 'void', 'corn', 'sign', 'ltl')     # qualifiers Tech writes on a page row ("(For roll material only)")
+SEPARATE_QUALS = frozenset({'corn'})                 # formulations that take settings only from their own groups
 SPECIAL_ONLY = {'void'}                               # VOIDFORM: its special formula, one Main, no Secondary
 # Products that run their Primary only, no Secondary: James, 27 Oct 2026, on SE24 RP25710-1 (R4, "Key-in only" on the
 # printed copy): "Product RPP40WB1625, have it only run with RU0000WB4 only. RPP40WB1625 is call floor cover. we use it
@@ -968,6 +979,10 @@ def member_settings(line, m, want, issued, own=None):
         # blank formula?") - then the calc sheet, else the engineer sets it
         ordered = ([g for g in groups if marked and notes_q(g[2]) & marked] + [g for g in groups if not notes_q(g[2])]
                    + ([] if own_recipe else [g for g in groups if notes_q(g[2]) <= marked]))
+        if m['quals'] & SEPARATE_QUALS:
+            # corn box stands apart: only rows Tech issued for corn box - noted so, or issued for a corn box order (James,
+            # 27 Oct 2026: "keep it clean and separated")
+            ordered = [g for g in ordered if 'corn' in notes_q(g[2]) or id(g[2]) in _CORN_GROUPS]
         for g in ordered:
             rows = pick(g[2])
             if rows:
@@ -1022,7 +1037,7 @@ def formulation(line, row, day, issued, own=None):
             # Primary's code is that formulation (James, 26 Oct 2026, on SE32 H6AA042-1 ...: "There should be WB D white
             # secondary formulation" - Tech prints FU0061WBD "(Use this formula in case PP WB Reclaim is run out)" at the
             # settings of FU0001WBD, his Secondary)
-            ro = tech_run_out(line, main, want, own)
+            ro = tech_run_out(line, main, want, own, within=bool(main['quals'] & SEPARATE_QUALS))
             if ro:
                 rows, src = ro['rows'], ro['src']
         if rows is None:
@@ -1073,7 +1088,7 @@ def tech_run_out(line, main, want, own=None, within=False):
         fs = g[2]
         if not any(f['formula_code'] in main['printed'] for f in fs) or not notes_q(fs) <= marked:
             continue
-        if within and not notes_q(fs) & marked:
+        if within and not (notes_q(fs) & marked or ('corn' in marked and id(fs) in _CORN_GROUPS)):
             continue
         # same grade, colour and thickness as the Primary (SE11's packaging FU0051KS3 run-out is the graphic FUA022KS3: not taken)
         outs = [f for f in fs if not uses_reclaim(f)
@@ -1118,7 +1133,7 @@ def own_equivalent(m, want, own):
 # Hopper 5 F1203K 80 struck out: Tech's FU0021WB4 corn box recipe there since 23 Sep (45/10/60/20; the 35/10/45/20 + F1203K 80
 # one came 9 Oct). "we can be more agressive with white reclaim when it comes to cornbox"
 CHOSEN_RECIPE = {'FUA060WBA': {'Hopper 1': '30', 'Hopper 3': '75'},
-                 'FU0021WB4': {'Hopper 1': '45', 'Hopper 3': '60'}}
+                 'FU0023WB4': {'Hopper 1': '45', 'Hopper 3': '60'}}
 
 
 def one_row(rows, code):

@@ -509,7 +509,8 @@ def test_corn_box_secondary_stays_within_corn_box():
     issued = assign.issued_on_line(packets)
     fm, why = assign.formulation('SE23', row('DPP40WB1235', 'PPP P R1R1R1', 'CORN BOX'), datetime.date(2026, 10, 26), issued)
     # named FU0022WB4 (James, 26 Oct 2026: "if its not use, set it up as corn box secondary formula")
-    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0021WB4'), ('Secondary', 'FU0022WB4')], why
+    # corn box Primary FU0023WB4, apart from FU0021WB4 (James, 27 Oct 2026: "keep it clean and separated")
+    assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'FU0023WB4'), ('Secondary', 'FU0022WB4')], why
     sec = fm['members'][1]['rows']
     assert len(sec) == 1 and not assign.uses_reclaim(sec[0]) and 'CORN BOX' in sec[0]['note']
 
