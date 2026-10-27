@@ -224,6 +224,21 @@
   "resolved": [
     {
       "date": "2026-10-27",
+      "title": "Corn box Primary FU0023WB4, separate from FU0021WB4",
+      "detail": "James, 27 Oct: \"lets create primary and secondary cornbox formula and make them indepent from the rest\" - \"keep it clean and separated\". Corn box Primary is FU0023WB4 (unused name; W% row FU0021WB4 \"Main Cornbox\" carries it), Secondary FU0022WB4 (FU0152WB4 on lines 12/13). FU0021WB4 stays roll and VOIDFORM. Corn box takes settings only from Tech's corn box groups (noted CORN BOX or issued for a corn box order): SE23 45/10/60/20, SE42 8/10/49/30/3; no corn box issue on SE21 / SE25 yet (ENGINEER TO SET)."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "Word file in two copies: normal and weight %",
+      "detail": "James, 27 Oct: \"make two copy of the formulation in the future, one weight % and one normal. This will help us troubleshoot faster\" - \"word file\". Each day now also writes FRM Formulation <date> (weight %).docx: on auger lines each feeder's share of the sheet = setting x the hopper's calibration slope over the total; weight-blender lines as set. A row with a hopper that has no calibration for its material says so (e.g. SE21 FR-GPP30003MP). The email attaches both."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "26 and 27 Oct rebuilt and emailed",
+      "detail": "James, 27 Oct: \"with these new fixes, produce 10/26 and 10/27 formulation again\". Both days rebuilt (normal + weight %) and emailed to James as REPLACES. SharePoint not replaced: the 27 Oct Word file there changed after it was published at 13:16 (hard rule: compare first); 26 Oct is open in Word on James's PC."
+    },
+    {
+      "date": "2026-10-27",
       "title": "Lines 12/13 corn box Secondary FU0152WB4 at 8/10/79/3",
       "detail": "James, 27 Oct, from the old engineer's SE42 notes (minimum dose per feeder; the weight blender has trouble with too small a dose): \"For FU0041WB4, the talc from hopper 1 is too close to 5% (5.5) ... If not [12/13 only], create another one for 12/13 and make it 8/10/79/3\". FU0041WB4 (now FU0022WB4) is the corn box Secondary on every line (CaCO3 5 on the auger lines), so lines 12/13 get FU0152WB4 (unused name, SE43 numbering): talc 8, F1203K 10, virgin 79, colour 3. W% Master: add the row at the clean-up."
     },
