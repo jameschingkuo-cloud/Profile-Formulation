@@ -48,6 +48,17 @@ LATER_NOTES = [
      'Secondary Corn box, change name to FU0022WB4 (James, 27 Oct 2026: "use FU0022WB4 as corn box secondary everywhere")'),
 ]
 
+# W% rows James added after 23 Oct (the W% Master gets them at the clean-up). Lines 12/13 (SE42, SE43): the old engineer's
+# minimum doses per feeder (the weight blender has trouble with too small a dose); James, 27 Oct 2026: "For FU0041WB4, the
+# talc from hopper 1 is too close to 5% (5.5). Check if FU0041WB4 is for all lines for 12/13 only ... If not, create
+# another one for 12/13 and make it 8/10/79/3" - FU0041WB4 (now FU0022WB4, corn box Secondary) is for every line (CaCO3 5
+# on the auger lines), so 12/13 get their own, under the SE43 numbering (FUA151WB3, FU0151WB4) and an unused name
+LATER_ROWS = [
+    {'Formula Code': 'FU0152WB4', 'Application': 'Corn box', 'Notes': 'Secondary Corn box, SE43 (lines 12/13; James, 27 Oct 2026)',
+     'Colour': 'WB', 'Thk (mm)': 4, 'Virgin PP %': 79, 'Homo PP (F1203K) %': 10, 'Talc %': 8, 'Colour MB %': 3,
+     'Materials': 'WB-W26038A 3.0'},
+]
+
 # codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
 # gets the row at the clean-up)
 LATER_RENAMES = {}
@@ -154,7 +165,7 @@ def rules():
     config.record_read(W_MASTER, "W% Master with James's notes (formula assignment)")
     ws = load_workbook(W_MASTER, read_only=True, data_only=True)['Formulation + Latest Run']
     rows = list(ws.iter_rows(values_only=True))
-    R = apply_later_notes([dict(zip(rows[0], r)) for r in rows[1:] if r[0]])
+    R = apply_later_notes([dict(zip(rows[0], r)) for r in rows[1:] if r[0]]) + [dict(r) for r in LATER_ROWS]
     mains, by_key = [], defaultdict(list)
     for r in R:
         lv = level(r['Notes'])
@@ -907,6 +918,8 @@ def secondary_for(main, want, seas, line):
     fit = [m for m in cands if fits(m, base)]
     if not fit and base and w_reclaim(main):
         fit = [m for m in cands if fits(m, set())]
+    if line in NO_CACO3 and any('se43' in m['quals'] for m in fit):
+        fit = [m for m in fit if 'se43' in m['quals']]           # an SE43 Secondary outranks the general one there
     if len({m['code'] for m in fit}) > 1:                      # prefer the virgin run-out to a reclaim Primary
         fit = [m for m in fit if w_reclaim(m) != w_reclaim(main)] or fit
     return fit[0] if len({m['code'] for m in fit}) == 1 else None

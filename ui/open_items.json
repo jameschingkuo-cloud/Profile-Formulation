@@ -224,6 +224,11 @@
   "resolved": [
     {
       "date": "2026-10-27",
+      "title": "Lines 12/13 corn box Secondary FU0152WB4 at 8/10/79/3",
+      "detail": "James, 27 Oct, from the old engineer's SE42 notes (minimum dose per feeder; the weight blender has trouble with too small a dose): \"For FU0041WB4, the talc from hopper 1 is too close to 5% (5.5) ... If not [12/13 only], create another one for 12/13 and make it 8/10/79/3\". FU0041WB4 (now FU0022WB4) is the corn box Secondary on every line (CaCO3 5 on the auger lines), so lines 12/13 get FU0152WB4 (unused name, SE43 numbering): talc 8, F1203K 10, virgin 79, colour 3. W% Master: add the row at the clean-up."
+    },
+    {
+      "date": "2026-10-27",
       "title": "Floor cover RPP40WB1625: RU0000WB4 only, no Secondary",
       "detail": "James, 27 Oct (\"Key-in only\" on SE24 RP25710-1 in the printed 26 Oct copy): \"Product RPP40WB1625, have it only run with RU0000WB4 only. RPP40WB1625 is call floor cover. we use it to cover the floor so if we dont use reclaim, we are wasting money.\" The RU0022WB4 Secondary no longer prints for it (SE24 RP25710-1, SE25 RP26717-2)."
     },

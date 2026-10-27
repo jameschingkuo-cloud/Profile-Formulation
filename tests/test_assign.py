@@ -621,3 +621,19 @@ def test_floor_cover_primary_only():
          'thk': '4.0', 'colors': 'WB WB WB'}
     fm, _ = assign.formulation('SE25', r, datetime.date(2026, 11, 2), issued)
     assert [(m['role'], m['code']) for m in fm['members']] == [('Primary', 'RU0000WB4')]
+
+
+def test_corn_box_secondary_lines_12_13():
+    # James, 27 Oct 2026: FU0041WB4 (now FU0022WB4) is for every line; lines 12/13 get their own at 8/10/79/3
+    import resolve
+    pk = resolve.load_packets()
+    issued = assign.issued_on_line(pk)
+    assign.set_pages(pk)
+    r = {'order': 'NEW-1', 'prod_code': 'DPP40WB1235', 'mat_spec': 'PPP P R1R1R1', 'special_instructions': '',
+         'thk': '4.0', 'colors': 'WB WB WB'}
+    for line, code in (('SE42', 'FU0152WB4'), ('SE23', 'FU0022WB4')):
+        fm, _ = assign.formulation(line, r, datetime.date(2026, 11, 2), issued)
+        assert [m['code'] for m in fm['members'] if m['role'] == 'Secondary'] == [code]
+    fm, _ = assign.formulation('SE42', r, datetime.date(2026, 11, 2), issued)
+    sec = next(m for m in fm['members'] if m['role'] == 'Secondary')
+    assert {k: v['set'] for k, v in sec['rows'][0]['feeders'].items() if v.get('set')} == {'V1': '8', 'V3': '10', 'V5': '79', 'V8': '3'}
