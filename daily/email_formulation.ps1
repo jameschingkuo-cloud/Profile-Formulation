@@ -1,4 +1,4 @@
-# Emails the day's Word formulation to James (James Kuo, 6 Oct 2026: "whenever this happen (aka schedule from my
+﻿# Emails the day's Word formulation to James (James Kuo, 6 Oct 2026: "whenever this happen (aka schedule from my
 # outlook), can you email me the formulation for that day"). The Microsoft 365 connector sends mail but takes no
 # attachment, so this goes through the classic Outlook on James's PC over COM, like fetch_schedule_mail.ps1.
 #
@@ -7,11 +7,12 @@
 # Only to James (the address is fixed here, not a parameter). Sent once per version of the file: work/emailed_<date>.txt
 # keeps the hash of what was sent; the same file again is not re-sent, a rebuilt one is (say -Replaces so the subject
 # says it replaces the earlier copy).
-param([Parameter(Mandatory = $true)][string]$Date, [string]$Body = '', [switch]$Replaces)
+param([Parameter(Mandatory = $true)][string]$Date, [string]$Body = '', [switch]$Replaces, [string]$Dir = '')
 
 $To = 'JKUO@wpjk.inteplast.com'
 $root = Split-Path -Parent $PSScriptRoot
-$doc = Join-Path $root "out\FRM Formulation $Date.docx"
+$src = if ($Dir) { Join-Path $root $Dir } else { Join-Path $root 'out' }     # -Dir: when out\ is held open in Word
+$doc = Join-Path $src "FRM Formulation $Date.docx"
 if (-not (Test-Path -LiteralPath $doc)) { "not sent | no $doc"; exit 1 }
 $hash = (Get-FileHash -LiteralPath $doc).Hash
 $mark = Join-Path $root "work\emailed_$Date.txt"
@@ -31,6 +32,9 @@ $m.To = $To
 $m.Subject = $subject
 $m.Body = $Body
 [void]$m.Attachments.Add($doc)
+# the weight % copy for troubleshooting (James, 27 Oct 2026: "make two copy of the formulation ... one weight % and one normal")
+$wdoc = Join-Path $src "FRM Formulation $Date (weight %).docx"
+if (Test-Path -LiteralPath $wdoc) { [void]$m.Attachments.Add($wdoc) }
 $m.Send()
 try { $ol.GetNamespace('MAPI').SendAndReceive($false) } catch {}
 Set-Content -LiteralPath $mark -Value @($hash, (Get-Date -Format 'yyyy-MM-dd HH:mm'), $subject) -Encoding utf8

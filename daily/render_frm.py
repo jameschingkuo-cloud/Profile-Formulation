@@ -36,6 +36,7 @@ from docx.oxml import OxmlElement  # noqa: E402
 from docx.oxml.ns import qn  # noqa: E402
 from docx.shared import Pt, Inches, RGBColor  # noqa: E402
 from resolve import split_feeder  # noqa: E402
+import assign  # noqa: E402
 
 PKT = os.environ.get('PKT_DATE')
 WEIGHT = {'SE24', 'SE42', 'SE43', 'SE61'}
@@ -156,6 +157,47 @@ def build_lines(today, draft, exc, page):
     return lines
 
 
+# ---- weight % copy -------------------------------------------------------------------------------------------------
+# James, 27 Oct 2026: "make two copy of the formulation in the future, one weight % and one normal. This will help us
+# troubleshoot faster" - "word file". The weight % copy shows each feeder's share of the sheet: on an auger line the
+# setting x the hopper's calibration slope (g/min per unit), over the total; a weight-blender line is already weight %.
+def slope_classes(mat):
+    m = (mat or '').upper()
+    if 'TALC' in m:
+        return ['TALC']
+    if '1203K' in m or '1102K' in m:
+        return ['1203K', '1102K']
+    if 'VIRGIN' in m or '6502' in m:
+        return ['VIRGIN PP']
+    if 'CACO3' in m:
+        return ['CACO3']
+    if 'RECLAIM' in m:
+        return (['MIX RECLAIM'] if 'MIX' in m else ['WB RECLAIM'] if 'WB' in m else []) + ['RECLAIM']
+    if 'VISTAMAXX' in m:
+        return ['VISTAMAXX']
+    codes = re.findall(r'[A-Z]?\d{5}[A-Z]?|[A-Z]{1,2}-?[A-Z]?\d{5}[A-Z]?', m)
+    return codes + ([m[:2] + ' COLOR'] if re.match(r'^[A-Z]{2}[- ]', m) else []) + ['COLOR']
+
+
+def weight_pct(line, feeders):
+    """{feeder key: (material, set, printed)} -> ({key: 'x.x'}, '') or (None, why) on an auger line."""
+    w = {}
+    for key, (mat, st, _) in feeders.items():
+        v = num(st)
+        if v is None:
+            continue
+        digit = re.search(r'(\d)\s*$', key[1])
+        k = next((sl for c in slope_classes(mat) for sl in [assign.class_slope(line, 'H' + digit.group(1), c)[0]] if sl),
+                 None) if digit else None
+        if not k:
+            return None, f"no calibration for {key[1]} {mat}"
+        w[key] = v * k
+    t = sum(w.values())
+    if not t:
+        return None, 'no settings'
+    return {key: f"{x * 100 / t:.1f}" for key, x in w.items()}, ''
+
+
 # ---- docx helpers --------------------------------------------------------------------------------------------------
 def para(cell_or_doc, text='', size=10, bold=False, color=None, align=None, italic=False, space_after=0):
     p = cell_or_doc.add_paragraph()
@@ -233,7 +275,7 @@ def when_label(forms, i):
     return 'If reclaim runs out' if any(uses(x) for x in forms[:i]) else 'Alternative'
 
 
-def render(today, lines, exc, out):
+def render(today, lines, exc, out, weight_copy=False):
     day = datetime.date.fromisoformat(PKT)
     us = f'{day.month}/{day.day}/{day:%y}'
     n_orders = sum(len(g['orders']) for ln in lines for g in ln['groups'])
@@ -322,11 +364,14 @@ def render(today, lines, exc, out):
     for ln in lines:
         doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         tp = para(doc, '', align=WD_ALIGN_PARAGRAPH.CENTER)
-        run(tp, f"Line {ln['no']} ({ln['line']})  Formulations", 22, True)
+        run(tp, f"Line {ln['no']} ({ln['line']})  Formulations" + ('  ·  Weight %' if weight_copy else ''), 22, True)
         mp = para(doc, '', align=WD_ALIGN_PARAGRAPH.RIGHT)
         run(mp, us, 11, True)          # Tech's "AC = 1 / 90" not printed (James, 27 Oct 2026: "lets take it out. not sure what it is")
-        para(doc, ('Weight blender: Set = weight %. Each extruder adds to 100; Auto = the balance.' if ln['weight'] else
-                   'Auger feeders: Set = auger speed, 0 to 100 (not %).') + '  Several formulations: run the first while reclaim lasts, then the next.',
+        para(doc, ('WEIGHT % COPY, for troubleshooting - run from the normal copy. ' + ('Weight blender: as set (weight %).' if ln['weight'] else
+                   "Each material's share of the sheet: auger setting x the hopper's calibration slope, over the total.")
+                   if weight_copy else
+                   ('Weight blender: Set = weight %. Each extruder adds to 100; Auto = the balance.' if ln['weight'] else
+                   'Auger feeders: Set = auger speed, 0 to 100 (not %).') + '  Several formulations: run the first while reclaim lasts, then the next.'),
              9.5, italic=True, color=BLACK, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=4)
         cols = ln['cols']
         ncol = 3 + len(cols)
@@ -358,6 +403,7 @@ def render(today, lines, exc, out):
                         cell_text(wide, f"ENGINEER TO SET: settings for {f['code']} on this line", 10, True, BLACK, WD_ALIGN_PARAGRAPH.LEFT)
                     cell_text(rr.cells[ncol - 1], f['note'], 8.5, color=BLACK)
                     continue
+                pct, why = weight_pct(ln['line'], f['feeders']) if weight_copy and not ln['weight'] else (None, '')
                 cp = cell_text(rr.cells[1], f['code'], 11)
                 lab = when_label(forms, i)
                 if lab:
@@ -376,8 +422,10 @@ def render(today, lines, exc, out):
                         ext = key[0]
                         fixed = sum(num(s) or 0 for (e2, _), (m2, s, _) in f['feeders'].items() if e2 == ext and str(s).lower() != 'auto')
                         sv = f'Auto ({100 - fixed:g})'
+                    if weight_copy and not ln['weight']:
+                        sv = f"{pct[key]} %" if pct and key in pct else ('-' if not pct else '')
                     para(rr.cells[ci], sv, 12, True, align=WD_ALIGN_PARAGRAPH.CENTER)
-                cell_text(rr.cells[ncol - 1], f['note'], 8.5)
+                cell_text(rr.cells[ncol - 1], f['note'] + (f" · weight % not worked out: {why}" if weight_copy and why else ''), 8.5)
             # order # cell, merged down the group's rows
             last = t.rows[-1]
             oc = first_row.cells[0].merge(last.cells[0]) if last is not first_row else first_row.cells[0]
@@ -409,6 +457,9 @@ def main():
     out = config.OUTPUT_DIR / f'FRM Formulation {PKT}.docx'
     n, e = render(today, lines, exc, out)
     print(out, f'- {len(lines)} lines, {n} orders, {e} for an engineer')
+    wout = config.OUTPUT_DIR / f'FRM Formulation {PKT} (weight %).docx'     # the troubleshooting copy
+    render(today, lines, exc, wout, weight_copy=True)
+    print(wout)
 
 
 if __name__ == '__main__':
