@@ -362,7 +362,9 @@ def test_line_own_recipe_of_a_folded_formulation():
     assert prim['src'][0] == 'line' and prim['src'][1] >= '2026-09-30'      # SE25's latest issue of FU0021WB4
     assert [f['formula_code'] for f in sec['rows']] == ['FU0021WB4'] and not assign.uses_reclaim(sec['rows'][0])
     fm, _ = assign.formulation(*sched['H6AA017-1'], day, issued)
-    assert fm['members'][0]['code'] == 'FUA031KS5' and fm['members'][0]['rows'] is None
+    # never issued on SE21: since 27 Oct 2026 a reclaim formulation is CALCULATED on the line's calibration (James: "yes use
+    # them, mark as calculated"), from a reclaim row of the same colour and thickness, never an R4 row
+    assert fm['members'][0]['code'] == 'FUA031KS5' and fm['members'][0]['src'][0] == 'calcw'
 
 
 def test_r4_black():
@@ -638,3 +640,21 @@ def test_corn_box_secondary_lines_12_13():
     fm, _ = assign.formulation('SE42', r, datetime.date(2026, 11, 2), issued)
     sec = next(m for m in fm['members'] if m['role'] == 'Secondary')
     assert {k: v['set'] for k, v in sec['rows'][0]['feeders'].items() if v.get('set')} == {'V1': '8', 'V3': '10', 'V5': '79', 'V8': '3'}
+
+
+def test_confirmed_settings_are_not_calculated():
+    # James, 27 Oct 2026: "Once its good. note it down so its no longer calculated"
+    import resolve
+    pk = resolve.load_packets()
+    issued = assign.issued_on_line(pk)
+    assign.set_pages(pk)
+    r = {'order': 'NEW-1', 'prod_code': 'RPA40KS744', 'mat_spec': 'PPP A R1R1R1', 'special_instructions': '',
+         'thk': '4.0', 'colors': 'KS KS KS'}
+    fm, _ = assign.formulation('SE21', r, datetime.date(2026, 11, 2), issued)
+    assert fm['members'][0]['code'] == 'FUA032KS4' and fm['members'][0]['src'][0] == 'calcw'
+    assign.CONFIRMED_SETTINGS[('SE21', 'FUA032KS4')] = {'feeders': {'Hopper 1': ('PP Virgin', '39')}, 'by': 'test'}
+    try:
+        fm, _ = assign.formulation('SE21', r, datetime.date(2026, 11, 2), issued)
+        assert fm['members'][0]['src'] == ('confirmed', None, 'test')
+    finally:
+        del assign.CONFIRMED_SETTINGS[('SE21', 'FUA032KS4')]

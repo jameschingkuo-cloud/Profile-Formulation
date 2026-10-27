@@ -365,6 +365,11 @@ def rule_rows(line, order, product, fm):
             note = x['role'] + " · settings from the W%" + \
                 (f" · no CaCO3 on {line} (virgin PP takes its share)" if (page or {}).get('no_caco3') else "")
             date = None
+        elif kind == 'confirmed':            # calculated once, then checked by James (assign.CONFIRMED_SETTINGS)
+            src = f"Settings for {shown} on {line} confirmed by {page}"
+            how = f"Proposed by rule ({fm['how']}); settings confirmed by {page}"
+            note = x['role']
+            date = None
         elif kind == 'own':
             how = f"By rule ({fm['how']}); settings as last issued for this order"
             note = x['role']

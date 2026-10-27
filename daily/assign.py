@@ -544,7 +544,14 @@ def r4_black_settings(line, m):
 
 # W% part -> (material class in Tech's auger calibration, words in a page's material)
 W_PARTS = {'Virgin PP %': ('VIRGIN PP', r'virgin'), 'Homo PP (F1203K) %': ('1203K', r'1203k'), 'Talc %': ('TALC', r'talc'),
-           'CaCO3 %': ('CACO3', r'caco3'), 'Colour MB %': ('COLOR', None)}
+           'CaCO3 %': ('CACO3', r'caco3'), 'Colour MB %': ('COLOR', None), 'Reclaim %': ('RECLAIM', r'reclaim')}
+# Calculated settings James has checked: they print as plain settings from then on, not CALCULATED (James, 27 Oct 2026:
+# "yes use them, mark as calculated. Once its good. note it down so its no longer calculated").
+# (line, code) -> {'feeders': {column: (material, set)}, 'by': who and when}
+CONFIRMED_SETTINGS = {}
+# The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
+# Tech's FU0031WB4 issued for RP26512-1 (80/10/60/32/36), not the lower FU0041WB4 row
+CALC_TEMPLATE = {('SE21', 'FU0023WB4'): 'FU0031WB4'}
 
 
 def class_slope(line, hopper, cls):
@@ -555,7 +562,7 @@ def class_slope(line, hopper, cls):
     return (float(rs[0]['Current Slope (g/min per unit)']), int(rs[0]['Calc Blocks'] or 0)) if rs else (None, 0)
 
 
-def calc_auger_settings(line, m):
+def calc_auger_settings(line, m, own=None):
     """A member with no settings on an auger line: its W% turned into auger speeds on the line's own calibration.
     Template: Tech's latest issued virgin row on the line of the same colour and thickness with no qualifier note (the
     hoppers it uses, their wording, and its throughput = sum of setting x slope); each W% part goes on the template's
@@ -568,18 +575,24 @@ def calc_auger_settings(line, m):
     w = {c: float(v) for c, v in m['w'].items() if v}
     if not w or set(w) - set(W_PARTS):
         return None, None
-    best = None
-    for (ln, _), gs in _ISSUED_GROUPS.items():
+    # a reclaim formulation takes a reclaim row as its template (James, 27 Oct 2026, SE21 FUA032KS4 / corn box FU0023WB4:
+    # "yes use them, mark as calculated"), never an R4 row unless it is R4 itself; the order's own last issue first
+    want_r = w_reclaim(m)
+
+    def template(c, f):
+        cols = list(f['feeders'])
+        pin = CALC_TEMPLATE.get((line, m['code']))
+        return ((pin is None or c == pin) and len(c) == 9 and c[6:] == m['code'][6:] and uses_reclaim(f) == want_r and cols
+                and (c[:2] == 'RU') == (m['code'][:2] == 'RU')
+                and all(re.fullmatch(r'Hopper \d', x) for x in cols)
+                and not {x for x in quals(f.get('note', '')) if x in QMARK})
+    best = next(((own[0], own[1], f) for f in (own[2] if own else []) if template(f['formula_code'], f)), None)
+    for (ln, _), gs in ([] if best else _ISSUED_GROUPS.items()):
         if ln != line:
             continue
         for date, page, fs in gs:
             for f in fs:
-                c = f['formula_code']
-                cols = list(f['feeders'])
-                if (len(c) == 9 and c[6:] == m['code'][6:] and not uses_reclaim(f) and cols
-                        and all(re.fullmatch(r'Hopper \d', x) for x in cols)
-                        and not {x for x in quals(f.get('note', '')) if x in QMARK}
-                        and (best is None or date > best[0])):
+                if template(f['formula_code'], f) and (best is None or date > best[0]):
                     best = (date, page, f)
     if best is None:
         return None, None
@@ -1042,8 +1055,12 @@ def formulation(line, row, day, issued, own=None):
                 rows, src = ro['rows'], ro['src']
         if rows is None:
             rows, src = w_settings(line, m)                 # weight-by-weight line: the W% is the settings
+        if rows is None and (line, m['code']) in CONFIRMED_SETTINGS:
+            c = CONFIRMED_SETTINGS[(line, m['code'])]
+            rows = [{'formula_code': m['code'], 'note': '', 'feeders': {k: {'material': mt, 'set': st} for k, (mt, st) in c['feeders'].items()}}]
+            src = ('confirmed', None, c['by'])
         if rows is None:
-            rows, src = calc_auger_settings(line, m)        # auger line: the W% on the line's calibration (CALCULATED)
+            rows, src = calc_auger_settings(line, m, own)   # auger line: the W% on the line's calibration (CALCULATED)
         if rows and 'void' in want:
             rows = [f for f in rows if not uses_reclaim(f)] or None
         rows = one_row(rows, m['code'])
