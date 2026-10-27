@@ -595,3 +595,10 @@ def test_run_with_next_takes_sign_blank():
     assert pre[('SE13', 'B-1')][0]['members'][0]['code'] == 'FUA152WB4'
     assert pre[('SE13', 'C-1')][0]['members'][0]['code'] == 'FUA152WB4'
     assert pre[('SE13', 'C-1')][0]['run_with'] == 'RUN WITH D-1: same sheet, same formulation'
+
+
+def test_corn_box_product():
+    # James, 27 Oct 2026: DPP40WB1235 is corn box even when the order's instructions don't say CORN BOX (SE21 RP26512-1)
+    q, _ = assign.wanted('SE21', row('DPP40WB1235', 'PPP P R1R1R1', 'Send to Bobst. Mark lead edge / 525 PLTS DONE'),
+                         datetime.date(2026, 10, 27))
+    assert 'corn' in q

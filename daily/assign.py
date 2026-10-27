@@ -80,6 +80,10 @@ RENAME_RX = re.compile(r'(?:change (?:name )?to|replace name with|change)\s+([A-
 W_COLS = ['Virgin PP %', 'Homo PP (F1203K) %', 'Reclaim %', 'Talc %', 'CaCO3 %', 'Colour MB %', 'Vistamaxx %',
           'Additive %', 'Foam %', 'HDPE %', 'Skin %', 'Other %']
 # words in James's notes that make a Main apply to some orders only (the schedule or the line says which)
+# Corn box products: James, 27 Oct 2026: "Product DDP40WB1235 is corn box ... when you see DDP40WB1235, its corn box"
+# (the schedules print it DPP40WB1235); set_pages() adds any product whose order says CORN BOX on a schedule on file.
+CORN_BOX = frozenset({'DPP40WB1235'})
+CORN_PRODUCTS = set(CORN_BOX)
 QUALIFIERS = {'void': ('void',), 'corn': ('corn',), 'sign': ('sign blank', 'spa'), 'summer': ('summer',),
               'winter': ('winter',), 'se43': ('se43',), '6.3': ('6.3',), '4.6': ('4.6',), 'roll': ('roll',), 'ltl': ('ltl',)}
 # words that mark a Main for a customer or a product kind the schedule does not name: never proposed by rule
@@ -269,7 +273,9 @@ def wanted(line, row, day):
     q = set()
     if 'VOIDFORM' in si or 'VOID FORM' in si:
         q.add('void')
-    if 'CORN' in si:
+    # Corn box is the product's, not only the order's: James, 27 Oct 2026, on SE21 RP26512-1 (DPP40WB1235, no CORN BOX in its
+    # instructions while the same product's orders on SE23 / SE42 say it): "thats corn box, why you didnt use corn box formula"
+    if 'CORN' in si or prod in CORN_PRODUCTS:
         q.add('corn')
     # R7 (James, 23 Oct 2026): "The slitter should use the same formula like SPA signs blank". A sign blank is an SPA
     # (or SPP) product, or any order sent to the slitter; Tech prints these under "(For sign blank orders only)".
@@ -671,12 +677,17 @@ _PAGES = {}
 
 
 def set_pages(packets):
-    """The latest Tech FRM page per line (feeder columns and the wording printed on each hopper), for calc recipes."""
+    """The latest Tech FRM page per line (feeder columns and the wording printed on each hopper), for calc recipes; and the
+    corn box products: any product whose order says CORN on a schedule on file."""
     global _PAGES
     _PAGES = {}
     for d in sorted(packets):
         for pg in packets[d]['frm']:
             _PAGES[pg['line_code']] = pg
+    CORN_PRODUCTS.clear()
+    CORN_PRODUCTS.update(CORN_BOX)
+    CORN_PRODUCTS.update(r['prod_code'] for p in packets.values() for pg in p['ext'] for r in pg['rows']
+                         if 'CORN' in (r.get('special_instructions') or '').upper())
 
 
 def calc_feeder(line, ext, feeder, columns):
