@@ -40,16 +40,9 @@
       "title": "Formula logic - to review Monday 26 Oct",
       "items": [
         {
-          "sev": "High",
-          "title": "Lines 12 and 13 (SE42, SE43): dosing system",
-          "detail": "James, 24 Oct: \"line 12 and 13 has some issue with its dosing system\". RP26410-1 (corn box, SE42): the Secondary FU0041WB4 has no settings - Tech never issued a run-out on line 12, and SE42/SE43 have no recipes in Tech's calc workbooks. Weight-% settings could come straight from the W% (V5 Auto ~81, V3 F1203K 10, V1 talc 6, V8 WB 3 if the 5% CaCO3 goes to virgin), or Tech's Primary with the reclaim moved to virgin (V5 Auto 79, V3 10, V1 8, V8 3).",
-          "where": "SE42 / SE43",
-          "source": "23 Oct draft"
-        },
-        {
-          "sev": "High",
+          "sev": "Medium",
           "title": "Formulas never run on their line: settings to set",
-          "detail": "27 formulas in 22 Friday orders print ENGINEER TO SET: FU0001WBD on SE32 (2 VOIDFORM + 7 Secondaries), FU0031WB4 + FU0014WB4 on SE31 (3), FU0051WB5 VOIDFORM on SE25 (2), RU0000WB4 + RU0022WB4 on SE25, FUA032KS6 / FU0041KS5 / FUA031KS5 + FUA032KS5 / FUA032KS4 on SE21, RU0022WB4 on SE24, FU0041WB4 on SE42. The auger calculation from the W% (backtest: median 1.1 setting points, 63% within 2) needs your OK before it fills them.",
+          "detail": "Down from 27 formulas in 22 orders (23 Oct, before the 26 Oct rules). Now one formula prints ENGINEER TO SET on 26 Oct: SE21 RP26A15-1 FUA032KS4 (Primary; its Secondary FUA152KS4 has settings). 23 Oct also had SE21 H6AA017-1 FUA031KS5. Neither has been run on SE21.",
           "where": "all auger lines",
           "source": "Settings To Set sheet"
         },
@@ -82,13 +75,6 @@
           "source": "work/gap_scan.py"
         },
         {
-          "sev": "Medium",
-          "title": "RUN WITH pairs: sign blank with a graphic order",
-          "detail": "SE13 RP26717-1 (RPA40WB3051, FUA151WB4) RUN WITH NEXT and RP26327-1 (SPA40WB772, sign blank FUA152WB4) RUN WITH ABOVE; SE24 RP26604-1 (SPA40WB755, sign blank) RUN WITH RPA40WB3051 (RP26803-2, FUA151WB4). They run as one: which formula? The other RUN WITH pairs of the week match.",
-          "where": "SE13 / SE24",
-          "source": "simulation 19-23 Oct"
-        },
-        {
           "sev": "Low",
           "title": "\"Signs 365\" on a 10 mm graphic order",
           "detail": "H69A058-1 (RPAA0WB387, SE22): \"Signs 365, sheets must be clean, flat and smooth\". The rules read only SIGN BLANK / SLITTER / SPA as sign blank, so it runs the graphic Main FUA060WBA. Sign formula for sign customers?",
@@ -103,16 +89,9 @@
           "source": "simulation 19-23 Oct"
         },
         {
-          "sev": "High",
-          "title": "RPP40FW2 (FW 4 mm, spec F4F4F4): no Main",
-          "detail": "RP26826-6 has no formula: no FR FW 4 mm row in the W% Master. Tech ran this product on SE21 as FR0022WB4 (calc sheet, last RP26708-2, Jul 2026), which you folded into FRA021WB4. Use FRA021WB4, or a new FW 4 mm name like FRA021FW3?",
-          "where": "SE21",
-          "source": "23 Oct draft"
-        },
-        {
           "sev": "Medium",
           "title": "Old calc-sheet recipes used as settings",
-          "detail": "19 Friday orders take settings from Tech's calc workbooks; some last ran long ago: FUA152GS4 on SE21 (Aug 2024), RP26512-1 FU0031WB4 + FU0014WB4 on SE21 (Apr 2025), FU0061WBD on SE32 (Dec 2025, 7 orders), FU0041KS5 and FU0110WB7 (May 2026).",
+          "detail": "Down from 19 orders on 23 Oct (before the 26 Oct rules) to 4 on 23 Oct and 2 on 26 Oct: settings from Tech's calc workbooks, not an issued page. FUA152GS4 on SE21 (Aug 2024), RP26512-1 FU0031WB4 + FU0014WB4 on SE21 (Apr 2025), FU0061WBD on SE32 (Dec 2025, 7 orders), FU0041KS5 and FU0110WB7 (May 2026).",
           "where": "SE21 / SE22 / SE23 / SE25 / SE32",
           "source": "By Rule sheet"
         },
@@ -181,7 +160,7 @@
         {
           "sev": "Low",
           "title": "Alternate sources and a colour name not on IWPFT062",
-          "detail": "KS black: Spartech B60009 and PolyOne LD-250 are printed as alternates but not qualified; NPC grade printed PE90000F vs PE-B9000F on the list. \"BL-B26003A\" is not named on the list. Add to IWPFT062 or drop from the pages.",
+          "detail": "\"BL-B26003A\" is not named on IWPFT062 (mapped to CR410BL, NPC PE-B60387). The black alternates are settled: the Word file and page print the black as IWPFT062 lists it (27 Oct); Tech's pages still name Spartech B60009 / PolyOne LD-250 (see \"Black sources\" under Clean-up).",
           "where": "SE11 · SE21 · SE42 · SE43 · SE61",
           "source": "Master Issues"
         }
@@ -191,13 +170,6 @@
       "owner": "Planning / scheduling",
       "title": "EXT and CNV schedules",
       "items": [
-        {
-          "sev": "Medium",
-          "title": "Printed GSM about 7% above the weight range, every VOIDFORM order",
-          "detail": "Every order with a range in its instructions prints a GSM about 7% above the range's middle (631 vs 582-600, 793 vs 729-751, 1052 vs 970-1000). Is the printed GSM a nominal figure and the range the real target?",
-          "where": "SE11 · SE23 · SE25 · SE43",
-          "source": "EXT Issues, every packet"
-        },
         {
           "sev": "High",
           "title": "Converting sheet figures that don't add up",
@@ -248,13 +220,6 @@
         },
         {
           "sev": "Low",
-          "title": "IWPFT062 housekeeping",
-          "detail": "Rev 18.0's MOC cell is blank (earlier rows say NA or an MOC number). 50-7555-010 is listed twice (TPP40 In-active, PP/PC625 Active).",
-          "where": "IWPFT062",
-          "source": "IWPFT062 Rev 18.0"
-        },
-        {
-          "sev": "Low",
           "title": "Housekeeping",
           "detail": "Delete the stale workspace copies (Product Master.xlsx, Daily\\, old Formulation Master.xlsx). Merge the branch into main when ready. Remaining background questions: Q2 codes, Q4 who makes the FRM and when, Q5 AC = 1 / 90, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
           "where": "",
@@ -264,6 +229,31 @@
     }
   ],
   "resolved": [
+    {
+      "date": "2026-10-27",
+      "title": "IWPFT062: 50-7555-010 on two rows is fine",
+      "detail": "James, 27 Oct: \"its fine\". 50-7555-010 is the trial resin number: TPP40 (In-active) and PP/PC625 (Active) both carry it."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "IWPFT062 rev 18.0: no MOC needed",
+      "detail": "James, 27 Oct: \"MOC is only needed when we have major changes. These update dont need MOC.\" A blank MOC cell on a minor revision is fine."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "FW 4 mm (RPP40FW2) runs FRA021FW4",
+      "detail": "RP26826-6 has a formulation by rule: FRA021FW4, with Tech's SE21 settings (FW is graphic grade A, James 26-27 Oct). Its W% row in the W% Master stays on the v2 \"Open for James\" sheet."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "Lines 12 and 13 (SE42, SE43): settings from the W%",
+      "detail": "James, 26 Oct: SE42 and SE43 are weight by weight, so a formulation's W% is its settings, with no CaCO3 (virgin takes its share) and SE43 Mains on SE42 too. RP26410-1's corn box Secondary FU0041WB4 on SE42 now prints V1 talc 5.5, V3 F1203K 9.7, V5 virgin 82, V8 colour 2.8."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "Printed GSM is the billing weight; VOIDFORM runs 5-8% under it",
+      "detail": "James, 27 Oct: the GSM on the schedule is for charging the customer. Every board is marked up 3% for the trimmed edge; VOIDFORM is also die cut, another 2%, so 5% is break even, and the plant controls within 3%: \"the control range for Voidform is -5% to -8%\". The ranges on file fit (631 -> 582-600, 793 -> 729-751, 1052 -> 970-1000). The daily check now reports a range only when it falls outside that band. James, 27 Oct: \"you dont have to worry about GSM as for now. In the future we will improve QC entry with another claude code, who will deal with GSM.\""
+    },
     {
       "date": "2026-10-27",
       "title": "FW prints as grade A (FRA021FW4)",
@@ -286,8 +276,8 @@
     },
     {
       "date": "2026-10-27",
-      "title": "RUN WITH: the pair takes the stricter formulation",
-      "detail": "James, 27 Oct: two products run side by side on one line and are cut to size after; \"the formulation of the product should be identical\". Where the rules give the pair different formulations, both take the stricter one (\"Take the stricter one\"): RP26717-1 (graphic) RUN WITH NEXT RP26327-1 (sign blank) now runs FUA152WB4, noted on the row. Neither stricter: each keeps its own, noted for an engineer."
+      "title": "RUN WITH: each order keeps its own formulation",
+      "detail": "James, 27 Oct: two products run side by side on one line and are cut to size after. \"graphic stay with graphic. sign blank stay with sign blank. Operation know to use the stricter one ... just provide the right formulation base on product code/spec is enough.\" Each order takes the formulation of its own product code and spec (RP26717-1 graphic FUA151WB4, RP26327-1 sign blank FUA152WB4)."
     },
     {
       "date": "2026-10-27",

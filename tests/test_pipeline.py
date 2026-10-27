@@ -65,7 +65,9 @@ def test_superseded_copies():
 # +2 each since 29 Sep 2026: Info notes for the replaced Q1203K and F1102K (checks.REPLACED)
 # 24 Sep 73 -> 76 on 1 Oct 2026: the packet was completed from the system PDF (H64A244-1's continuation page was missing
 # from the scan), so its pallet / weight checks run (+4), the SE25 checksum is exact and two CNV-vs-EXT pallet notes appear
-@pytest.mark.parametrize('date,n_issues', [('2026-09-23', 84), ('2026-09-24', 76)])
+# -7 each on 27 Oct 2026: a VOIDFORM range 5-8% under the printed GSM is as it should be (James: "the control range for
+# Voidform is -5% to -8%"), so those 7 orders are no longer reported
+@pytest.mark.parametrize('date,n_issues', [('2026-09-23', 77), ('2026-09-24', 69)])
 def test_daily_checks_regression(date, n_issues, tmp_path):
     run('daily/checks.py', {'PKT_DATE': date}, tmp_path)
     issues = json.loads((tmp_path / 'work' / 'issues.json').read_text(encoding='utf-8'))['issues']

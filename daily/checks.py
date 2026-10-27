@@ -62,9 +62,13 @@ for r in ext_rows:
     # GSM vs instruction range
     m=re.search(r'RANGE(?:\s+IS|\s+WEIGHT)?\s*(\d{3,4})\s*-\s*(\d{3,4})',r['special_instructions'].replace(',',''),re.I)
     g=num(r['gsm'])
-    if m and g and not (int(m.group(1))<=g<=int(m.group(2))):
-        mid=(int(m.group(1))+int(m.group(2)))/2
-        add('Medium','EXT',r['line'],r['order'],'GSM vs special-instruction weight range',f'Printed GSM {g:.0f} but instruction says range {m.group(1)}-{m.group(2)} GSM (printed GSM is {g/mid-1:+.1%} vs the middle of the range; every VOIDFORM order with a range shows the same ~7% gap, so it looks systematic - which target does the floor run to?)',src)
+    # The printed GSM is the billing weight: +3% for the trimmed edge, and VOIDFORM is die cut for another 2%, so the
+    # control range runs 5% to 8% under it (James Kuo, 27 Oct 2026: "the control range for Voidform is -5% to -8%"). A range
+    # in that band is as it should be; one outside it (half a point of rounding) is reported.
+    if m and g:
+        lo,hi=int(m.group(1)),int(m.group(2))
+        if not (lo/g-1>=-0.085 and hi/g-1<=-0.045 and lo<=hi):
+            add('Medium','EXT',r['line'],r['order'],'GSM vs special-instruction weight range',f'Printed GSM {g:.0f}, instruction range {lo}-{hi} GSM ({lo/g-1:+.1%} to {hi/g-1:+.1%}); the VOIDFORM control range is 5% to 8% under the printed GSM, here {g*0.92:.0f}-{g*0.95:.0f} (James, 27 Oct 2026)',src)
     # weight plausibility: order size x sheets x gsm
     ow,ol=frac(r['order_width']),frac(r['order_length'])
     if ow and ol and g and num(r['weight_lbs']):
