@@ -221,6 +221,8 @@ def test_print_formulation_docx(tmp_path):
     # SE42 V3: an obsolete number prints as F1203K with no note (James, 26 Oct 2026: "No need to talk about replacing")
     assert any('F1203K' in c for c in cells) and not any('replaces' in c or 'Q1203K' in c or 'F1102K' in c for c in cells)
     assert not any('XO-256' in c for c in cells) and any('X0-256' in c for c in cells)
+    # the black prints its IWPFT062 sources (James, 27 Oct 2026: "we should follow it")
+    assert not any('Spartech' in c or 'PolyOne' in c or 'PE90000F' in c for c in cells)
     assert any('If reclaim runs out' in c for c in cells) and any('Run first' in c for c in cells)
     for row in rows:                                                          # an exception is never filled from a suggestion
         if row.cells[0].text.startswith('RP26928-1'):

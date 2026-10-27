@@ -51,6 +51,18 @@ PRINT_AS = {
     'PP Virgin': 'PP Virgin (F6502A)',                 # "PP Virgin is F6502A" (master Changes 21-23)
     'White Reclaim': 'PP WB Reclaim (White Reclaim)',  # "same as PP WB Reclaim" (master Changes 15-20)
 }
+# The black (CR400K) prints its sources as IWPFT062 lists them (rev 18: NPC PE-B9000F; approved second sources Avient
+# 3800 Black PEC, MDI Black PE-500, Ampacet 19501 Black PE MB). Tech's pages still name Spartech B60009 and PolyOne
+# LD-250, which the list does not, and spell the NPC grade PE90000F. James, 27 Oct 2026: "we should follow it".
+# The source Tech names first stays first (what the line loads).
+KS_NPC = 'KS- NPC PE-B9000F (or MDI Black PE-500, Avient 3800 Black PEC or Ampacet 19501 Black PE MB)'
+KS_MDI = 'KS-MDI Black PE-500 (or NPC PE-B9000F, Avient 3800 Black PEC or Ampacet 19501 Black PE MB)'
+PRINT_AS.update({
+    'KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)': KS_NPC,
+    'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F': KS_MDI,
+    'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)': KS_MDI,
+    'KS-MDI PE-500 (or Spartech B60009)': KS_MDI,
+})
 
 
 def replaced():

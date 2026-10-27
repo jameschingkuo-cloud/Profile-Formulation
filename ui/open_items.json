@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-26",
+  "updated": "2026-10-27",
   "groups": [
     {
       "owner": "James",
@@ -18,6 +18,13 @@
           "detail": "Obsolete numbers the engineer has not cleaned up yet (e.g. SE21 FR0021FW4 Hopper 3). Printed as F1203K with no note.",
           "where": "FRM pages",
           "source": "26 Oct"
+        },
+        {
+          "sev": "Low",
+          "title": "Black sources: Tech's pages vs IWPFT062",
+          "detail": "Tech's SE11, SE21, SE42, SE43 and SE61 pages print the black as \"NPC PE90000F (or Spartech B60009 or MDI PE-500)\" and similar. IWPFT062 rev 18 lists CR400K NPC PE-B9000F with approved second sources Avient 3800 Black PEC, MDI Black PE-500 and Ampacet 19501 Black PE MB; Spartech B60009 and PolyOne LD-250 are not on it. James, 27 Oct: \"we should follow it\". The Word file and this page now print the IWPFT062 sources (the source Tech names first stays first). Tech's pages to be updated.",
+          "where": "FRM pages",
+          "source": "27 Oct"
         },
         {
           "sev": "Low",
