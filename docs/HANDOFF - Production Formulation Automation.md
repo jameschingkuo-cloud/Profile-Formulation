@@ -2463,10 +2463,23 @@ Scheduled run, one window (SCHEDULE 10/26 e-mailed 13:35, DIE CUT SCHEDULE 13:33
 - **Slip to note**: the run also published `FRM Formulation 2026-10-26.docx` (Daily Formulation Report) although 7 orders are still for the engineer;
   earlier days did not publish the Word file before it was ready to issue. Not deleted (standing rule); James to say if it should be replaced.
 
+## 7.75 Daily run 27 Oct 2026 (27 Oct 2026)
+
+Scheduled run, one window (SCHEDULE 10/27 e-mailed 12:47; Die Cutting Schedule 10-27.pdf already in Downloads). No code change. 26 Oct is the previous published day.
+- **Step 1** (BPN9PFR$_Z7tvl19r.PDF, run 12:56:25): 82 EXT records on 13 lines, every line equal to its printed total; pre-flight 0 changes, IWPFT062 0 differences.
+  Word formulation emailed to James and sent in chat: 81 orders with a formulation (last issued or by rule), 1 for the engineer (SE11 RP26A15-1, settings for FUA032KS4 to set);
+  3 orders with CALCULATED SETTINGS (R4 black). New since 26 Oct (8): SE11 H6AA152-6; SE12 H69A343-1; SE13 H69A335-1, H6AA217-6; SE22 H6AA148-1; SE23 H6AA208-1; SE24 H6AA205-1;
+  SE31 H69A059-1. Gone (8): SE11 RP26811-1; SE21 H6AA037-1; SE25 H69A040-1; SE31 H6AA033-1, H6AA123-1; SE61 H6AA124-4, H6AA124-5, H6AA060-2.
+  VOIDFORM GSM: H68A091-1, H68A090-1, H64A244-1 have a control range 5-8% under the printed (billing) GSM, as expected (not raised as an issue, per James's rule).
+- **Step 2 and daily run**: converting schedule 61 rows on 9 pages (new: H69A059-1, H69A343-1, H6AA152-6; gone: H69A008-1, H69A044-1). Manual issues and cfg written,
+  EXT/CNV workbooks and Product Master built and published, records appended (82 EXT, 61 CNV; no FRM rows), FRM Formulation Word file and interface copy published, artifact v80.
+  `new_highs.py`: 4 High, the same 4 as 26 Oct, 0 new. pytest 98 passed, 5 skipped.
+
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.72 | 2026-10-27 | Claude Code (local, with James Kuo) | **27 Oct daily run (§7.75)**: schedule email 12:47; formulation emailed (81 as issued or by rule, 1 for the engineer); 82 EXT + 61 CNV rows built, published and recorded; artifact v80; 0 new High. |
 | 1.71 | 2026-10-26 | Claude Code (local, with James Kuo) | **26 Oct daily run (§7.74)**: schedule emails 13:33/13:35; formulation emailed (75 as issued or by rule, 7 for the engineer); 82 EXT + 60 CNV rows built, published and recorded; artifact v61; 0 new High. |
 | 1.70 | 2026-10-26 | Claude Code (local, with James Kuo) | **Draft vs Tech (§7.73)**: daily/compare_tech.py, work/compare_draft_tech.py (every Tech day replayed: 8-23 Oct 87% same formulation, 84% same settings); the page shows it; artifact v60 (23 Oct). |
 | 1.69 | 2026-10-26 | Claude Code (local, with James Kuo) | **Tech's 8-23 Oct FRM pages (§7.73)**: 9 days transcribed, checked against the images and written into the packets; frm_from_text fixes; auger / hopper / missing-formulation check (work/auger_hopper_check.py). |
