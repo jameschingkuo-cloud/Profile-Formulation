@@ -108,13 +108,6 @@
           "detail": "Two Mains for KS 3 mm packaging (and KS 6 mm, NS 10 mm UV); FUA001SS6 / FAA051WBA notes without a target; FU00020BF4 / FU001WB5 lengths; FU1400GD4, FU001TLW4, FU001EAW4 spellings; FHA.. names under FE; SE42/SE43 own codes; GT premix; FU0151WB3 for 3 mm VOIDFORM; settings for FU0051WB5 on SE25 and FU0001WBD on SE32.",
           "where": "W% Master Formulation (draft v2).xlsx",
           "source": "workspace"
-        },
-        {
-          "sev": "Low",
-          "title": "Notes the rules do not read",
-          "detail": "Customer or tolerance notes (FLEXCON on H69A040-1, Tulsa Plastics hold 6.2-6.5 mm on H67A165-1, GENESIS target 10 mm on H68A020-1) and DO NOT RUN / KEEP RUNNING (RP25710-1, RP26717-2) do not change the formula today. Any customer formulas?",
-          "where": "schedule notes",
-          "source": "23 Oct schedule"
         }
       ]
     },
@@ -220,8 +213,8 @@
         },
         {
           "sev": "Low",
-          "title": "Housekeeping",
-          "detail": "Delete the stale workspace copies (Product Master.xlsx, Daily\\, old Formulation Master.xlsx). Merge the branch into main when ready. Remaining background questions: Q2 codes, Q4 who makes the FRM and when, Q5 AC = 1 / 90, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
+          "title": "Background questions",
+          "detail": "Still open from handoff §10: Q2 codes, Q4 who makes the FRM and when, Q5 AC = 1 / 90, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
           "where": "",
           "source": "Handoff §10"
         }
@@ -229,6 +222,16 @@
     }
   ],
   "resolved": [
+    {
+      "date": "2026-10-27",
+      "title": "Housekeeping: stale workspace copies removed, branch merged",
+      "detail": "James, 27 Oct: \"go ahead and do it\". Product Master.xlsx (25 Sep), Formulation Master.xlsx (old) and Daily\\ (23-24 Sep schedules) in the workspace sent to the Recycle Bin; the current files are in the database folders. Branch claude/new-session-6wgvkd merged into main."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "Customer notes do not change the formula",
+      "detail": "James, 27 Oct: \"no not every customer need a special formula\". Customer and tolerance notes (FLEXCON, Tulsa Plastics 6.2-6.5 mm, GENESIS 10 mm) and DO NOT RUN / KEEP RUNNING stay notes; the formulation follows the product code and spec."
+    },
     {
       "date": "2026-10-27",
       "title": "IWPFT062: 50-7555-010 on two rows is fine",

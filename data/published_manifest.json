@@ -514,13 +514,6 @@
   "published_at": "2026-10-26T13:46:04",
   "sha256": "ab479a40b000b043135419881ac4ff96c17bb52ab0c47d0c9b8ef900ff66d88f"
  },
- "workspace/Formulation Master.xlsx": {
-  "bytes": 3667095,
-  "content": "e0197d136359737adbf5062475214092d210907033c6bf91088dd01ce965b945",
-  "from": "Cowork session",
-  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
-  "sha256": "4e5781f776f7b4ce1d178c3170a71dc1414592d7a49b1ccba1650270da1005df"
- },
  "workspace/W% Master Formulation (draft v2).xlsx": {
   "bytes": 60820,
   "content": "410ef39d098f55d42091a921816845e8256f65d924bff35c8ff586c188335f7d",
