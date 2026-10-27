@@ -1090,14 +1090,24 @@ def own_equivalent(m, want, own):
     return (one_row(rows, m['code']), ('own', own[0], own[1])) if rows else (None, None)
 
 
+# Where Tech prints several recipes under one code, the one James chose (feeder -> set it must have), ahead of the rest.
+# James, 27 Oct 2026, SE22 RP26928-1: Tech's FUA060WBA at 20/5/90/7/4 and at 30/5/75/7/4 - "replace the primary (which
+# was 1) with 2 (the one with 75 speed) moving forward for FUA060WBA" - "We dont need to be that aggressive when it comes to
+# consuming white reclaim"
+CHOSEN_RECIPE = {'FUA060WBA': {'Hopper 1': '30', 'Hopper 3': '75'}}
+
+
 def one_row(rows, code):
     """One formula row per member: the Primary once and the Secondary once (James, 26 Oct 2026, on RP26512-1, where
     Tech's SE21 page printed the same formulation twice, as FU0041WB4 and FU0031WB4: "i dont think we go with triple
-    formulation now, just one primary and one secondary"). The row printed under James's own name first, else the
-    first in Tech's order."""
+    formulation now, just one primary and one secondary"). The recipe James chose (CHOSEN_RECIPE) first, then the row
+    printed under James's own name, else the first in Tech's order."""
     if not rows:
         return rows
-    return [next((f for f in rows if f['formula_code'] == code), rows[0])]
+    want = CHOSEN_RECIPE.get(code)
+    chosen = want and next((f for f in rows if all(str((f['feeders'].get(c) or {}).get('set', '')).strip() == v
+                                                    for c, v in want.items())), None)
+    return [chosen or next((f for f in rows if f['formula_code'] == code), rows[0])]
 
 
 if __name__ == '__main__':

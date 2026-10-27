@@ -602,3 +602,10 @@ def test_corn_box_product():
     q, _ = assign.wanted('SE21', row('DPP40WB1235', 'PPP P R1R1R1', 'Send to Bobst. Mark lead edge / 525 PLTS DONE'),
                          datetime.date(2026, 10, 27))
     assert 'corn' in q
+
+
+def test_chosen_recipe_fua060wba():
+    # James, 27 Oct 2026: of Tech's two FUA060WBA recipes on SE22 (20/5/90/7/4, 30/5/75/7/4), the 75 one is the Primary
+    f = lambda h1, h3: {'formula_code': 'FUA060WBA', 'feeders': {'Hopper 1': {'set': h1}, 'Hopper 3': {'set': h3}}}
+    assert assign.one_row([f('20', '90'), f('30', '75')], 'FUA060WBA')[0]['feeders']['Hopper 3']['set'] == '75'
+    assert assign.one_row([f('20', '90')], 'FUA060WBA')[0]['feeders']['Hopper 3']['set'] == '90'
