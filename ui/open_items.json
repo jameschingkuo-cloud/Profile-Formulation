@@ -224,6 +224,21 @@
   "resolved": [
     {
       "date": "2026-10-27",
+      "title": "Corn box: DPP40WB1235 always; Secondary FU0022WB4; SE23 at 60 reclaim",
+      "detail": "James's review of the printed 26 Oct copy. DPP40WB1235 is corn box on every line even when the order does not say CORN BOX (SE21 RP26512-1 now FU0021WB4 + FU0022WB4). \"use FU0022WB4 as corn box secondary everywhere\" (W% row FU0041WB4 \"Secondary Corn box\" carries the new name). SE23 FU0021WB4 is Tech's older 45/10/60/20 recipe (on file since 23 Sep), not 35/10/45/20 + F1203K 80: \"we can be more agressive with white reclaim when it comes to cornbox\" - \"lets use the older one with 60 speed on reclaim\"."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "FUA060WBA (SE22) Primary: 30/5/75/7/4",
+      "detail": "James, 27 Oct, on RP26928-1: Tech prints FUA060WBA at 20/5/90/7/4 and 30/5/75/7/4; \"replace the primary (which was 1) with 2 (the one with 75 speed) moving forward\" - \"We dont need to be that aggressive when it comes to consuming white reclaim\"."
+    },
+    {
+      "date": "2026-10-27",
+      "title": "Word file black and white only",
+      "detail": "James, 27 Oct: \"no RED, make everything black and white. the printer at production is a black and white printer\". No colour or shading in the Word file; emphasis is bold / italic."
+    },
+    {
+      "date": "2026-10-27",
       "title": "\"AC = 1 / 90\" taken off the pages",
       "detail": "James, 27 Oct, reviewing the printed 26 Oct copy: \"that AC= on the top right. lets take it out. not sure what it is\". Tech's page header note (AC = 1 on SE11, AC = 90 on SE12, ...) is no longer printed in the Word file or shown on this page. Background question Q5 closed."
     },
