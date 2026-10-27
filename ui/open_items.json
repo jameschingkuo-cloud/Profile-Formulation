@@ -42,7 +42,7 @@
         {
           "sev": "Medium",
           "title": "Formulas never run on their line: settings to set",
-          "detail": "Down from 27 formulas in 22 orders (23 Oct, before the 26 Oct rules). Now one formula prints ENGINEER TO SET on 26 Oct: SE21 RP26A15-1 FUA032KS4 (Primary; its Secondary FUA152KS4 has settings). 23 Oct also had SE21 H6AA017-1 FUA031KS5. Neither has been run on SE21.",
+          "detail": "Down from 27 formulas in 22 orders (23 Oct, before the 26 Oct rules). Now one formula prints ENGINEER TO SET on 26 Oct: SE21 RP26A15-1 FUA032KS4 (Primary; its Secondary FUA152KS4 has settings). 23 Oct also had SE21 H6AA017-1 FUA031KS5. Neither has been run on SE21. James, 27 Oct, on the printed 26 Oct copy: FUA032KS4 is similar to the formula above it on SE21 (H6AA037-1 FU0041KS4: virgin 32, HiTalc 6, PP Mix Reclaim 70, black 35, CaCO3 28); both have reclaim. The engineer can set it from that one.",
           "where": "all auger lines",
           "source": "Settings To Set sheet"
         },
