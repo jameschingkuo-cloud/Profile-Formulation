@@ -1089,10 +1089,10 @@ function render(reads, date, nPages){
 // 29 Sep 2026: "operator will use the paper copy"). Downloaded through the artifact's downloads capability.
 const PRINT_AS = {'FOAM – Bergen XO-256': 'FOAM – Bergen X0-256', 'PP Virgin': 'PP Virgin (F6502A)', 'White Reclaim': 'PP WB Reclaim (White Reclaim)',
   // the black as IWPFT062 lists it (daily/render_frm.py, James 27 Oct 2026)
-  'KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)': 'KS- NPC PE-B9000F (or MDI Black PE-500, Avient 3800 Black PEC or Ampacet 19501 Black PE MB)',
-  'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F': 'KS-MDI Black PE-500 (or NPC PE-B9000F, Avient 3800 Black PEC or Ampacet 19501 Black PE MB)',
-  'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)': 'KS-MDI Black PE-500 (or NPC PE-B9000F, Avient 3800 Black PEC or Ampacet 19501 Black PE MB)',
-  'KS-MDI PE-500 (or Spartech B60009)': 'KS-MDI Black PE-500 (or NPC PE-B9000F, Avient 3800 Black PEC or Ampacet 19501 Black PE MB)'};
+  'KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)': 'KS NPC PE-B9000F',
+  'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F': 'KS NPC PE-B9000F',
+  'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)': 'KS NPC PE-B9000F',
+  'KS-MDI PE-500 (or Spartech B60009)': 'KS NPC PE-B9000F'};
 let docxLib = null;
 const loadDocx = () => docxLib || (docxLib = loadScript('https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js').then(() => window.docx).catch(e => { docxLib = null; throw e; }));
 const colKey = c => { const m = /^(?:Extruder )?([A-D]) (.+)$/.exec(String(c).trim()); return m ? m[1] + '|' + m[2] : '|' + String(c).trim(); };
