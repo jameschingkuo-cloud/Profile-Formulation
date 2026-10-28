@@ -342,6 +342,18 @@ def test_primary_first_even_without_settings():
     assert [render_frm.when_label(forms, i) for i in range(2)] == ['Run first', 'If reclaim runs out']
 
 
+def test_auger_top_speed_raised_to_90():
+    """James Kuo, 28 Oct 2026: on an auger line the highest speed goes up to 90 and the others in proportion (weight ratio
+    kept); a weight-by-weight line and a formulation already at 90 or over are left as they are."""
+    f = lambda *s: {f'Hopper {i + 1}': {'material': 'm', 'set': str(v)} for i, v in enumerate(s)}
+    out, was = assign.raise_to_top('SE22', f(25, 5, 80, 10, 4))
+    assert was == 80 and [v['set'] for v in out.values()] == ['28', '6', '90', '11', '5']
+    out, was = assign.raise_to_top('SE21', {'Hopper 1': {'material': 'PP Mix Reclaim', 'set': '65'},
+                                            'Hopper 3': {'material': '', 'set': ''}, 'Hopper 4': {'material': 'KS', 'set': '19'}})
+    assert [v['set'] for v in out.values()] == ['90', '', '26']
+    assert assign.raise_to_top('SE22', f(95, 5))[1] is None and assign.raise_to_top('SE24', f(40, 5))[1] is None
+
+
 def test_sign_blank_only_on_regular_white():
     """James Kuo, 28 Oct 2026: the sign blank formula is only for SPA on a regular WB (R1R1R1); an opaque SPA
     (H69A059-1, SPA40WB953, OPOPOP) or another colour never takes it."""
@@ -399,9 +411,9 @@ def test_r4_black():
     """James, 24 Oct 2026, on H6AA173-1 (RPP50KS2219, SE21, PPP P R4R4R4: RU0000KS5 never run there): "remember the auger
     setting is applied universally ... look at other auger setting with similar products such as black productions and
     then put them together. And besides, if it's a R4 black production, it should run about 98% black reclaim and 2% black
-    color dye or master batch". Tech's R4 black on SE21 (RU0000KS4, 23-25 Sep): Mix Reclaim on hopper 3 at 99, KS colour
-    on hopper 4 at 10. The 5 mm order keeps hopper 3 at 99 and sets hopper 4 for 98/2 (slopes 87.2 and 16.1 g/min per
-    unit): 11, marked CALCULATED. The R4 black 4 mm order H6AA173-2 takes Tech's R4 rows, never the packaging recipe
+    color dye or master batch". SE21 (line 4) runs the reclaim on hopper 1 (James, 28 Oct 2026: "use Hopper 1 for reclaim
+    instead of hopper 3. Hopper 1 is larger and faster"): Tech's RU0000KS4 of 23 Oct, Mix Reclaim on hopper 1 at 65, and
+    hopper 4 set for 98/2 (slopes 231.8 and 16.1 g/min per unit): 19, marked CALCULATED. The R4 black 4 mm order H6AA173-2 takes Tech's R4 rows, never the packaging recipe
     printed under the old name FU0041KS4 (virgin 32, mix reclaim 70, talc, CaCO3)."""
     if not assign.CALC_LIB.exists():
         import pytest
@@ -411,7 +423,7 @@ def test_r4_black():
         d = json.loads(pth.read_text(encoding='utf-8'))
         packets[d['packet_date']] = d
     day = datetime.date(2026, 10, 23)
-    before = {d: p for d, p in packets.items() if d < '2026-10-23'}
+    before = {d: p for d, p in packets.items() if d <= '2026-10-23'}
     issued = assign.issued_on_line(before)
     assign.set_pages(before)
     sched = {r['order']: (pg['line'], r) for pg in packets['2026-10-23']['ext'] for r in pg['rows']}
@@ -419,14 +431,14 @@ def test_r4_black():
     (x,) = fm['members']
     assert x['code'] == 'RU0000KS5' and x['src'][0] == 'calcd', why
     fed = {c: v['set'] for c, v in x['rows'][0]['feeders'].items() if v.get('set')}
-    assert fed == {'Hopper 3': '99', 'Hopper 4': '11'}
+    assert fed == {'Hopper 1': '65', 'Hopper 4': '19'}
     k_r, k_c = x['src'][2]['slopes']
-    assert abs(99 * k_r / (99 * k_r + 11 * k_c) - 0.98) < 0.002
+    assert abs(65 * k_r / (65 * k_r + 19 * k_c) - 0.98) < 0.002
     fm, _ = assign.formulation(*sched['H6AA173-2'], day, issued)
     (x,) = fm['members']
     assert x['code'] == 'RU0000KS4' and all(assign.r4_recipe(f) for f in x['rows'])
-    # SE21: James's hoppers 3 and 4 at 98/2 before Tech's rows (James, 27 Oct 2026: "use 3 and 4. weight rate is 98% to 2%")
-    assert {c: v['set'] for c, v in x['rows'][0]['feeders'].items() if v.get('set')} == {'Hopper 3': '99', 'Hopper 4': '11'}
+    # SE21: James's hoppers 1 and 4 at 98/2 before Tech's rows (James, 27 Oct 2026: "weight rate is 98% to 2%"; 28 Oct: hopper 1)
+    assert {c: v['set'] for c, v in x['rows'][0]['feeders'].items() if v.get('set')} == {'Hopper 1': '65', 'Hopper 4': '19'}
     packaging = {'formula_code': 'FU0041KS4', 'note': '', 'feeders': {'Hopper 1': {'material': 'PP Virgin-silo 3 (F6502A)', 'set': '32'},
                  'Hopper 3': {'material': 'PP Mix Reclaim', 'set': '70'}, 'Hopper 4': {'material': 'KS MB-CR401K', 'set': '35'}}}
     assert not assign.r4_recipe(packaging)

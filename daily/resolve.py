@@ -384,7 +384,11 @@ def rule_rows(line, order, product, fm):
         for q in sorted(set(fm.get('want', ())) & set((x['member'] or {}).get('quals', ()))):   # the Main is for it
             if q in assign.QUAL_NOTE and q not in assign.quals(note):
                 note += f" · {assign.QUAL_NOTE[q]}"
-        for col, v in f["feeders"].items():
+        feeders, was = assign.raise_to_top(line, f["feeders"])
+        if was:
+            how += (f"; speeds raised so the highest is {assign.AUGER_TOP} (was {was:g}), the others in proportion, weight "
+                    f"ratio kept (James Kuo, 28 Oct 2026)")
+        for col, v in feeders.items():
             if not (v.get("material") or v.get("set")):
                 continue
             ext, feeder = split_feeder(col)

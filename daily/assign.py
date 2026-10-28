@@ -396,10 +396,11 @@ def feeds_additives(f, m):
 
 
 R4_BLACK = (98.0, 2.0)     # % black reclaim, % black colour MB (James, 24 Oct 2026)
-# The hoppers an R4 black runs on, where James set them: SE21 reclaim on hopper 3, KS colour on hopper 4 (James, 27 Oct
-# 2026, on Tech's RU0000KS4 at hopper 3 99 / hopper 4 10, 23 Sep - 13 Oct: "this one is correct. use 3 and 4. weight rate
-# is 98% to 2%"; Tech's 23 Oct issues with reclaim on hopper 1 at 65 are not followed)
-R4_BLACK_HOPPERS = {'SE21': ('Hopper 3', 'Hopper 4')}
+# The hoppers an R4 black runs on, where James set them: SE21 reclaim on hopper 1, KS colour on hopper 4. James, 28 Oct
+# 2026: "for RU0000KS5 and KS4, use Hopper 1 for reclaim instead of hopper 3. Hopper 1 is larger and faster. Hopper 3 may
+# run too slow and run out of material" - so Tech's 23 Oct RU0000KS4 issue (hopper 1 at 65) is the template, the colour
+# set for 98/2. (Until then hopper 3 at 99 / hopper 4, James 27 Oct: "use 3 and 4. weight rate is 98% to 2%".)
+R4_BLACK_HOPPERS = {'SE21': ('Hopper 1', 'Hopper 4')}
 _SLOPES = None
 
 
@@ -430,6 +431,28 @@ def slope(line, column, reclaim):
 # weight by weight dosing system. so it does not need calculation. you can just put, AV1 as color, V2 as talc, V3 caco3,
 # v4 PP virgin, V5 as F1203K")
 WEIGHT_LINES = ('SE24', 'SE42', 'SE43', 'SE61')
+
+# Auger lines run their fastest feeder at 90 at least. James, 28 Oct 2026: "for any Auger based line. if the highest
+# speed is below 90, increase it to 90 and adjust other speed to keep up. remember to use the weight ratio." Every
+# feeder's weight is its setting x its hopper's slope, so one factor on every setting keeps the weight ratio; only the
+# rounding to whole numbers moves it. One factor for the whole formulation, so co-ex layers keep their ratio too.
+AUGER_TOP = 90
+
+
+def raise_to_top(line, feeders):
+    """{feeder: {'material', 'set'}} -> (feeders with the highest set at AUGER_TOP and the rest in proportion, the old
+    highest) on an auger line whose highest set is below AUGER_TOP; else (feeders, None)."""
+    if line in WEIGHT_LINES:
+        return feeders, None
+    vals = {c: float(v['set']) for c, v in feeders.items()
+            if v.get('material') and re.fullmatch(r'\d+(?:\.\d+)?', str(v.get('set') or '').strip())}
+    top = max(vals.values(), default=0)
+    if not 0 < top < AUGER_TOP:
+        return feeders, None
+    out = {c: dict(v) for c, v in feeders.items()}
+    for c, s in vals.items():
+        out[c]['set'] = str(int(s * AUGER_TOP / top + 0.5))
+    return out, top
 W_LAYOUT = {'SE24': [('Extruder A V1', 'Colour MB %', None), ('Extruder A V2', 'Talc %', r'talc'),
                      ('Extruder A V3', 'CaCO3 %', r'caco3'), ('Extruder A V4', 'Virgin PP %', r'virgin'),
                      ('Extruder A V5', 'Homo PP (F1203K) %', r'1203k')],
@@ -484,7 +507,7 @@ def r4_black_settings(line, m):
     SE21): "remember the [auger] setting is applied universally ... look at other [auger] setting with similar products
     such as black productions and then put them together. And besides, if it's a R4 black production, it should run about
     98% black reclaim and 2% black color dye or master batch". Auger lines only.
-    1. Tech's latest issued R4 black recipe on the line (any thickness; SE21: RU0000KS4, Mix Reclaim on hopper 3 at 99,
+    1. Tech's latest issued R4 black recipe on the line (any thickness; SE21: RU0000KS4, Mix Reclaim on hopper 1 at 65,
        KS colour on hopper 4 at 10): the reclaim hopper as Tech runs it, the colour hopper set for 98/2 with the line's
        calibration slopes.
     2. Else the line's R4 black recipe in Tech's calc sheet for the hoppers and slopes, and the line's black recipes of the

@@ -98,8 +98,11 @@ def compare(day, P, draft_path):
     tech = {}
     for pg in P['frm']:
         for g in pg['groups']:
+            # Tech's settings through the same auger rule as the draft (highest speed up to 90, the rest in proportion:
+            # James Kuo, 28 Oct 2026), so "settings same" still means the same formulation run the same way
             fl = [{'code': f['formula_code'], 'note': f.get('note') or '',
-                   'feeders': {split_feeder(c): (v['material'], v['set']) for c, v in f['feeders'].items() if v['material'] or v['set']}}
+                   'feeders': {split_feeder(c): (v['material'], v['set'])
+                               for c, v in assign.raise_to_top(pg['line_code'], f['feeders'])[0].items() if v['material'] or v['set']}}
                   for f in g['formulas']]
             for o in g['orders']:
                 tech.setdefault((pg['line_code'], o), fl)

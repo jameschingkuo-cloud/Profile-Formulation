@@ -441,6 +441,24 @@
    "change": "Open items merged into the Master health tab: what needs an answer first, then the Formulation Master",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 50,
+   "date": "2026-10-28",
+   "type": "Logic",
+   "item": "SE21 R4 black hoppers",
+   "change": "Line 4 (SE21) RU0000KS4 / RU0000KS5: reclaim on Hopper 1 (larger, faster) instead of Hopper 3; Tech's 23 Oct recipe on Hopper 1, black on Hopper 4 at 98/2",
+   "order": "H6AA173-1, H6AA173-2",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 51,
+   "date": "2026-10-28",
+   "type": "Logic",
+   "item": "Auger top speed 90",
+   "change": "Every auger line: when the highest speed is below 90 it goes up to 90 and the others in proportion, weight ratio kept (whole numbers; weight lines SE24/SE42/SE43/SE61 not affected)",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }
