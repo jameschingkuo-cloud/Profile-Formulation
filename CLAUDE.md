@@ -483,4 +483,4 @@ the handoff, and design discussions with James. Open questions are in ยง10 (Q2โ€
 ## Revision record
 Every change to the formulation logic, James's W% Master, the printed Word file or the interface page adds one row to
 `ui/revision_record.json` in the same commit (rev = next number, date, type Logic / W% / Print / Page design, item, what
-changed in plain words, triggering order). The page's Revision record tab shows it (James Kuo, 28 Oct 2026).
+changed in plain words, triggering order, editor James Kuo). The page's Revision record tab shows it (James Kuo, 28 Oct 2026).

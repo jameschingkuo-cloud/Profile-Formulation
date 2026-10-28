@@ -553,10 +553,10 @@ let revType = 'All';
 function renderRevs(){
   const list = REVS.filter(r => revType === 'All' || r.type === revType);
   $('#revcount').textContent = `${REVS.length} revisions`;
-  $('#revsub').textContent = `Every change to how the formulation is decided (logic), to James's W% Master, to the printed Word file, and to this page, newest first. Requested by ${[...new Set(REVS.map(r => r.by))].join(', ') || 'James Kuo'}.`;
+  $('#revsub').textContent = `Every change to how the formulation is decided (logic), to James's W% Master, to the printed Word file, and to this page, newest first. Editor: ${[...new Set(REVS.map(r => r.editor))].join(', ') || 'James Kuo'}.`;
   $('#revfilter').innerHTML = REV_TYPES.map(t => `<button class="chip ${t === revType ? 'ok' : 'var'}" data-rt="${esc(t)}" aria-pressed="${t === revType}">${esc(t)}${t === 'All' ? '' : ' · ' + REVS.filter(r => r.type === t).length}</button>`).join(' ');
-  $('#revtable').innerHTML = `<thead><tr><th>Rev</th><th>Date</th><th>Type</th><th>Item</th><th>What changed</th><th>Order</th></tr></thead><tbody>${
-    list.map(r => `<tr><td>${r.rev}</td><td style="white-space:nowrap">${esc(fmtDate(r.date))}</td><td><span class="chip var">${esc(r.type)}</span></td><td><b>${esc(r.item)}</b></td><td>${esc(r.change)}</td><td style="white-space:nowrap">${esc(r.order || '')}</td></tr>`).join('')}</tbody>`;
+  $('#revtable').innerHTML = `<thead><tr><th>Rev</th><th>Date</th><th>Type</th><th>Item</th><th>What changed</th><th>Order</th><th>Editor</th></tr></thead><tbody>${
+    list.map(r => `<tr><td>${r.rev}</td><td style="white-space:nowrap">${esc(fmtDate(r.date))}</td><td><span class="chip var">${esc(r.type)}</span></td><td><b>${esc(r.item)}</b></td><td>${esc(r.change)}</td><td style="white-space:nowrap">${esc(r.order || '')}</td><td style="white-space:nowrap">${esc(r.editor || '')}</td></tr>`).join('')}</tbody>`;
   document.querySelectorAll('#revfilter button').forEach(b => b.addEventListener('click', () => { revType = b.dataset.rt; renderRevs(); }));
 }
 renderRevs();
