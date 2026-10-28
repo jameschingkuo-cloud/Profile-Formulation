@@ -230,7 +230,6 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
     <button role="tab" id="t-op" aria-selected="false" data-view="op" class="main">Operator</button>
     <button role="tab" id="t-mgr" aria-selected="false" data-view="mgr" class="main">Production manager</button>
     <span class="tabsep caps" aria-hidden="true">Engineering</span>
-    <button role="tab" id="t-open" aria-selected="false" data-view="open">Open items</button>
     <button role="tab" id="t-board" aria-selected="true" data-view="board">Line board</button>
     <button role="tab" id="t-find" aria-selected="false" data-view="find">Look up</button>
     <button role="tab" id="t-master" aria-selected="false" data-view="master">Master health</button>
@@ -266,16 +265,6 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
     <div class="tscroll"><table id="revtable"></table></div>
   </section>
 
-  <section id="v-open" hidden>
-    <div class="openhead"><div><h2 style="font-size:26px">What needs an answer</h2><p class="muted" style="margin:4px 0 0" id="opensub"></p></div>
-      <div class="openctl"><div class="legend" id="openlegend"></div>
-        <div class="seg" role="group" aria-label="Arrange open items">
-          <button type="button" id="mode-sev" data-mode="sev" aria-pressed="true">By severity</button>
-          <button type="button" id="mode-owner" data-mode="owner" aria-pressed="false">By owner</button>
-        </div></div></div>
-    <div class="owners" id="owners"></div>
-  </section>
-
   <section id="v-board" class="board">
     <div class="rail" id="rail" aria-label="Extrusion lines"></div>
     <div class="panel" id="line"></div>
@@ -295,6 +284,15 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
   </section>
 
   <section id="v-master" hidden>
+    <!-- Open items merged into Master health (James Kuo, 28 Oct 2026: "merage open item with master health") -->
+    <div class="openhead" id="openitems"><div><h2 style="font-size:26px">What needs an answer</h2><p class="muted" style="margin:4px 0 0" id="opensub"></p></div>
+      <div class="openctl"><div class="legend" id="openlegend"></div>
+        <div class="seg" role="group" aria-label="Arrange open items">
+          <button type="button" id="mode-sev" data-mode="sev" aria-pressed="true">By severity</button>
+          <button type="button" id="mode-owner" data-mode="owner" aria-pressed="false">By owner</button>
+        </div></div></div>
+    <div class="owners" id="owners"></div>
+    <div style="height:18px"></div>
     <div class="two">
       <div class="panel">
         <div class="linehead"><div><h2>Formulation Master</h2><p>Draft, seeded from IWPFT062 Rev 17.0 and Tech's issued pages. Nothing is approved until Tech approves it.</p></div><span class="chip ok" id="pfchip">Pre-flight clean</span></div>
@@ -1290,8 +1288,9 @@ async function downloadDocx(plan){
 
 // ---- tabs
 function show(v){
+  if (v === 'open') v = 'master';                 // Open items now sit on Master health
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
-  ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust', 'rev'].forEach(x => { $('#v-' + x).hidden = x !== v; });
+  ['op', 'mgr', 'board', 'find', 'master', 'run', 'cust', 'rev'].forEach(x => { $('#v-' + x).hidden = x !== v; });
   localSet('view', v);
 }
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
@@ -1301,6 +1300,7 @@ if (!D.lines.some(l => l.code === current)) current = D.lines[0]?.code;
 renderRail(); renderLine();
 if (!D.lines.some(l => l.code === opLine)) opLine = D.lines[0]?.code;
 renderOp();
-const VIEWS = ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust', 'rev'];
-const hv = (location.hash || '').slice(1); show(VIEWS.includes(hv) ? hv : (VIEWS.includes(localGet('view')) ? localGet('view') : 'op'));
+const VIEWS = ['op', 'mgr', 'board', 'find', 'master', 'run', 'cust', 'rev'];
+const hv = (location.hash || '').slice(1); const hv2 = hv === 'open' ? 'master' : hv, lv = localGet('view') === 'open' ? 'master' : localGet('view');
+show(VIEWS.includes(hv2) ? hv2 : (VIEWS.includes(lv) ? lv : 'op'));
 </script>

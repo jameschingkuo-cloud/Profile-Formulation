@@ -432,6 +432,15 @@
    "change": "Revision record shows the editor (James Kuo) on every row",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 49,
+   "date": "2026-10-28",
+   "type": "Page design",
+   "item": "Open items on Master health",
+   "change": "Open items merged into the Master health tab: what needs an answer first, then the Formulation Master",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }
