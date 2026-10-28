@@ -355,7 +355,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmtDate = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', {day:'numeric', month:'short'});
-const SEV = {High:'crit', Medium:'warn', Low:'var', Info:'var'};
+const SEV = {High:'crit', Medium:'warn', Low:'var', Info:'ok'};     // Info green (James, 28 Oct 2026)
 const ROLEVAR = {VIRGIN:'--r-virgin',HOMO:'--r-homo',TALC:'--r-talc',CACO3:'--r-caco3',COLOUR:'--r-colour',RECLAIM:'--r-reclaim',MODIFIER:'--r-modifier',SKIN:'--r-skin',FOAM:'--r-foam',ADDITIVE:'--r-other',HDPE:'--r-other',OTHER:'--r-other'};
 const SWATCH = [[/W26038|W40020|PE-W22151|WB/,'--sw-wb'],[/KS|PE-500|PE90000|B9000/,'--sw-ks'],[/B26004|BD-/,'--sw-bd'],[/R34874|OF-/,'--sw-of'],[/B60387|B26003|BL-/,'--sw-bl'],[/W26329|WM-/,'--sw-wm'],[/D26074|OG-/,'--sw-og'],[/D26002|GT|EA Premix/,'--sw-gt'],[/N26177|UV-/,'--sw-ns']];
 const matOf = f => f.id ? D.materials[f.id] : null;
