@@ -61,6 +61,13 @@ LATER_ROWS = [
     {'Formula Code': 'FU0152WB4', 'Application': 'Corn box', 'Notes': 'Secondary Corn box, SE43 (lines 12/13; James, 27 Oct 2026)',
      'Colour': 'WB', 'Thk (mm)': 4, 'Virgin PP %': 79, 'Homo PP (F1203K) %': 10, 'Talc %': 8, 'Colour MB %': 3,
      'Materials': 'WB-W26038A 3.0'},
+    # Black 10 mm packaging grade: the W% Master has only the graphic FUA051KSA. Tech's SE22 calc book has it on its
+    # "10 mm KS-P" sheet (RPPA0KS260, 2020, filed there as RU0000KSA); James, 28 Oct 2026, on H6AA231-1..5 (RPPA0KS311..315,
+    # SE22): "its just regular black packing grade for 10mm" - "use FU0041KSA with 25 5 80 10 4" (the Sep-Nov 2020 recipe;
+    # W% from Tech's calc on SE22)
+    {'Formula Code': 'FU0041KSA', 'Application': 'Standard', 'Notes': 'Main, packaging grade (James, 28 Oct 2026)',
+     'Colour': 'KS', 'Thk (mm)': 10, 'Virgin PP %': 38.9, 'Reclaim %': 49.5, 'Talc %': 5.3, 'CaCO3 %': 5.0, 'Colour MB %': 1.2,
+     'Materials': 'PP Mix Reclaim 49.5, KS masterbatch 1.2'},
 ]
 
 # codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
@@ -548,7 +555,13 @@ W_PARTS = {'Virgin PP %': ('VIRGIN PP', r'virgin'), 'Homo PP (F1203K) %': ('1203
 # Calculated settings James has checked: they print as plain settings from then on, not CALCULATED (James, 27 Oct 2026:
 # "yes use them, mark as calculated. Once its good. note it down so its no longer calculated").
 # (line, code) -> {'feeders': {column: (material, set)}, 'by': who and when}
-CONFIRMED_SETTINGS = {}
+CONFIRMED_SETTINGS = {
+    ('SE22', 'FU0041KSA'): {'feeders': {'Hopper 1': ('PP Virgin-silo 3 (6502A)', '25'), 'Hopper 2': ('HiTalc ZS (or N40109A)', '5'),
+                                        'Hopper 3': ('PP Mix Reclaim', '80'),
+                                        'Hopper 4': ('KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)', '10'),
+                                        'Hopper 5': ('CaCO3 -Heritage HM-10MAX', '4')},
+                            'by': "James, 28 Oct 2026 (Tech's SE22 10 mm KS-P recipe, RPPA0KS260 2020)"},
+}
 # The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
 # Tech's FU0031WB4 issued for RP26512-1 (80/10/60/32/36), not the lower FU0041WB4 row
 CALC_TEMPLATE = {('SE21', 'FU0023WB4'): 'FU0031WB4'}

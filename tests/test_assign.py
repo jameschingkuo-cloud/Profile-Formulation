@@ -658,3 +658,17 @@ def test_confirmed_settings_are_not_calculated():
         assert fm['members'][0]['src'] == ('confirmed', None, 'test')
     finally:
         del assign.CONFIRMED_SETTINGS[('SE21', 'FUA032KS4')]
+
+
+def test_black_10mm_packaging_fu0041ksa():
+    # James, 28 Oct 2026, SE22 H6AA231-1: "its just regular black packing grade for 10mm" - "use FU0041KSA with 25 5 80 10 4"
+    import resolve
+    pk = resolve.load_packets()
+    issued = assign.issued_on_line(pk)
+    assign.set_pages(pk)
+    r = {'order': 'NEW-1', 'prod_code': 'RPPA0KS311', 'mat_spec': 'PPP P R1R1R1', 'special_instructions': '',
+         'thk': '10.0', 'colors': 'KS KS KS'}
+    fm, _ = assign.formulation('SE22', r, datetime.date(2026, 11, 2), issued)
+    p = fm['members'][0]
+    assert p['code'] == 'FU0041KSA' and p['src'][0] == 'confirmed'
+    assert [v['set'] for k, v in sorted(p['rows'][0]['feeders'].items())] == ['25', '5', '80', '10', '4']
