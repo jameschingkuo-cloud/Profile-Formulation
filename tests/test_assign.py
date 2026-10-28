@@ -672,3 +672,6 @@ def test_black_10mm_packaging_fu0041ksa():
     p = fm['members'][0]
     assert p['code'] == 'FU0041KSA' and p['src'][0] == 'confirmed'
     assert [v['set'] for k, v in sorted(p['rows'][0]['feeders'].items())] == ['25', '5', '80', '10', '4']
+    sec = next(m for m in fm['members'] if m['role'] == 'Secondary')   # "yes use FU0001KSA as secondary"
+    assert sec['code'] == 'FU0001KSA' and sec['src'][0] == 'confirmed'
+    assert {k: v['set'] for k, v in sec['rows'][0]['feeders'].items() if v.get('set')} == {'Hopper 1': '52', 'Hopper 2': '5', 'Hopper 4': '10', 'Hopper 5': '4'}

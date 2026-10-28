@@ -68,6 +68,11 @@ LATER_ROWS = [
     {'Formula Code': 'FU0041KSA', 'Application': 'Standard', 'Notes': 'Main, packaging grade (James, 28 Oct 2026)',
      'Colour': 'KS', 'Thk (mm)': 10, 'Virgin PP %': 38.9, 'Reclaim %': 49.5, 'Talc %': 5.3, 'CaCO3 %': 5.0, 'Colour MB %': 1.2,
      'Materials': 'PP Mix Reclaim 49.5, KS masterbatch 1.2'},
+    # its Secondary, no reclaim: Tech's SE22 run-out under FUA051KSA (52/5/-/10/4; "10 mm KS-A" calc sheet, 2023-24). James,
+    # 28 Oct 2026: "We will need a secondary with no reclaim" - "yes use FU0001KSA as secondary" (as FU0001WBA for white)
+    {'Formula Code': 'FU0001KSA', 'Application': 'Standard', 'Notes': 'Secondary, packaging grade (James, 28 Oct 2026)',
+     'Colour': 'KS', 'Thk (mm)': 10, 'Virgin PP %': 87.5, 'Talc %': 5.7, 'CaCO3 %': 5.4, 'Colour MB %': 1.3,
+     'Materials': 'KS masterbatch 1.3'},
 ]
 
 # codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
@@ -561,6 +566,11 @@ CONFIRMED_SETTINGS = {
                                         'Hopper 4': ('KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)', '10'),
                                         'Hopper 5': ('CaCO3 -Heritage HM-10MAX', '4')},
                             'by': "James, 28 Oct 2026 (Tech's SE22 10 mm KS-P recipe, RPPA0KS260 2020)"},
+    ('SE22', 'FU0001KSA'): {'feeders': {'Hopper 1': ('PP Virgin-silo 3 (6502A)', '52'), 'Hopper 2': ('HiTalc ZS (or N40109A)', '5'),
+                                        'Hopper 3': ('', ''),
+                                        'Hopper 4': ('KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)', '10'),
+                                        'Hopper 5': ('CaCO3 -Heritage HM-10MAX', '4')},
+                            'by': "James, 28 Oct 2026 (Tech's SE22 virgin run-out, printed FUA001KSA)"},
 }
 # The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
 # Tech's FU0031WB4 issued for RP26512-1 (80/10/60/32/36), not the lower FU0041WB4 row
