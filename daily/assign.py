@@ -310,7 +310,12 @@ def wanted(line, row, day):
         q.add('corn')
     # R7 (James, 23 Oct 2026): "The slitter should use the same formula like SPA signs blank". A sign blank is an SPA
     # (or SPP) product, or any order sent to the slitter; Tech prints these under "(For sign blank orders only)".
-    if 'SIGN BLANK' in si or 'SIGNBLANK' in si or 'SLIT' in si or prod[:3] in ('SPA', 'SPP'):
+    # Only on a regular white: James, 28 Oct 2026, on SE31 H69A059-1 (SPA40WB953, OPOPOP): "the sign blank formula can only
+    # be use for SPA with regular WB formula" - "once you are spec that is not R1. like OP, sign blank formula can no
+    # longer be use".
+    m = pc.CODE_RX.match(prod)
+    regular_wb = bool(m) and m.group(4) == 'WB' and (row.get('mat_spec') or '').split()[-1:] == ['R1R1R1']
+    if regular_wb and ('SIGN BLANK' in si or 'SIGNBLANK' in si or 'SLIT' in si or prod[:3] == 'SPA'):
         q.add('sign')
     # R8 (James, 23 Oct 2026, H69A284-3: "we don't have roll formulation??"): a roll order says ROLLS / ROLLED MATERIAL;
     # Tech prints "(For roll material only)"; James's Main is FU0021WB4 "Main roll". LTL wrap likewise ("LTL MATERIAL").

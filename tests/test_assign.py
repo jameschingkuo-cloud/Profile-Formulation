@@ -342,6 +342,16 @@ def test_primary_first_even_without_settings():
     assert [render_frm.when_label(forms, i) for i in range(2)] == ['Run first', 'If reclaim runs out']
 
 
+def test_sign_blank_only_on_regular_white():
+    """James Kuo, 28 Oct 2026: the sign blank formula is only for SPA on a regular WB (R1R1R1); an opaque SPA
+    (H69A059-1, SPA40WB953, OPOPOP) or another colour never takes it."""
+    day = datetime.date(2026, 10, 28)
+    assert 'sign' in assign.wanted('SE13', row('SPA40WB761', 'PPP A R1R1R1'), day)[0]
+    assert 'sign' not in assign.wanted('SE31', row('SPA40WB953', 'PPP A OPOPOP'), day)[0]
+    assert 'sign' not in assign.wanted('SE21', row('SPA40YF117', 'PPP A R1R1R1'), day)[0]
+    assert 'sign' not in assign.wanted('SE13', row('SPA40WB761', 'PPP A R4R4R4'), day)[0]
+
+
 def test_colour_run_out_note_is_not_reclaim_and_its_weight_pct():
     """H69A059-1 (27 Oct, SE31, FXA020WB4 alone): Tech's note "use W26038A if NPC PE-W22151 is run out" is a colour swap,
     so no "If reclaim runs out" (James Kuo, 28 Oct 2026). Its V5 white matches the calc book's "NPC 22151" calibration."""
