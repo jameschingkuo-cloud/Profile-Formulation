@@ -175,7 +175,11 @@ def slope_classes(mat):
         return (['MIX RECLAIM'] if 'MIX' in m else ['WB RECLAIM'] if 'WB' in m else []) + ['RECLAIM']
     if 'VISTAMAXX' in m:
         return ['VISTAMAXX']
+    if 'GPP' in m:              # FR masterbatch: printed "FR-GPP30003MP", the calc book "FR-GPP3003 MP" (RP26826-6, SE21)
+        return ['FR-GPP']
     codes = re.findall(r'[A-Z]?\d{5}[A-Z]?|[A-Z]{1,2}-?[A-Z]?\d{5}[A-Z]?', m)
+    # then the bare 5-digit number: Tech's calc book names SE31 H5 "NPC 22151" for the printed "NPC PE-W22151" (H69A059-1)
+    codes += [n for n in re.findall(r'(?<!\d)\d{5}(?!\d)', m) if n not in codes]
     return codes + ([m[:2] + ' COLOR'] if re.match(r'^[A-Z]{2}[- ]', m) else []) + ['COLOR']
 
 
@@ -258,13 +262,18 @@ def page_field(p):
 
 
 # ---- the document --------------------------------------------------------------------------------------------------
+RECLAIM_OUT = re.compile(r'reclaim\b[^()]*?\brun\s*out', re.I)
+
+
 def when_label(forms, i):
     """Forms are in run order (resolve.run_order: reclaim first). A formula without reclaim after one with reclaim runs when
     the reclaim runs out (James Kuo, 30 Sep 2026: "we always want to use up our scrap first before using Virgin PP"); so
     does James's Secondary, also when its Primary has no settings yet (R9, 23 Oct 2026)."""
     uses = lambda f: any('reclaim' in (m or '').lower() and (num(s) or 0) > 0 for (m, s, _) in f['feeders'].values())
     f = forms[i]
-    if re.search(r'run\s*out', f['note'], re.I) or re.search(r'(?:^|· )Secondary\b', f['note']):
+    # only Tech's reclaim run-out note: "use W26038A if NPC PE-W22151 is run out" is a colour swap (James Kuo, 28 Oct 2026,
+    # H69A059-1: "there is only one primary. why do you write 'if reclaim run out?' we dont use reclaim for that order")
+    if RECLAIM_OUT.search(f['note']) or re.search(r'(?:^|· )Secondary\b', f['note']):
         return 'If reclaim runs out'
     if len(forms) == 1:
         return ''

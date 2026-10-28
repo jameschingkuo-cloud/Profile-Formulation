@@ -342,6 +342,24 @@ def test_primary_first_even_without_settings():
     assert [render_frm.when_label(forms, i) for i in range(2)] == ['Run first', 'If reclaim runs out']
 
 
+def test_colour_run_out_note_is_not_reclaim_and_its_weight_pct():
+    """H69A059-1 (27 Oct, SE31, FXA020WB4 alone): Tech's note "use W26038A if NPC PE-W22151 is run out" is a colour swap,
+    so no "If reclaim runs out" (James Kuo, 28 Oct 2026). Its V5 white matches the calc book's "NPC 22151" calibration."""
+    import render_frm
+    note = 'Primary · (Please use W26038A if NPC PE-W22151 is run out'
+    feeders = {('A', 'V1'): ('PP Virgin-silo 4 (6502A)', '60', None), ('A', 'V2'): ('F1203K', '23', None),
+               ('A', 'V3'): ('HiTalc ZS (or N40109A)', '18', None), ('A', 'V4'): ('WB-W40020M', '60', None),
+               ('A', 'V5'): ('NPC NPC PE-W22151', '26', None)}
+    assert render_frm.when_label([{'note': note, 'feeders': feeders}], 0) == ''
+    assert render_frm.when_label([{'note': '(Use this formula in case PP WB Reclaim is run out)', 'feeders': {}}], 0) \
+        == 'If reclaim runs out'
+    pct, why = render_frm.weight_pct('SE31', feeders)
+    assert why == '' and pct[('A', 'V5')] == '2.0' and pct[('A', 'V1')] == '68.7'
+    pct, why = render_frm.weight_pct('SE21', {('', 'Hopper 1'): ('PP Virgin-silo 3 (F6502A)', '50', None),
+                                              ('', 'Hopper 5'): ('FR-GPP30003MP', '20', None)})
+    assert why == '' and ('', 'Hopper 5') in pct
+
+
 def test_line_own_recipe_of_a_folded_formulation():
     """James, 24 Oct 2026, on H69A040-1 (CPP40WB320, SE25: FU0031WB4 "ENGINEER TO SET"): "What is the issue with line 10.
     You should have primary formulation for package grade white 4 mm". SE25 runs the packaging grade as FU0021WB4 (36%

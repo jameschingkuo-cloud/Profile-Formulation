@@ -564,7 +564,7 @@ function whenLabel(f, i, all){
   // when reclaim runs out
   if (f.role === 'Secondary') return 'Secondary · if reclaim runs out';
   if (f.role === 'Primary') return i ? 'Primary · next' + (isReclaim(f) ? ' · less reclaim' : '') : (all.length > 1 ? 'Primary · run first' : 'Formulation');
-  if (/run\s*out/i.test(f.note)) return 'If PP WB Reclaim runs out';
+  if (/reclaim\b[^()]*?\brun\s*out/i.test(f.note)) return 'If PP WB Reclaim runs out';
   if (i === 0) return all.length > 1 ? (isReclaim(f) ? 'Run first · uses reclaim' : 'Run first') : 'Formulation';
   if (isReclaim(f)) return 'Next · less reclaim';
   return all.slice(0, i).some(isReclaim) ? 'If reclaim runs out' : 'Alternative';
@@ -1119,7 +1119,7 @@ const colKey = c => { const m = /^(?:Extruder )?([A-D]) (.+)$/.exec(String(c).tr
 const colHead = k => { const [e, f] = k.split('|'); return e ? `Extruder ${e} · ${f}` : f; };
 function docWhen(forms, i){
   const f = forms[i], reclaim = f.feeders.some(x => /reclaim/i.test(x.mat || '') && (num(x.set) || 0) > 0);
-  if (f.role === 'Secondary' || /run\s*out/i.test(f.note || '')) return 'If reclaim runs out';
+  if (f.role === 'Secondary' || /reclaim\b[^()]*?\brun\s*out/i.test(f.note || '')) return 'If reclaim runs out';
   if (forms.length === 1) return '';
   if (i === 0) return 'Run first';
   if (reclaim) return 'Next';
