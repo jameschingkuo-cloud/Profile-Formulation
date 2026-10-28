@@ -1,0 +1,428 @@
+{
+ "note": "One row per change, added with the change itself (newest last). type: Logic, W%, Print or Page design.",
+ "rows": [
+  {
+   "rev": 1,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Rules R1-R4",
+   "change": "Formula code built by rule from the schedule: spec gives the prefix, then grade, colour and thickness",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 2,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Bubble line",
+   "change": "Bubble line (BF) is always packaging grade, whatever the colour",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 3,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Rule R5",
+   "change": "Winter formulations from 1 Nov, summer from 1 Apr; same code key, the composition switches",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 4,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Extra UV",
+   "change": "Extra UV is FE; FH is its old printed name",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 5,
+   "date": "2026-10-23",
+   "type": "W%",
+   "item": "W% Master revision 2",
+   "change": "W% Master v2 from James's notes; settings carry over only for the same formulation",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 6,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Rule R6",
+   "change": "The printout shows James's formula names, never an old code",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 7,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Rule R7",
+   "change": "Slitter orders take the sign blank formula",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 8,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Rules are the process",
+   "change": "No history-first draft and no history fallback: every order by rule",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 9,
+   "date": "2026-10-23",
+   "type": "Logic",
+   "item": "Rule R8",
+   "change": "Roll orders take the roll Main; LTL wrap takes its RU Main",
+   "order": "H69A284-3",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 10,
+   "date": "2026-10-24",
+   "type": "Logic",
+   "item": "Rule R9",
+   "change": "Primary and Secondary both printed",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 11,
+   "date": "2026-10-24",
+   "type": "Logic",
+   "item": "Rule R10",
+   "change": "VOIDFORM never runs reclaim",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 12,
+   "date": "2026-10-24",
+   "type": "Logic",
+   "item": "Engineer to set",
+   "change": "A decided formulation with no settings prints its code with ENGINEER TO SET",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 13,
+   "date": "2026-10-24",
+   "type": "Logic",
+   "item": "Rule R11",
+   "change": "R4 black runs about 98% black reclaim and 2% black colour",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 14,
+   "date": "2026-10-24",
+   "type": "Logic",
+   "item": "Rule R12",
+   "change": "Roll and VOIDFORM orders run their special Main only",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 15,
+   "date": "2026-10-26",
+   "type": "W%",
+   "item": "FEA001NSA",
+   "change": "U1 natural 10 mm runs FEA001NSA",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 16,
+   "date": "2026-10-26",
+   "type": "W%",
+   "item": "FU0051KS3",
+   "change": "Black 3 mm packaging is FU0051KS3; FU0032KS3 (2016) obsolete; W% Master v2 published",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 17,
+   "date": "2026-10-26",
+   "type": "Logic",
+   "item": "Order qualifiers decide",
+   "change": "An order's own qualifiers decide its formulation, not the group Tech printed it in",
+   "order": "RP26717-1",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 18,
+   "date": "2026-10-26",
+   "type": "Print",
+   "item": "One cell per formula",
+   "change": "No PROPOSED BY RULE mark; orders on the same formula share one cell",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 19,
+   "date": "2026-10-26",
+   "type": "Logic",
+   "item": "Always-graphic orders",
+   "change": "Take Tech's older name on the line; FR0021FW4 prints as FRA021FW4",
+   "order": "RP26826-6",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 20,
+   "date": "2026-10-26",
+   "type": "Logic",
+   "item": "Secondary from run-out",
+   "change": "Where the W% Master has no Secondary, Tech's run-out row is used (FUA001KSA)",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 21,
+   "date": "2026-10-26",
+   "type": "Logic",
+   "item": "SE24 weight line",
+   "change": "A formulation with no settings takes its W% on James's feeder layout",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 22,
+   "date": "2026-10-26",
+   "type": "W%",
+   "item": "FU0002WBD",
+   "change": "WB 13 mm Secondary FU0002WBD",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 23,
+   "date": "2026-10-26",
+   "type": "Logic",
+   "item": "Calculated auger settings",
+   "change": "Auger settings calculated from the W% on the line's calibration; SE42/SE43 layouts with no CaCO3, SE43 Mains on SE42",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 24,
+   "date": "2026-10-27",
+   "type": "Page design",
+   "item": "Engineering group",
+   "change": "Engineering shown as a group heading with a divider, not a tab",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 25,
+   "date": "2026-10-27",
+   "type": "Print",
+   "item": "Black colour",
+   "change": "Black printed with its IWPFT062 sources, not Tech's Spartech / PolyOne",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 26,
+   "date": "2026-10-27",
+   "type": "Logic",
+   "item": "RUN WITH pairs",
+   "change": "RUN WITH NEXT or <product>: linked orders take one formulation, sign blank over regular white",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 27,
+   "date": "2026-10-27",
+   "type": "Logic",
+   "item": "SE21 R4 black",
+   "change": "R4 black on SE21 hoppers 3/4 at 98/2",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 28,
+   "date": "2026-10-27",
+   "type": "Logic",
+   "item": "VOIDFORM GSM",
+   "change": "VOIDFORM GSM checked against -5% to -8% of the printed GSM",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 29,
+   "date": "2026-10-27",
+   "type": "Print",
+   "item": "AC = note",
+   "change": "Tech's \"AC =\" header note no longer printed",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 30,
+   "date": "2026-10-27",
+   "type": "Print",
+   "item": "Black and white",
+   "change": "Word file black and white only: no colour, no shading",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 31,
+   "date": "2026-10-27",
+   "type": "Logic",
+   "item": "Corn box product",
+   "change": "DPP40WB1235 is corn box on every line, whatever the order says",
+   "order": "RP26512-1",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 32,
+   "date": "2026-10-27",
+   "type": "W%",
+   "item": "FUA060WBA",
+   "change": "Primary is Tech's 30/5/75/7/4 recipe, less aggressive on white reclaim",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 33,
+   "date": "2026-10-27",
+   "type": "W%",
+   "item": "SE23 corn box",
+   "change": "SE23 corn box Primary at 45/10/60/20",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 34,
+   "date": "2026-10-27",
+   "type": "Logic",
+   "item": "Floor cover",
+   "change": "RPP40WB1625 runs RU0000WB4 only, no Secondary",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 35,
+   "date": "2026-10-27",
+   "type": "W%",
+   "item": "FU0152WB4",
+   "change": "Lines 12/13 corn box Secondary FU0152WB4 at 8/10/79/3",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 36,
+   "date": "2026-10-27",
+   "type": "W%",
+   "item": "Corn box separated",
+   "change": "Corn box Primary FU0023WB4, Secondary FU0022WB4, apart from FU0021WB4; settings only from Tech's corn box groups",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 37,
+   "date": "2026-10-27",
+   "type": "Print",
+   "item": "Two copies",
+   "change": "Word formulation in two copies daily: normal and weight %",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 38,
+   "date": "2026-10-27",
+   "type": "Logic",
+   "item": "CALCULATED settings",
+   "change": "Reclaim formulations never run on a line print CALCULATED settings until James confirms them (SE21 FUA032KS4, FU0023WB4)",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 39,
+   "date": "2026-10-27",
+   "type": "Print",
+   "item": "Black short name",
+   "change": "Black prints short as KS NPC PE-B9000F",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 40,
+   "date": "2026-10-27",
+   "type": "Page design",
+   "item": "Materials and weight %",
+   "change": "Distinct colour per material; a weight % bar on every formulation",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 41,
+   "date": "2026-10-28",
+   "type": "W%",
+   "item": "FU0041KSA",
+   "change": "Black 10 mm packaging Primary FU0041KSA, SE22 25/5/80/10/4",
+   "order": "H6AA231",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 42,
+   "date": "2026-10-28",
+   "type": "W%",
+   "item": "FU0001KSA",
+   "change": "Black 10 mm packaging Secondary FU0001KSA, no reclaim, SE22 52/5/-/10/4",
+   "order": "H6AA231",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 43,
+   "date": "2026-10-28",
+   "type": "Logic",
+   "item": "Run-out label",
+   "change": "\"If reclaim runs out\" only when the note is about reclaim; a colour swap note is not",
+   "order": "H69A059-1",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 44,
+   "date": "2026-10-28",
+   "type": "Logic",
+   "item": "Weight % calibration",
+   "change": "Calibrations matched by the 5-digit colour number and FR-GPP, so every weight % is worked out",
+   "order": "H69A059-1, RP26826-6",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 45,
+   "date": "2026-10-28",
+   "type": "Logic",
+   "item": "Opaque and sign blank",
+   "change": "Opaque (OPOPOP) takes one formula, no reclaim; sign blank formula only for SPA on a regular WB (R1R1R1)",
+   "order": "H69A059-1",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 46,
+   "date": "2026-10-28",
+   "type": "Page design",
+   "item": "Info badges",
+   "change": "Info badges green",
+   "order": "",
+   "by": "James Kuo"
+  },
+  {
+   "rev": 47,
+   "date": "2026-10-28",
+   "type": "Page design",
+   "item": "Revision record",
+   "change": "This tab: every formulation change (logic or W%) and page design change",
+   "order": "",
+   "by": "James Kuo"
+  }
+ ]
+}

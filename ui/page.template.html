@@ -236,6 +236,7 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
     <button role="tab" id="t-master" aria-selected="false" data-view="master">Master health</button>
     <button role="tab" id="t-run" aria-selected="false" data-view="run">Daily run</button>
     <button role="tab" id="t-cust" aria-selected="false" data-view="cust">Customer formulas</button>
+    <button role="tab" id="t-rev" aria-selected="false" data-view="rev">Revision record</button>
   </nav>
 
   <section id="v-op" hidden>
@@ -256,6 +257,13 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
       <p id="custsub"></p></div><span class="chip warn" id="custcount"></span></div>
     <div class="tscroll"><table id="custtable"></table></div>
     <div class="foot" id="custfoot"></div>
+  </section>
+
+  <section id="v-rev" class="panel" hidden>
+    <div class="linehead"><div><div class="caps">Formulation logic, W% and page design</div><h2>Revision record</h2>
+      <p id="revsub"></p></div><span class="chip ok" id="revcount"></span></div>
+    <div class="legend" id="revfilter"></div>
+    <div class="tscroll"><table id="revtable"></table></div>
   </section>
 
   <section id="v-open" hidden>
@@ -537,6 +545,21 @@ function renderOpen(mode){
 }
 document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => renderOpen(b.dataset.mode)));
 renderOpen(localGet('openmode') === 'owner' ? 'owner' : 'sev');
+
+// ---- revision record (James Kuo, 28 Oct 2026: "formulation change (logic or W%) and artifact design change")
+const REVS = (D.revs || []).slice().reverse();
+const REV_TYPES = ['All', 'Logic', 'W%', 'Print', 'Page design'];
+let revType = 'All';
+function renderRevs(){
+  const list = REVS.filter(r => revType === 'All' || r.type === revType);
+  $('#revcount').textContent = `${REVS.length} revisions`;
+  $('#revsub').textContent = `Every change to how the formulation is decided (logic), to James's W% Master, to the printed Word file, and to this page, newest first. Requested by ${[...new Set(REVS.map(r => r.by))].join(', ') || 'James Kuo'}.`;
+  $('#revfilter').innerHTML = REV_TYPES.map(t => `<button class="chip ${t === revType ? 'ok' : 'var'}" data-rt="${esc(t)}" aria-pressed="${t === revType}">${esc(t)}${t === 'All' ? '' : ' · ' + REVS.filter(r => r.type === t).length}</button>`).join(' ');
+  $('#revtable').innerHTML = `<thead><tr><th>Rev</th><th>Date</th><th>Type</th><th>Item</th><th>What changed</th><th>Order</th></tr></thead><tbody>${
+    list.map(r => `<tr><td>${r.rev}</td><td style="white-space:nowrap">${esc(fmtDate(r.date))}</td><td><span class="chip var">${esc(r.type)}</span></td><td><b>${esc(r.item)}</b></td><td>${esc(r.change)}</td><td style="white-space:nowrap">${esc(r.order || '')}</td></tr>`).join('')}</tbody>`;
+  document.querySelectorAll('#revfilter button').forEach(b => b.addEventListener('click', () => { revType = b.dataset.rt; renderRevs(); }));
+}
+renderRevs();
 
 // ---- customer formulas (parked for naming)
 const CF = D.cust || {items: [], finding: {}};
@@ -1268,7 +1291,7 @@ async function downloadDocx(plan){
 // ---- tabs
 function show(v){
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
-  ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust'].forEach(x => { $('#v-' + x).hidden = x !== v; });
+  ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust', 'rev'].forEach(x => { $('#v-' + x).hidden = x !== v; });
   localSet('view', v);
 }
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
@@ -1278,6 +1301,6 @@ if (!D.lines.some(l => l.code === current)) current = D.lines[0]?.code;
 renderRail(); renderLine();
 if (!D.lines.some(l => l.code === opLine)) opLine = D.lines[0]?.code;
 renderOp();
-const VIEWS = ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust'];
+const VIEWS = ['op', 'mgr', 'open', 'board', 'find', 'master', 'run', 'cust', 'rev'];
 const hv = (location.hash || '').slice(1); show(VIEWS.includes(hv) ? hv : (VIEWS.includes(localGet('view')) ? localGet('view') : 'op'));
 </script>
