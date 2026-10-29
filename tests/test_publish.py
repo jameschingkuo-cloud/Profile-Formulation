@@ -44,3 +44,23 @@ def test_publish_then_refuse_an_edited_file(roots):
     with pytest.raises(SystemExit, match="refused"):
         publish.main(["notes.md"])
     assert (ws / "notes.md").read_text(encoding="utf-8") == "edited by someone"
+
+
+def test_docx_content_ignores_sharepoint_metadata(tmp_path):
+    """James Kuo, 29 Oct 2026: a .docx compares by what it says (body, headers, footers). SharePoint's library properties
+    added on upload (customXml, docProps) are not an edit; a change to the text is."""
+    import zipfile
+    import config
+
+    def make(p, body, extra=None):
+        with zipfile.ZipFile(p, 'w') as z:
+            z.writestr('word/document.xml', body)
+            z.writestr('word/footer1.xml', '<f>step 1</f>')
+            z.writestr('docProps/core.xml', '<core/>')
+            for n, v in (extra or {}).items():
+                z.writestr(n, v)
+    a, b, c = tmp_path / 'a.docx', tmp_path / 'b.docx', tmp_path / 'c.docx'
+    make(a, '<w:body>FU0031WB4 90</w:body>')
+    make(b, '<w:body>FU0031WB4 90</w:body>', {'customXml/item1.xml': '<sp/>', 'docProps/custom.xml': '<c/>'})
+    make(c, '<w:body>FU0031WB4 85</w:body>')
+    assert config.content_hash(a) == config.content_hash(b) != config.content_hash(c)

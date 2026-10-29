@@ -84,10 +84,22 @@ def sha256(path):
 
 
 def content_hash(path):
-    """What a file SAYS, not its bytes. For .xlsx: SHA-256 over every sheet name and every row of cell values
+    """What a file SAYS, not its bytes. For .docx: SHA-256 of its body, headers and footers. For .xlsx: SHA-256 over every sheet name and every row of cell values
     (formulas as text), so SharePoint's metadata rewrite on upload does not count as a change but any edited cell does.
     For other files: SHA-256 of the bytes. Same function as the handoff's checksum manifest (§11); first 16 hex shown there."""
     p = Path(path)
+    if p.suffix.lower() == '.docx':
+        # what the Word file says: the body, headers and footers. SharePoint adds its library properties to an uploaded
+        # .docx (customXml, docProps, a thumbnail), which is not an edit (James Kuo, 29 Oct 2026, the 26/27 Oct
+        # formulations: "yes" to comparing Word files by their text); an edit in Word changes word/document.xml
+        import zipfile
+        h = hashlib.sha256()
+        with zipfile.ZipFile(p) as z:
+            for n in sorted(z.namelist()):
+                if n == 'word/document.xml' or (n.startswith('word/') and n.rsplit('/', 1)[-1].startswith(('header', 'footer'))
+                                                 and n.endswith('.xml')):
+                    h.update(n.encode()); h.update(z.read(n))
+        return h.hexdigest()
     if p.suffix.lower() != '.xlsx':
         return sha256(p)
     from openpyxl import load_workbook

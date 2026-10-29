@@ -513,6 +513,15 @@
    "change": "Orbis gray (CR400OG, 50-7002-372) is D26074A. Tech's SE13 calc sheet \"4.0 mm EB-P\" (FU0151EB4, RPP40EB1) types OG-D26047A: it now prints and maps as OG-D26074A. The W% Master row FU0151EB4 to be corrected at the clean-up; Tech's calc sheet is theirs to correct",
    "order": "SE13 FU0151EB4",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 58,
+   "date": "2026-10-29",
+   "type": "Print",
+   "item": "Publish compares Word files by their text",
+   "change": "publish.py / config.content_hash: a .docx compares by its body, headers and footers, not its bytes, so SharePoint's library properties added on upload no longer read as an edit (an edit to the text still stops the publish). Checked on 26 / 27 Oct against the first emailed copies: text identical. The 26, 27 and 28 Oct re-issues (90 rule, schedule order) published",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }
