@@ -719,8 +719,9 @@ def test_black_10mm_packaging_fu0041ksa():
 
 def test_word_merges_same_formulation_page_one_per_order():
     """James Kuo, 29 Oct 2026: "for artifact, its one formula per order. but for word, due to printing number of pages,
-    we will merge them when possible" - the Word copies put every order with the same formulation in one cell, at the
-    first of them on the schedule (the page lists each order on its own, in schedule order)."""
+    we will merge them when possible" - then "why did this not follow the order of the production schedule": the Word
+    copies keep the schedule order and merge only neighbouring orders with the same formulation (the page lists each
+    order on its own)."""
     import render_frm
 
     def row(o, code, s):
@@ -731,7 +732,7 @@ def test_word_merges_same_formulation_page_one_per_order():
     today = {'ext': [{'scan_page': 1, 'line': 'SE12', 'rows': [{'order': o, 'prod_code': ''} for o in 'ABCDEF']}]}
     exc = [{'Line Code': 'SE12', 'Order': 'F'}]
     g = render_frm.build_lines(today, draft, exc, {})[0]['groups']
-    assert [[o['order'] for o in x['orders']] for x in g] == [['A', 'B', 'D'], ['C'], ['E'], ['F']]
+    assert [[o['order'] for o in x['orders']] for x in g] == [['A', 'B'], ['C'], ['D'], ['E'], ['F']]
 
 
 def test_two_colour_premix_and_voidform_secondary():

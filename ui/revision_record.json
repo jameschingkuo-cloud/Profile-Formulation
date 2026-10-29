@@ -495,6 +495,15 @@
    "change": "A VOIDFORM order with no reclaim-free Main takes the virgin Secondary of the same colour, thickness and grade as its only formula, printed \"For VOIDFORM order only\" (no run-out note). SE22 RPPA0WB241 -> FU0001WBA 56/4/15/4 (90/6/24/6), the recipe it ran as FAA051WBA 2023-2026",
    "order": "SE22 H6AA171-1",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 56,
+   "date": "2026-10-29",
+   "type": "Print",
+   "item": "Word keeps the schedule order",
+   "change": "Replaces rev 53 for Word: orders print in production schedule order; neighbouring orders with the same formulation share one cell, a later one after a different formulation prints in its own place (SE23 RP26202-1 had been pulled up with RP26821-2 ahead of H68A091-1). The page stays one formula per order",
+   "order": "SE23 RP26202-1",
+   "editor": "James Kuo"
   }
  ]
 }
