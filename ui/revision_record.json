@@ -459,6 +459,15 @@
    "change": "Every auger line: when the highest speed is below 90 it goes up to 90 and the others in proportion, weight ratio kept (whole numbers; weight lines SE24/SE42/SE43/SE61 not affected)",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 52,
+   "date": "2026-10-29",
+   "type": "Print",
+   "item": "Formulation order on the page",
+   "change": "Orders print in production schedule order. Orders next to each other with the same formulation share one cell; the same formulation later on the schedule, after a different one, prints again in its own place (it was pulled up to the first order with that formulation). Word copies (normal and weight %) and the page both.",
+   "order": "SE13, SE22, SE23, SE31 on 26-28 Oct",
+   "editor": "James Kuo"
   }
  ]
 }

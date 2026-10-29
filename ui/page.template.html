@@ -1162,14 +1162,17 @@ async function buildDocx(plan){
   const tbl = (widthsIn, rows) => new Table({rows, width: {size: IN(widthsIn.reduce((a, b) => a + b, 0)), type: WidthType.DXA},
     columnWidths: widthsIn.map(IN), layout: TableLayoutType.FIXED});
 
-  // groups per line: orders with the same formulation share one block (as the pipeline and Tech's pages do)
+  // groups per line in schedule order: orders next to each other with the same formulation share one block
+  // (James Kuo, 29 Oct 2026: "put the formulation order according to the production schedule order. Then if they are
+  // the same formulation, group them together")
   const lines = plan.lines.map(pl => {
-    const meta = pl.meta, weight = meta.dosing === 'WEIGHT', groups = [], bySig = {};
+    const meta = pl.meta, weight = meta.dosing === 'WEIGHT', groups = [];
     pl.rows.forEach(row => {
       const forms = row.r.how === 'exception' ? null : row.r.formulas;
       const sig = forms ? JSON.stringify(forms.map(f => [f.code, f.note, f.feeders.map(x => [colKey(x.col), x.mat, x.set]).sort()])) : 'EXC:' + row.order;
-      if (!bySig[sig]) { bySig[sig] = {orders: [], forms, why: row.r.why || ''}; groups.push(bySig[sig]); }
-      bySig[sig].orders.push(row);
+      const last = groups[groups.length - 1];
+      if (!last || last.sig !== sig) groups.push({sig, orders: [], forms, why: row.r.why || ''});
+      groups[groups.length - 1].orders.push(row);
     });
     const used = new Set(groups.flatMap(g => (g.forms || []).flatMap(f => f.feeders.map(x => colKey(x.col)))));
     let cols = (meta.cols || []).map(colKey);
