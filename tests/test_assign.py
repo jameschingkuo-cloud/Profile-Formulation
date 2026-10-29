@@ -750,3 +750,12 @@ def test_two_colour_premix_and_voidform_secondary():
     vf = {'prod_code': 'RPPA0WB241', 'mat_spec': 'PPP P R1R1R1', 'colors': 'WB WB WB', 'special_instructions': 'VOIDFORM, PLEASE WATCH WEIGHT'}
     key = assign.derive('SE22', vf)[0]
     assert assign.choose(key, {'void'}, 'winter', 'SE22')[0]['code'] == 'FU0001WBA'
+
+
+def test_orbis_gray_typo_prints_d26074a():
+    """James Kuo, 29 Oct 2026: "for Orbis grey, is should be D26074A. So SE13 is a typo" - Tech's SE13 calc sheet types
+    OG-D26047A (FU0151EB4); it prints and maps as OG-D26074A, CR400OG 50-7002-372."""
+    import render_frm
+    from db.seed_master import MAP
+    assert render_frm.PRINT_AS['OG-D26047A'] == 'OG-D26074A'
+    assert MAP['OG-D26047A'] == MAP['OG-D26074A'] == '50-7002-372'

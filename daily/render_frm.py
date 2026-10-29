@@ -53,6 +53,9 @@ PRINT_AS = {
     'FOAM – Bergen XO-256': 'FOAM – Bergen X0-256',   # "change them to X0" (master Change 46)
     'PP Virgin': 'PP Virgin (F6502A)',                 # "PP Virgin is F6502A" (master Changes 21-23)
     'White Reclaim': 'PP WB Reclaim (White Reclaim)',  # "same as PP WB Reclaim" (master Changes 15-20)
+    # Orbis gray CR400OG: Tech's SE13 calc sheet "4.0 mm EB-P" (FU0151EB4, RPP40EB1) types it D26047A. James Kuo, 29 Oct 2026:
+    # "for Orbis grey, is should be D26074A. So SE13 is a typo"
+    'OG-D26047A': 'OG-D26074A',
 }
 # The black (CR400K) prints its sources as IWPFT062 lists them (rev 18: NPC PE-B9000F; approved second sources Avient
 # 3800 Black PEC, MDI Black PE-500, Ampacet 19501 Black PE MB). Tech's pages still name Spartech B60009 and PolyOne

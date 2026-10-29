@@ -58,6 +58,7 @@ MAP = {
     'WB-W26038A': '50-7002-248', 'WB-W40020M': '50-7002-095', 'NPC NPC PE-W22151': '50-7002-393',
     'WM-W26329M': '50-7015-557', 'BD-B26004A': '50-7002-356', 'OF-PP-R34874 (New NPC orange color)': '50-7002-602',
     'OG-D26074A': '50-7002-372', 'BL-B26003A (OR NPC-B60387)': '50-7002-281', 'UV-N26177A': '50-7002-249',
+    'OG-D26047A': '50-7002-372',   # typo on Tech's SE13 calc sheet for Orbis gray D26074A (James Kuo, 29 Oct 2026)
     'Exxon - Vistamaxx 6102FL': '50-7100-610', 'Exxon – Vistamaxx 6102FL': '50-7100-610',
     'Adsyl 5C30F': '50-8510-004', 'FOAM – Bergen X0-256': '50-7002-430',
     'FOAM – Bergen XO-256': '50-7002-430',   # misprint of X0-256; James: disregard (29 Sep 2026; master Change 46)

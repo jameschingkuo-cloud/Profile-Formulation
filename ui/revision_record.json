@@ -504,6 +504,15 @@
    "change": "Replaces rev 53 for Word: orders print in production schedule order; neighbouring orders with the same formulation share one cell, a later one after a different formulation prints in its own place (SE23 RP26202-1 had been pulled up with RP26821-2 ahead of H68A091-1). The page stays one formula per order",
    "order": "SE23 RP26202-1",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 57,
+   "date": "2026-10-29",
+   "type": "Print",
+   "item": "Orbis gray part number",
+   "change": "Orbis gray (CR400OG, 50-7002-372) is D26074A. Tech's SE13 calc sheet \"4.0 mm EB-P\" (FU0151EB4, RPP40EB1) types OG-D26047A: it now prints and maps as OG-D26074A. The W% Master row FU0151EB4 to be corrected at the clean-up; Tech's calc sheet is theirs to correct",
+   "order": "SE13 FU0151EB4",
+   "editor": "James Kuo"
   }
  ]
 }
