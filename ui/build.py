@@ -151,6 +151,27 @@ def draft_lines(day, P, meta, src=None):
     return lines
 
 
+def rules_any(day, meta):
+    """The rules' answer by product for an order the daily run did not see (ui/rules_any.py, run for the built day):
+    {'asof', 'prod': {product: key}, 'prod61': {product: key on SE61, where it differs}, 'lines': {line: {'groups':
+    [formulas], 'key': {key: group index, or the Exception's reason}}}}. Empty when rules_any.py has not run for the day."""
+    base = ROOT / 'work' / 'rules_any'
+    src, kf, pf = base / f'FRM Draft {day}.xlsx', base / f'keys_{day}.json', base / 'packets' / f'packet_{day}.json'
+    if not (src.exists() and kf.exists() and pf.exists()):
+        return {}
+    K = json.loads(kf.read_text(encoding='utf-8'))
+    syn = json.loads(pf.read_text(encoding='utf-8'))
+    lines = {}
+    for ln in draft_lines(day, syn, meta, src):
+        ordv = {o['order']: o['g'] if o['g'] is not None else (o['exc'] or '') for o in ln['sched']}
+        lines[ln['code']] = {'groups': [g['formulas'] for g in ln['groups']],
+                             'key': {k.split('|', 1)[1]: ordv.get(o, '') for k, o in K['order'].items() if k.split('|', 1)[0] == ln['code']}}
+    common = next((K['keys'][ln] for ln in sorted(K['keys']) if ln != 'SE61'), {})
+    p61 = {p: s for p, s in K['keys'].get('SE61', {}).items() if common.get(p) != s}
+    return {'asof': datetime.datetime.fromtimestamp(src.stat().st_mtime).strftime('%Y-%m-%d %H:%M'), 'prod': common,
+            'prod61': p61, 'lines': lines}
+
+
 def rules_by_date(pk, day, meta):
     """The rules' answer for every other schedule on file, for the Generate box (ui/rules_days.py writes them to
     work/rules/): date -> {'asof': when the rules ran, 'lines': {line: {'groups': [formulas], 'ord': {order: group index,
@@ -373,6 +394,7 @@ def main():
             'hist_pairs': history_pairs(),
             'approved': approved_decisions(sheet),
             'rules_by_date': rules_by_date(pk, day, line_layout({d: p for d, p in pk.items() if d <= day})),
+            'rules_any': rules_any(day, line_layout({d: p for d, p in pk.items() if d <= day})),
             'linemeta': line_layout(pk),
             'code_rule': {'colours': sorted(product_code.COLOURS), 'families': sorted(product_code.FAMILIES)}}
     # every formulation shows its weight % (James, 27 Oct 2026: "make sure this weight is display on every one so i can

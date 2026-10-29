@@ -682,9 +682,13 @@ function settleLines(pages){              // a line's pages run on until its foo
   return pages;
 }
 async function ocrPage(p, pairs, pairSet, on){
-  const src = p.canvas, P = greyOf(src);
+  let src = p.canvas, P = greyOf(src);
   await glyphBank();
-  const head = await pageHead(P);
+  let head = await pageHead(P);
+  if (!head) {                                              // the copier may have stored the page the other way up
+    const t = turnedOver(src), P2 = greyOf(t), h2 = await pageHead(P2);
+    if (h2) { src = p.canvas = t; P = P2; head = h2; }
+  }
   if (!head) return null;                                   // not an extrusion page (CNV, FRM, blank)
   const lineReads = head.reads, orders = [], unread = [], rows = [];
   for (const [y0, y1] of bandsOf(P)) {

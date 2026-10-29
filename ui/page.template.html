@@ -734,6 +734,23 @@ function upright(src, w, h){
   x.drawImage(src, 0, 0);
   return c;
 }
+// A page turned the other way up. The copier stores some pages upside down relative to others, and the PDF's own /Rotate
+// does not say which (James Kuo, 29 Oct 2026, the revised SE23 page doc05440920261029131209.pdf: read as 0 extrusion pages
+// until turned; the 26 Oct scan has pages both ways): a page without the extrusion header is tried turned over.
+function turnedOver(src){
+  const c = document.createElement('canvas'); c.width = src.width; c.height = src.height;
+  const x = c.getContext('2d', {willReadFrequently: true}); x.translate(c.width, c.height); x.rotate(Math.PI);
+  x.drawImage(src, 0, 0);
+  return c;
+}
+async function orient(p){                 // Claude reads a strip of the page's left edge: that edge must be the left
+  try {
+    await loadTess(); await glyphBank();
+    if (await pageHead(greyOf(p.canvas))) return;
+    const t = turnedOver(p.canvas);
+    if (await pageHead(greyOf(t))) { p.canvas.width = 0; p.canvas = t; }
+  } catch (e) { /* no text reader here: the page goes to Claude as it is */ }
+}
 // A copier PDF is one full-page JPEG (DCTDecode image) per page. Taking those JPEGs out of the file directly is exact and
 // fast, and avoids drawing the page with pdf.js (which stalled on these scans in an artifact frame, 29 Sep 2026).
 // Returns null for any other kind of PDF (then pdf.js draws the pages).
@@ -962,6 +979,7 @@ async function generate(files){
     const flush = async () => {
       batch.forEach(p => { gpages.insertAdjacentHTML('beforeend', `<span id="gp${p.label}" class="busy">p${p.label}</span>`); });
       say(`${mode === 'claude' ? 'Claude is reading' : 'Reading'} page${batch.length > 1 ? 's' : ''} ${batch[0].label}${batch.length > 1 ? '–' + batch[batch.length - 1].label : ''} of ${batch[0].total}…`);
+      if (mode === 'claude') for (const p of batch) await orient(p);
       const got = mode === 'claude' ? await claudeRead(batch) : [await ocrPage(batch[0], pairs, pairSet, date)];
       got.forEach((r, k) => {
         const el = $('#gp' + batch[k].label);
@@ -1004,14 +1022,27 @@ function lookup(line, order, prod, date){
     const l = D.lines.find(x => x.code === line), o = l?.sched.find(x => x.order === order);
     if (o && o.g != null) return {how: 'rule', formulas: l.groups[o.g].formulas};
     if (o) return {how: 'exception', why: o.exc || 'No formulation by rule: an engineer decides it'};
-    return {how: 'exception', why: `Not on the ${line} schedule the daily run read: check the line and order on the paper`};
+    return byProduct(line, prod, `Not on the ${line} schedule the daily run read`);
   }
   const R = (D.rules_by_date || {})[date];
-  if (!R) return {how: 'exception', why: `No schedule on file for ${fmtDate(date)}: the daily run decides it once the schedule comes in`};
+  if (!R) return byProduct(line, prod, `No schedule on file for ${fmtDate(date)}`);
   const L = R.lines[line], v = L?.ord[order];
   if (typeof v === 'number') return {how: 'rule', formulas: L.groups[v], asof: R.asof};
   if (v != null) return {how: 'exception', why: v || 'No formulation by rule: an engineer decides it'};
-  return {how: 'exception', why: `Not on the ${line} schedule on file for ${fmtDate(date)}: check the line and order on the paper`};
+  return byProduct(line, prod, `Not on the ${line} schedule on file for ${fmtDate(date)}`);
+}
+// An order the daily run did not see (a revised page, a new order written in): the rules' answer for its product on the
+// line (ui/rules_any.py: the daily run's own resolve on one product per rule key, the rules and settings as of the build).
+// The product alone does not say VOIDFORM, RUN WITH, roll, LTL or the slitter: those are the paper's (James Kuo, 29 Oct
+// 2026, the revised SE23 page: new order H6AA271-1 "finding the right formulation")
+function byProduct(line, prod, notOn){
+  const A = D.rules_any || {}, L = (A.lines || {})[line];
+  const key = (line === 'SE61' && (A.prod61 || {})[prod]) || (A.prod || {})[prod];
+  if (!L || key == null) return {how: 'exception', why: `${notOn}, and ${PRODUCTS.has(prod) ? 'its product has no spec on file' : 'its product is not in the Product Master'}: an engineer decides it`};
+  const v = L.key[key];
+  if (typeof v === 'number') return {how: 'new', formulas: L.groups[v], asof: A.asof,
+    note: `${notOn}: by rule from its product. VOIDFORM, RUN WITH, roll and slitter orders take another formulation: check the special instructions on the paper`};
+  return {how: 'exception', why: `${notOn}; by rule from its product: ${v || 'no formulation by rule'}`};
 }
 const STATUS_CHIP = {
   'from the PDF text': () => '<span class="chip ok" title="Read from the text of the system PDF">PDF text</span>',
@@ -1060,7 +1091,7 @@ function render(reads, date, nPages){
       const form = r.how === 'exception'
         ? `<span class="noform">ENGINEER TO COMPLETE</span><div class="muted" style="font-size:13px">${esc(r.why)}</div>`
         : `<div class="fl">${r.formulas.map((f, k, all) => `<details><summary>${esc(whenLabel(f, k, all))} · ${esc(f.code)}</summary>${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></details>`).join('')}
-           <div class="muted" style="font-size:12px">${r.how === 'rule' ? (r.asof ? `By rule (the rules as of ${fmtDate(r.asof)})` : 'By rule, as the daily run decided it') : 'Engineer decision (approved in the master)'}</div></div>`;
+           <div class="muted" style="font-size:12px">${r.how === 'new' ? `<span class="chip warn">new order</span> ${esc(r.note)}` : r.how === 'rule' ? (r.asof ? `By rule (the rules as of ${fmtDate(r.asof)})` : 'By rule, as the daily run decided it') : 'Engineer decision (approved in the master)'}</div></div>`;
       const chip = (STATUS_CHIP[o.status] || (() => ''))(o);
       let orderCell = `<b class="mono">${esc(o.order)}</b> ${chip}`, prodCell = `${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
       if (flagged) {

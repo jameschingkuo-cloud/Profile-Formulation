@@ -522,6 +522,24 @@
    "change": "publish.py / config.content_hash: a .docx compares by its body, headers and footers, not its bytes, so SharePoint's library properties added on upload no longer read as an edit (an edit to the text still stops the publish). Checked on 26 / 27 Oct against the first emailed copies: text identical. The 26, 27 and 28 Oct re-issues (90 rule, schedule order) published",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 59,
+   "date": "2026-10-29",
+   "type": "Page design",
+   "item": "Scan reader: pages stored the other way up",
+   "change": "The page read 0 extrusion pages from the revised SE23 scan: the copier stored its pages the other way up (the PDF's /Rotate does not say which; the 26 Oct scan has pages both ways). A page without the extrusion header is now tried turned over, by the text reader and before a page goes to Claude. Tested in Chrome: revision 2 of 2 pages, 10 orders; 29 Oct scan unchanged (89 of 90 orders the formulation of the Word file, RP26413-1 boxed)",
+   "order": "SE23 revision 29 Oct",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 60,
+   "date": "2026-10-29",
+   "type": "Logic",
+   "item": "Page: formulation for an order the daily run did not see",
+   "change": "An order not on the schedule the daily run read (a revised page, a new order) gets the rules' answer for its product on the line: ui/rules_any.py runs the daily run's resolve on one product per rule key (2,021 keys on 13 lines). Marked \"new order\"; VOIDFORM, RUN WITH, roll and slitter instructions are not known from the product, so the page says to check them on the paper. H6AA271-1 (DPP40WB1453, SE23): FU0031WB4 + FU0014WB4, as the revised Word file",
+   "order": "SE23 H6AA271-1",
+   "editor": "James Kuo"
   }
  ]
 }

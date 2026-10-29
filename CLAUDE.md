@@ -206,7 +206,8 @@ Commands are for Claude Code's shell (Git Bash). In PowerShell use `$env:PKT_DAT
    never writes an unmapped material (add the spelling in Materials with `db/edit_master.py` first). Then publish,
    `db/preflight.py check` / `accept`.
 9. Interface copy (James, 29 Sep 2026: *"lets keep a copy create a separate folder in the fomulation record for now to
-   hold these file. No Tech sign off require"*): `PKT_DATE=<date> python ui/build.py`, then
+   hold these file. No Tech sign off require"*): `python ui/rules_any.py <date>` (the rules' answer by product, for an
+   order the run did not see: a revised page, a new order written in; about 10 s), then `PKT_DATE=<date> python ui/build.py`, then
    `python publish.py "Profile Formulation <date>.html"` (Daily Formulation Report/Interface Copy) and republish the
    artifact from `out/profile-formulation.html` (read "The interface artifact" below first).
 10. Run `python -m pytest -q`, then commit the packet JSON, the manual issues and `data/published_manifest.json`.
