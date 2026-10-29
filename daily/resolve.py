@@ -35,6 +35,8 @@ RULES = os.environ.get("ASSIGN_RULES", "1") != "0"   # ASSIGN_RULES=0: history o
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import assign  # noqa: E402
 
+RECLAIM_OUT = re.compile(r'reclaim\b[^()]*?\brun\s*out', re.I)     # Tech's "(Use this formula in case PP WB Reclaim is run out)"
+
 VARIANT_RULES = [  # note text on the FRM row -> variant (db/schema.py VARIANTS)
     (re.compile(r"run\s*out", re.I), "Reclaim run-out"),
     (re.compile(r"void\s*form", re.I), "VOIDFORM"),
@@ -379,8 +381,16 @@ def rule_rows(line, order, product, fm):
             # everything is now rule base remember?"); where the settings came from stays in How Resolved / Source
             note = x['role'] + (" · settings from the calc sheet" if kind == 'calc' else "")
             marked = marked or date
-        note += f" · {f.get('note')}" if f.get('note') else ""
+        # the virgin Secondary standing in as a VOIDFORM order's only formula (assign.choose, R10): Tech's "in case ... run
+        # out" note does not apply to it, and it is the VOIDFORM formula (James Kuo, 29 Oct 2026, SE22 H6AA171-1)
+        void_sec = 'void' in fm.get('want', ()) and (x['member'] or {}).get('level') == 'secondary' and x['role'] == 'Primary'
+        tech_note = f.get('note') or ''
+        if void_sec and RECLAIM_OUT.search(tech_note):
+            tech_note = ''
+        note += f" · {tech_note}" if tech_note else ""
         note += f" · {fm['run_with']}" if fm.get('run_with') else ""
+        if void_sec and 'void' not in assign.quals(note):
+            note += f" · {assign.QUAL_NOTE['void']}"
         for q in sorted(set(fm.get('want', ())) & set((x['member'] or {}).get('quals', ()))):   # the Main is for it
             if q in assign.QUAL_NOTE and q not in assign.quals(note):
                 note += f" · {assign.QUAL_NOTE[q]}"

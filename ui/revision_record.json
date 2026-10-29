@@ -477,6 +477,24 @@
    "change": "Replaces rev 52. Word copies (normal and weight %): every order with the same formulation on a line shares one cell, at the first of them on the schedule, to save pages. Page: one formula per order, in schedule order.",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 54,
+   "date": "2026-10-29",
+   "type": "Logic",
+   "item": "Two-colour premix (lines 1-14)",
+   "change": "An order printing two colours (WB GE WB) on lines 1-14 runs a premix formula under the middle colour, graded by the order. New Mains: FU0021GT4 (WB : GT premix 9 : 1, W26038A + D26002M; Tech SE23 28 Sep for DPP40WB1700) and FU0021GE4 (WB : GE premix 9 : 1, W26038A + G26232M; FU0021GT4's SE23 settings 85/11/28/27/30, same weight ratio). Not on SE61",
+   "order": "SE23 H69A301-3, H69A302-1, H69A303-1, H69A304-1, H69A305-1 (DPP40WB1756)",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 55,
+   "date": "2026-10-29",
+   "type": "Logic",
+   "item": "VOIDFORM falls back to the virgin Secondary",
+   "change": "A VOIDFORM order with no reclaim-free Main takes the virgin Secondary of the same colour, thickness and grade as its only formula, printed \"For VOIDFORM order only\" (no run-out note). SE22 RPPA0WB241 -> FU0001WBA 56/4/15/4 (90/6/24/6), the recipe it ran as FAA051WBA 2023-2026",
+   "order": "SE22 H6AA171-1",
+   "editor": "James Kuo"
   }
  ]
 }

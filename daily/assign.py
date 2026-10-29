@@ -73,7 +73,19 @@ LATER_ROWS = [
     {'Formula Code': 'FU0001KSA', 'Application': 'Standard', 'Notes': 'Secondary, packaging grade (James, 28 Oct 2026)',
      'Colour': 'KS', 'Thk (mm)': 10, 'Virgin PP %': 87.5, 'Talc %': 5.7, 'CaCO3 %': 5.4, 'Colour MB %': 1.3,
      'Materials': 'KS masterbatch 1.3'},
+    # Two-colour cabbage boxes (WB GT WB / WB GE WB, middle layer from a white : green premix 9 : 1). FU0021GT4: Tech's SE23
+    # issue of 28 Sep 2026 for DPP40WB1700 (H68A127-1), W% from its settings 85/11/28/27/30 on SE23's calibration. FU0021GE4: James Kuo,
+    # 29 Oct 2026, for DPP40WB1756: "Use the same ratio ... part number is G26232. Weight ratio stay the same" - the name
+    # FU0021GE4 chosen by James the same day (the schedule prints GE; G26232M is the GE masterbatch)
+    {'Formula Code': 'FU0021GT4', 'Application': 'Standard', 'Notes': 'Main, WB : GT premix 9 : 1, two-colour WB GT WB (Tech SE23 28 Sep 2026)',
+     'Colour': 'GT', 'Thk (mm)': 4, 'Virgin PP %': 77.7, 'Homo PP (F1203K) %': 9.6, 'Talc %': 6.8, 'CaCO3 %': 3.8, 'Colour MB %': 2.0,
+     'Materials': 'WB : GT premix 9 : 1 (W26038A + D26002M) 2.0'},
+    {'Formula Code': 'FU0021GE4', 'Application': 'Standard', 'Notes': 'Main, WB : GE premix 9 : 1, two-colour WB GE WB (James Kuo, 29 Oct 2026)',
+     'Colour': 'GE', 'Thk (mm)': 4, 'Virgin PP %': 77.7, 'Homo PP (F1203K) %': 9.6, 'Talc %': 6.8, 'CaCO3 %': 3.8, 'Colour MB %': 2.0,
+     'Materials': 'WB : GE premix 9 : 1 (W26038A + G26232M) 2.0'},
 ]
+# lines that never take a premix: line 16 (SE61, the bubble line, co-extrudes its own layer colours EB KS EB)
+PREMIX_OFF = {'SE61'}
 
 # codes Tech issues that have no W% Master row, renamed by James after 23 Oct (printed under the new name; the W% Master
 # gets the row at the clean-up)
@@ -283,6 +295,13 @@ def derive(line, row):
     prefix = PREFIX.get(spec)
     if not prefix:
         return None, f'no rule for spec {spec!r} yet'
+    lay = (row.get('colors') or '').split()
+    if line not in PREMIX_OFF and len(lay) == 3 and lay[0] == lay[2] == colour and lay[1] != colour:
+        # two colours (WB GE WB): a premix formulation under the middle colour, graded by the order (James Kuo, 29 Oct 2026:
+        # "for color that require premix for line 1-14 ... It will give 2 two colors like WB GE WB")
+        if grade not in ('A', 'P'):
+            return None, f'grade {grade!r} on a {"/".join(lay)} premix order: cannot tell graphic from packaging'
+        return (prefix, 'A' if grade == 'A' else '0', lay[1], thk_char(mm)), ''
     si = (row.get('special_instructions') or '').upper()
     if spec == 'R2R2R2' and ('LTL' in si or 'WRAP' in si):
         prefix = 'RU'                                      # LTL wrap: James's Main is RU0001WB4 "Main, R2 LTL wrap"
@@ -599,6 +618,12 @@ CONFIRMED_SETTINGS = {
                                         'Hopper 4': ('KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)', '10'),
                                         'Hopper 5': ('CaCO3 -Heritage HM-10MAX', '4')},
                             'by': "James, 28 Oct 2026 (Tech's SE22 virgin run-out, printed FUA001KSA)"},
+    # FU0021GT4's SE23 settings (Tech, 28 Sep 2026) with the GE premix on Hopper 4: "Weight ratio stay the same"
+    ('SE23', 'FU0021GE4'): {'feeders': {'Hopper 1': ('PP Virgin-silo 4 (6502A)', '85'), 'Hopper 2': ('HiTalc ZS (or N40109A)', '11'),
+                                        'Hopper 3': ('F1203K', '28'), 'Hopper 4': ('WB GE Premix', '27'),
+                                        'Hopper 5': ('CaCO3 -Heritage HM-10MAX', '30')},
+                            'note': 'WB : GE = 9 : 1 WB – W26038A, GE – G26232M',
+                            'by': "James Kuo, 29 Oct 2026 (FU0021GT4's SE23 settings, the GE premix in place of GT)"},
 }
 # The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
 # Tech's FU0031WB4 issued for RP26512-1 (80/10/60/32/36), not the lower FU0041WB4 row
@@ -699,6 +724,13 @@ def choose(key, want, seas, line):
         # R10 (James, 23 Oct 2026): "void form should not use any reclaim" - "The reclaim calcium is not stable ... It
         # makes it very difficult to control the weight when we're running with reclaim". Never a reclaim formulation.
         cands = [m for m in cands if not w_reclaim(m)]
+        if not cands:
+            # no reclaim-free Main: the virgin Secondary of the same key is the VOIDFORM formula (James Kuo, 29 Oct 2026, on
+            # SE22 H6AA171-1 RPPA0WB241: FU0001WBA, the no-reclaim recipe it ran as FAA051WBA 2023-2026 - "yes")
+            sec = [m for m in rules()['by_key'].get(key, []) if m['level'] == 'secondary' and not m['restricted']
+                   and not w_reclaim(m) and fits_plain(m, seas, line)]
+            if len({m['code'] for m in sec}) == 1:
+                return sec[0], ''
     if not cands:
         return None, 'no Main in the W% Master for ' + '/'.join(key) + (' without reclaim (VOIDFORM)' if 'void' in want else '')
     def fits(m):
@@ -1108,7 +1140,8 @@ def formulation(line, row, day, issued, own=None):
             rows, src = w_settings(line, m)                 # weight-by-weight line: the W% is the settings
         if rows is None and (line, m['code']) in CONFIRMED_SETTINGS:
             c = CONFIRMED_SETTINGS[(line, m['code'])]
-            rows = [{'formula_code': m['code'], 'note': '', 'feeders': {k: {'material': mt, 'set': st} for k, (mt, st) in c['feeders'].items()}}]
+            rows = [{'formula_code': m['code'], 'note': c.get('note', ''),
+                     'feeders': {k: {'material': mt, 'set': st} for k, (mt, st) in c['feeders'].items()}}]
             src = ('confirmed', None, c['by'])
         if rows is None:
             rows, src = calc_auger_settings(line, m, own)   # auger line: the W% on the line's calibration (CALCULATED)

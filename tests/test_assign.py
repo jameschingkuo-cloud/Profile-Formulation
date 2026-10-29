@@ -732,3 +732,20 @@ def test_word_merges_same_formulation_page_one_per_order():
     exc = [{'Line Code': 'SE12', 'Order': 'F'}]
     g = render_frm.build_lines(today, draft, exc, {})[0]['groups']
     assert [[o['order'] for o in x['orders']] for x in g] == [['A', 'B', 'D'], ['C'], ['E'], ['F']]
+
+
+def test_two_colour_premix_and_voidform_secondary():
+    """James Kuo, 29 Oct 2026: two-colour orders on lines 1-14 (WB GE WB) run a premix formula under the middle colour -
+    DPP40WB1756 (WB GE WB) FU0021GE4, DPP40WB1700 (WB GT WB) FU0021GT4; never on SE61. A VOIDFORM order with no
+    reclaim-free Main takes the virgin Secondary: SE22 RPPA0WB241 -> FU0001WBA."""
+    ge = {'prod_code': 'DPP40WB1756', 'mat_spec': 'PPP P R1R1R1', 'colors': 'WB GE WB', 'special_instructions': ''}
+    gt = dict(ge, prod_code='DPP40WB1700', colors='WB GT WB')
+    assert assign.derive('SE23', ge)[0] == ('FU', '0', 'GE', '4')
+    assert assign.choose(assign.derive('SE23', ge)[0], set(), 'winter', 'SE23')[0]['code'] == 'FU0021GE4'
+    assert assign.choose(assign.derive('SE23', gt)[0], set(), 'winter', 'SE23')[0]['code'] == 'FU0021GT4'
+    assert assign.derive('SE61', {'prod_code': 'RBP33EB40', 'mat_spec': 'BBB P R6R6R6', 'colors': 'EB KS EB'})[0][2] == 'EB'
+    c = assign.CONFIRMED_SETTINGS[('SE23', 'FU0021GE4')]['feeders']
+    assert [c[f'Hopper {i}'][1] for i in range(1, 6)] == ['85', '11', '28', '27', '30'] and 'GE' in c['Hopper 4'][0]
+    vf = {'prod_code': 'RPPA0WB241', 'mat_spec': 'PPP P R1R1R1', 'colors': 'WB WB WB', 'special_instructions': 'VOIDFORM, PLEASE WATCH WEIGHT'}
+    key = assign.derive('SE22', vf)[0]
+    assert assign.choose(key, {'void'}, 'winter', 'SE22')[0]['code'] == 'FU0001WBA'
