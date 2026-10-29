@@ -465,8 +465,17 @@
    "date": "2026-10-29",
    "type": "Print",
    "item": "Formulation order on the page",
-   "change": "Orders print in production schedule order. Orders next to each other with the same formulation share one cell; the same formulation later on the schedule, after a different one, prints again in its own place (it was pulled up to the first order with that formulation). Word copies (normal and weight %) and the page both.",
+   "change": "Orders print in production schedule order. Orders next to each other with the same formulation share one cell; the same formulation later on the schedule, after a different one, prints again in its own place (it was pulled up to the first order with that formulation). Word copies (normal and weight %) and the page both. (replaced by rev 53 the same day)",
    "order": "SE13, SE22, SE23, SE31 on 26-28 Oct",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 53,
+   "date": "2026-10-29",
+   "type": "Print",
+   "item": "Word merges, page one per order",
+   "change": "Replaces rev 52. Word copies (normal and weight %): every order with the same formulation on a line shares one cell, at the first of them on the schedule, to save pages. Page: one formula per order, in schedule order.",
+   "order": "",
    "editor": "James Kuo"
   }
  ]

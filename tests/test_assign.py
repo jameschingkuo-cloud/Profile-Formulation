@@ -717,10 +717,10 @@ def test_black_10mm_packaging_fu0041ksa():
     assert {k: v['set'] for k, v in sec['rows'][0]['feeders'].items() if v.get('set')} == {'Hopper 1': '52', 'Hopper 2': '5', 'Hopper 4': '10', 'Hopper 5': '4'}
 
 
-def test_print_in_schedule_order_same_formulation_grouped():
-    """James Kuo, 29 Oct 2026: "put the formulation order according to the production schedule order. Then if they are
-    the same formulation, group them together" - orders next to each other with the same formulation share one cell;
-    the same formulation later on the schedule, after another one, gets its own cell in its place."""
+def test_word_merges_same_formulation_page_one_per_order():
+    """James Kuo, 29 Oct 2026: "for artifact, its one formula per order. but for word, due to printing number of pages,
+    we will merge them when possible" - the Word copies put every order with the same formulation in one cell, at the
+    first of them on the schedule (the page lists each order on its own, in schedule order)."""
     import render_frm
 
     def row(o, code, s):
@@ -731,4 +731,4 @@ def test_print_in_schedule_order_same_formulation_grouped():
     today = {'ext': [{'scan_page': 1, 'line': 'SE12', 'rows': [{'order': o, 'prod_code': ''} for o in 'ABCDEF']}]}
     exc = [{'Line Code': 'SE12', 'Order': 'F'}]
     g = render_frm.build_lines(today, draft, exc, {})[0]['groups']
-    assert [[o['order'] for o in x['orders']] for x in g] == [['A', 'B'], ['C'], ['D'], ['E'], ['F']]
+    assert [[o['order'] for o in x['orders']] for x in g] == [['A', 'B', 'D'], ['C'], ['E'], ['F']]

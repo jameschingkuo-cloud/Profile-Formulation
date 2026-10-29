@@ -463,8 +463,10 @@ function renderLine(){
       <p>${l.dosing === 'WEIGHT' ? 'Weight blender: Set is weight %, each extruder adds to 100, Auto takes the balance.' : 'Auger dosing: Set is motor speed 0–100, not a percentage. Weight % needs the hopper\'s calibration slope.'}</p></div>
       <span class="chip ${l.dosing === 'WEIGHT' ? 'weight' : 'auger'}">${l.dosing === 'WEIGHT' ? 'Weight blender' : 'Auger'}</span></div>
     ${iss.length ? `<div class="legend">${iss.map(i => `<span class="chip ${SEV[i.sev]}">${esc(i.sev)}</span> ${esc(i.check)}`).join(' &nbsp; ')}</div>` : ''}
-    ${l.groups.map(g => `<div class="group">
-      <div class="orders">${g.orders.map(o => `<div class="order"><span class="o">${esc(o.order)}</span><span class="p"><span class="mono">${esc(o.prod || '')}</span>${o.colors ? ' · ' + esc(o.colors) : ''}${o.thk ? ' · ' + esc(o.thk) + ' mm' : ''}</span></div>`).join('')}</div>
+    ${/* one formula per order, in schedule order (James Kuo, 29 Oct 2026: "for artifact, its one formula per order";
+         the Word copies merge the same formulation to save pages) */
+      l.sched.filter(o => o.g != null).map(o => [o, l.groups[o.g]]).map(([o0, g]) => `<div class="group">
+      <div class="orders">${[o0].map(o => `<div class="order"><span class="o">${esc(o.order)}</span><span class="p"><span class="mono">${esc(o.prod || '')}</span>${o.colors ? ' · ' + esc(o.colors) : ''}${o.thk ? ' · ' + esc(o.thk) + ' mm' : ''}</span></div>`).join('')}</div>
       ${g.formulas.map((f, i) => `<div class="formula"><div class="fhead"><span class="code">${esc(f.code)}</span><span class="chip ${(f.role ? f.role === 'Secondary' : i) ? 'var' : 'ok'}">${f.role ? esc(f.role) : (i ? 'Alternate' : 'Primary')}</span>${f.note ? `<span class="note">${esc(f.note)}</span>` : ''}</div>
         ${!f.feeders.length ? '<div class="noform">No settings for it on this line yet: an engineer sets them before it runs.</div>'
           : l.dosing === 'WEIGHT' ? weightBars(f) : augerBar(f) + `<div class="feeders">${l.cols.map(c => { const x = f.feeders.find(y => y.col === c); return x ? tile(x, false) : `<div class="tile empty"><div class="pos"><span class="caps">${esc(c)}</span></div><div class="mat">not used</div></div>`; }).join('')}</div>`}
@@ -1162,17 +1164,15 @@ async function buildDocx(plan){
   const tbl = (widthsIn, rows) => new Table({rows, width: {size: IN(widthsIn.reduce((a, b) => a + b, 0)), type: WidthType.DXA},
     columnWidths: widthsIn.map(IN), layout: TableLayoutType.FIXED});
 
-  // groups per line in schedule order: orders next to each other with the same formulation share one block
-  // (James Kuo, 29 Oct 2026: "put the formulation order according to the production schedule order. Then if they are
-  // the same formulation, group them together")
+  // groups per line: orders with the same formulation share one block, at the first of them on the schedule (James
+  // Kuo, 29 Oct 2026: "for word, due to printing number of pages, we will merge them when possible")
   const lines = plan.lines.map(pl => {
-    const meta = pl.meta, weight = meta.dosing === 'WEIGHT', groups = [];
+    const meta = pl.meta, weight = meta.dosing === 'WEIGHT', groups = [], bySig = {};
     pl.rows.forEach(row => {
       const forms = row.r.how === 'exception' ? null : row.r.formulas;
       const sig = forms ? JSON.stringify(forms.map(f => [f.code, f.note, f.feeders.map(x => [colKey(x.col), x.mat, x.set]).sort()])) : 'EXC:' + row.order;
-      const last = groups[groups.length - 1];
-      if (!last || last.sig !== sig) groups.push({sig, orders: [], forms, why: row.r.why || ''});
-      groups[groups.length - 1].orders.push(row);
+      if (!bySig[sig]) { bySig[sig] = {orders: [], forms, why: row.r.why || ''}; groups.push(bySig[sig]); }
+      bySig[sig].orders.push(row);
     });
     const used = new Set(groups.flatMap(g => (g.forms || []).flatMap(f => f.feeders.map(x => colKey(x.col)))));
     let cols = (meta.cols || []).map(colKey);

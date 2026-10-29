@@ -134,28 +134,26 @@ def build_lines(today, draft, exc, page):
     for line in sorted(by_line, key=lambda c: LINE_NO.get(c, 99)):
         pg = page.get(line)
         cols = [split_feeder(c) for c in (pg['feeder_columns'] if pg else [])]
-        groups = []              # [{'sig', 'orders': [...], 'forms': [...]}] in schedule order
+        groups = OrderedDict()   # formula signature -> {'orders': [...], 'forms': [...]}
         for r in by_line[line]:
             f = forms.get((line, r['order']))
             # the same formulation shares one cell (James, 26 Oct 2026, RP26717-1 and RP24C18-4, both FUA151WB4
-            # 48/25/48/15: "since these two are the same formula, they should share the same cell") - but only orders
-            # next to each other on the schedule: the page runs in schedule order (James, 29 Oct 2026: "put the
-            # formulation order according to the production schedule order. Then if they are the same formulation,
-            # group them together")
+            # 48/25/48/15: "since these two are the same formula, they should share the same cell"), anywhere on the line,
+            # placed at the first of them on the schedule (James, 29 Oct 2026: "for word, due to printing number of pages,
+            # we will merge them when possible"; the page shows one formula per order)
             if f:
                 fl = [f[k] for k in sorted(f)]
                 sig = json.dumps([(x['code'], x['note'], sorted((list(k), list(v)) for k, v in x['feeders'].items())) for x in fl])
             else:
                 fl, sig = None, 'EXC:' + r['order']
-            if not groups or groups[-1]['sig'] != sig:
-                groups.append({'sig': sig, 'orders': [], 'forms': fl, 'exc': [] if f else [exc_by.get((line, r['order']))]})
-            groups[-1]['orders'].append(r)
-        used = {k for g in groups if g['forms'] for x in g['forms'] for k in x['feeders']}
+            g = groups.setdefault(sig, {'orders': [], 'forms': fl, 'exc': [] if f else [exc_by.get((line, r['order']))]})
+            g['orders'].append(r)
+        used = {k for g in groups.values() if g['forms'] for x in g['forms'] for k in x['feeders']}
         if not cols:
             cols = sorted(used)
         elif len(cols) > 6:     # co-ex / V-layouts: print only the feeders in use today
             cols = [c for c in cols if c in used] or cols[:4]
-        lines.append({'line': line, 'no': LINE_NO.get(line), 'cols': cols, 'groups': groups,
+        lines.append({'line': line, 'no': LINE_NO.get(line), 'cols': cols, 'groups': list(groups.values()),
                       'ac': (pg or {}).get('header_note', ''), 'notes': (pg or {}).get('footnotes', []),
                       'effective': (pg or {}).get('effective_date', ''), 'weight': line in WEIGHT})
     return lines

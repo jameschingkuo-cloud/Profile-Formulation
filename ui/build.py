@@ -123,21 +123,18 @@ def draft_lines(day, P, meta, src=None):
         col_of = {split_feeder(c): c for c in m.get('cols', [])}
         groups, grp_of = [], {}
         rows_l = [r for e in sorted(P['ext'], key=lambda e: e['scan_page']) if e['line'] == lc for r in e['rows']]
-        prev = None                              # the group of the order before on the schedule
         for r in rows_l:
             f = forms.get((lc, r['order']))
             if not f:
-                prev = None
                 continue
             fl = [{'code': x['code'], 'note': x['note'], 'role': x['role'],
                    'feeders': [{'col': col_of.get(k, ' '.join(p for p in k if p)), 'mat': current(mat), 'set': st, 'id': MAP.get(current(mat))}
                                for k, (mat, st) in x['feeders'].items() if mat or st]}
                   for _, x in sorted(f.items())]
-            # schedule order; the same formulation shares a block only with the order before it (James Kuo, 29 Oct 2026)
             sig = json.dumps(fl, sort_keys=True)
-            if prev is None or groups[prev]['_sig'] != sig:
-                groups.append({'_sig': sig, 'orders': [], 'formulas': fl})
-            gi = prev = len(groups) - 1
+            gi = next((i for i, g in enumerate(groups) if g['_sig'] == sig), None)
+            if gi is None:
+                groups.append({'_sig': sig, 'orders': [], 'formulas': fl}); gi = len(groups) - 1
             groups[gi]['orders'].append({'order': r['order'], 'prod': r['prod_code'], 'colors': r.get('colors'), 'thk': r.get('thk')})
             grp_of[r['order']] = gi
         for g in groups:
