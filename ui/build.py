@@ -310,13 +310,61 @@ def draft_codes(day):
     return {k: [c for _, c in sorted(v.items())] for k, v in by.items()}
 
 
-def rule_history(pk, day, days=365):
+ORDER_RX = re.compile(r'S?(?:RP|H)[0-9A-Z]{2}[0-9A-Z]\d{2,3}', re.I)
+
+
+def calc_orders(text):
+    """Order bases in a calc block's 'Order #' as Tech writes it: 'H66A138, 139, 140 & 148' (a bare 3-digit number
+    replaces the last digits), 'H66A113-1 & 2' (a bare 1-2 digit number is another suffix of the same order)."""
+    out, prev = [], None
+    for tok in re.split(r'[,&;/]|and', text or ''):
+        tok = tok.strip().upper()
+        m = ORDER_RX.match(tok)
+        if m:
+            prev = m.group(0)
+        elif prev and re.fullmatch(r'\d{3}(-\d+)?', tok):
+            prev = prev[:-3] + tok[:3]
+        elif not (prev and re.fullmatch(r'-?\d{1,2}', tok)):
+            continue
+        out.append(prev)
+    return list(dict.fromkeys(out))
+
+
+def calc_history(pk, day, days=365):
     """The look-up's record before the first packet (James Kuo, 30 Oct 2026: "can you add atleast 6 months of formulation
-    record in"): the system's own EXT schedules (history/prod_instr.py; the image-day scans where no PDF exists), each order
-    with the formulation today's rules give it (daily/assign.py, the season of its run). No formulation page is on file for
-    these days, so it is never shown as issued. -> [[order, line, prod, first, last, days, [codes] or None, why]]"""
+    record in", "i am looking for historic record"): each order on the system's own EXT schedules (history/prod_instr.py;
+    the image-day scans where no PDF exists) with the formulation Tech calculated for it in the line's calc workbook
+    (Formulation Calc Library 'Calc History', one block per order: code, run period, feeder settings). An order Tech's
+    blocks do not name gets the block Tech last calculated for the product on that line before it ran, marked so; none
+    = no record (SE42 has no workbook). -> [[order, line, prod, first, last, days, how, [[code, calc date, recipe]]]]"""
     import csv
-    import assign
+    lib = config.OUTPUT_DIR / 'Formulation Calc Library.xlsx'
+    if not lib.exists():
+        return []
+    config.record_read(lib, "Tech's calc history (look-up)")
+    ws = load_workbook(lib, read_only=True, data_only=True)['Calc History']
+    it = ws.iter_rows(values_only=True)
+    H = {k: i for i, k in enumerate(next(it))}
+    blocks = {}
+    for r in it:
+        k = (r[H['Workbook']], r[H['Sheet']], r[H['Row']])
+        if k not in blocks:
+            run = r[H['Run Date (est.)']]
+            blocks[k] = {'line': r[H['Line']], 'code': (r[H['Formula Code']] or '').strip(), 'orders': calc_orders(r[H['Orders']]),
+                         'prods': re.findall(r'[A-Z]{3}[0-9A-Z]{2}[A-Z]{2}\d+', (r[H['Product(s)']] or '').upper()),
+                         'run': run.date().isoformat() if hasattr(run, 'date') else '', 'feeders': []}
+        if r[H['Setting']] not in (None, ''):
+            blocks[k]['feeders'].append(f"{((r[H['Extruder']] or '') + ' ').lstrip()}{r[H['Feeder']]} {r[H['Material']]} {r[H['Setting']]:g}"
+                                        if isinstance(r[H['Setting']], (int, float)) else
+                                        f"{((r[H['Extruder']] or '') + ' ').lstrip()}{r[H['Feeder']]} {r[H['Material']]} {r[H['Setting']]}")
+    by_order, by_prod = {}, {}
+    for b in blocks.values():
+        if not b['code']:
+            continue
+        for o in b['orders']:
+            by_order.setdefault((b['line'], o), []).append(b)
+        for p in b['prods']:
+            by_prod.setdefault((b['line'], p), []).append(b)
     first = min(pk)
     start = (datetime.date.fromisoformat(day) - datetime.timedelta(days=days)).isoformat()
     rows, pdf_days = [], set()
@@ -327,21 +375,25 @@ def rule_history(pk, day, days=365):
         got = [r for r in csv.DictReader(open(p, encoding='utf-8')) if start <= r['date'] < first]
         rows += [r for r in got if r['date'] not in pdf_days]
         pdf_days |= {r['date'] for r in got}
-    issued = assign.issued_on_line(pk)
-    assign.set_pages(pk)
-    seen, out = {}, {}
+    out = {}
     for r in sorted(rows, key=lambda r: r['date']):
-        row = {'prod_code': r['prod_code'], 'mat_spec': f"{r['mat']} {r['mat_spec']}", 'colors': r['colour'],
-               'special_instructions': r['special'], 'thk': r['thk']}
-        run = datetime.date.fromisoformat(r['date'])
-        k = (r['line'], r['prod_code'], row['mat_spec'], r['colour'], frozenset(assign.wanted(r['line'], row, run)[0]), assign.season(run))
-        if k not in seen:
-            res, why = assign.formulation(r['line'], row, run, issued)
-            seen[k] = ([m['code'] for m in res['members']], '') if res else (None, why)
-        o = out.setdefault((r['order'], r['line'], r['prod_code']), [r['order'], r['line'], r['prod_code'], r['date'], r['date'], set(), *seen[k]])
+        o = out.setdefault((r['order'], r['line'], r['prod_code']), [r['order'], r['line'], r['prod_code'], r['date'], r['date'], set(),
+                                                                     r['order_base'] or r['order'].split('-')[0]])
         o[4] = r['date']
         o[5].add(r['date'])
-    return [o[:5] + [len(o[5])] + o[6:] for o in out.values()]
+    res = []
+    for order, line, prod, a, z, ds, base in out.values():
+        bl, how = by_order.get((line, base.upper()), []), 'order'
+        if not bl:
+            # the product's last calc on this line on or before the run (blocks with no date count as before)
+            prior = sorted((b for b in by_prod.get((line, prod), []) if (b['run'] or '') <= z), key=lambda b: b['run'] or '')
+            bl, how = ([b for b in prior if b['run'] == prior[-1]['run']] if prior else []), 'product'
+        forms = {}
+        for b in sorted(bl, key=lambda b: b['run'] or ''):
+            rec = ' | '.join(b['feeders'])
+            forms[(b['code'], rec)] = [b['code'], b['run'], rec]     # every distinct setting Tech wrote for the order
+        res.append([order, line, prod, a, z, len(ds), how if forms else '', list(forms.values())])
+    return res
 
 
 def approved_decisions(sheet):
@@ -443,7 +495,7 @@ def main():
             'sched_by_date': {d: [[e['line'], r['order'], r['prod_code']] for e in p['ext'] for r in e['rows']] for d, p in pk.items()},
             'products': product_codes(),
             'hist_pairs': history_pairs(),
-            'rhist': rule_history(pk, day),
+            'rhist': calc_history(pk, day),
             'approved': approved_decisions(sheet),
             'rules_by_date': rules_by_date(pk, day, line_layout({d: p for d, p in pk.items() if d <= day})),
             'rules_any': rules_any(day, line_layout({d: p for d, p in pk.items() if d <= day})),
