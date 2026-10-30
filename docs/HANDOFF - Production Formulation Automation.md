@@ -2487,10 +2487,21 @@ Scheduled run, one window (SCHEDULE 10/28 e-mailed 13:08, DIE CUT SCHEDULE 13:09
   records appended (91 EXT, 63 CNV; no FRM rows), interface copy published, artifact v93. The Word file is not published (5 orders still for the engineer).
   `new_highs.py`: 3 High, the same 3 as 27 Oct, 0 new. pytest 103 passed, 5 skipped.
 
+## 7.77 Daily run 30 Oct 2026 (30 Oct 2026)
+
+Scheduled run, one window (SCHEDULE 10/30 e-mailed 13:22, DIE CUT SCHEDULE 13:24). No code change. 29 Oct is the previous published day (it came as a copier scan).
+- **Step 1** (BPN9PFR$_Z7wmMP6p.PDF, run 13:45:20): 91 EXT records on 13 lines, every line equal to its printed total; pre-flight 0 changes, IWPFT062 0 differences.
+  Word formulation (normal and weight %) emailed to James and sent in chat: 91 orders with a formulation (59 as last issued, 32 by rule), 0 for the engineer.
+  New since 29 Oct (10): SE11 H69A221-1; SE13 H6AA199-1; SE21 H6AA264-1, RP26A14-1; SE25 H6AA115-2, H68A091-1 (from SE23); SE31 H6AA205-1; SE32 H6AA195-1, H6AA196-1 (VOIDFORM); SE61 H6AA258-1.
+  Gone (9): SE21 RP26826-7, RP26A22-3; SE23 H68A091-1; SE24 H6AA205-1; SE25 H69A284-5; SE32 H6AA042-1, H6AA042-3, H6AA155-2; SE61 H6AA047-1. VOIDFORM GSM ranges as expected (793 -> 729-751; 1,052 -> 970-1000).
+- **Step 2 and daily run**: converting schedule 66 rows on 8 pages (new: H6AA271-1, H6AA264-1; gone: H69A220-1, H69A040-1). EXT/CNV workbooks, Product Master, the two Word files, the Extrusion and Converting
+  records (91 EXT, 66 CNV; no FRM rows) and the interface copy published; artifact v110. `new_highs.py`: 3 High, the same 3 as 29 Oct, 0 new. pytest 112 passed, 6 skipped.
+
 ## Revision history
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.74 | 2026-10-30 | Claude Code (scheduled run) | **30 Oct daily run (§7.77)**: schedule emails 13:22/13:24; formulation emailed (59 as issued, 32 by rule, 0 for the engineer); 91 EXT / 66 CNV; 0 new High; published; artifact v110. |
 | 1.73 | 2026-10-28 | Claude Code (local, with James Kuo) | **28 Oct daily run (§7.76)**: schedule emails 13:08/13:09; formulation emailed (86 as issued or by rule, 5 for the engineer); 91 EXT + 63 CNV rows built, published and recorded; artifact v93; 0 new High. |
 | 1.72 | 2026-10-27 | Claude Code (local, with James Kuo) | **27 Oct daily run (§7.75)**: schedule email 12:47; formulation emailed (81 as issued or by rule, 1 for the engineer); 82 EXT + 61 CNV rows built, published and recorded; artifact v80; 0 new High. |
 | 1.71 | 2026-10-26 | Claude Code (local, with James Kuo) | **26 Oct daily run (§7.74)**: schedule emails 13:33/13:35; formulation emailed (75 as issued or by rule, 7 for the engineer); 82 EXT + 60 CNV rows built, published and recorded; artifact v61; 0 new High. |
