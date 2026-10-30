@@ -594,6 +594,15 @@
    "change": "James: \"also put the standard in the note of the formulation\" - \"so it will be on both the excel sheet and the formulation word file\". FRA021WB4 rows say UL94-V2 standard, FRA022WB4 rows NFPA701 standard, in the FRM Draft and both Word copies. 29 Oct revision re-made: only SE21 RP26826-6 changed (FRA021FW4 20/16/25/17/90 -> FRA022WB4 32/12/22/20/92)",
    "order": "SE21 RP26826-6",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 67,
+   "date": "2026-10-30",
+   "type": "Page design",
+   "item": "Help loop: the page asks Claude about the rows it could not read",
+   "change": "James: \"yes build it\" (the QC Master's help loop). Each scan the page reads is recorded in the artifact's database (date, file, rows, boxed). A button \"Ask Claude to read N rows\" sends the boxed and unread rows (what the readers saw, the closest pair on file and the row's picture, about 11 KB) for Claude to read by eye; Claude's answer fills in on the page, the person checks it against the picture and presses Apply, which records whether Claude was right or corrected. A line under the drop box shows the last 7 days: scans, rows, read by the page, boxed, sent to Claude, confirmed, corrected. Only Contributors and above can read or write it (a public-link viewer sees nothing). Claude's side: ui/help_rows.py and CLAUDE.md \"The help loop\". Tested locally end to end (29 Oct scan read blind: H6AA010-1 boxed, answered, confirmed, Word unlocked) and live (scan record written)",
+   "order": "SE31 H6AA010-1 (test)",
+   "editor": "James Kuo"
   }
  ]
 }

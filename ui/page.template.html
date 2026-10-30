@@ -957,7 +957,7 @@ async function generate(files){
   if (m) { $('#gendate').value = `${m[1]}-${m[2]}-${m[3]}`; transNote(); }          // copier file names carry the scan date
   const date = $('#gendate').value, pairs = historyPairs(), pairSet = new Set(pairs.map(([o, p]) => o + '|' + p));
   lastSource = files.map(f => f.name).join(', ');
-  busy = true; drop.classList.add('off'); gstop.hidden = false; gout.innerHTML = ''; gpages.innerHTML = '';
+  busy = true; drop.classList.add('off'); gstop.hidden = false; gout.innerHTML = ''; gpages.innerHTML = ''; helpReset();
   ctl = new AbortController();
   const reads = [], t0 = performance.now();
   let nPages = 0;
@@ -1006,6 +1006,8 @@ async function generate(files){
       boxUncertainLines(settleLines(reads));
       reads.forEach(r => { const el = $('#gp' + r.page); if (el) { el.textContent = `p${r.page} ${r.line}`; if (r.lineGuess) el.className = 'warn'; } });
     }
+    render(reads, date, nPages);
+    await helpScan(date, reads.reduce((a, r) => a + r.orders.length, 0), lastPlan?.toCheck || 0);
     render(reads, date, nPages);
     say(`Done in ${Math.round((performance.now() - t0) / 1000)} s: ${reads.length} extrusion page(s) of ${nPages} read${mode === 'ocr' ? ' by the text reader in this page' : ' by Claude'}.`);
   } catch (e) {
@@ -1099,18 +1101,21 @@ function render(reads, date, nPages){
         ? `<span class="noform">ENGINEER TO COMPLETE</span><div class="muted" style="font-size:13px">${esc(r.why)}</div>`
         : `<div class="fl">${r.formulas.map((f, k, all) => `<details><summary>${esc(whenLabel(f, k, all))} · ${esc(f.code)}</summary>${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}<table class="sets">${setRows(f, weight)}</table></details>`).join('')}
            <div class="muted" style="font-size:12px">${r.how === 'new' ? `<span class="chip warn">new order</span> ${esc(r.note)}` : r.how === 'rule' ? (r.asof ? `By rule (the rules as of ${fmtDate(r.asof)})` : 'By rule, as the daily run decided it') : 'Engineer decision (approved in the master)'}</div></div>`;
-      const chip = (STATUS_CHIP[o.status] || (() => ''))(o);
+      const chip = o.byClaude ? '<span class="chip ok">read by Claude, confirmed</span>' : (STATUS_CHIP[o.status] || (() => ''))(o);
+      const ans = flagged && o._ref._hid ? HELP.answers[o._ref._hid] : null;
       let orderCell = `<b class="mono">${esc(o.order)}</b> ${chip}`, prodCell = `${esc(o.prod)}${okProd ? '' : ' <span class="chip warn">not in Product Master</span>'}`;
       if (flagged) {
         const k = editRefs.push(o._ref) - 1;
+        o._ref._ctx = {line, page: o.page};
         const why = [o.lineCheck ? 'the line code on this page was not read the same two ways: check the line on the paper' : '', okOrder ? '' : orderProblems(o.order, date).join('; '), okProd ? '' : (codeProblems(o.prod).length ? 'product: ' + codeProblems(o.prod).join('; ') : 'product not in the Product Master')].filter(Boolean);
-        orderCell = `<input class="genfix mono" data-k="${k}" data-f="order" value="${esc(o.order)}" aria-label="Order number"> ${chip}
+        orderCell = `<input class="genfix mono" data-k="${k}" data-f="order" value="${esc(ans?.order || o.order)}" aria-label="Order number"> ${chip}
+          ${helpNote(o._ref._hid, ans)}
           ${o.img ? `<div><img src="${o.img}" alt="The row on the scan" style="max-width:min(420px,100%);border:1px solid var(--line);background:#fff;margin-top:4px"></div>` : ''}
           ${o.raw ? `<div class="muted" style="font-size:12px">read as <span class="mono">${esc(o.raw)}</span></div>` : ''}
           ${o.hint ? `<div class="muted" style="font-size:12px">closest on file: <span class="mono">${esc(o.hint[0])} · ${esc(o.hint[1])}</span> (check the paper)</div>` : ''}
           ${why.length ? `<div style="font-size:12px;color:var(--crit)">${esc(why.join(' · '))}</div>` : ''}
           ${o.lineCheck ? `<div style="font-size:12px">Line <input class="genfix mono" data-k="${k}" data-f="line" value="${esc(line)}" aria-label="Line code" style="width:6em"></div>` : ''}`;
-        prodCell = `<input class="genfix mono" data-k="${k}" data-f="prod" value="${esc(o.prod)}" aria-label="Product code">`;
+        prodCell = `<input class="genfix mono" data-k="${k}" data-f="prod" value="${esc(ans?.prod || o.prod)}" aria-label="Product code">`;
       }
       return `<tr${flagged ? ' class="flagrow"' : ''}><td class="mono">${i + 1}</td><td>${orderCell}<div class="muted" style="font-size:12px">${/^\d+$/.test(o.page) ? 'scan p' + esc(o.page) : esc(o.page)}</div></td>
         <td class="mono">${prodCell}</td><td>${form}</td><td>${vs}</td></tr>`;
@@ -1139,20 +1144,23 @@ function render(reads, date, nPages){
       ? `Locked: ${toCheck + unread.length} row(s) below must be checked against the paper first (a reading nobody confirmed never goes on the printed copy).`
       : "Same layout as the pipeline's printed document: one page per line, every formulation in run order."}</span></div></div>
     ${toCheck || unread.length ? `<div class="genfixbar">
-      ${unread.length ? `<div class="unreadlist"><div class="caps">Rows the reader could not read: type the order and product from the picture, or tick “not an order”</div>${unread.map(({r, u}, k) => `<div class="unreadrow"><span class="mono muted">p${esc(r.page)} ${esc(r.line)}</span><img src="${u.img}" alt="Row on scan page ${esc(r.page)} that could not be read">
-          <input class="genadd mono" data-u="${k}" data-f="order" placeholder="Order #" aria-label="Order number"><input class="genadd mono" data-u="${k}" data-f="prod" placeholder="Product" aria-label="Product code">
-          <label class="muted" style="font-size:13px"><input type="checkbox" class="gennot" data-u="${k}"> not an order</label></div>`).join('')}</div>` : ''}
+      ${unread.length ? `<div class="unreadlist"><div class="caps">Rows the reader could not read: type the order and product from the picture, or tick “not an order”</div>${unread.map(({r, u}, k) => { const a = u._hid ? HELP.answers[u._hid] : null; return `<div class="unreadrow"><span class="mono muted">p${esc(r.page)} ${esc(r.line)}</span><img src="${u.img}" alt="Row on scan page ${esc(r.page)} that could not be read">
+          <input class="genadd mono" data-u="${k}" data-f="order" placeholder="Order #" aria-label="Order number" value="${esc(a && !a.notOrder ? a.order || '' : '')}"><input class="genadd mono" data-u="${k}" data-f="prod" placeholder="Product" aria-label="Product code" value="${esc(a && !a.notOrder ? a.prod || '' : '')}">
+          <label class="muted" style="font-size:13px"><input type="checkbox" class="gennot" data-u="${k}"${a?.notOrder ? ' checked' : ''}> not an order</label>${helpNote(u._hid, a)}</div>`; }).join('')}</div>` : ''}
+      ${helpBar(unread)}
       ${toCheck || unread.length ? '<div><button type="button" class="btn" id="genapply">Apply corrections</button> <span class="muted">Fix the boxed order / product codes from the paper, then apply: the formulation is looked up again.</span></div>' : ''}
     </div>` : ''}${html}`;
   $('#gendoc').addEventListener('click', () => downloadDocx(lastPlan));
+  $('#genhelp')?.addEventListener('click', () => askClaude(unread));
   $('#genapply')?.addEventListener('click', () => {
-    const adds = {};
+    const adds = {}, conf = [];
     document.querySelectorAll('.genadd').forEach(inp => { (adds[inp.dataset.u] = adds[inp.dataset.u] || {})[inp.dataset.f] = inp.value.toUpperCase().replace(/\s+/g, ''); });
     Object.entries(adds).forEach(([k, v]) => {
       const {r, u} = unread[+k];
-      if (v.order && v.prod) { r.orders.push({order: v.order, prod: v.prod, status: !orderProblems(v.order, lastRun.date).length && !codeProblems(v.prod).length ? 'corrected by you' : 'check', newProduct: !PRODUCTS.has(v.prod), raw: u.text, img: u.img}); r.unread = r.unread.filter(x => x !== u); }
+      if (v.order && v.prod) { const o = {order: v.order, prod: v.prod, status: !orderProblems(v.order, lastRun.date).length && !codeProblems(v.prod).length ? 'corrected by you' : 'check', newProduct: !PRODUCTS.has(v.prod), raw: u.text, img: u.img, _hid: u._hid};
+        r.orders.push(o); r.unread = r.unread.filter(x => x !== u); if (u._hid && o.status !== 'check') conf.push([o, {order: o.order, prod: o.prod, notOrder: false}]); }
     });
-    document.querySelectorAll('.gennot:checked').forEach(cb => { const {r, u} = unread[+cb.dataset.u]; r.unread = r.unread.filter(x => x !== u); });
+    document.querySelectorAll('.gennot:checked').forEach(cb => { const {r, u} = unread[+cb.dataset.u]; r.unread = r.unread.filter(x => x !== u); if (u._hid) conf.push([u, {order: '', prod: '', notOrder: true}]); });
     document.querySelectorAll('.genfix').forEach(inp => {
       const ref = editRefs[+inp.dataset.k], v = inp.value.toUpperCase().replace(/\s+/g, '');
       if (ref && v) ref[inp.dataset.f] = v;
@@ -1163,9 +1171,120 @@ function render(reads, date, nPages){
       if (ref.lineCheck && lineOk) ref.lineCheck = false;
       ref.newProduct = !PRODUCTS.has(ref.prod);        // a new product you confirm from the paper (it keeps the code rule)
       ref.status = !orderProblems(ref.order, lastRun.date).length && !codeProblems(ref.prod).length && lineOk ? 'corrected by you' : 'check';
+      if (ref._hid && ref.status !== 'check') conf.push([ref, {order: ref.order, prod: ref.prod, notOrder: false}]);
     });
+    conf.forEach(([ref, c]) => { const a = HELP.answers[ref._hid]; ref.byClaude = !!a && sameAnswer(a, c); });
     render(lastRun.reads, lastRun.date, lastRun.nPages);
+    helpConfirm(conf);
   });
+}
+
+// ---- The help loop (James Kuo, 30 Oct 2026: "yes build it"; the QC Master's design, its handoff 5.2; "the read is adding
+// order into the system. it is an entry"). Rows the reader could not settle go to Claude, who reads them by eye in the
+// Claude session and answers here; the person confirms (Apply) or corrects, and that outcome is the reader's score.
+// The artifact's database (capability db; Contributors and above read and write, a public-link viewer sees nothing):
+//   scans/<scanId>             one per scan read: schedule date, file, rows, boxed, help status, outcomes (weekly score)
+//   scans/<scanId>/help/<row>  one per row sent: line, page, what the readers saw, the row's picture (JPEG), then
+//                              Claude's answer {order, prod, notOrder, note} and the person's confirmation
+// Answers reach this view while it stays open (the reading itself is not stored); a person can always settle a row alone.
+const HELP = {db: null, can: false, scan: null, unsub: null, answers: {}, outcomes: {}, seq: 0};
+(async () => {
+  const db = window.claude?.use ? await window.claude.use('db') : null;
+  if (!db) return;
+  const user = await window.claude.use('user');
+  HELP.db = db; HELP.can = (user ? await user.can('data.write') : null) !== false;
+  if (!$('#helpweek')) drop.insertAdjacentHTML('afterend', '<div id="helpweek" class="muted" style="font-size:13px;margin-top:6px"></div>');
+  helpWeek();
+  if (lastRun && !busy) render(lastRun.reads, lastRun.date, lastRun.nPages);
+})();
+const sameAnswer = (a, c) => !!a.notOrder === !!c.notOrder && (c.notOrder || (a.order === c.order && a.prod === c.prod));
+function helpReset(){ HELP.unsub?.(); HELP.unsub = null; HELP.scan = null; HELP.answers = {}; HELP.outcomes = {}; }
+async function helpScan(date, rows, boxed){                // the scan record: one per scan the page reads
+  if (!HELP.db || !HELP.can) return;
+  const id = `${date}_${Date.now().toString(36)}`;
+  try {
+    await HELP.db.doc('scans/' + id).set({at: new Date().toISOString(), date, source: lastSource, rows, boxed, asked: 0, help: boxed ? 'not asked' : 'none'});
+    HELP.scan = id; helpWeek();
+  } catch (e) { HELP.err = e?.code || 'error'; }
+}
+function helpNote(hid, a){
+  if (a) return `<div style="font-size:12px;border-left:3px solid var(--ok);padding-left:6px;margin-top:4px">Claude read ${a.notOrder ? '<b>not an order</b>' : `<b class="mono">${esc(a.order || '')} · ${esc(a.prod || '')}</b>`}${a.note ? ' · ' + esc(a.note) : ''}. Filled in: check it against the picture, then Apply.</div>`;
+  return hid ? '<div class="muted" style="font-size:12px">Sent to Claude: waiting for its answer (or correct it yourself).</div>' : '';
+}
+function helpBar(unread){
+  if (!HELP.db) return '';
+  const pending = editRefs.filter(o => o && !o._hid).length + unread.filter(({u}) => !u._hid).length;
+  const sent = editRefs.filter(o => o?._hid).length + unread.filter(({u}) => u._hid).length;
+  const msg = !HELP.can ? 'Only people who can change this page can ask Claude.'
+    : !HELP.scan ? `The scan record could not be saved (${esc(HELP.err || 'database unavailable')}): correct the rows from the paper.`
+    : sent ? `${sent} row(s) sent. Tell Claude in the Claude session (or it checks at the next daily run); answers fill in here while this page stays open.`
+    : 'Sends the boxed rows (what the readers saw and the row’s picture) to Claude, who reads them by eye and answers here.';
+  return `<div><button type="button" class="btn" id="genhelp" ${HELP.can && HELP.scan && pending ? '' : 'disabled'}>Ask Claude to read ${pending || 'the'} row${pending === 1 ? '' : 's'}</button> <span class="muted" id="genhelpmsg">${msg}</span></div>`;
+}
+async function jpeg(src){                                  // the row's picture, smaller (a document is at most 256 KiB)
+  if (!src) return '';
+  const im = new Image(); im.src = src; await im.decode();
+  const k = Math.min(1, 900 / im.width), c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(im.width * k)); c.height = Math.max(1, Math.round(im.height * k));
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', 0.8);
+}
+async function askClaude(unread){
+  const btn = $('#genhelp'), msg = $('#genhelpmsg');
+  btn.disabled = true; msg.textContent = 'Sending…';
+  const items = [
+    ...editRefs.filter(o => o && !o._hid).map(o => ({ref: o, kind: 'boxed', line: o._ctx?.line || o.line || '', page: o._ctx?.page, order: o.order, prod: o.prod,
+      raw: o.raw || '', why: o.lineCheck ? 'line code not read the same two ways' : o.status || 'check', hint: o.hint || null, img: o.img})),
+    ...unread.filter(({u}) => !u._hid).map(({r, u}) => ({ref: u, kind: 'unread', line: r.line || '', page: r.page, order: '', prod: '',
+      raw: u.text || '', why: 'the reader could not read this row', hint: null, img: u.img}))];
+  let sent = 0;
+  try {
+    for (const it of items) {
+      const id = `r${++HELP.seq}`;
+      await HELP.db.doc(`scans/${HELP.scan}/help/${id}`).set({kind: it.kind, line: it.line, page: String(it.page ?? ''), order: it.order || '',
+        prod: it.prod || '', raw: it.raw, why: it.why, hint: it.hint, img: await jpeg(it.img), asked: new Date().toISOString()});
+      it.ref._hid = id; sent++;
+    }
+    await HELP.db.doc('scans/' + HELP.scan).update({help: 'asked', asked: HELP.seq, askedAt: new Date().toISOString()});
+    helpListen();
+  } catch (e) {
+    HELP.err = e?.code || 'error';
+  }
+  render(lastRun.reads, lastRun.date, lastRun.nPages);
+  if (sent < items.length) $('#genhelpmsg').textContent = `Sent ${sent} of ${items.length} (${HELP.err}): correct the others from the paper.`;
+}
+function helpListen(){                                     // Claude's answers, live
+  if (HELP.unsub || !HELP.scan) return;
+  HELP.unsub = HELP.db.collection(`scans/${HELP.scan}/help`).onSnapshot(s => {
+    let changed = false;
+    s.docs.forEach(d => { const a = d.data()?.answer; if (a && JSON.stringify(a) !== JSON.stringify(HELP.answers[d.id])) { HELP.answers[d.id] = a; changed = true; } });
+    if (changed && lastRun && !busy) render(lastRun.reads, lastRun.date, lastRun.nPages);
+  }, () => { HELP.unsub = null; });
+}
+async function helpConfirm(conf){                          // the person's word on each row sent: the reader's score
+  if (!HELP.db || !HELP.scan || !conf.length) return;
+  try {
+    for (const [ref, c] of conf) {
+      const a = HELP.answers[ref._hid], outcome = !a ? 'by person' : sameAnswer(a, c) ? 'claude confirmed' : 'claude corrected';
+      HELP.outcomes[ref._hid] = outcome;
+      await HELP.db.doc(`scans/${HELP.scan}/help/${ref._hid}`).update({confirmed: {...c, outcome, at: new Date().toISOString()}});
+    }
+    const count = {}; Object.values(HELP.outcomes).forEach(o => { count[o] = (count[o] || 0) + 1; });
+    await HELP.db.doc('scans/' + HELP.scan).update({outcomes: count});
+    helpWeek();
+  } catch (e) { /* the rows are applied on the page either way */ }
+}
+async function helpWeek(){                                 // the reader's last 7 days
+  const el = $('#helpweek');
+  if (!el || !HELP.db) return;
+  try {
+    const since = new Date(Date.now() - 7 * 864e5).toISOString();
+    const s = await HELP.db.collection('scans').where('at', '>=', since).get();
+    let scans = 0, rows = 0, boxed = 0, asked = 0, ok = 0, fixed = 0;
+    s.docs.forEach(d => { const x = d.data() || {}; scans++; rows += x.rows || 0; boxed += x.boxed || 0; asked += x.asked || 0;
+      ok += x.outcomes?.['claude confirmed'] || 0; fixed += x.outcomes?.['claude corrected'] || 0; });
+    el.textContent = scans ? `Reader, last 7 days: ${scans} scan${scans === 1 ? '' : 's'}, ${rows} rows, ${rows - boxed} read by the page (${rows ? Math.round(100 * (rows - boxed) / rows) : 0}%), ${boxed} boxed, ${asked} sent to Claude: ${ok} confirmed as Claude read them, ${fixed} corrected.` : 'Reader, last 7 days: no scans read in this page yet.';
+  } catch (e) { el.textContent = ''; }
 }
 
 // ---- the Word formulation, built in the page from what it just resolved (layout of daily/render_frm.py; James Kuo,

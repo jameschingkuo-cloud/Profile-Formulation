@@ -78,3 +78,23 @@ def test_page_reader_equals_reference(monkeypatch, tmp_path):
     assert r.returncode == 0, r.stderr
     last = r.stdout.strip().splitlines()[-1]
     assert re.fullmatch(rf'{n} rows, 0 differences', last), '\n'.join(l for l in r.stdout.splitlines() if l.startswith('DIFF'))[:3000]
+
+
+def test_help_rows_show_saves_the_picture(tmp_path, capsys):
+    """The help loop, Claude's side (James Kuo, 30 Oct 2026: "yes build it"): a help row fetched with ArtifactData out_dir
+    (the plain document, as ArtifactData writes it) is listed as OPEN and its picture is saved as a .jpg to read by eye."""
+    import base64
+    import json
+    sys.path.insert(0, str(ROOT / 'ui'))
+    import help_rows
+    scan = tmp_path / 'scans'
+    (scan / '2026-10-29_x' / 'help').mkdir(parents=True)
+    (scan / '2026-10-29_x.json').write_text(json.dumps({'date': '2026-10-29', 'rows': 90, 'boxed': 1, 'help': 'asked'}))
+    jpg = b'\xff\xd8\xff\xe0test'
+    (scan / '2026-10-29_x' / 'help' / 'r1.json').write_text(json.dumps({
+        'kind': 'boxed', 'line': 'SE31', 'page': '10', 'order': 'H6AA010-1', 'prod': 'SPA40WB951', 'raw': '?', 'why': 'check',
+        'img': 'data:image/jpeg;base64,' + base64.b64encode(jpg).decode()}))
+    help_rows.show(tmp_path)
+    out = capsys.readouterr().out
+    assert '[OPEN] SE31 p10 boxed: H6AA010-1 · SPA40WB951' in out and '1 open row(s)' in out
+    assert (scan / '2026-10-29_x' / 'help' / 'r1.jpg').read_bytes() == jpg

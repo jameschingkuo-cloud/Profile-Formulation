@@ -278,6 +278,35 @@ document it in your MD so other can learn from you?"*. The page is https://claud
 - Checking the saved file only by script and resending is refused a second time (*"identical content already refused"*).
   The saved file must be opened with the Read tool. If someone edited the page in between, merge their changes first.
 
+## The help loop (James Kuo, 30 Oct 2026: "yes build it")
+
+The QC Master's design (its handoff 5.2), for the interface page's scan reader. The page keeps it in the artifact's
+database (capabilities `db` with the rule read/write `interact` at the root, and `user`; a public-link viewer reads
+nothing, checked with `as_level`). Republishing with `capabilities` omitted keeps them.
+- `scans/<scanId>`: one per scan the page reads (not a system PDF): schedule date, file name, rows, boxed, `help`
+  ('none' / 'not asked' / 'asked' / 'answered'), `asked`, `outcomes` (`claude confirmed`, `claude corrected`, `by person`).
+  The page's line under the drop box sums the last 7 days.
+- `scans/<scanId>/help/<row>`: written when the person presses "Ask Claude to read N rows": kind (boxed / unread), line,
+  page, order and product as read, raw, why, the closest pair on file (hint), the row's picture (JPEG data URL, about
+  11 KB). Claude adds `answer: {order, prod, notOrder, note, by: 'claude', at}`; the page fills it in live (while the
+  page that read the scan stays open), and the person's Apply adds `confirmed: {order, prod, notOrder, outcome, at}`.
+  A person can always settle a row alone; their value wins.
+
+**Claude's side**, when James says there is a help request (or a scheduled run finds one):
+1. ArtifactData `query` on `scans` where `help` == 'asked', `out_dir` `work/help/db`; `list` each `scans/<id>/help` with
+   the same `out_dir` (the pictures stay out of the conversation). `python ui/help_rows.py show work/help/db` lists the
+   open rows and saves each picture as a .jpg next to its JSON: Read it.
+2. Read the row by eye (and the original scan in Downloads, when James sent it in chat). Answer with ArtifactData
+   `update` on `scans/<id>/help/<row>` `{answer: {...}}` pinned to its version, then `scans/<id>` `help: 'answered'`.
+   A row that cannot be read with certainty is answered `{note: 'cannot read: check the paper'}` with no order:
+   never a guess (the read is an entry).
+3. Log every row: `python ui/help_rows.py log --scan .. --row .. --order .. --prod .. --outcome right|miss|WRONG-ACCEPTED
+   --why ".."` -> `work/help/reader_cases.jsonl`. A cause that repeats is the next reader fix (reference
+   `ui/ocr_eval.py` first, parity 0, the scan becomes a test in `tests/test_scan_reader_page.py`), with a revision row.
+- Tested 30 Oct 2026: locally with an in-memory database (29 Oct scan, blind: H6AA010-1 boxed, sent with an 11 KB
+  picture, answer filled in, Apply unlocked the Word file, outcome 'claude confirmed', weekly line updated); live v111:
+  the scan record written (90 rows, 0 boxed, nothing to ask). The live ask-and-answer path waits for a real boxed row.
+
 ## One door for a day's schedule: scan or PDF (5 Oct 2026)
 
 James Kuo, 5 Oct 2026: *"make sure you can read PDF word file as well. I want to be able to feed it in both way (scan and
