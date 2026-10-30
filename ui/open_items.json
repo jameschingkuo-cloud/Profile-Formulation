@@ -300,9 +300,9 @@
       "detail": "James, 27 Oct: \"MOC is only needed when we have major changes. These update dont need MOC.\" A blank MOC cell on a minor revision is fine."
     },
     {
-      "date": "2026-10-27",
-      "title": "FW 4 mm (RPP40FW2) runs FRA021FW4",
-      "detail": "RP26826-6 has a formulation by rule: FRA021FW4, with Tech's SE21 settings (FW is graphic grade A, James 26-27 Oct). Its W% row in the W% Master stays on the v2 \"Open for James\" sheet."
+      "date": "2026-10-30",
+      "title": "FW 4 mm runs by fire standard: F1 UL94-V2 FRA021WB4, F4 NFPA701 FRA022WB4",
+      "detail": "James, 30 Oct: \"We need to keep both. and make them special formulation. FR0021WB4 (now FRA021WB4) is for UL94V2 standard (F1) and FR0022WB4 (create as FRA022WB4) is for NFPA701 standard (F4)\". RPP40FW1 / FW3 (F1) run FRA021WB4 (SE21 20/16/25/17/89); RPP40FW2 / FW4 / FW5 (F4) run FRA022WB4 (SE21 32/12/22/20/92). The standard prints in the note. RP26826-6 (F4) had been given the UL94 settings as FRA021FW4; the 29 Oct revision was re-issued on 30 Oct with FRA022WB4. Both rows go into the W% Master at the clean-up."
     },
     {
       "date": "2026-10-27",
@@ -317,7 +317,7 @@
     {
       "date": "2026-10-27",
       "title": "FW prints as grade A (FRA021FW4)",
-      "detail": "James, 27 Oct: \"all the FW (not black and white) product need to be A (graphic grade anyways\". Every FW code Tech prints with grade 0 prints as A (daily/assign.py GRADE_A_COLOURS; SE21 FR0021FW4 -> FRA021FW4). The W% Master FW row is already FRA021FW3; FRA021FW4 (FW 4 mm) and its W% stay on the W% Master v2 \"Open for James\" sheet."
+      "detail": "James, 27 Oct: \"all the FW (not black and white) product need to be A (graphic grade anyways\". Every FW code Tech prints with grade 0 prints as A (daily/assign.py GRADE_A_COLOURS). The W% Master FW row is already FRA021FW3. FW 4 mm now runs FRA021WB4 / FRA022WB4 by fire standard (30 Oct), not FRA021FW4."
     },
     {
       "date": "2026-10-27",
