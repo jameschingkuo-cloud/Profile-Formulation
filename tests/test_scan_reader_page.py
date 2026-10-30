@@ -47,6 +47,27 @@ def test_reference_reader_reads_every_row_right(date, scan, monkeypatch):
 
 
 @SLOW
+def test_reference_reader_hard_rows_29_oct(monkeypatch):
+    """The 29 Oct 2026 scan, read with the schedules before it only (James Kuo, 30 Oct 2026: "the OCR of artifact need to
+    improve", "the read is adding order into the system. it is an entry"): SE12's page whose glyph line read was too close
+    to call (its orders on file name the line), SE31 RP26413-1 whose bars a pen stroke hid (the page's other rows give the
+    columns), and suffixes read with an extra character tried again. Only H6AA010-1 stays boxed: a stray mark reads as a
+    letter in the number at every setting, so the text reader cannot confirm the glyph reader."""
+    scan = 'doc05440420261029115931'
+    if not (ROOT / 'work' / 'pages' / scan).exists():
+        pytest.skip('pages not rendered (scan_reader/render_pages.py)')
+    P = _reader(monkeypatch)
+    import json
+    pk = json.loads((ROOT / 'data' / 'packets' / 'packet_2026-10-29.json').read_text(encoding='utf-8'))
+    truth = sorted(((e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']), key=str)
+    res = P.audit3('2026-10-29', scan, 'before', show=False)
+    taken = [r for r in res if r[4] != 'check']
+    assert [r for r in taken if (r[1], r[2], r[3]) not in set(truth)] == []
+    assert sorted(((r[1], r[2], r[3]) for r in res), key=str) == truth
+    assert [(r[1], r[2]) for r in res if r[4] == 'check'] == [('SE31', 'H6AA010-1')]
+
+
+@SLOW
 def test_page_reader_equals_reference(monkeypatch, tmp_path):
     node = shutil.which('node')
     if not node or not (ROOT / 'out' / 'glyph-bank.js').exists() or not (ROOT / 'work' / 'pages').exists():

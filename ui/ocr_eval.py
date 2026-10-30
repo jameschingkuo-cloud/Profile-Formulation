@@ -1438,6 +1438,12 @@ def parse_order_cell2(t, marks):
     return o if ok else None
 
 
+def suffix_exact(t, marks):
+    """The order cell's suffix has exactly the characters counted on the image (or none were counted)."""
+    m = ORD_CELL.match(t)
+    return bool(m) and (not marks or len(m.group(2)) == marks)
+
+
 def evaluate_raw3(date, scan, show=False, tries=None):
     tries = tries or CELL_TRIES
     pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
@@ -1896,14 +1902,20 @@ def read_row_both(im, a, line_pitch, y0, y1, bars, codes_by_len, w):
     a2, y0, y1 = isolate_row(a, bars, y0, y1)
     if a2 is not a: a, im = a2, Image.fromarray(a2)
     marks = suffix_marks(im, ox0, ox1, y0, y1)
-    to = tp = None; raws = []
+    to = tp = loose = None; raws = []
     for scale, psm in CELL_TRIES:
         t = ocr_clean(im, ox0, ox1, y0, y1, scale, psm) if to is None else ''
         t2 = ocr_clean(im, px0, px1, y0, y1, scale, psm) if tp is None else ''
         raws.append((t, t2))
-        if to is None: to = parse_order_cell2(t, marks)
+        if to is None:
+            # v23 (30 Oct 2026): a suffix read with more characters than the image shows is odd: the other settings are tried
+            # for an exact one first (H6AA271-31 for -1, RP26327-41- for -1); the trimmed reading only when none is exact
+            o = parse_order_cell2(t, marks)
+            if o and suffix_exact(t, marks): to = o
+            elif o and loose is None: loose = o
         if tp is None: tp = take_prod(t2)
         if to and tp: break
+    if to is None: to = loose
     go, _, _ = decode_order(glyph_cells(a, ox0, ox1, y0, y1, line_pitch))
     pcells = glyph_cells(a, px0, px1, y0, y1, line_pitch)
     gp, _, _ = decode_product(pcells, codes_by_len)
@@ -1961,6 +1973,38 @@ def settle_lines(pages):
     return pages
 
 
+def nobar_text(im, y0, y1):
+    """The page's look at a band without bars (ocrCell: 0.06 to 0.24 of the width, 8 px pad, 2x, one line, whitelist)."""
+    w, h = im.size
+    c = im.crop((int(w * 0.06), max(0, y0 - 8), int(w * 0.24), min(h, y1 + 8)))
+    c = c.resize((c.width * 2, c.height * 2), Image.LANCZOS)
+    t = pytesseract.image_to_string(c, config='--psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-')
+    return re.sub(r'\s+', '', t.upper())
+
+
+def borrow_bars(rows, nobar):
+    """v23 (30 Oct 2026): a row whose bars a pen stroke hid (29 Oct, SE31 RP26413-1 underlined) takes the median bars of
+    the page's other rows and is read by both readers like any row; it only adds rows, in page order."""
+    if len(rows) < 2: return rows
+    med = [sorted(r[2][k] for r in rows)[len(rows) // 2] for k in range(3)]
+    extra = [(y0, y1, med, t) for y0, y1, t in nobar if re.search(r'(RP|H)[0-9OISBZDQ]', t)]
+    return sorted(list(rows) + extra, key=lambda r: r[0])
+
+
+def line_of(reads):
+    vals = [r[1] for r in reads if r[1]]
+    best = max(set(vals), key=vals.count) if vals else None
+    return best if best and vals.count(best) >= 2 and all(v == best for v in vals) else None
+
+
+def history_line(got, line_of_pair):
+    """v23: the line the page's orders ran on in the schedules on file, a third read of a line the page alone is not sure
+    of (29 Oct 2026, page 2: header SE12, glyph too close to call, three orders on file on SE12). Only orders taken from
+    the schedules on file (status 'read'), each on one line only; two or more, all the same line."""
+    ls = [next(iter(line_of_pair[(o, p)])) for o, p, st in got if st == 'read' and len(line_of_pair.get((o, p), ())) == 1]
+    return ('history', ls[0], f'{len(ls)} orders on file on {ls[0]}') if len(ls) >= 2 and all(l == ls[0] for l in ls) else None
+
+
 def audit3(date, scan, history='before', show=True):
     codes_by_len = {}
     for c in PRODS: codes_by_len.setdefault(len(c), []).append(c)
@@ -1970,6 +2014,11 @@ def audit3(date, scan, history='before', show=True):
         if history == 'before' and dd >= date: continue
         q = json.load(open(f, encoding='utf-8'))
         pairs |= {(r['order'], r['prod_code']) for e in q['ext'] for r in e['rows']}
+    line_of_pair = {}
+    for f in sorted(Path('data/packets').glob('packet_*.json')):
+        if history == 'before' and f.stem.split('_')[1] >= date: continue
+        for e in json.load(open(f, encoding='utf-8'))['ext']:
+            for r in e['rows']: line_of_pair.setdefault((r['order'], r['prod_code']), set()).add(e['line'])
     pk = json.load(open(f'data/packets/packet_{date}.json', encoding='utf-8'))
     truth = [(e['line'], r['order'], r['prod_code']) for e in pk['ext'] for r in e['rows']]
     tset = set(truth)
@@ -1981,16 +2030,23 @@ def audit3(date, scan, history='before', show=True):
         top = pytesseract.image_to_string(im.crop((0, 0, int(w * 0.75), int(h * 0.10))), config='--psm 6').upper()
         if not re.search(r'LINE\s*N[O0]', top) or not re.search(r'EXTRUS|WPPPOPRC|PRODUCTION\s*INSTRUCTION\s*-\s*EXT', top) or re.search(r'LINE\s*N[O0]\W*S[DC]\d', top): continue
         line, lreads = read_line_code2(im)
-        rows = []
+        rows, nobar = [], []
         for (y0, y1) in [b for b in row_bands(im, x0=0.086, x1=0.13) if b[0] > h * 0.10]:
             bars = row_bars(a, y0, y1, w)
-            if bars: rows.append((y0, y1, bars))
+            if bars: rows.append((y0, y1, bars)); continue
+            t = nobar_text(im, y0, y1)
+            if not re.search(r'LINE|TOTAL|REPORT|SI|SPECIAL', t) and re.search(r'\d{3}', t): nobar.append((y0, y1, t))
         pitch = XR.estimate_pitch([a[max(0, y0 - 6):y1 + 6, b[0] + 4:b[2] - 4] for y0, y1, b in rows]) if rows else 15.0
+        rows = borrow_bars(rows, nobar)
         got = []
-        for y0, y1, bars in rows:
+        for y0, y1, bars, *nb in rows:
             to, tp, go, gp, raws, tpr, gpf = read_row_both(im, a, pitch, y0, y1, bars, codes_by_len, w)
             if re.search(r'LINE|TOTAL|REPORT', ''.join(x + y for x, y in raws)): continue
+            if nb and not to and not go: continue                            # a borrowed row with no order: stays a picture
             got.append(decide(to, tp, go, gp, pairs, datetime.date.fromisoformat(date), tpr, gpf))
+        if line is None:
+            hl = history_line(got, line_of_pair)
+            if hl: lreads.append(hl); line = line_of(lreads)
         pages.append({'png': png.name, 'line': line, 'reads': lreads, 'rows': got})
     settle_lines(pages)
     res = [(p['png'], p['line'], o, pr, st if p['line'] else 'check') for p in pages for o, pr, st in p['rows']]

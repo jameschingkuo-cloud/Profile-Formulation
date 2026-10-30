@@ -329,7 +329,7 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
       <div class="genrow">
         <label class="drop" id="drop" for="scanfile">
           <strong>Drop the schedule here (system PDF or scan), or click to choose it</strong>
-          <span>The system's PDF (BPN9PFR…PDF) or the copier's scan (or page images). Converting and FRM pages are skipped.</span>
+          <span>The system's PDF (BPN9PFR…PDF) or the copier's scan (or page images). Converting and FRM pages are skipped. A file copied in File Explorer can also be pasted on this page (Ctrl+V).</span>
           <span class="caps" id="dropnote"></span>
           <input id="scanfile" type="file" accept="application/pdf,image/jpeg,image/png" hidden>
         </label>
@@ -674,6 +674,13 @@ say('Ready: text recognition in this page reads the scan (no upload anywhere).',
 ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); if (!busy) drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', e => generate(e.dataTransfer.files));
+// A file copied in File Explorer and pasted (Ctrl+V) is read like a drop: the QC Scan Intake's paste route (QC Master handoff
+// 5.17), and the way Claude feeds the live page itself to test it (James Kuo, 30 Oct 2026). Pasted text is left alone.
+document.addEventListener('paste', e => {
+  const fs = [...(e.clipboardData?.files || [])].filter(f => /pdf|jpe?g|png/i.test(f.type) || /\.(pdf|jpe?g|png)$/i.test(f.name));
+  if (!fs.length) return;
+  e.preventDefault(); generate(fs);
+});
 $('#scanfile').addEventListener('change', e => { generate(e.target.files); e.target.value = ''; });
 drop.addEventListener('click', e => { if (busy) e.preventDefault(); });
 gstop.addEventListener('click', () => ctl?.abort());
@@ -1113,9 +1120,11 @@ function render(reads, date, nPages){
   }).join('');
   let check = '';
   if (trans) {
-    const want = new Set(trans.map(t => t.join('|'))), got = new Set(lines.flatMap(l => byLine[l].map(o => [l, o.order, o.prod].join('|'))));
+    // a scan of some lines only (a revised page, 29 Oct 2026) is compared with those lines of the packet, not the whole day
+    const part = lines.length < new Set(trans.map(t => t[0])).size;
+    const want = new Set(trans.filter(t => !part || lines.includes(t[0])).map(t => t.join('|'))), got = new Set(lines.flatMap(l => byLine[l].map(o => [l, o.order, o.prod].join('|'))));
     const miss = [...want].filter(x => !got.has(x)), extra = [...got].filter(x => !want.has(x));
-    check = `<div class="${miss.length || extra.length ? 'warn' : 'ok'}"><span class="caps">reading vs the transcribed packet</span><b>${want.size - miss.length}/${want.size}</b><small>${
+    check = `<div class="${miss.length || extra.length ? 'warn' : 'ok'}"><span class="caps">reading vs the transcribed packet${part ? ' (' + lines.join(', ') + ')' : ''}</span><b>${want.size - miss.length}/${want.size}</b><small>${
       miss.length || extra.length ? `Missed: ${miss.map(esc).join(', ') || 'none'}. Read differently: ${extra.map(esc).join(', ') || 'none'}` : 'every line, order and product as transcribed'}</small></div>`;
   }
   const unread = reads.flatMap(r => (r.unread || []).map(u => ({r, u})));

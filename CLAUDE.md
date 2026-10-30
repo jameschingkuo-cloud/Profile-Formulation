@@ -92,6 +92,14 @@ Change these only with James's explicit say-so, and log the change in the handof
   The line code needs two independent readings (header, footer, glyph) or the page continues its neighbour's line (no
   footer); else the page's rows are boxed. Change the reference first, then the page, and keep the parity test (page =
   reference on every row) at 0 differences. Publish `glyph-bank.js` and `eng-data.js` with the page.
+- **The scan read is an entry (James, 30 Oct 2026: "the read is adding order into the system. it is an entry"; learn
+  from the QC Master's scan entry)**. Held to the QC Master's bar: 0 wrong accepted, measured BLIND (each day's own
+  orders hidden from the history) on every copier scan on file, before and after a change; a fix is a second pass used
+  only when the first pass failed, so it can never lose a reading (a row's bars hidden by a pen: the page's other rows'
+  columns; a line not certain: the line its orders on file ran on, 2+, all one; a suffix with more characters than the
+  image shows: the other settings first). Every scan that fails a row becomes a regression case in
+  `tests/test_scan_reader_page.py`. The page takes a pasted file (Ctrl+V) like a drop: to test the live artifact,
+  `Set-Clipboard -Path <short path>` and press Ctrl+V on the page in James's Chrome (QC Master handoff 5.17).
 - **The system's own past schedules (James, 30 Sep 2026: "i got the past production schedule ... refine your data
   base")**: `Profile Process Control - Documents/Technical Engineering Team/Production Instruction/MMDDYY.pdf` are the
   AIX report as text (no OCR): `python history/prod_instr.py parse` -> `work/history/ext_history.csv`;

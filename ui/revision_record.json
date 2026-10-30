@@ -540,6 +540,33 @@
    "change": "An order not on the schedule the daily run read (a revised page, a new order) gets the rules' answer for its product on the line: ui/rules_any.py runs the daily run's resolve on one product per rule key (2,021 keys on 13 lines). Marked \"new order\"; VOIDFORM, RUN WITH, roll and slitter instructions are not known from the product, so the page says to check them on the paper. H6AA271-1 (DPP40WB1453, SE23): FU0031WB4 + FU0014WB4, as the revised Word file",
    "order": "SE23 H6AA271-1",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 61,
+   "date": "2026-10-30",
+   "type": "Logic",
+   "item": "Page scan reader: second passes that only add readings (entry-grade, as the QC Master's scan entry)",
+   "change": "James: \"the OCR of artifact need to improve\", \"the read is adding order into the system. it is an entry\". Three second passes, each used only when the first pass failed, so none can lose a reading: (1) a row whose printed bars a pen stroke hid takes the column positions of the page's other rows and is read by both readers (SE31 RP26413-1); (2) a page whose line is not certain from its header and glyph reads takes the line its orders on file ran on, two or more, all one line (SE12, page 2); (3) an order suffix read with more characters than the image shows is read again at the other settings before it is trimmed (H6AA271-31 and RP26327-41- for -1). Measured blind (each day's own orders hidden) on the five copier scans on file (28, 29, 30 Sep, 29 Oct and its revision, 338 rows): entered right 331 -> 337, wrong 0 -> 0, left for a person 7 -> 1 (H6AA010-1: a stray mark reads as a letter in the number at every setting). Reference reader (ui/ocr_eval.py audit3) changed first; parity kept",
+   "order": "SE31 RP26413-1, SE12 page 2, SE23 H6AA271-1",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 62,
+   "date": "2026-10-30",
+   "type": "Page design",
+   "item": "Page: paste a scan (Ctrl+V)",
+   "change": "A PDF or page image copied in File Explorer and pasted on the page is read like a drop (the QC Scan Intake's paste route). Pasted text is left alone, so the EXT-workbook rows box still works",
+   "order": "",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 63,
+   "date": "2026-10-30",
+   "type": "Page design",
+   "item": "Page: a scan of some lines only is compared with those lines of the packet",
+   "change": "The tile 'reading vs the transcribed packet' compared a 2-page revised SE23 scan with the whole day (9/90, 80 orders listed as missed). It now compares only the lines the scan holds and names them: (SE23) 9/9, read differently SE23 H6AA271-1 (the new order)",
+   "order": "SE23 H6AA271-1",
+   "editor": "James Kuo"
   }
  ]
 }

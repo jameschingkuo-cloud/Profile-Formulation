@@ -359,6 +359,10 @@ async function ocrClean(P, x0, x1, y0, y1, scale, psm){
   try { return (await ocr(cleanCell(P, x0, x1, y0, y1, scale), psm)).toUpperCase().replace(/\s+/g, ''); }
   finally { api.SetVariable('tessedit_char_whitelist', WL); }
 }
+function suffixExact(t, marks){           // the order cell's suffix has exactly the characters counted on the image
+  const m = ORD_CELL.exec(t);
+  return !!m && (!marks || m[2].length === marks);
+}
 function suffixMarks(P, x0, x1, y0, y1){  // printed characters after the dash in an order cell (marks grouped by overlap)
   const c = cleanCell(P, x0, x1, y0, y1, 1, 10, 150, 4), w = c.width, h = c.height, bw = new Uint8Array(w * h);
   for (let i = 0; i < w * h; i++) bw[i] = c.grey[i] < 128 ? 1 : 0;
@@ -580,15 +584,19 @@ async function readRow(P, pitch, y0, y1, bars){
   const [[ox0, ox1], [px0, px1]] = cellsX(bars, P.W);
   ({P, y0, y1} = isolateRow(P, bars, y0, y1));
   const marks = suffixMarks(P, ox0, ox1, y0, y1);
-  let to = null, tp = null; const raws = [];
+  let to = null, tp = null, loose = null; const raws = [];
   for (const [scale, psm] of CELL_TRIES) {  // "if anything odd is spotted, recheck the OCR again"
     const t = to === null ? await ocrClean(P, ox0, ox1, y0, y1, scale, psm) : '';
     const t2 = tp === null ? await ocrClean(P, px0, px1, y0, y1, scale, psm) : '';
     raws.push([t, t2]);
-    if (to === null) to = parseOrderCell2(t, marks);
+    if (to === null) {                    // a suffix with more characters than the image shows is odd: the other settings are
+      const o = parseOrderCell2(t, marks); // tried for an exact one first (H6AA271-31 and RP26327-41- for -1, 30 Oct 2026)
+      if (o && suffixExact(t, marks)) to = o; else if (o && loose === null) loose = o;
+    }
     if (tp === null) tp = takeProd(t2);
     if (to && tp) break;
   }
+  if (to === null) to = loose;
   const pcells = glyphCells(P, px0, px1, y0, y1, pitch);
   const go = decodeOrder(glyphCells(P, ox0, ox1, y0, y1, pitch)), gp = decodeProduct(pcells);
   const tpr = raws.map(x => takeProdRule(x[1])).find(Boolean) || null;
@@ -690,21 +698,30 @@ async function ocrPage(p, pairs, pairSet, on){
     if (h2) { src = p.canvas = t; P = P2; head = h2; }
   }
   if (!head) return null;                                   // not an extrusion page (CNV, FRM, blank)
-  const lineReads = head.reads, orders = [], unread = [], rows = [];
+  const lineReads = head.reads, orders = [], unread = [], rows = [], nobar = [];
+  const unreadOf = (y0, y1, t) => ({text: t, img: cropPx(src, src.width * 0.05, y0, src.width * 0.30, y1, 1, 14).toDataURL('image/png')});
   for (const [y0, y1] of bandsOf(P)) {
     const bars = barsOf(P, y0, y1);
     if (bars) { rows.push([y0, y1, bars]); continue; }
     if (ctl.signal.aborted) throw {code: 'cancelled'};
     const t = await ocrCell(src, src.width * 0.06, src.width * 0.24, y0, y1, 2, 7);   // no bars: not an order row, unless it carries numbers
     const f = footerRead(t); if (f) { lineReads.push(f); continue; }
-    if (!/LINE|TOTAL|REPORT|SI|SPECIAL/.test(t) && /\d{3}/.test(t))
-      unread.push({text: t, img: cropPx(src, src.width * 0.05, y0, src.width * 0.30, y1, 1, 14).toDataURL('image/png')});
+    if (!/LINE|TOTAL|REPORT|SI|SPECIAL/.test(t) && /\d{3}/.test(t)) nobar.push([y0, y1, t]);
   }
   const pitch = rows.length ? estimatePitch(rows.map(([y0, y1, b]) => cropGrey(P, b[0] + 4, b[2] - 4, Math.max(0, y0 - 6), y1 + 6))) : 15.0;
-  for (const [y0, y1, bars] of rows) {
+  // A row whose bars a pen stroke hid (29 Oct 2026, SE31 RP26413-1 underlined): the columns of the page's other rows, and both
+  // readers as for any row. A second pass: it only adds rows, and a row it cannot read stays a picture for a person.
+  const med = k => { const v = rows.map(r => r[2][k]).sort((a, b) => a - b); return v[v.length >> 1]; };
+  const bare = rows.length >= 2 ? [med(0), med(1), med(2)] : null;
+  for (const [y0, y1, t] of nobar) {
+    if (bare && /(RP|H)[0-9OISBZDQ]/.test(t)) rows.push([y0, y1, bare, t]); else unread.push(unreadOf(y0, y1, t));
+  }
+  rows.sort((p, q) => p[0] - q[0]);
+  for (const [y0, y1, bars, nobarText] of rows) {
     if (ctl.signal.aborted) throw {code: 'cancelled'};
     const r = await readRow(P, pitch, y0, y1, bars), txt = r.raws.map(x => x.join('')).join('');
     if (/LINE|TOTAL|REPORT/.test(txt)) { const f = footerRead(txt); if (f) lineReads.push(f); continue; }
+    if (nobarText != null && !r.to && !r.go) { unread.push(unreadOf(y0, y1, nobarText)); continue; }
     const d = decide(r.to, r.tp, r.go, r.gp, pairSet, on, r.tpr, r.gpf);
     const o = {...d, raw: `${r.to || '?'} | ${r.tp || r.tpr || '?'} (text) · ${r.go || '?'} | ${r.gpf || r.gp || '?'} (glyphs)`};
     if (d.status === 'check') {
@@ -713,7 +730,22 @@ async function ocrPage(p, pairs, pairSet, on){
     }
     orders.push(o);
   }
+  if (!lineOf(lineReads)) { const h = historyLine(orders); if (h) lineReads.push(h); }   // only when the page alone is not sure
   return {page: p.label, line: lineOf(lineReads), lineReads, orders, unread};
+}
+// The lines the page's orders ran on in the schedules on file: one more read of the line, as an accepted order confirms its
+// product in the QC Master's header reader (29 Oct 2026: page 2 read SE12 in its header, the glyph reader too close to call,
+// and three orders on file on SE12). Only orders taken from the schedules on file count, each on one line only.
+let HLINES = null, HLSRC = null;
+function historyLine(orders){
+  if (HLSRC !== D.sched_by_date) {
+    HLSRC = D.sched_by_date; HLINES = new Map();
+    Object.values(D.sched_by_date || {}).forEach(rows => rows.forEach(([l, o, p]) => {
+      const k = o + '|' + p; if (!HLINES.has(k)) HLINES.set(k, new Set()); HLINES.get(k).add(l);
+    }));
+  }
+  const ls = orders.filter(o => o.status === 'read').map(o => HLINES.get(o.order + '|' + o.prod)).filter(s => s && s.size === 1).map(s => [...s][0]);
+  return ls.length >= 2 && ls.every(l => l === ls[0]) ? ['history', ls[0], `${ls.length} orders on file on ${ls[0]}`] : null;
 }
 function boxUncertainLines(reads){        // after settleLines: rows of a page whose line is still not certain are boxed
   reads.forEach(r => {
