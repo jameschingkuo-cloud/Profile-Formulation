@@ -273,7 +273,7 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
   <section id="v-find" class="panel" hidden>
     <div>
       <h2 style="font-size:26px">Look up an order, product or formula</h2>
-      <p class="muted" style="margin:4px 0 0">Every packet on record: where it ran, on which line, with which formula.</p>
+      <p class="muted" style="margin:4px 0 0">Every run on record for the last 12 months: when it ran, on which line, with which formula. Before the first packet the formula is by today’s rules.</p>
     </div>
     <form class="search" id="findform">
       <input id="q" type="search" autocomplete="off" placeholder="e.g. H68A127-1, DPP40WB1700, FUA152WB4" aria-label="Order, product or formula code">
@@ -475,18 +475,30 @@ function renderLine(){
 }
 $('#rail').addEventListener('click', e => { const b = e.target.closest('button[data-line]'); if (!b) return; current = b.dataset.line; localSet('line', current); renderRail(); renderLine(); });
 
-// ---- look up
+// ---- look up: the packets on file (formulation as issued that day) and, before them, the system's own schedules with the
+// formulation today's rules give each order (James Kuo, 30 Oct 2026: "can you add atleast 6 months of formulation record in")
+const RH_FROM = D.rhist.reduce((m, r) => r[3] < m ? r[3] : m, D.dates[0]);
+const fmtY = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric'});
+const rangeTxt = (a, b, n) => a === b ? fmtY(a) : `${a.slice(0, 4) === b.slice(0, 4) ? fmtDate(a) : fmtY(a)} – ${fmtY(b)} (${n} days)`;
 function find(q){
   q = q.trim().toUpperCase(); if (!q) { $('#results').innerHTML = ''; return; }
   const rows = [];
+  const prodOf = {};
+  Object.entries(D.sched_by_date).forEach(([d, rs]) => rs.forEach(([line, order, prod]) => { prodOf[d + '|' + line + '|' + order] = prod; }));
   Object.entries(D.hist).forEach(([order, hs]) => hs.forEach(([d, line, codes]) => {
-    const today = D.lines.find(l => l.code === line)?.groups.flatMap(g => g.orders).find(o => o.order === order);
-    if (order.includes(q) || codes.some(c => c.includes(q)) || (today?.prod || '').includes(q)) rows.push({d, line, order, codes, prod: today?.prod});
+    const prod = prodOf[d + '|' + line + '|' + order] || '';
+    if (order.includes(q) || prod.includes(q) || codes.some(c => c.includes(q))) rows.push({d, when: fmtY(d), line, order, prod, codes, src: 'Issued'});
   }));
+  D.rhist.forEach(([order, line, prod, a, b, n, codes, why]) => {
+    if (order.includes(q) || prod.includes(q) || (codes || []).some(c => c.includes(q)))
+      rows.push({d: b, when: rangeTxt(a, b, n), line, order, prod, codes, why, src: 'Rule'});
+  });
   rows.sort((a, b) => b.d.localeCompare(a.d) || a.line.localeCompare(b.line));
-  $('#results').innerHTML = rows.length ? `<div class="tscroll"><table><thead><tr><th>Packet</th><th>Line</th><th>Order</th><th>Formula(s), primary first</th></tr></thead><tbody>${rows.slice(0, 200).map(r =>
-    `<tr><td>${fmtDate(r.d)}</td><td class="mono">${r.line}</td><td class="mono">${esc(r.order)}</td><td class="mono">${r.codes.map(esc).join(' · ')}</td></tr>`).join('')}</tbody></table></div>
-    <p class="muted" style="font-size:13px">${rows.length} issue${rows.length > 1 ? 's' : ''} found across ${new Set(rows.map(r => r.d)).size} packet(s).</p>` : `<p class="muted">Nothing on record for “${esc(q)}”. Check the code, or it has not run since ${fmtDate(D.dates[0])}.</p>`;
+  const nRule = rows.filter(r => r.src === 'Rule').length;
+  $('#results').innerHTML = rows.length ? `<div class="tscroll"><table><thead><tr><th>Ran</th><th>Line</th><th>Order</th><th>Product</th><th>Formula(s), primary first</th><th>Source</th></tr></thead><tbody>${rows.slice(0, 300).map(r =>
+    `<tr><td style="white-space:nowrap">${r.when}</td><td class="mono">${r.line}</td><td class="mono" style="white-space:nowrap">${esc(r.order)}</td><td class="mono" style="white-space:nowrap">${esc(r.prod)}</td><td class="mono">${r.codes ? r.codes.map(esc).join(' · ') : `<span class="muted">no rule yet: ${esc(r.why)}</span>`}</td><td>${r.src === 'Issued' ? 'Issued that day' : 'Today’s rules'}</td></tr>`).join('')}</tbody></table></div>
+    <p class="muted" style="font-size:13px">${rows.length} run${rows.length > 1 ? 's' : ''} found${rows.length > 300 ? ' (newest 300 shown)' : ''}.${nRule ? ` Runs before ${fmtY(D.dates[0])} have no formulation page on file: their formula is what today’s rules give that order, not what was issued then.` : ''}</p>`
+    : `<p class="muted">Nothing on record for “${esc(q)}”. Check the code, or it has not run since ${fmtY(RH_FROM)}.</p>`;
 }
 $('#findform').addEventListener('submit', e => { e.preventDefault(); find($('#q').value); });
 document.querySelectorAll('.hint button').forEach(b => b.addEventListener('click', () => { $('#q').value = b.dataset.q; find(b.dataset.q); }));

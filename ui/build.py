@@ -297,6 +297,53 @@ def history_pairs(days=730):
     return sorted({f'{r[2]}|{r[3]}' for r in rows if as_d(r[0]) >= last - datetime.timedelta(days=days) and r[2] and r[3]})
 
 
+def draft_codes(day):
+    """{(line, order): [formula codes, Formula Row order]} from the day's issued FRM Draft ({} when there is none)."""
+    src = config.OUTPUT_DIR / f'FRM Draft {day}.xlsx'
+    if not src.exists():
+        return {}
+    rows = list(load_workbook(src, read_only=True)['Draft'].iter_rows(values_only=True))
+    h = {k: i for i, k in enumerate(rows[0])}
+    by = {}
+    for r in rows[1:]:
+        by.setdefault((r[h['Line Code']], r[h['Order']]), {})[r[h['Formula Row']]] = r[h['Formula Code']]
+    return {k: [c for _, c in sorted(v.items())] for k, v in by.items()}
+
+
+def rule_history(pk, day, days=365):
+    """The look-up's record before the first packet (James Kuo, 30 Oct 2026: "can you add atleast 6 months of formulation
+    record in"): the system's own EXT schedules (history/prod_instr.py; the image-day scans where no PDF exists), each order
+    with the formulation today's rules give it (daily/assign.py, the season of its run). No formulation page is on file for
+    these days, so it is never shown as issued. -> [[order, line, prod, first, last, days, [codes] or None, why]]"""
+    import csv
+    import assign
+    first = min(pk)
+    start = (datetime.date.fromisoformat(day) - datetime.timedelta(days=days)).isoformat()
+    rows, pdf_days = [], set()
+    for name in ('ext_history.csv', 'ext_history_scans.csv'):
+        p = config.WORK_DIR / 'history' / name
+        if not p.exists():
+            continue
+        got = [r for r in csv.DictReader(open(p, encoding='utf-8')) if start <= r['date'] < first]
+        rows += [r for r in got if r['date'] not in pdf_days]
+        pdf_days |= {r['date'] for r in got}
+    issued = assign.issued_on_line(pk)
+    assign.set_pages(pk)
+    seen, out = {}, {}
+    for r in sorted(rows, key=lambda r: r['date']):
+        row = {'prod_code': r['prod_code'], 'mat_spec': f"{r['mat']} {r['mat_spec']}", 'colors': r['colour'],
+               'special_instructions': r['special'], 'thk': r['thk']}
+        run = datetime.date.fromisoformat(r['date'])
+        k = (r['line'], r['prod_code'], row['mat_spec'], r['colour'], frozenset(assign.wanted(r['line'], row, run)[0]), assign.season(run))
+        if k not in seen:
+            res, why = assign.formulation(r['line'], row, run, issued)
+            seen[k] = ([m['code'] for m in res['members']], '') if res else (None, why)
+        o = out.setdefault((r['order'], r['line'], r['prod_code']), [r['order'], r['line'], r['prod_code'], r['date'], r['date'], set(), *seen[k]])
+        o[4] = r['date']
+        o[5].add(r['date'])
+    return [o[:5] + [len(o[5])] + o[6:] for o in out.values()]
+
+
 def approved_decisions(sheet):
     """Engineer decisions (APPROVED Product to Formula rows with that line's settings), as daily/resolve.py uses them:
     {'LINE|PRODUCT': [formula, ...]} in run order (Primary first)."""
@@ -344,6 +391,10 @@ def main():
             for g in pg['groups']:
                 for o in g['orders']:
                     hist.setdefault(o, []).append([d, pg['line_code'], [f['formula_code'] for f in g['formulas']]])
+        if not p['frm']:
+            # a day issued by rule from our own FRM Draft (no Tech pages): its orders go in the look-up too
+            for (lc, o), codes in draft_codes(d).items():
+                hist.setdefault(o, []).append([d, lc, codes])
     lines = [] if P['frm'] else draft_lines(day, P, line_layout({d: p for d, p in pk.items() if d <= day}))
     for pg in sorted(P['frm'], key=lambda x: LN[x['line_code']]):
         lc = pg['line_code']
@@ -392,6 +443,7 @@ def main():
             'sched_by_date': {d: [[e['line'], r['order'], r['prod_code']] for e in p['ext'] for r in e['rows']] for d, p in pk.items()},
             'products': product_codes(),
             'hist_pairs': history_pairs(),
+            'rhist': rule_history(pk, day),
             'approved': approved_decisions(sheet),
             'rules_by_date': rules_by_date(pk, day, line_layout({d: p for d, p in pk.items() if d <= day})),
             'rules_any': rules_any(day, line_layout({d: p for d, p in pk.items() if d <= day})),
