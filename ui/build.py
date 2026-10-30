@@ -297,8 +297,8 @@ def history_pairs(days=730):
     return sorted({f'{r[2]}|{r[3]}' for r in rows if as_d(r[0]) >= last - datetime.timedelta(days=days) and r[2] and r[3]})
 
 
-def draft_codes(day):
-    """{(line, order): [formula codes, Formula Row order]} from the day's issued FRM Draft ({} when there is none)."""
+def draft_forms(day):
+    """{(line, order): [[code, settings], ...] in Formula Row order} from the day's issued FRM Draft ({} when none)."""
     src = config.OUTPUT_DIR / f'FRM Draft {day}.xlsx'
     if not src.exists():
         return {}
@@ -306,8 +306,34 @@ def draft_codes(day):
     h = {k: i for i, k in enumerate(rows[0])}
     by = {}
     for r in rows[1:]:
-        by.setdefault((r[h['Line Code']], r[h['Order']]), {})[r[h['Formula Row']]] = r[h['Formula Code']]
-    return {k: [c for _, c in sorted(v.items())] for k, v in by.items()}
+        f = by.setdefault((r[h['Line Code']], r[h['Order']]), {}).setdefault(r[h['Formula Row']], [r[h['Formula Code']], []])
+        mat, st = r[h['Material (as issued)']], r[h['Set']]
+        if mat or st:
+            f[1].append(feeder_txt(r[h['Extruder']], r[h['Feeder']], current(mat or ''), st))
+    return {k: [[c, ' | '.join(fs)] for _, (c, fs) in sorted(v.items())] for k, v in by.items()}
+
+
+def feeder_txt(ext, feeder, mat, st):
+    """'A V1 6502A 45' / 'H3 PP WB Reclaim 31': one feeder of a formulation, as short as the look-up table needs."""
+    if isinstance(st, float):
+        st = f'{st:g}'
+    pos = ' '.join(x for x in (ext or '', re.sub(r'^Hopper\s*', 'H', str(feeder or ''))) if x)
+    return f'{pos} {mat} {st if st not in (None, "") else ""}'.strip()
+
+
+def sched_fields(r, hist=False):
+    """The production schedule's important fields for one order on one day (James Kuo, 30 Oct 2026: "i do want to see
+    all the important things from production schedule"): [spec, colours, thk, gsm, size, die, sheets, plts, lbs, due, si]."""
+    if hist:
+        return [f"{r['mat']} {r['mat_spec']}".strip(), r['colour'], r['thk'], r['gsm'], f"{r['width']} × {r['length']}", r['die'],
+                r['total_sheets'], r['plts'], r['weight_lbs'], r['instr_date'], r['special']]
+    sheets = ' + '.join(c.get('total_sheets') or '' for c in r.get('cut_rows') or [] if c.get('total_sheets'))
+    si = r.get('special_instructions') or ''
+    if r.get('handwritten'):
+        si += (' / ' if si else '') + 'handwritten: ' + r['handwritten']
+    return [r.get('mat_spec') or '', r.get('colors') or '', r.get('thk') or '', r.get('gsm') or '',
+            f"{r.get('order_width', '')} × {r.get('order_length', '')}", r.get('die') or '', sheets, r.get('num_plt') or '',
+            r.get('weight_lbs') or '', r.get('instr_date') or '', si]
 
 
 ORDER_RX = re.compile(r'S?(?:RP|H)[0-9A-Z]{2}[0-9A-Z]\d{2,3}', re.I)
@@ -336,7 +362,7 @@ def calc_history(pk, day, days=365):
     the image-day scans where no PDF exists) with the formulation Tech calculated for it in the line's calc workbook
     (Formulation Calc Library 'Calc History', one block per order: code, run period, feeder settings). An order Tech's
     blocks do not name gets the block Tech last calculated for the product on that line before it ran, marked so; none
-    = no record (SE42 has no workbook). -> [[order, line, prod, first, last, days, how, [[code, calc date, recipe]]]]"""
+    = no record (SE42 has no workbook). -> [(date, line, order, prod, [[code, settings]], schedule fields)], one per day"""
     import csv
     lib = config.OUTPUT_DIR / 'Formulation Calc Library.xlsx'
     if not lib.exists():
@@ -354,9 +380,7 @@ def calc_history(pk, day, days=365):
                          'prods': re.findall(r'[A-Z]{3}[0-9A-Z]{2}[A-Z]{2}\d+', (r[H['Product(s)']] or '').upper()),
                          'run': run.date().isoformat() if hasattr(run, 'date') else '', 'feeders': []}
         if r[H['Setting']] not in (None, ''):
-            blocks[k]['feeders'].append(f"{((r[H['Extruder']] or '') + ' ').lstrip()}{r[H['Feeder']]} {r[H['Material']]} {r[H['Setting']]:g}"
-                                        if isinstance(r[H['Setting']], (int, float)) else
-                                        f"{((r[H['Extruder']] or '') + ' ').lstrip()}{r[H['Feeder']]} {r[H['Material']]} {r[H['Setting']]}")
+            blocks[k]['feeders'].append(feeder_txt(r[H['Extruder']], r[H['Feeder']], r[H['Material']], r[H['Setting']]))
     by_order, by_prod = {}, {}
     for b in blocks.values():
         if not b['code']:
@@ -375,25 +399,54 @@ def calc_history(pk, day, days=365):
         got = [r for r in csv.DictReader(open(p, encoding='utf-8')) if start <= r['date'] < first]
         rows += [r for r in got if r['date'] not in pdf_days]
         pdf_days |= {r['date'] for r in got}
-    out = {}
-    for r in sorted(rows, key=lambda r: r['date']):
-        o = out.setdefault((r['order'], r['line'], r['prod_code']), [r['order'], r['line'], r['prod_code'], r['date'], r['date'], set(),
-                                                                     r['order_base'] or r['order'].split('-')[0]])
-        o[4] = r['date']
-        o[5].add(r['date'])
     res = []
-    for order, line, prod, a, z, ds, base in out.values():
-        bl, how = by_order.get((line, base.upper()), []), 'order'
+    for r in rows:
+        base = (r['order_base'] or r['order'].split('-')[0]).upper()
+        bl = by_order.get((r['line'], base), [])
         if not bl:
             # the product's last calc on this line on or before the run (blocks with no date count as before)
-            prior = sorted((b for b in by_prod.get((line, prod), []) if (b['run'] or '') <= z), key=lambda b: b['run'] or '')
-            bl, how = ([b for b in prior if b['run'] == prior[-1]['run']] if prior else []), 'product'
+            prior = sorted((b for b in by_prod.get((r['line'], r['prod_code']), []) if (b['run'] or '') <= r['date']), key=lambda b: b['run'] or '')
+            bl = [b for b in prior if b['run'] == prior[-1]['run']] if prior else []
         forms = {}
         for b in sorted(bl, key=lambda b: b['run'] or ''):
             rec = ' | '.join(b['feeders'])
-            forms[(b['code'], rec)] = [b['code'], b['run'], rec]     # every distinct setting Tech wrote for the order
-        res.append([order, line, prod, a, z, len(ds), how if forms else '', list(forms.values())])
+            forms[(b['code'], rec)] = [b['code'], rec]     # every distinct setting Tech wrote for the order
+        res.append((r['date'], r['line'], r['order'], r['prod_code'], list(forms.values()), sched_fields(r, hist=True)))
     return res
+
+
+def lookup_runs(pk, day):
+    """The Look up tab: every order run on record for a year, one row per order + line + formulation over its run days,
+    with the schedule's fields as of its last day. Packets: the formulation issued that day (Tech's page, else our FRM
+    Draft); before the first packet: Tech's calc workbook (calc_history). -> {'runs': [[order, line, prod, first, last,
+    days, [[code, settings index]], schedule fields]], 'recipes': [settings text]}"""
+    days = calc_history(pk, day)
+    for d, p in sorted(pk.items()):
+        ext = {(e['line'], r['order']): r for e in p['ext'] for r in e['rows']}
+        forms = {}
+        for pg in p['frm']:
+            for g in pg['groups']:
+                fl = []
+                for f in g['formulas']:
+                    fs = []
+                    for c, v in f['feeders'].items():
+                        if v['material'] or v['set']:
+                            ext_, feed = c.split(' ', 1) if re.match(r'^[A-D] ', c) else ('', c)
+                            fs.append(feeder_txt(ext_, feed, current(v['material']), v['set']))
+                    fl.append([f['formula_code'], ' | '.join(fs)])
+                for o in g['orders']:
+                    forms[(pg['line_code'], o)] = fl
+        if not p['frm']:
+            forms = draft_forms(d)
+        for (lc, o), r in ext.items():
+            days.append((d, lc, o, r.get('prod_code') or '', forms.get((lc, o), []), sched_fields(r)))
+    ri, out = {}, {}
+    for d, lc, o, prod, fl, sf in sorted(days, key=lambda x: x[0]):
+        fl = [[c, ri.setdefault(rec, len(ri))] for c, rec in fl]
+        k = (o, lc, prod, json.dumps(fl))
+        run = out.setdefault(k, [o, lc, prod, d, d, 0, fl, sf])
+        run[4], run[5], run[7] = d, run[5] + 1, sf
+    return {'runs': list(out.values()), 'recipes': list(ri)}
 
 
 def approved_decisions(sheet):
@@ -437,16 +490,6 @@ def main():
 
     mats = {m['Material ID']: {'code': m['Material Code'], 'name': m['Name'], 'st': m['IWPFT062 Status'], 'role': m['Role']}
             for m in sheet('Materials')}
-    hist = {}
-    for d, p in pk.items():
-        for pg in p['frm']:
-            for g in pg['groups']:
-                for o in g['orders']:
-                    hist.setdefault(o, []).append([d, pg['line_code'], [f['formula_code'] for f in g['formulas']]])
-        if not p['frm']:
-            # a day issued by rule from our own FRM Draft (no Tech pages): its orders go in the look-up too
-            for (lc, o), codes in draft_codes(d).items():
-                hist.setdefault(o, []).append([d, lc, codes])
     lines = [] if P['frm'] else draft_lines(day, P, line_layout({d: p for d, p in pk.items() if d <= day}))
     for pg in sorted(P['frm'], key=lambda x: LN[x['line_code']]):
         lc = pg['line_code']
@@ -472,7 +515,7 @@ def main():
     stats['source'] = 'tech' if P['frm'] else 'draft'     # 'draft': no Tech FRM pages yet, formulation as last issued
     data = {'day': day, 'dates': sorted(pk),
             'scans': {'packet': P['source_scan'], 'frm': (P.get('frm_source_scan') or P['source_scan']) if P['frm'] else ''},
-            'lines': lines, 'materials': mats, 'hist': hist, 'stats': stats,
+            'lines': lines, 'materials': mats, 'look': lookup_runs(pk, day), 'stats': stats,
             'issues': [{'sev': i['Severity'], 'line': i['Line'], 'check': i['Check'], 'detail': i['Detail']} for i in sheet('Issues')],
             'master': {'formulas': len(sheet('Formulas')), 'settings': len(sheet('Line Settings')), 'materials': len(mats),
                        'accepted': accepted.group(1)[:16].replace('T', ' ') if accepted else '', 'changes': 0},
@@ -495,7 +538,6 @@ def main():
             'sched_by_date': {d: [[e['line'], r['order'], r['prod_code']] for e in p['ext'] for r in e['rows']] for d, p in pk.items()},
             'products': product_codes(),
             'hist_pairs': history_pairs(),
-            'rhist': calc_history(pk, day),
             'approved': approved_decisions(sheet),
             'rules_by_date': rules_by_date(pk, day, line_layout({d: p for d, p in pk.items() if d <= day})),
             'rules_any': rules_any(day, line_layout({d: p for d, p in pk.items() if d <= day})),

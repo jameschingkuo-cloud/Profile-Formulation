@@ -101,6 +101,7 @@ table{border-collapse:collapse;width:100%;font-size:13.5px}
 th{font:600 12px var(--f-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
 td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
 .tscroll{overflow-x:auto}
+#results{min-width:0}          /* the look-up table scrolls inside the panel, not the page */
 .issue{display:grid;grid-template-columns:78px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .issue:last-child{border-bottom:0}
 .issue h3{font-size:17px}
@@ -273,7 +274,7 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
   <section id="v-find" class="panel" hidden>
     <div>
       <h2 style="font-size:26px">Look up an order, product or formula</h2>
-      <p class="muted" style="margin:4px 0 0">One year of record (<span id="rhspan"></span>): every run, when it ran, on which line, with which formula. Before the first packet the formula is from Tech’s calc workbooks.</p>
+      <p class="muted" style="margin:4px 0 0">One year of record (<span id="rhspan"></span>): every run, when it ran, on which line, with which formula.</p>
     </div>
     <form class="search" id="findform">
       <input id="q" type="search" autocomplete="off" placeholder="e.g. H68A127-1, DPP40WB1700, FUA152WB4" aria-label="Order, product or formula code">
@@ -475,33 +476,24 @@ function renderLine(){
 }
 $('#rail').addEventListener('click', e => { const b = e.target.closest('button[data-line]'); if (!b) return; current = b.dataset.line; localSet('line', current); renderRail(); renderLine(); });
 
-// ---- look up: the packets on file (formulation as issued that day) and, before them, the system's own schedules with the
-// formulation Tech calculated for each order in the line's calc workbook (James Kuo, 30 Oct 2026: "can you add atleast 6
-// months of formulation record in", "i am looking for historic record")
-const RH_FROM = D.rhist.reduce((m, r) => r[3] < m ? r[3] : m, D.dates[0]);
+// ---- look up: a year of order runs (James Kuo, 30 Oct 2026: "can you add atleast 6 months of formulation record in",
+// "i am looking for historic record", "make it 1 years of record", "i dont think we need source. But i do want to see all
+// the important things from production schedule"): each run with its schedule fields and its formulation (as issued from
+// the packets; before them, Tech's calc workbook for the line), built in ui/build.py lookup_runs
+const RUNS = D.look.runs, RECIPES = D.look.recipes;
+const RH_FROM = RUNS.reduce((m, r) => r[3] < m ? r[3] : m, D.day);
 const YEAR_FROM = new Date(new Date(D.day + 'T12:00:00').getTime() - 365 * 864e5).toISOString().slice(0, 10);
-const fmtM = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', {month:'short', year:'numeric'});     // calc dates are by month
 const fmtY = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric'});
 const rangeTxt = (a, b, n) => a === b ? fmtY(a) : `${a.slice(0, 4) === b.slice(0, 4) ? fmtDate(a) : fmtY(a)} – ${fmtY(b)} (${n} days)`;
 $('#rhspan').textContent = `${fmtY(YEAR_FROM)} to ${fmtY(D.day)}`;
 function find(q){
   q = q.trim().toUpperCase(); if (!q) { $('#results').innerHTML = ''; return; }
-  const rows = [];
-  const prodOf = {};
-  Object.entries(D.sched_by_date).forEach(([d, rs]) => rs.forEach(([line, order, prod]) => { prodOf[d + '|' + line + '|' + order] = prod; }));
-  Object.entries(D.hist).forEach(([order, hs]) => hs.forEach(([d, line, codes]) => {
-    const prod = prodOf[d + '|' + line + '|' + order] || '';
-    if (order.includes(q) || prod.includes(q) || codes.some(c => c.includes(q))) rows.push({d, when: fmtY(d), line, order, prod, codes, src: 'Issued'});
-  }));
-  D.rhist.forEach(([order, line, prod, a, b, n, how, forms]) => {
-    if (order.includes(q) || prod.includes(q) || forms.some(f => f[0].toUpperCase().includes(q)))
-      rows.push({d: b, when: rangeTxt(a, b, n), line, order, prod, forms, how, src: 'Calc'});
-  });
-  rows.sort((a, b) => b.d.localeCompare(a.d) || a.line.localeCompare(b.line));
-  const nCalc = rows.filter(r => r.src === 'Calc').length;
-  $('#results').innerHTML = rows.length ? `<div class="tscroll"><table><thead><tr><th>Ran</th><th>Line</th><th>Order</th><th>Product</th><th>Formula(s), primary first</th><th>Source</th></tr></thead><tbody>${rows.slice(0, 300).map(r =>
-    `<tr><td style="white-space:nowrap">${r.when}</td><td class="mono">${r.line}</td><td class="mono" style="white-space:nowrap">${esc(r.order)}</td><td class="mono" style="white-space:nowrap">${esc(r.prod)}</td><td class="mono">${r.src === 'Issued' ? r.codes.map(esc).join(' · ') : r.forms.length ? r.forms.map(([c, run, rec]) => `<div>${esc(c)}${rec ? `<div class="muted" style="font-size:12px;white-space:normal">${esc(rec)}</div>` : ''}</div>`).join('') : '<span class="muted">no calc record on file</span>'}</td><td>${r.src === 'Issued' ? 'Issued that day' : r.how === 'order' ? `Tech’s calc sheet for this order${r.forms[0]?.[1] ? ', ' + fmtM(r.forms[r.forms.length - 1][1]) : ''}` : r.how === 'product' ? `Tech’s last calc for this product on ${r.line}${r.forms[0]?.[1] ? ', ' + fmtM(r.forms[r.forms.length - 1][1]) : ''}` : '—'}</td></tr>`).join('')}</tbody></table></div>
-    <p class="muted" style="font-size:13px">${rows.length} run${rows.length > 1 ? 's' : ''} found${rows.length > 300 ? ' (newest 300 shown)' : ''}.${nCalc ? ` Before ${fmtY(D.dates[0])} the formulation is Tech’s calc workbook for the line (code and settings as calculated; SE42 has no workbook).` : ''}</p>`
+  const rows = RUNS.filter(([order, line, prod, a, b, n, forms]) => order.includes(q) || prod.includes(q) || forms.some(f => String(f[0]).toUpperCase().includes(q)))
+    .sort((x, y) => y[4].localeCompare(x[4]) || x[1].localeCompare(y[1]));
+  const nw = 'style="white-space:nowrap"';
+  $('#results').innerHTML = rows.length ? `<div class="tscroll"><table style="font-size:13px"><thead><tr><th>Ran</th><th>Line</th><th>Order</th><th>Product</th><th>Formulation, primary first</th><th>Spec</th><th>Colours</th><th>Thk</th><th>GSM</th><th>Size (in)</th><th>Die</th><th>Sheets</th><th>Plts</th><th>LBs</th><th>Due</th><th>Special instructions</th></tr></thead><tbody>${rows.slice(0, 300).map(([order, line, prod, a, b, n, forms, [spec, col, thk, gsm, size, die, sheets, plts, lbs, due, si]]) =>
+    `<tr><td ${nw}>${rangeTxt(a, b, n)}</td><td class="mono">${line}</td><td class="mono" ${nw}>${esc(order)}</td><td class="mono" ${nw}>${esc(prod)}</td><td class="mono" style="min-width:260px">${forms.length ? forms.map(([c, ri]) => `<div>${esc(c)}${RECIPES[ri] ? `<div class="muted" style="font-size:12px">${esc(RECIPES[ri])}</div>` : ''}</div>`).join('') : '<span class="muted">no formulation on file</span>'}</td><td class="mono" ${nw}>${esc(spec)}</td><td class="mono" ${nw}>${esc(col)}</td><td>${esc(thk)}</td><td>${esc(gsm)}</td><td ${nw}>${esc(size)}</td><td class="mono">${esc(die)}</td><td ${nw}>${esc(sheets)}</td><td>${esc(plts)}</td><td>${esc(lbs)}</td><td ${nw}>${esc(due)}</td><td style="min-width:240px">${esc(si)}</td></tr>`).join('')}</tbody></table></div>
+    <p class="muted" style="font-size:13px">${rows.length} run${rows.length > 1 ? 's' : ''} found${rows.length > 300 ? ' (newest 300 shown)' : ''}.</p>`
     : `<p class="muted">Nothing on record for “${esc(q)}”. Check the code, or it has not run since ${fmtY(YEAR_FROM)} (the first schedule on file in that year is ${fmtY(RH_FROM)}).</p>`;
 }
 $('#findform').addEventListener('submit', e => { e.preventDefault(); find($('#q').value); });

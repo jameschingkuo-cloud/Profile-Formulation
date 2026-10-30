@@ -621,6 +621,15 @@
    "change": "James: \"dont worry about that. i am looking for historic record\". Runs before 23 Sep 2026 now show the formulation Tech calculated for the order in the line's calc workbook (Formulation Calc Library, Calc History: code and every feeder setting written, calc month), not what today's rules would give. Tech's order lists are read as written (\"H66A138, 139 ... & 148\", \"H66A113-1 & 2\"). Of 1,560 past order runs: 1,305 named in Tech's calc sheet, 106 by the product's last calc on that line before the run (marked so), 149 with no calc record (98 on SE61, 14 on SE42, which has no workbook). E.g. RPP80KS239 on SE11, H66A138-148: FU0050KS5, H1 KS 15/50, H3 reclaim 99, H4 0/25 (calc Jun 2026)",
    "order": "RPP80KS239 (James's example)",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 70,
+   "date": "2026-10-30",
+   "type": "Page design",
+   "item": "Look up: one year, schedule fields and settings on every run, no Source column",
+   "change": "James: \"make it 1 years of record\", \"i dont think we need source. But i do want to see all the important things from production schedule\". The Look up tab shows one year (date span in the subtitle; the first schedule on file in it is 3 Nov 2025). Each row is one order run on a line with one formulation (its run days merged): ran, line, order, product, formulation (each code with its feeder settings: Tech's page or our issued FRM Draft from the packets, Tech's calc workbook before them), spec, colours, thk, GSM, size, die, sheets, pallets, LBs, due date and special instructions as of its last day. The Source column is gone. The table scrolls inside the panel. 2,014 runs (ui/build.py lookup_runs)",
+   "order": "RPP80KS239, RPP40FW2",
+   "editor": "James Kuo"
   }
  ]
 }
