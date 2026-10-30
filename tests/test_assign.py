@@ -759,3 +759,17 @@ def test_orbis_gray_typo_prints_d26074a():
     from db.seed_master import MAP
     assert render_frm.PRINT_AS['OG-D26047A'] == 'OG-D26074A'
     assert MAP['OG-D26047A'] == MAP['OG-D26074A'] == '50-7002-372'
+
+
+def test_flame_retardant_white_by_standard():
+    """James Kuo, 30 Oct 2026: "We need to keep both. and make them special formulation. FR0021WB4 (now FRA021WB4) is for
+    UL94V2 standard (F1) and FR0022WB4 (create as FRA022WB4) is for NFPA701 standard (F4)", "also put the standard in the
+    note of the formulation". FW orders (the code says WB); 3 mm FW keeps FRA021FW3."""
+    import datetime
+    day = datetime.date(2026, 10, 29)
+    for spec, prod, code in (('PPP P F1F1F1', 'RPP40FW1', 'FRA021WB4'), ('PPP P F4F4F4', 'RPP40FW2', 'FRA022WB4'),
+                             ('PPP P F4PIF4', 'RPP40FW5', 'FRA022WB4'), ('PPP P F1F1F1', 'RPP30FW9', 'FRA021FW3')):
+        row = {'prod_code': prod, 'mat_spec': spec, 'colors': 'FW FW FW', 'special_instructions': ''}
+        want, seas = assign.wanted('SE21', row, day)
+        assert assign.choose(assign.derive('SE21', row)[0], want, seas, 'SE21')[0]['code'] == code
+    assert assign.QUAL_NOTE['ul94'] == 'UL94-V2 standard' and assign.QUAL_NOTE['nfpa701'] == 'NFPA701 standard'

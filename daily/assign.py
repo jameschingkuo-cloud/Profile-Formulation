@@ -50,6 +50,13 @@ LATER_NOTES = [
      'Main Cornbox, change name to FU0023WB4 (James, 27 Oct 2026: corn box Primary apart from FU0021WB4)'),
     ('FU0041WB4', 'Secondary Corn box',
      'Secondary Corn box, change name to FU0022WB4 (James, 27 Oct 2026: "use FU0022WB4 as corn box secondary everywhere")'),
+    # flame retardant white 4 mm (FW orders; the code says WB): two special formulations, chosen by the order's spec.
+    # James, 30 Oct 2026: "We need to keep both. and make them special formulation. FR0021WB4 (now FRA021WB4) is for UL94V2
+    # standard (F1) and FR0022WB4 (create as FRA022WB4) is for NFPA701 standard (F4)"
+    ('FR0021WB4', 'Main Flam retandant, change name to FRA021WB4',
+     'Main Flame retardant UL94-V2 standard (F1), change name to FRA021WB4 (James, 30 Oct 2026)'),
+    ('FR0022WB4', 'replace by Main Flam retandant, change name to FRA021WB4',
+     'Main Flame retardant NFPA701 standard (F4), change name to FRA022WB4 (James, 30 Oct 2026)'),
 ]
 
 # W% rows James added after 23 Oct (the W% Master gets them at the clean-up). Lines 12/13 (SE42, SE43): the old engineer's
@@ -113,9 +120,9 @@ def apply_later_notes(R):
     return R
 
 PREFIX = {'R1R1R1': 'FU', 'R3R3R3': 'FU', 'R2R2R2': 'FU', 'R4R4R4': 'RU', 'OPOPOP': 'FX', 'S1S1S1': 'FS',
-          'A1A1A1': 'FA', 'U1U1U1': 'FE', 'F1F1F1': 'FR', 'F4F4F4': 'FR', 'R6R6R6': 'BF', 'RDRDRD': 'BF', 'RMR6R6': 'BF'}
+          'A1A1A1': 'FA', 'U1U1U1': 'FE', 'F1F1F1': 'FR', 'F4F4F4': 'FR', 'F4PIF4': 'FR', 'R6R6R6': 'BF', 'RDRDRD': 'BF', 'RMR6R6': 'BF'}
 OLD_PREFIX = {'FE': ('FH',)}            # James, 23 Oct 2026: "Extra UV is FE"; Tech's older pages print FH for it
-SPECIAL = {'OPOPOP', 'S1S1S1', 'A1A1A1', 'U1U1U1', 'F1F1F1', 'F4F4F4'}      # always graphic grade 'A'
+SPECIAL = {'OPOPOP', 'S1S1S1', 'A1A1A1', 'U1U1U1', 'F1F1F1', 'F4F4F4', 'F4PIF4'}      # always graphic grade 'A'
 BLACK_WHITE = {'KS', 'WB'}
 ALWAYS_A = {PREFIX[s] for s in SPECIAL}                 # FX FS FA FE FR: R1, always graphic grade 'A'
 CODE_RX = re.compile(r'\b([A-Z]{2}[A-Z0-9]{3,5}[A-Z]{2,3}[0-9A-Z])\b')
@@ -128,7 +135,11 @@ W_COLS = ['Virgin PP %', 'Homo PP (F1203K) %', 'Reclaim %', 'Talc %', 'CaCO3 %',
 CORN_BOX = frozenset({'DPP40WB1235'})
 CORN_PRODUCTS = set(CORN_BOX)
 QUALIFIERS = {'void': ('void',), 'corn': ('corn',), 'sign': ('sign blank', 'spa'), 'summer': ('summer',),
-              'winter': ('winter',), 'se43': ('se43',), '6.3': ('6.3',), '4.6': ('4.6',), 'roll': ('roll',), 'ltl': ('ltl',)}
+              'winter': ('winter',), 'se43': ('se43',), '6.3': ('6.3',), '4.6': ('4.6',), 'roll': ('roll',), 'ltl': ('ltl',),
+              'ul94': ('ul94',), 'nfpa701': ('nfpa701',)}
+# the fire standard a flame retardant spec is made to (James, 30 Oct 2026): F1 = UL94-V2, F4 = NFPA701 (F4PIF4: printed
+# one side "NFPA701", RPP40FW5)
+FR_STANDARD = {'F1F1F1': 'ul94', 'F4F4F4': 'nfpa701', 'F4PIF4': 'nfpa701'}
 # words that mark a Main for a customer or a product kind the schedule does not name: never proposed by rule
 RESTRICTED = ('orbis', 'carter', 'tzu', 'vistech', 'nissan', 'batten', 'cabbage', 'hdpe', 'pe f', 'pe part',
               'bb line', 'customer', 'triple wall')
@@ -342,6 +353,9 @@ def wanted(line, row, day):
         q.add('roll')
     if 'LTL' in si or 'WRAP' in si:
         q.add('ltl')
+    std = FR_STANDARD.get((row.get('mat_spec') or '').split()[-1:][0] if (row.get('mat_spec') or '').split() else '')
+    if std:
+        q.add(std)
     mm = pc.thickness_mm(row.get('prod_code') or '')
     if mm is not None and abs(mm - 6.3) < 1e-6:
         q.add('6.3')
@@ -720,6 +734,10 @@ def calc_auger_settings(line, m, own=None):
 def choose(key, want, seas, line):
     """The Main for a key and what the order asks for. -> (main, why) with main None when none or several fit."""
     cands = [m for m in rules()['by_key'].get(key, []) if m['level'] == 'main' and not m['restricted']]
+    if not cands and key[0] == 'FR' and key[2] == 'FW':
+        # flame retardant white: James's FR Mains are named WB (FRA021WB4 UL94-V2, FRA022WB4 NFPA701) where no FW Main
+        # is kept for the thickness (3 mm keeps FRA021FW3)
+        cands = [m for m in rules()['by_key'].get(key[:2] + ('WB',) + key[3:], []) if m['level'] == 'main' and not m['restricted']]
     if 'void' in want:
         # R10 (James, 23 Oct 2026): "void form should not use any reclaim" - "The reclaim calcium is not stable ... It
         # makes it very difficult to control the weight when we're running with reclaim". Never a reclaim formulation.
@@ -789,6 +807,8 @@ CALC_LIB = config.OUTPUT_DIR / 'Formulation Calc Library.xlsx'      # calc/parse
 _CALC = None
 _CALC_RAW = {}         # (line, code) -> the calc sheet's rows as written (feeder, material class, slope, setting, g/min)
 _PAGES = {}
+_OLD_PAGES = defaultdict(list)   # line -> every FRM page on file, newest first: the wording of a material the latest page
+                                 # does not print (SE21's FR premix and FR-GPP30003MP last printed 23 Oct)
 
 
 def set_pages(packets):
@@ -796,9 +816,11 @@ def set_pages(packets):
     corn box products: any product whose order says CORN on a schedule on file."""
     global _PAGES
     _PAGES = {}
+    _OLD_PAGES.clear()
     for d in sorted(packets):
         for pg in packets[d]['frm']:
             _PAGES[pg['line_code']] = pg
+            _OLD_PAGES[pg['line_code']].insert(0, pg)
     CORN_PRODUCTS.clear()
     CORN_PRODUCTS.update(CORN_BOX)
     CORN_PRODUCTS.update(r['prod_code'] for p in packets.values() for pg in p['ext'] for r in pg['rows']
@@ -850,8 +872,10 @@ def calc_recipes():
         # the page's wording for the SAME material (by material key) on that hopper - never another material of the
         # same role: a black order's "KS MB-CR401K" must not come out as the page's "WB-W26038A"
         wording = {}
-        if pg:
-            for g in pg['groups']:
+        for page in reversed(_OLD_PAGES.get(line) or ([pg] if pg else [])):       # oldest first: the newest wording wins
+            if pg and page['feeder_columns'] != pg['feeder_columns']:
+                continue
+            for g in page['groups']:
                 for f in g['formulas']:
                     for col, v in f['feeders'].items():
                         if v.get('material'):
@@ -877,6 +901,19 @@ def calc_recipes():
 
 _ISSUED_GROUPS = defaultdict(list)     # (line, printed code) -> every issued group with it, newest first
 _CORN_GROUPS = set()                   # id() of the issued groups' formula lists that were for a corn box order
+
+
+def line_note(line, prefix):
+    """The processing note Tech prints with a formula family on the line (newest issue first): FR on SE21 "Set Die head
+    temps 190°C, Spinneret 195°C Seal the plastic bag of GPP3003MP well to prevent moisture". Kept on a row whose settings
+    come from the calc sheet, which has no notes (James, 30 Oct 2026: FRA022WB4 for RP26826-6, a revision for the operator)."""
+    groups = sorted((g for (ln, code), gs in _ISSUED_GROUPS.items() if ln == line and code[:2] == prefix for g in gs),
+                    key=lambda g: g[0], reverse=True)
+    for g in groups:
+        for f in g[2]:
+            if f['formula_code'][:2] == prefix and (f.get('note') or '').strip():
+                return f['note'].strip()
+    return ''
 
 
 def issued_on_line(packets):
@@ -981,7 +1018,7 @@ def propose(line, row, day, issued):
 # the note a qualified order's rows carry when Tech's own row does not say it (James, 26 Oct 2026, on FU0051WB5 for the
 # VOIDFORM orders H68A090-1 / H64A244-1: "shouldnt it said something like for void form order only in the notes?")
 QUAL_NOTE = {'void': 'For VOIDFORM order only', 'corn': '(CORN BOX FORMULA)', 'sign': '(For sign blank orders only)',
-             'roll': '(For roll material only)'}
+             'roll': '(For roll material only)', 'ul94': 'UL94-V2 standard', 'nfpa701': 'NFPA701 standard'}
 QMARK = ('roll', 'void', 'corn', 'sign', 'ltl')     # qualifiers Tech writes on a page row ("(For roll material only)")
 SEPARATE_QUALS = frozenset({'corn'})                 # formulations that take settings only from their own groups
 SPECIAL_ONLY = {'void'}                               # VOIDFORM: its special formula, one Main, no Secondary

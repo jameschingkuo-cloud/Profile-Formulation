@@ -31,6 +31,8 @@ def mat_key(m):
     if '1102' in u: return '1102K'
     if 'W26038' in u: return 'WB COLOR'
     if re.search(r'\bKS\b|KS-|KS MB|PE-500|90000F|B60009|D250|LD.?250|CR40[01]K', u): return 'KS COLOR'
+    if 'GPP3' in u: return 'FR GPP3003'                   # flame retardant (FR-GPP3003 MP; Tech's pages print FR-GPP30003MP)
+    if re.search(r'PRE.?MIX', u) and re.search(r'\bIS\b', u): return 'IS PREMIX'   # WB/IS Pre-mix = WB and IS premixed (WB:IS=9:1)
     if re.search(r'6502|6520|PC ?416|PC ?716|PC ?530|PC ?5050|PC ?357|BRASKEM|TOTAL ?4252|VIRGIN|DOW-C104|C104', u): return 'VIRGIN PP'
     return str(m).strip()
 

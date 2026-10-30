@@ -567,6 +567,33 @@
    "change": "The tile 'reading vs the transcribed packet' compared a 2-page revised SE23 scan with the whole day (9/90, 80 orders listed as missed). It now compares only the lines the scan holds and names them: (SE23) 9/9, read differently SE23 H6AA271-1 (the new order)",
    "order": "SE23 H6AA271-1",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 64,
+   "date": "2026-10-30",
+   "type": "Logic",
+   "item": "Flame retardant white 4 mm: two special formulations by fire standard",
+   "change": "James: \"We need to keep both. and make them special formulation. FR0021WB4 (now FRA021WB4) is for UL94V2 standard (F1) and FR0022WB4 (create as FRA022WB4) is for NFPA701 standard (F4)\". An FW order's spec decides: F1F1F1 -> FRA021WB4 (Tech's SE21 calc sheet 20/16/25/17/89, W% 42.8/20.1/23.2/2.7/11.3), F4F4F4 and F4PIF4 -> FRA022WB4 (SE21 calc sheet 8 Jul 2026, 32/12/22/20/92, W% 57.8/14.9/14.7/2.7/9.9). Tech's 22-23 Oct page had given the F4 order the UL94 settings under FR0021FW4 (printed FRA021FW4). 3 mm FW keeps FRA021FW3. Tech's FR processing note (die head 190 C, spinneret 195 C, keep the GPP3003MP bag sealed) stays on a row whose settings come from the calc sheet",
+   "order": "SE21 RP26826-6 (RPP40FW2)",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 65,
+   "date": "2026-10-30",
+   "type": "W%",
+   "item": "FRA021WB4 UL94-V2 and FRA022WB4 NFPA701 are both Mains",
+   "change": "W% Master notes (applied on read, assign.LATER_NOTES): FR0021WB4 \"Main Flame retardant UL94-V2 standard (F1)\" -> FRA021WB4; FR0022WB4 was \"replace by Main ... FRA021WB4\", now \"Main Flame retardant NFPA701 standard (F4)\" -> FRA022WB4. Products: UL94-V2 RPP40FW1, RPP40FW3; NFPA701 RPP40FW2, RPP40FW4, RPP40FW5",
+   "order": "",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 66,
+   "date": "2026-10-30",
+   "type": "Print",
+   "item": "The fire standard prints in the formulation's note",
+   "change": "James: \"also put the standard in the note of the formulation\" - \"so it will be on both the excel sheet and the formulation word file\". FRA021WB4 rows say UL94-V2 standard, FRA022WB4 rows NFPA701 standard, in the FRM Draft and both Word copies. 29 Oct revision re-made: only SE21 RP26826-6 changed (FRA021FW4 20/16/25/17/90 -> FRA022WB4 32/12/22/20/92)",
+   "order": "SE21 RP26826-6",
+   "editor": "James Kuo"
   }
  ]
 }

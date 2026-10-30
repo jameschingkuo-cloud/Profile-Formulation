@@ -385,6 +385,8 @@ def rule_rows(line, order, product, fm):
         # out" note does not apply to it, and it is the VOIDFORM formula (James Kuo, 29 Oct 2026, SE22 H6AA171-1)
         void_sec = 'void' in fm.get('want', ()) and (x['member'] or {}).get('level') == 'secondary' and x['role'] == 'Primary'
         tech_note = f.get('note') or ''
+        if not tech_note and x['code'][:2] == 'FR':
+            tech_note = assign.line_note(line, 'FR')     # Tech's FR processing note (die temps, keep the FR bag sealed)
         if void_sec and RECLAIM_OUT.search(tech_note):
             tech_note = ''
         note += f" · {tech_note}" if tech_note else ""
