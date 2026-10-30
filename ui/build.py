@@ -356,6 +356,23 @@ def calc_orders(text):
     return list(dict.fromkeys(out))
 
 
+def calc_prods(text):
+    """Product codes in a calc block as Tech writes them: 'RBP50EB63, 70 & 10' (a bare number is another product of the
+    same family: RBP50EB70, RBP50EB10)."""
+    out, prev = [], None
+    for tok in re.split(r'[,&;/]|\band\b', (text or '').upper()):
+        tok = tok.strip()
+        m = re.match(r'[A-Z]{3}[0-9A-Z]{2}[A-Z]{2}\d+', tok)
+        if m:
+            prev = m.group(0)
+        elif prev and re.fullmatch(r'\d{1,4}', tok):
+            prev = re.sub(r'\d+$', tok, prev)
+        else:
+            continue
+        out.append(prev)
+    return list(dict.fromkeys(out))
+
+
 def calc_history(pk, day, days=365):
     """The look-up's record before the first packet (James Kuo, 30 Oct 2026: "can you add atleast 6 months of formulation
     record in", "i am looking for historic record"): each order on the system's own EXT schedules (history/prod_instr.py;
@@ -376,14 +393,26 @@ def calc_history(pk, day, days=365):
         k = (r[H['Workbook']], r[H['Sheet']], r[H['Row']])
         if k not in blocks:
             run = r[H['Run Date (est.)']]
-            blocks[k] = {'line': r[H['Line']], 'code': (r[H['Formula Code']] or '').strip(), 'orders': calc_orders(r[H['Orders']]),
-                         'prods': re.findall(r'[A-Z]{3}[0-9A-Z]{2}[A-Z]{2}\d+', (r[H['Product(s)']] or '').upper()),
+            # a block with no formula code typed (most of SE61's, James Kuo, 30 Oct 2026: "add the SE61 calc history too")
+            # is named by its sheet ('5 mm EB-Diamond'), never by a guessed code
+            blocks[k] = {'line': r[H['Line']], 'code': (r[H['Formula Code']] or '').strip()
+                         or 'no code: ' + re.sub(r'\s*\(\d+\)\s*$', '', str(r[H['Sheet']] or '')).strip(),
+                         'orders': calc_orders(r[H['Orders']]), 'prods': calc_prods(r[H['Product(s)']]),
                          'run': run.date().isoformat() if hasattr(run, 'date') else '', 'feeders': []}
-        if r[H['Setting']] not in (None, ''):
-            blocks[k]['feeders'].append(feeder_txt(r[H['Extruder']], r[H['Feeder']], r[H['Material']], r[H['Setting']]))
+        # auger lines: the setting; weight lines (SE24, SE42/43, SE61) carry the formulation % instead, and SE61 each
+        # extruder's share of the sheet
+        st, pct = r[H['Setting']], r[H['Formulation %']]
+        ext_ = r[H['Extruder']] if r[H['Extruder']] and not str(r[H['Feeder']] or '').startswith(r[H['Extruder']]) else None
+        if st not in (None, ''):
+            blocks[k]['feeders'].append(feeder_txt(ext_, r[H['Feeder']], r[H['Material']], st))
+        elif pct not in (None, ''):
+            blocks[k]['feeders'].append(feeder_txt(ext_, r[H['Feeder']], r[H['Material']], f'{pct:g}%' if isinstance(pct, (int, float)) else pct))
+        share = r[H['Extruder Share']]
+        if r[H['Extruder']] and isinstance(share, (int, float)):
+            blocks[k].setdefault('shares', {})[r[H['Extruder']]] = f"{r[H['Extruder']]} {share * 100:g}%"
     by_order, by_prod = {}, {}
     for b in blocks.values():
-        if not b['code']:
+        if not b['feeders']:
             continue
         for o in b['orders']:
             by_order.setdefault((b['line'], o), []).append(b)
@@ -409,7 +438,7 @@ def calc_history(pk, day, days=365):
             bl = [b for b in prior if b['run'] == prior[-1]['run']] if prior else []
         forms = {}
         for b in sorted(bl, key=lambda b: b['run'] or ''):
-            rec = ' | '.join(b['feeders'])
+            rec = ' | '.join(b['feeders']) + (f" (extruder share {', '.join(b['shares'].values())})" if b.get('shares') else '')
             forms[(b['code'], rec)] = [b['code'], rec]     # every distinct setting Tech wrote for the order
         res.append((r['date'], r['line'], r['order'], r['prod_code'], list(forms.values()), sched_fields(r, hist=True)))
     return res

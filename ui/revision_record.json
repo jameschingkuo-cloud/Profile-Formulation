@@ -630,6 +630,15 @@
    "change": "James: \"make it 1 years of record\", \"i dont think we need source. But i do want to see all the important things from production schedule\". The Look up tab shows one year (date span in the subtitle; the first schedule on file in it is 3 Nov 2025). Each row is one order run on a line with one formulation (its run days merged): ran, line, order, product, formulation (each code with its feeder settings: Tech's page or our issued FRM Draft from the packets, Tech's calc workbook before them), spec, colours, thk, GSM, size, die, sheets, pallets, LBs, due date and special instructions as of its last day. The Source column is gone. The table scrolls inside the panel. 2,014 runs (ui/build.py lookup_runs)",
    "order": "RPP80KS239, RPP40FW2",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 71,
+   "date": "2026-10-30",
+   "type": "Page design",
+   "item": "Look up: SE61 and the weight lines' calc history",
+   "change": "James: \"add the SE61 calc history too\". SE61 calc blocks were left out: most have no formula code typed, and like SE24 / SE42 / SE43 they carry the formulation % per feeder (and each extruder's share of the sheet) instead of a setting. Now a block with no code shows as \"no code: <its sheet>\" (e.g. \"no code: 10 mm EB-Diamond\", never a guessed code), weight lines show each feeder's % and the extruder shares, and Tech's product shorthand (\"RBP50EB63, 70 & 10\") is read for the product match. Before 23 Sep 2026: SE61 182 of 190 runs with Tech's calc (was 0 with settings); all lines 1,506 of 1,561 (55 without: SE42 14, it has no workbook)",
+   "order": "SE61 H68A118-1 RBP50EB70 (BF0000EB6)",
+   "editor": "James Kuo"
   }
  ]
 }
