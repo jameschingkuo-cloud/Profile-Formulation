@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / 'daily'))
 import config  # noqa: E402
 from db import preflight, schema  # noqa: E402
+from calc.common import clean_virgin  # noqa: E402
 from db.import_frm import replaced  # noqa: E402
 from openpyxl import load_workbook  # noqa: E402
 from resolve import split_feeder, variant  # noqa: E402
@@ -85,6 +86,7 @@ def main(argv):
                         if not (v.get('material') or v.get('set')):
                             continue
                         mid = spell.get((v.get('material') or '').strip())
+                        mid = mid or spell.get(clean_virgin((v.get('material') or '').strip()))   # Tech prints the silo; the master does not
                         if not mid:
                             unmapped.append(f"{c} \"{v.get('material')}\" {v.get('set')}")
                         printed[split_feeder(c)] = (mid, str(v.get('set')))

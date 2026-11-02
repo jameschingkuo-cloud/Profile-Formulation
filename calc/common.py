@@ -16,6 +16,15 @@ def split_codes(s, kind='product'):
             if m: last = m.group(1); out.append(t); continue
             if re.fullmatch(r'\d{1,5}', t) and last: out.append(last + t); continue
     return list(dict.fromkeys(out))
+# No silo number on PP Virgin: the operator takes it from whichever virgin silo (James Kuo, 2 Nov 2026: "remove the Silo
+# number from PP Virgin, operator can pick whatever PP virgin silo they want" - "just clean them up, including historic
+# data" - "yes clean the Formulation Master too"). Tech's "PP Virgin-silo 3 (6502A)" / "PP Virgin-silo 4 (F-6502A)" ->
+# "PP Virgin (F6502A)"; another resin keeps its name ("PP Virgin-silo 3 (DOW-C104)" -> "PP Virgin (DOW-C104)")
+VIRGIN_SILO = re.compile(r'PP Virgin\s*-?\s*silo\s*\d+\s*\(([^)<"]*)\)', re.I)
+def clean_virgin(text):
+    """Every "PP Virgin-silo N (resin)" in a text without the silo number."""
+    return VIRGIN_SILO.sub(lambda m: 'PP Virgin (%s)' % ('F6502A' if re.fullmatch(r'F?-?6502A', m.group(1).strip(), re.I)
+                                                          else m.group(1).strip()), text or '')
 FORMULA_RE = re.compile(r'^([A-Z]{2}[A-Z0-9]\d{3}[A-Z]{2}[0-9A-Z]|[A-Z]{2}[A-Z0-9]\d{2}[A-Z]{3}[0-9A-Z]|SUA\d{4}[A-Z]{2}\d)$')  # std 9-char, premix 3-letter colour, PS line
 def mat_key(m):
     """Broad material class used only to compare FRM text with calc text (proposed, not a master name)."""

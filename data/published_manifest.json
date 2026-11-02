@@ -464,11 +464,11 @@
   "sha256": "4891556bcaff995d3662b7ceeffdbcca6f8f1347903b94dac79a22dc7c9c2bc9"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-11-02.html": {
-  "bytes": 2806578,
-  "content": "9f2c2162d3cb88cffd77f56a92965142dc7f84bfebe915d0446507897f09cd3b",
+  "bytes": 2807263,
+  "content": "a8ccc66d0cb35b3010fd4da00257f3697399f172f4a87d25c07242157dc46b77",
   "from": "Profile Formulation 2026-11-02.html",
-  "published_at": "2026-11-02T15:02:01",
-  "sha256": "9f2c2162d3cb88cffd77f56a92965142dc7f84bfebe915d0446507897f09cd3b"
+  "published_at": "2026-11-02T15:09:58",
+  "sha256": "a8ccc66d0cb35b3010fd4da00257f3697399f172f4a87d25c07242157dc46b77"
  },
  "Extrusion Schedule/EXT Extrusion Schedule 2026-09-23.xlsx": {
   "bytes": 45623,
@@ -667,11 +667,11 @@
   "sha256": "8ed5b36a90e5297f4b68f8fd932ac38822007a2fbeb274f6733903650f6b00e1"
  },
  "Formulation Data Base/Formulation Master.xlsx": {
-  "bytes": 77173,
-  "content": "0846f561ae39906f3ea38132b64fa45a5b160e79bb17dff44434364288ee5460",
+  "bytes": 77440,
+  "content": "8a60858584e78709cac58f88085da4aea18c146ffe61eb85789a04653ad3e44c",
   "from": "Formulation Master.xlsx",
-  "published_at": "2026-09-30T15:48:42",
-  "sha256": "23b99e667ff43baaeb256144887f1de92f7591fd8aa690efc5c2a6bb013bd6a7"
+  "published_at": "2026-11-02T15:07:59",
+  "sha256": "debedec6da65ee27f15df8ed7aa3c838144e149e198674d9f550b86951d51dc3"
  },
  "Product Master/Product Master.xlsx": {
   "bytes": 428631,

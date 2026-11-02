@@ -1,6 +1,6 @@
 {
-"accepted_at": "2026-09-30T15:48:43",
-"change_log_max_id": 265,
+"accepted_at": "2026-11-02T15:08:06",
+"change_log_max_id": 267,
 "data": {
 "Formulas": {
 "BF0000EB3|Primary": {
@@ -6384,12 +6384,12 @@
 "50-1560-050": {
 "Approved Substitutes": "",
 "Bulk Density (g/cm3)": "",
-"FRM Text": "PP Virgin-silo 3 (6502A)",
+"FRM Text": "PP Virgin (F6502A)",
 "IWPFT062 Status": "Active",
 "Material Code": "PC416",
 "Material ID": "50-1560-050",
 "Name": "F6502A",
-"Other Spellings": "PP Virgin-silo 3 (F6502A) | PP Virgin-silo 3 (F-6502A) | PP Virgin-silo 4 (6502A) | PP Virgin-silo 4 (F6502A) | PP Virgin (F6502A) | F6502A | PP Virgin | PP Virgin-silo 3 (DOW-C104)",
+"Other Spellings": "F6502A | PP Virgin | PP Virgin (DOW-C104)",
 "Role": "VIRGIN",
 "Status": "Draft",
 "Supplier": "Formosa"

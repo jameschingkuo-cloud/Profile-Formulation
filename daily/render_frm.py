@@ -72,17 +72,7 @@ PRINT_AS.update({
 })
 
 
-# No silo number on PP Virgin: the operator takes it from whichever virgin silo (James Kuo, 2 Nov 2026: "remove the Silo
-# number from PP Virgin, operator can pick whatever PP virgin silo they want" - "just clean them up, including historic
-# data"). Tech's "PP Virgin-silo 3 (6502A)" / "PP Virgin-silo 4 (F-6502A)" print as "PP Virgin (F6502A)"; another resin
-# keeps its name ("PP Virgin-silo 3 (DOW-C104)" -> "PP Virgin (DOW-C104)")
-VIRGIN_SILO = re.compile(r'PP Virgin\s*-?\s*silo\s*\d+\s*\(([^)<"]*)\)', re.I)
-
-
-def clean_virgin(text):
-    """Every "PP Virgin-silo N (resin)" in a text without the silo number."""
-    return VIRGIN_SILO.sub(lambda m: 'PP Virgin (%s)' % ('F6502A' if re.fullmatch(r'F?-?6502A', m.group(1).strip(), re.I)
-                                                          else m.group(1).strip()), text or '')
+from calc.common import VIRGIN_SILO, clean_virgin  # noqa: E402  PP Virgin without its silo number (James, 2 Nov 2026)
 
 
 def print_name(mat):

@@ -693,6 +693,15 @@
    "change": "James: \"remove the Silo number from PP Virgin, operator can pick whatever PP virgin silo they want\" - \"just clean them up, including historic data\" - \"and artifact\". Tech's \"PP Virgin-silo 3 (6502A)\" / \"PP Virgin-silo 4 (F6502A)\" / \"(F-6502A)\" print as \"PP Virgin (F6502A)\"; \"PP Virgin-silo 3 (DOW-C104)\" as \"PP Virgin (DOW-C104)\" (render_frm.clean_virgin): the Word files, the page (all its data, the Look up record days too), the FRM Formulation Report workbooks and the Formulation Report Record from now on. Historic: 37 published files re-issued from their published copies with only those names changed (Word files 23-30 Oct, FRM Formulation Reports 23-30 Sep, Formulation Report Record, Interface Copies 29 Sep - 2 Nov; 17,433 names) and 22 Word files kept only in out/. Left as Tech issued them: the packets, FRM Drafts and the Formulation Master (a master changes only through its Change Log). No re-send (James: \"no need to resent email\"). Also: Auger rules and slopes moved to Info (James: \"other then gear box ratio, their diameter is also different. So you cannot use gear ratio as reference\")",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 78,
+   "date": "2026-11-02",
+   "type": "Master",
+   "item": "Formulation Master: PP Virgin without the silo number",
+   "change": "James: \"yes clean the Formulation Master too\". Materials 50-1560-050 (F6502A): FRM Text \"PP Virgin-silo 3 (6502A)\" -> \"PP Virgin (F6502A)\"; Other Spellings -> \"F6502A | PP Virgin | PP Virgin (DOW-C104)\" (Changes 266-267, approved by James Kuo; published, pre-flight accepted). Tech's pages still print the silo: db/import_frm.py and import_frm_history.py match them through calc/common.clean_virgin (all 854 virgin entries on the pages on file map to 50-1560-050). Change Log history keeps the old text. 2 Nov FRM Draft unchanged",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }

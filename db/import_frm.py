@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / 'daily'))
 import config  # noqa: E402
 from db import preflight, schema  # noqa: E402
+from calc.common import clean_virgin  # noqa: E402
 from openpyxl import load_workbook  # noqa: E402
 from resolve import split_feeder, variant  # noqa: E402
 
@@ -88,6 +89,7 @@ def main(argv):
                     ext, feeder = split_feeder(c)
                     k = (line, code, var, ext, feeder)
                     mid = spell.get((v.get('material') or '').strip())
+                    mid = mid or spell.get(clean_virgin((v.get('material') or '').strip()))   # Tech prints the silo; the master does not
                     if k in have_s:
                         s = have_s[k]
                         if (s['Material ID'], str(s['Set'])) != (mid, str(v.get('set'))):
