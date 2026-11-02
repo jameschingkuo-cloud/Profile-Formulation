@@ -90,6 +90,13 @@ LATER_ROWS = [
     {'Formula Code': 'FU0021GE4', 'Application': 'Standard', 'Notes': 'Main, WB : GE premix 9 : 1, two-colour WB GE WB (James Kuo, 29 Oct 2026)',
      'Colour': 'GE', 'Thk (mm)': 4, 'Virgin PP %': 77.7, 'Homo PP (F1203K) %': 9.6, 'Talc %': 6.8, 'CaCO3 %': 3.8, 'Colour MB %': 2.0,
      'Materials': 'WB : GE premix 9 : 1 (W26038A + G26232M) 2.0'},
+    # Black 5 mm on the bubble line (SE61): the W% Master has only the 10 mm BF0000KSA. Tech's SE61 calc book has the
+    # recipe on its "5 mm KS-Diamond" sheets with no code typed (RBP50KS59, 18, 23, 48, 69-77, RBP56KS1, DBP50KS14, Dec
+    # 2024 - May 2026). James Kuo, 2 Nov 2026, on H6AA151-1 (RBP50KS78): "yes go ahead with BF0000KS5" - W% = the calc
+    # sheet's totals (6502A 56.6 + PC5050 skin 15, reclaim 20, talc 6.25, black 2.15)
+    {'Formula Code': 'BF0000KS5', 'Application': 'Standard', 'Notes': 'Main',
+     'Colour': 'KS', 'Thk (mm)': 5, 'Virgin PP %': 71.6, 'Reclaim %': 20, 'Talc %': 6.25, 'Colour MB %': 2.15,
+     'Materials': 'PP Mix Reclaim 20.0, KS masterbatch 2.15, Virgin PP (Yungsox 5050S) 15.0'},
 ]
 # lines that never take a premix: line 16 (SE61, the bubble line, co-extrudes its own layer colours EB KS EB)
 PREMIX_OFF = {'SE61'}
@@ -638,6 +645,16 @@ CONFIRMED_SETTINGS = {
                                         'Hopper 5': ('CaCO3 -Heritage HM-10MAX', '30')},
                             'note': 'WB : GE = 9 : 1 WB – W26038A, GE – G26232M',
                             'by': "James Kuo, 29 Oct 2026 (FU0021GT4's SE23 settings, the GE premix in place of GT)"},
+    # Tech's SE61 "5 mm KS-Diamond" calc (May 2026) on BF0000KSA's page layout: A 38 virgin (Auto) / 50 reclaim / 10 talc /
+    # 2 black, B PC5050 skin, C 92 virgin (Auto) / 5 talc / 3 black, D PC5050 skin; extruder shares 40 / 5 / 45 / 10
+    ('SE61', 'BF0000KS5'): {'feeders': {'A 1': ('PP Mix Reclaim', '50'), 'A 2': ('F6502A', 'Auto'),
+                                        'A 3': ('KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)', '2.0'),
+                                        'A 4': ('HiTalc ZS (or N40109A)', '10'), 'B 1': ('PP Yungsox 5050S', '100'),
+                                        'C 2': ('F6502A', 'Auto'), 'C 4': ('HiTalc ZS (or N40109A)', '5'),
+                                        'C 6': ('KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)', '3.0'),
+                                        'D 1': ('PP Yungsox 5050S', '100')},
+                            'note': 'Extruder share A 40%, B 5%, C 45%, D 10%',
+                            'by': "James Kuo, 2 Nov 2026 (Tech's SE61 5 mm KS-Diamond calc, May 2026)"},
 }
 # The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
 # Tech's FU0031WB4 issued for RP26512-1 (80/10/60/32/36), not the lower FU0041WB4 row

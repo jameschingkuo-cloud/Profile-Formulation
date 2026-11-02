@@ -657,6 +657,15 @@
    "change": "James: \"let build one extra word file as part of the package. For this one, i only want you to show the new order added to the schedule compared to the last one\". daily/render_frm.py now also writes FRM Formulation <date> (new orders).docx: the same pages as the normal copy with only the orders whose number is not on the previous schedule (an order that only moved line is not new); the cover says how many were added since which schedule. The email attaches it with the normal and weight % copies. 30 Oct: 8 new since 29 Oct",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 74,
+   "date": "2026-11-02",
+   "type": "Logic",
+   "item": "BF0000KS5: 5 mm black on the bubble line (SE61)",
+   "change": "James: \"yes go ahead with BF0000KS5 and re-issue\". New Main BF/0/KS/5 (daily/assign.py LATER_ROWS) with W% from Tech's SE61 \"5 mm KS-Diamond\" calc (6502A 56.6, PC5050 skin 15, reclaim 20, talc 6.25, black 2.15) and its SE61 settings confirmed (CONFIRMED_SETTINGS): A1 PP Mix Reclaim 50, A2 F6502A Auto, A3 black 2.0, A4 talc 10, B1 PP Yungsox 5050S 100, C2 F6502A Auto, C4 talc 5, C6 black 3.0, D1 5050S 100; extruder share A 40%, B 5%, C 45%, D 10%. 2 Nov re-issued: 79 of 79 orders",
+   "order": "SE61 H6AA151-1 RBP50KS78",
+   "editor": "James Kuo"
   }
  ]
 }
