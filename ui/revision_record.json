@@ -648,6 +648,15 @@
    "change": "James: \"make it 2 years of record\". The look-up now reaches back 730 days (ui/build.py LOOK_DAYS), 30 Oct 2024 to the latest day: 3,766 runs. The older year (Nov 2024 - Oct 2025) has Tech's calc for 1,759 of its 1,779 runs (20 without: SE61 7, SE24 5, a few others)",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 73,
+   "date": "2026-11-02",
+   "type": "Print",
+   "item": "Third Word file: new orders only",
+   "change": "James: \"let build one extra word file as part of the package. For this one, i only want you to show the new order added to the schedule compared to the last one\". daily/render_frm.py now also writes FRM Formulation <date> (new orders).docx: the same pages as the normal copy with only the orders whose number is not on the previous schedule (an order that only moved line is not new); the cover says how many were added since which schedule. The email attaches it with the normal and weight % copies. 30 Oct: 8 new since 29 Oct",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }

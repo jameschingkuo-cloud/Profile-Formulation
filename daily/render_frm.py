@@ -4,6 +4,7 @@ formulation document for us to print out"; "you can use the current one (and may
 
     PKT_DATE=2026-09-30 python daily/resolve.py        (the FRM Draft: every order resolved, or an Exception)
     PKT_DATE=2026-09-30 python daily/render_frm.py     -> out/FRM Formulation <date>.docx
+                                                          (+ "(weight %)" and "(new orders)" copies)
 
 Layout follows Tech's FRM pages (one landscape page per line: "Line N (SExx) Formulations", orders, formula code,
 feeders, note, footnotes). Improvements: what "Set" means on that line; product under each order; every formulation of
@@ -105,6 +106,9 @@ def load():
         packets[d['packet_date']] = d; files[d['packet_date']] = p
     today = packets[PKT]
     config.record_read(files[PKT], 'daily packet (schedule)')
+    # the schedule before this one, for the new-orders copy
+    before = [d for d in packets if d < PKT]
+    today['_prev'] = (max(before), {r['order'] for pg in packets[max(before)]['ext'] for r in pg['rows']}) if before else None
     # page layout per line: latest issued FRM page on or before this date
     page = {}
     for d in sorted(x for x in packets if x <= PKT):
@@ -162,6 +166,20 @@ def build_lines(today, draft, exc, page):
                       'ac': (pg or {}).get('header_note', ''), 'notes': (pg or {}).get('footnotes', []),
                       'effective': (pg or {}).get('effective_date', ''), 'weight': line in WEIGHT})
     return lines
+
+
+# ---- new orders copy ----------------------------------------------------------------------------------------------
+# James Kuo, 2 Nov 2026: "let build one extra word file as part of the package. For this one, i only want you to show the
+# new order added to the schedule compared to the last one". An order is new when its order number is not on the
+# previous schedule (a packet day) at all; one that only moved line is not. Same layout as the normal copy.
+def new_orders(lines, old):
+    out = []
+    for ln in lines:
+        groups = [dict(g, orders=[o for o in g['orders'] if o['order'] not in old]) for g in ln['groups']]
+        groups = [g for g in groups if g['orders']]
+        if groups:
+            out.append(dict(ln, groups=groups))
+    return out
 
 
 # ---- weight % copy -------------------------------------------------------------------------------------------------
@@ -291,7 +309,7 @@ def when_label(forms, i):
     return 'If reclaim runs out' if any(uses(x) for x in forms[:i]) else 'Alternative'
 
 
-def render(today, lines, exc, out, weight_copy=False):
+def render(today, lines, exc, out, weight_copy=False, new_since=None):
     day = datetime.date.fromisoformat(PKT)
     us = f'{day.month}/{day.day}/{day:%y}'
     n_orders = sum(len(g['orders']) for ln in lines for g in ln['groups'])
@@ -317,8 +335,16 @@ def render(today, lines, exc, out, weight_copy=False):
 
     # ---- cover
     para(doc, 'Inteplast Profile Plant · WPJK · Technical', 10, color=BLACK)
-    para(doc, f'Extrusion Formulations · {us}', 26, bold=True, space_after=2)
-    para(doc, f"{len(lines)} lines · {n_orders} orders · from the extrusion schedule {today.get('source_scan', '')}", 12, space_after=8)
+    if new_since:
+        pd = datetime.date.fromisoformat(new_since)
+        para(doc, f'New Orders · {us}', 26, bold=True, space_after=2)
+        para(doc, (f"{n_orders} order{'s' if n_orders != 1 else ''} added since the schedule of {pd.month}/{pd.day}/{pd:%y}, on "
+                   f"{len(lines)} line{'s' if len(lines) != 1 else ''}" if n_orders else
+                   f"No order added since the schedule of {pd.month}/{pd.day}/{pd:%y}") +
+             " · only these orders; the full formulation is in the normal copy", 12, space_after=8)
+    else:
+        para(doc, f'Extrusion Formulations · {us}', 26, bold=True, space_after=2)
+        para(doc, f"{len(lines)} lines · {n_orders} orders · from the extrusion schedule {today.get('source_scan', '')}", 12, space_after=8)
     box = doc.add_table(rows=1, cols=1); box.alignment = WD_TABLE_ALIGNMENT.LEFT
     c = box.rows[0].cells[0]
     cell_text(c, f'{status}', 16, True, BLACK, WD_ALIGN_PARAGRAPH.LEFT)
@@ -380,7 +406,7 @@ def render(today, lines, exc, out, weight_copy=False):
     for ln in lines:
         doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         tp = para(doc, '', align=WD_ALIGN_PARAGRAPH.CENTER)
-        run(tp, f"Line {ln['no']} ({ln['line']})  Formulations" + ('  ·  Weight %' if weight_copy else ''), 22, True)
+        run(tp, f"Line {ln['no']} ({ln['line']})  Formulations" + ('  ·  Weight %' if weight_copy else '') + ('  ·  New orders' if new_since else ''), 22, True)
         mp = para(doc, '', align=WD_ALIGN_PARAGRAPH.RIGHT)
         run(mp, us, 11, True)          # Tech's "AC = 1 / 90" not printed (James, 27 Oct 2026: "lets take it out. not sure what it is")
         para(doc, ('WEIGHT % COPY, for troubleshooting - run from the normal copy. ' + ('Weight blender: as set (weight %).' if ln['weight'] else
@@ -476,6 +502,11 @@ def main():
     wout = config.OUTPUT_DIR / f'FRM Formulation {PKT} (weight %).docx'     # the troubleshooting copy
     render(today, lines, exc, wout, weight_copy=True)
     print(wout)
+    if today.get('_prev'):
+        nout = config.OUTPUT_DIR / f'FRM Formulation {PKT} (new orders).docx'   # only the orders added since the last schedule
+        new = new_orders(lines, today['_prev'][1])
+        render(today, new, exc, nout, new_since=today['_prev'][0])
+        print(nout, f"- {sum(len(g['orders']) for ln in new for g in ln['groups'])} new since {today['_prev'][0]}")
 
 
 if __name__ == '__main__':

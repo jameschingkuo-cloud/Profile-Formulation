@@ -35,6 +35,9 @@ $m.Body = $Body
 # the weight % copy for troubleshooting (James, 27 Oct 2026: "make two copy of the formulation ... one weight % and one normal")
 $wdoc = Join-Path $src "FRM Formulation $Date (weight %).docx"
 if (Test-Path -LiteralPath $wdoc) { [void]$m.Attachments.Add($wdoc) }
+# the new orders only (James, 2 Nov 2026: "only want you to show the new order added to the schedule compared to the last one")
+$ndoc = Join-Path $src "FRM Formulation $Date (new orders).docx"
+if (Test-Path -LiteralPath $ndoc) { [void]$m.Attachments.Add($ndoc) }
 $m.Send()
 try { $ol.GetNamespace('MAPI').SendAndReceive($false) } catch {}
 Set-Content -LiteralPath $mark -Value @($hash, (Get-Date -Format 'yyyy-MM-dd HH:mm'), $subject) -Encoding utf8
