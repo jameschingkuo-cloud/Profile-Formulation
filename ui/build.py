@@ -373,7 +373,11 @@ def calc_prods(text):
     return list(dict.fromkeys(out))
 
 
-def calc_history(pk, day, days=365):
+# the look-up's reach (James Kuo, 2 Nov 2026: "make it 2 years of record")
+LOOK_DAYS = 730
+
+
+def calc_history(pk, day, days=LOOK_DAYS):
     """The look-up's record before the first packet (James Kuo, 30 Oct 2026: "can you add atleast 6 months of formulation
     record in", "i am looking for historic record"): each order on the system's own EXT schedules (history/prod_instr.py;
     the image-day scans where no PDF exists) with the formulation Tech calculated for it in the line's calc workbook
@@ -445,7 +449,7 @@ def calc_history(pk, day, days=365):
 
 
 def lookup_runs(pk, day):
-    """The Look up tab: every order run on record for a year, one row per order + line + formulation over its run days,
+    """The Look up tab: every order run on record for two years (LOOK_DAYS), one row per order + line + formulation over its run days,
     with the schedule's fields as of its last day. Packets: the formulation issued that day (Tech's page, else our FRM
     Draft); before the first packet: Tech's calc workbook (calc_history). -> {'runs': [[order, line, prod, first, last,
     days, [[code, settings index]], schedule fields]], 'recipes': [settings text]}"""
@@ -475,7 +479,7 @@ def lookup_runs(pk, day):
         k = (o, lc, prod, json.dumps(fl))
         run = out.setdefault(k, [o, lc, prod, d, d, 0, fl, sf])
         run[4], run[5], run[7] = d, run[5] + 1, sf
-    return {'runs': list(out.values()), 'recipes': list(ri)}
+    return {'runs': list(out.values()), 'recipes': list(ri), 'days': LOOK_DAYS}
 
 
 def approved_decisions(sheet):
