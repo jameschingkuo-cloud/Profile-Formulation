@@ -664,11 +664,11 @@
   "sha256": "8e8c145f7ae873c0b3336b997c7ffbc8db8597098807c70dca9d36303390f411"
  },
  "Formulation Data Base/Formulation Calc Library.xlsx": {
-  "bytes": 3667095,
-  "content": "e0197d136359737adbf5062475214092d210907033c6bf91088dd01ce965b945",
+  "bytes": 4058542,
+  "content": "a87d12f687eaf330dd1da0016f7b754ae43e0ec8eff64e6925dd951bc9b10fce",
   "from": "Formulation Calc Library.xlsx",
-  "published_at": "2026-09-28T16:48:10",
-  "sha256": "4e5781f776f7b4ce1d178c3170a71dc1414592d7a49b1ccba1650270da1005df"
+  "published_at": "2026-11-02T14:47:03",
+  "sha256": "6b1b4b7688e7aec29051d5c28e18d701bad3e1256213bc9c7480edb2c9fb49d0"
  },
  "Formulation Data Base/Formulation Master.xlsx": {
   "bytes": 77173,

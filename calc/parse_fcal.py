@@ -65,6 +65,24 @@ def parse(path, line_hint=None):
             blk = {'file': os.path.basename(path), 'line': line or line_hint, 'sheet': s.name.strip(), 'sheet_index': si, 'row': r + 1,
                    'orders': str(s.cell_value(r, 1)).strip(), 'extra': []}
             groups, cur, pending_name = [], None, None
+            # Product / Formula Code / Prod. Period by their own labels, wherever the sheet puts them (James Kuo, 2 Nov 2026:
+            # "see what else is missing code. must be an extraction issue"): older sheets have them on the Order # row
+            # (SE25 "6 mm EC-P" FH0001EC8, SE43 "4 mm WB-LW" FUA141WB4); SE31's CoEx sheets leave column A of that row blank.
+            # The code as typed, never corrected (SE31 prints FX020WB4)
+            for rr in range(r, r2):
+                row = s.row_values(rr)
+                labs = {str(v).strip().lower(): j for j, v in enumerate(row) if isinstance(v, str)}
+                if 'formula code' in labs and labs['formula code'] + 1 < len(row):
+                    j = labs['formula code']
+                    blk['formula_code'] = str(row[j + 1]).strip()
+                    k = labs.get('product code')
+                    blk['product'] = str(row[k + 1]).strip() if k is not None and k + 1 < len(row) else (
+                        str(row[1]).strip() if rr != r and not str(row[0]).strip() else blk.get('product', ''))
+                    p = labs.get('prod. period')
+                    if p is not None and p + 1 < s.ncols:
+                        blk['period_raw'] = row[p + 1]
+                        blk['_period_cell'] = (s.cell_value(rr, p + 1), s.cell_type(rr, p + 1))
+                    break
             for rr in range(r + 1, r2):
                 row = s.row_values(rr)
                 lab = str(row[0]).strip()

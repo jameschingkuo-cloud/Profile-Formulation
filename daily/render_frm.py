@@ -201,7 +201,7 @@ def slope_classes(mat):
     if 'VISTAMAXX' in m:
         return ['VISTAMAXX']
     if 'GPP' in m:              # FR masterbatch: printed "FR-GPP30003MP", the calc book "FR-GPP3003 MP" (RP26826-6, SE21)
-        return ['FR-GPP']
+        return ['FR GPP', 'FR-GPP']   # the calc library's class since 30 Oct 2026 (calc/common.py 'FR GPP3003'), and before
     codes = re.findall(r'[A-Z]?\d{5}[A-Z]?|[A-Z]{1,2}-?[A-Z]?\d{5}[A-Z]?', m)
     # then the bare 5-digit number: Tech's calc book names SE31 H5 "NPC 22151" for the printed "NPC PE-W22151" (H69A059-1)
     codes += [n for n in re.findall(r'(?<!\d)\d{5}(?!\d)', m) if n not in codes]

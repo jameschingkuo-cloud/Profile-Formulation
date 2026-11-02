@@ -666,6 +666,15 @@
    "change": "James: \"yes go ahead with BF0000KS5 and re-issue\". New Main BF/0/KS/5 (daily/assign.py LATER_ROWS) with W% from Tech's SE61 \"5 mm KS-Diamond\" calc (6502A 56.6, PC5050 skin 15, reclaim 20, talc 6.25, black 2.15) and its SE61 settings confirmed (CONFIRMED_SETTINGS): A1 PP Mix Reclaim 50, A2 F6502A Auto, A3 black 2.0, A4 talc 10, B1 PP Yungsox 5050S 100, C2 F6502A Auto, C4 talc 5, C6 black 3.0, D1 5050S 100; extruder share A 40%, B 5%, C 45%, D 10%. 2 Nov re-issued: 79 of 79 orders",
    "order": "SE61 H6AA151-1 RBP50KS78",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 75,
+   "date": "2026-11-02",
+   "type": "Logic",
+   "item": "Calc library: formula codes the parser missed",
+   "change": "James: \"see what else is missing code. must be an extraction issue\". Of 232 calc blocks with no code, 15 were a parser miss: calc/parse_fcal.py read Product / Formula Code / Prod. Period only from a row labelled \"Product Code\" in column A. Older sheets put them on the Order # row (SE25 \"6 mm EC-P\" FH0001EC8 x2, SE43 \"4 mm WB-LW\" FUA141WB4 x2) and SE31's CoEx sheets leave column A blank (FX020WB4 x11, as typed). Now read by their own labels wherever they are. Rebuilt Formulation Calc Library: only those 15 blocks changed; the 2 Nov FRM Draft is identical. The other 217 are blank in Tech's own workbooks (SE61 147: no code typed on any 10 mm KS-Diamond, 10 mm EB-Diamond or 5 mm KS-Diamond sheet)",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }
