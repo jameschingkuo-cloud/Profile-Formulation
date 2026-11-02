@@ -367,7 +367,7 @@ const ROLEVAR = {VIRGIN:'--r-virgin',HOMO:'--r-homo',TALC:'--r-talc',CACO3:'--r-
 const SWATCH = [[/W26038|W40020|PE-W22151|WB/,'--sw-wb'],[/KS|PE-500|PE90000|B9000/,'--sw-ks'],[/B26004|BD-/,'--sw-bd'],[/R34874|OF-/,'--sw-of'],[/B60387|B26003|BL-/,'--sw-bl'],[/W26329|WM-/,'--sw-wm'],[/D26074|OG-/,'--sw-og'],[/D26002|GT|EA Premix/,'--sw-gt'],[/N26177|UV-/,'--sw-ns']];
 const matOf = f => f.id ? D.materials[f.id] : null;
 function flagOf(f){
-  if (!f.id) return f.mat ? {cls:'warn', text:'No material ID'} : null;
+  if (!f.id) return f.mat && !f.pm ? {cls:'warn', text:'No material ID'} : null;   // a premix has none: mixed at the side (James, 2 Nov 2026)
   const m = D.materials[f.id]; if (!m) return null;
   if (m.st === 'Withdrawn') return {cls:'crit', text:'Withdrawn'};
   if (m.st === 'In-active') return {cls:'crit', text:'In-active'};
@@ -411,16 +411,16 @@ function renderRail(){
   }).join('');
 }
 function tile(f, weight){
-  const m = matOf(f), fl = flagOf(f), role = m?.role || 'OTHER';
+  const m = matOf(f), fl = flagOf(f), role = m?.role || (f.pm ? 'COLOUR' : 'OTHER');
   const sw = SWATCH.find(([rx]) => rx.test(f.mat));
   const v = String(f.set).trim(), num = parseFloat(v);
   const unit = weight ? (v.toLowerCase() === 'auto' ? 'balance' : '%') : 'speed';
   const gauge = !weight && !isNaN(num) ? `<div class="gauge" title="Auger motor speed ${num} of 100"><i style="width:${Math.min(100, num)}%"></i></div>` : '';
   return `<div class="tile ${fl ? 'flag-' + fl.cls : ''}">
-    <div class="pos"><span class="caps">${esc(f.col.replace('Extruder ', ''))}</span>${fl ? `<span class="chip ${fl.cls}">${fl.text}</span>` : `<span class="chip var" style="background:var(${ROLEVAR[role]});color:var(--r-ink);border:0">${role.toLowerCase()}</span>`}</div>
+    <div class="pos"><span class="caps">${esc(f.col.replace('Extruder ', ''))}</span>${fl ? `<span class="chip ${fl.cls}">${fl.text}</span>` : `<span class="chip var" style="background:var(${ROLEVAR[role]});color:var(--r-ink);border:0">${f.pm ? 'premix' : role.toLowerCase()}</span>`}</div>
     <div class="mat">${sw ? `<span class="sw" style="background:var(${sw[1]})"></span>` : ''}<span>${esc(f.mat || '—')}</span></div>
     <div class="setv">${esc(v)}<small>${unit}</small></div>${gauge}
-    <div class="id">${f.id ? esc(f.id) + (m?.code ? ' · ' + esc(m.code) : '') : 'no IWPFT062 no.'}</div></div>`;
+    <div class="id">${f.pm ? `<b>${esc(f.pm)}</b> · mixed at the side` : f.id ? esc(f.id) + (m?.code ? ' · ' + esc(m.code) : '') : 'no IWPFT062 no.'}</div></div>`;
 }
 function pctBar(segs, label){   // segs: [{mat, p, role, auto}] -> one stacked weight % bar
   return `<div class="bar" role="img" aria-label="${esc(label)}: ${segs.map(s => `${esc(s.mat)} ${Math.round(s.p * 10) / 10}%`).join(', ')}">${segs.filter(s => s.p > 0).map(s =>

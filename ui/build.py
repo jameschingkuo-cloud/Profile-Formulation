@@ -343,7 +343,7 @@ def calc_orders(text):
     """Order bases in a calc block's 'Order #' as Tech writes it: 'H66A138, 139, 140 & 148' (a bare 3-digit number
     replaces the last digits), 'H66A113-1 & 2' (a bare 1-2 digit number is another suffix of the same order)."""
     out, prev = [], None
-    for tok in re.split(r'[,&;/]|and', text or ''):
+    for tok in re.split(r'[,&;/]|\band\b', text or ''):
         tok = tok.strip().upper()
         m = ORDER_RX.match(tok)
         if m:
@@ -578,12 +578,13 @@ def main():
             'code_rule': {'colours': sorted(product_code.COLOURS), 'families': sorted(product_code.FAMILIES)}}
     # every formulation shows its weight % (James, 27 Oct 2026: "make sure this weight is display on every one so i can
     # easily monitor them"): on an auger line each feeder's share = setting x the hopper's calibration slope over the total
-    from render_frm import weight_pct, print_name
+    from render_frm import weight_pct, print_name, premix_ratio
     for ln in data['lines']:
         for g in ln['groups']:
             for f in g['formulas']:
                 for x in f['feeders']:
                     x['mat'] = print_name(x['mat'])      # as the Word file prints it (the black: KS NPC PE-B9000F; PP Virgin, no silo)
+                    x['pm'] = premix_ratio(x['mat'], f.get('note'))   # a premix: no material ID, its ratio shown (James, 2 Nov 2026)
                 if ln['dosing'] == 'WEIGHT':
                     continue
                 pct, why = weight_pct(ln['code'], {('', x['col']): (x['mat'], x['set'], None) for x in f['feeders']})

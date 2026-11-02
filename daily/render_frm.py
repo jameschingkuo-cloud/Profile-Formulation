@@ -75,6 +75,36 @@ PRINT_AS.update({
 from calc.common import VIRGIN_SILO, clean_virgin  # noqa: E402  PP Virgin without its silo number (James, 2 Nov 2026)
 
 
+# A premix has no material ID: it is mixed at the side and fed in, so its ratio is what tells the floor what it is (James
+# Kuo, 2 Nov 2026: "Premix does not have material ID, it is something we mix from the side and feed it in. but its
+# important to display the ratio"). The ratio as written on the material itself ("WB and IS premixed (WB:IS=9:1)"), else
+# as Tech's notes and James give it for the premix, else from the formula's note
+# Printed ratio first, as the floor says it (James, 2 Nov 2026: "Like a 9 to 1 WB to Ge mix" - "9:1"): "9:1 WB:GE"
+PREMIX_RATIO = [(r'\bWB\s*GE\s*pre-?mix', '9:1 WB:GE (W26038A + G26232M)'),     # James Kuo, 29 Oct 2026
+                (r'\bWB\s*(?:EA|GT)\s*pre-?mix', '9:1 WB:EA (W26038A + D26002M)'),  # Tech's SE23 / SE25 note, H68A127-1
+                (r'\bPK\s*pre-?mix', '6:1 PP Virgin:pink'),                    # Tech's SE11 / SE21 note
+                (r'\bWB\s*(?:and|/|&)\s*IS\s*pre-?mix', '9:1 WB:IS')]            # Tech's SE21 FR page
+RATIO_RX = re.compile(r'([A-Z]{2})\s*:\s*([A-Z]{2})\s*=\s*(\d+)\s*:\s*(\d+)|Ratio:?\s*(\d+)\s*:\s*(\d+)', re.I)
+
+
+def _ratio(m):
+    return f'{m.group(3)}:{m.group(4)} {m.group(1).upper()}:{m.group(2).upper()}' if m.group(1) else f'{m.group(5)}:{m.group(6)}'
+
+
+def premix_ratio(mat, note=''):
+    """'' when the material is no premix; its ratio ("9:1 WB:GE"), or 'ratio not on file'."""
+    if not re.search(r'pre-?mix', mat or '', re.I):
+        return ''
+    m = RATIO_RX.search(mat)
+    if m:
+        return _ratio(m)
+    for rx, ratio in PREMIX_RATIO:
+        if re.search(rx, mat, re.I):
+            return ratio
+    m = RATIO_RX.search(note or '')
+    return _ratio(m) if m else 'ratio not on file'
+
+
 def print_name(mat):
     """A material as the Word file prints it."""
     return clean_virgin(PRINT_AS.get(mat, mat)) if mat else mat
@@ -465,6 +495,9 @@ def render(today, lines, exc, out, weight_copy=False, new_since=None):
                         continue
                     mat, st_, printed = v
                     cell_text(rr.cells[ci], mat, 9 if len(cols) > 6 else 10, bool(printed))
+                    pm = premix_ratio(mat, f['note'])
+                    if pm:                      # a premix: its ratio under the name (no material ID)
+                        para(rr.cells[ci], f'Premix {pm}', 7.5, italic=True, color=BLACK, align=WD_ALIGN_PARAGRAPH.CENTER)
                     if printed:
                         para(rr.cells[ci], f'(replaces {printed})', 7.5, italic=True, color=BLACK, align=WD_ALIGN_PARAGRAPH.CENTER)
                     sv = str(st_ or '')

@@ -702,6 +702,15 @@
    "change": "James: \"yes clean the Formulation Master too\". Materials 50-1560-050 (F6502A): FRM Text \"PP Virgin-silo 3 (6502A)\" -> \"PP Virgin (F6502A)\"; Other Spellings -> \"F6502A | PP Virgin | PP Virgin (DOW-C104)\" (Changes 266-267, approved by James Kuo; published, pre-flight accepted). Tech's pages still print the silo: db/import_frm.py and import_frm_history.py match them through calc/common.clean_virgin (all 854 virgin entries on the pages on file map to 50-1560-050). Change Log history keeps the old text. 2 Nov FRM Draft unchanged",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 79,
+   "date": "2026-11-02",
+   "type": "Page design",
+   "item": "Premix: no material ID flag, its ratio shown",
+   "change": "James: \"Premix does not have material ID, it is something we mix from the side and feed it in. but its important to display the ratio\" - \"Like a 9 to 1 WB to Ge mix\" - \"9:1\". A premix hopper on the page no longer flags \"No material ID\": it shows \"premix\" and its ratio, e.g. \"9:1 WB:GE (W26038A + G26232M) · mixed at the side\"; the Word files print \"Premix 9:1 WB:GE (W26038A + G26232M)\" under the name (render_frm.premix_ratio: the ratio on the material itself, else 9:1 WB:GE, 9:1 WB:EA, 6:1 PP Virgin:pink, 9:1 WB:IS from Tech's notes and James, else the formula note, else \"ratio not on file\"). Also fixed a control character in ui/build.py calc_orders (split on \" and \")",
+   "order": "SE23 H69A303-1 DPP40WB1756",
+   "editor": "James Kuo"
   }
  ]
 }
