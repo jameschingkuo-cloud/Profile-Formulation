@@ -4,12 +4,13 @@
 #
 #   powershell -ExecutionPolicy Bypass -File daily/email_formulation.ps1 -Date 2026-10-06 [-Body "<summary>"] [-Replaces]
 #
-# Only to James (the address is fixed here, not a parameter). Sent once per version of the file: work/emailed_<date>.txt
+# To James and the two other engineers (the addresses are fixed here, not a parameter; James Kuo, 2 Nov 2026: "the email
+# you sent me. also sent to the other two engineer KevinSung@wpjk.inteplast.com and YChang@wpjk.inteplast.com"). Sent once per version of the file: work/emailed_<date>.txt
 # keeps the hash of what was sent; the same file again is not re-sent, a rebuilt one is (say -Replaces so the subject
 # says it replaces the earlier copy).
 param([Parameter(Mandatory = $true)][string]$Date, [string]$Body = '', [switch]$Replaces, [string]$Dir = '')
 
-$To = 'JKUO@wpjk.inteplast.com'
+$To = 'JKUO@wpjk.inteplast.com; KevinSung@wpjk.inteplast.com; YChang@wpjk.inteplast.com'
 $root = Split-Path -Parent $PSScriptRoot
 $src = if ($Dir) { Join-Path $root $Dir } else { Join-Path $root 'out' }     # -Dir: when out\ is held open in Word
 $doc = Join-Path $src "FRM Formulation $Date.docx"

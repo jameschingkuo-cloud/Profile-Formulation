@@ -356,7 +356,7 @@ on weekdays. The scheduled task `daily-schedule-run` (Claude app, runs only whil
    2026: *"whenever this happen (aka schedule from my outlook), can you email me the formulation for that day"*):
    `powershell -ExecutionPolicy Bypass -File daily/email_formulation.ps1 -Date <date> -Body "<summary>" [-Replaces]`.
    The connector's send tool takes no attachment, so this too goes through classic Outlook. The recipient is fixed in
-   the script (James only); each version of the file is sent once (`work/emailed_<date>.txt` holds its hash). step2:
+   the script (James, Kevin Sung and YC Chang, 2 Nov 2026); each version of the file is sent once (`work/emailed_<date>.txt` holds its hash). step2:
    `python daily/intake.py <cnv pdf> --step 2`, then the Daily run from step 3. Before publishing,
    `python daily/new_highs.py <date>`: exit 1 = a High the previous day did not have -> stop, tell James, publish nothing.
    "No formula to propose" is not counted (the Word file's ENGINEER TO COMPLETE rows, reported with step 1).
