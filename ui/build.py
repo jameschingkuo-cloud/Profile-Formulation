@@ -309,16 +309,20 @@ def draft_forms(day):
         f = by.setdefault((r[h['Line Code']], r[h['Order']]), {}).setdefault(r[h['Formula Row']], [r[h['Formula Code']], []])
         mat, st = r[h['Material (as issued)']], r[h['Set']]
         if mat or st:
-            f[1].append(feeder_txt(r[h['Extruder']], r[h['Feeder']], current(mat or ''), st))
+            f[1].append(feeder_txt(r[h['Extruder']], r[h['Feeder']], current(mat or ''), st, r[h['Note']]))
     return {k: [[c, ' | '.join(fs)] for _, (c, fs) in sorted(v.items())] for k, v in by.items()}
 
 
-def feeder_txt(ext, feeder, mat, st):
-    """'A V1 6502A 45' / 'H3 PP WB Reclaim 31': one feeder of a formulation, as short as the look-up table needs."""
+def feeder_txt(ext, feeder, mat, st, note=''):
+    """'A V1 6502A 45' / 'H3 PP WB Reclaim 31': one feeder of a formulation, as short as the look-up table needs. A
+    premix with its ratio, from the material, the formula's note or Tech's usual one ('H4 W26038A/G26177A 27 (premix 9:1
+    WB:GH ...)'; James Kuo, 2 Nov 2026: "check premix history and add them in")."""
+    from render_frm import premix_ratio
     if isinstance(st, float):
         st = f'{st:g}'
     pos = ' '.join(x for x in (ext or '', re.sub(r'^Hopper\s*', 'H', str(feeder or ''))) if x)
-    return f'{pos} {mat} {st if st not in (None, "") else ""}'.strip()
+    pm = premix_ratio(str(mat or ''), str(note or ''))
+    return f'{pos} {mat} {st if st not in (None, "") else ""}'.strip() + (f' (premix {pm})' if pm else '')
 
 
 def sched_fields(r, hist=False):
@@ -408,9 +412,10 @@ def calc_history(pk, day, days=LOOK_DAYS):
         st, pct = r[H['Setting']], r[H['Formulation %']]
         ext_ = r[H['Extruder']] if r[H['Extruder']] and not str(r[H['Feeder']] or '').startswith(r[H['Extruder']]) else None
         if st not in (None, ''):
-            blocks[k]['feeders'].append(feeder_txt(ext_, r[H['Feeder']], r[H['Material']], st))
+            blocks[k]['feeders'].append(feeder_txt(ext_, r[H['Feeder']], r[H['Material']], st, r[H['Application / Note']]))
         elif pct not in (None, ''):
-            blocks[k]['feeders'].append(feeder_txt(ext_, r[H['Feeder']], r[H['Material']], f'{pct:g}%' if isinstance(pct, (int, float)) else pct))
+            blocks[k]['feeders'].append(feeder_txt(ext_, r[H['Feeder']], r[H['Material']], f'{pct:g}%' if isinstance(pct, (int, float)) else pct,
+                                                    r[H['Application / Note']]))
         share = r[H['Extruder Share']]
         if r[H['Extruder']] and isinstance(share, (int, float)):
             blocks[k].setdefault('shares', {})[r[H['Extruder']]] = f"{r[H['Extruder']]} {share * 100:g}%"
@@ -465,7 +470,7 @@ def lookup_runs(pk, day):
                     for c, v in f['feeders'].items():
                         if v['material'] or v['set']:
                             ext_, feed = c.split(' ', 1) if re.match(r'^[A-D] ', c) else ('', c)
-                            fs.append(feeder_txt(ext_, feed, current(v['material']), v['set']))
+                            fs.append(feeder_txt(ext_, feed, current(v['material']), v['set'], f.get('note')))
                     fl.append([f['formula_code'], ' | '.join(fs)])
                 for o in g['orders']:
                     forms[(pg['line_code'], o)] = fl

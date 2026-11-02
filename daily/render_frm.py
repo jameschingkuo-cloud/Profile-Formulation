@@ -79,30 +79,67 @@ from calc.common import VIRGIN_SILO, clean_virgin  # noqa: E402  PP Virgin witho
 # Kuo, 2 Nov 2026: "Premix does not have material ID, it is something we mix from the side and feed it in. but its
 # important to display the ratio"). The ratio as written on the material itself ("WB and IS premixed (WB:IS=9:1)"), else
 # as Tech's notes and James give it for the premix, else from the formula's note
-# Printed ratio first, as the floor says it (James, 2 Nov 2026: "Like a 9 to 1 WB to Ge mix" - "9:1"): "9:1 WB:GE"
-PREMIX_RATIO = [(r'\bWB\s*GE\s*pre-?mix', '9:1 WB:GE (W26038A + G26232M)'),     # James Kuo, 29 Oct 2026
-                (r'\bWB\s*(?:EA|GT)\s*pre-?mix', '9:1 WB:EA (W26038A + D26002M)'),  # Tech's SE23 / SE25 note, H68A127-1
-                (r'\bPK\s*pre-?mix', '6:1 PP Virgin:pink'),                    # Tech's SE11 / SE21 note
-                (r'\bWB\s*(?:and|/|&)\s*IS\s*pre-?mix', '9:1 WB:IS')]            # Tech's SE21 FR page
-RATIO_RX = re.compile(r'([A-Z]{2})\s*:\s*([A-Z]{2})\s*=\s*(\d+)\s*:\s*(\d+)|Ratio:?\s*(\d+)\s*:\s*(\d+)', re.I)
+# Printed ratio first, as the floor says it (James, 2 Nov 2026: "Like a 9 to 1 WB to Ge mix" - "9:1"): "9:1 WB:GE".
+# Tech's history names a premix two ways: by name ("WB GE Premix", "PK Pre-Mixed", "WB/IS Pre-mix") or by its two parts
+# ("W26038A/G26177A", the ratio in the block's note "W26038A/G26177A: 9/1"); James, 2 Nov 2026: "check premix history and
+# add them in" - "i mean update them". The ratio written for the order (material, then note) wins over the usual one: some
+# FR blocks ran WB/IS 85/15, DPP40WB1536 W26038A/B26002M 5/2. "6502A/PC716" is two virgins (either one), no premix.
+PREMIX_NAMED = [(r'\bWB\s*GE\s*pre-?mix', ('WB', 'GE'), 'W26038A + G26232M', (9, 1)),     # James Kuo, 29 Oct 2026
+                (r'\bWB\s*(?:EA|GT)\s*pre-?mix', ('WB', 'EA'), 'W26038A + D26002M', (9, 1)),  # Tech's note, H68A127-1
+                (r'\bPK\s*pre-?mix', ('PP Virgin', 'pink'), '', (6, 1)),                   # Tech's SE11 / SE21 note
+                (r'\bWB\s*(?:and|/|&)\s*IS\s*pre-?mix', ('WB', 'IS'), '', (9, 1)),          # Tech's SE21 FR pages
+                (r'\bWB\s*/\s*BG\s*pre-?mix', ('WB', 'BG'), '', None),                      # SE11 FU001BGW3 (no ratio written)
+                (r'\bIS-?GA\s*pre-?mix', ('IS', 'GA'), '', None)]                           # SE21 / SE23 FR, 2014-15
+PREMIX_PAIR = re.compile(r'^\s*(W\d{5}A)\s*/\s*([A-Z]{1,2}\d{5}[A-Z]|CR\d{3}[A-Z]{1,3}|TL\d{3}|[A-Z]\d{5}[A-Z]?)\b', re.I)
+RATIO_ANY = re.compile(r'([A-Z]{2})\s*:\s*([A-Z]{2})\s*=\s*(\d+)\s*:\s*(\d+)|(?:=|:|Ratio:?)\s*(\d+)\s*[/:]\s*(\d+)', re.I)
+_COLOUR = {}
 
 
-def _ratio(m):
-    return f'{m.group(3)}:{m.group(4)} {m.group(1).upper()}:{m.group(2).upper()}' if m.group(1) else f'{m.group(5)}:{m.group(6)}'
+def part_colour(code):
+    """W26038A -> WB, D26002M -> EA (IWPFT062's CR4xx code in the master), CR400BG -> BG; else the code as written."""
+    code = code.upper()
+    m = re.fullmatch(r'CR4\d\d([A-Z]+)', code)
+    if m:
+        return m.group(1)
+    if not _COLOUR:
+        try:
+            mats = json.loads((ROOT / 'data' / 'snapshots' / 'Formulation Master.json').read_text(encoding='utf-8'))['data']['Materials']
+        except (OSError, KeyError, ValueError):
+            mats = {}
+        for v in mats.values():
+            cc = re.fullmatch(r'CR4\d\d([A-Z]+)', str(v.get('Material Code') or ''))
+            for c in re.findall(r'[A-Z]\d{5}[A-Z]', str(v.get('Name') or '')) if cc else []:
+                _COLOUR[c] = cc.group(1)
+        _COLOUR.setdefault('', '')
+    return _COLOUR.get(code, code)
 
 
 def premix_ratio(mat, note=''):
-    """'' when the material is no premix; its ratio ("9:1 WB:GE"), or 'ratio not on file'."""
-    if not re.search(r'pre-?mix', mat or '', re.I):
+    """'' when the material is no premix; else its ratio first: "9:1 WB:GE (W26038A + G26232M)", or the parts with
+    'ratio not on file'."""
+    mat = mat or ''
+    pair = PREMIX_PAIR.match(mat)
+    named = next((x for x in PREMIX_NAMED if re.search(x[0], mat, re.I)), None)
+    if not pair and not named and not re.search(r'pre-?mix', mat, re.I):
         return ''
-    m = RATIO_RX.search(mat)
-    if m:
-        return _ratio(m)
-    for rx, ratio in PREMIX_RATIO:
-        if re.search(rx, mat, re.I):
-            return ratio
-    m = RATIO_RX.search(note or '')
-    return _ratio(m) if m else 'ratio not on file'
+    ratio, names = None, None
+    for txt in (mat, note or ''):
+        m = RATIO_ANY.search(txt)
+        if m:
+            ratio = (m.group(3), m.group(4)) if m.group(1) else (m.group(5), m.group(6))
+            names = (m.group(1).upper(), m.group(2).upper()) if m.group(1) else None
+            break
+    if pair:
+        a, b = pair.group(1).upper(), pair.group(2).upper()
+        names, parts = (part_colour(a), part_colour(b)), f'{a} + {b}'
+    elif named:
+        names, parts = names or named[1], named[2]
+        ratio = ratio or named[3]
+    else:
+        parts = ''
+    if not ratio:
+        return f"{':'.join(names)} premix, ratio not on file" + (f' ({parts})' if parts else '') if names else 'ratio not on file'
+    return f"{ratio[0]}:{ratio[1]} {':'.join(names)}" + (f' ({parts})' if parts else '') if names else f'{ratio[0]}:{ratio[1]}'
 
 
 def print_name(mat):
