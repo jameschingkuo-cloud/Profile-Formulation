@@ -182,7 +182,8 @@ for p in CNV:
 sheet(wb, 'Banner Notes', ['Scan Page', 'Line', 'Note (as printed, with position)'], bn, {'Note (as printed, with position)': 120})
 issues_sheet(wb, ['CNV'])
 _sheets = list(dict.fromkeys(f"{p['title'].replace('PP PROFILE PRODUCTION INSTRUCTIONS - ', '').title()} {p['line_code']}" for p in CNV))
-readme(wb, f"PP Profile Production Instructions - Converting ({', '.join(_sheets)}), issued {CNV[0]['issue_date']}", common + [
+readme(wb, f"PP Profile Production Instructions - Converting ({', '.join(_sheets)}), issued {CNV[0]['issue_date'] if CNV else '-'}", common + [
+    *(['No converting pages in this packet.'] if not CNV else []),
     'Sheets: Orders (one row per order line on each converting sheet), Banner Notes (the instruction lines typed between rows, with where they sit), Issues.',
     'Extrusion Status "X OF Y" is split into Plts Extruded (X) and Plts Ordered (Y); Plts Left to Extrude = Y - X (formula).',
     'Sheets Check compares printed Total Sheets with # of Plts x Pc./Plt. (formula).',

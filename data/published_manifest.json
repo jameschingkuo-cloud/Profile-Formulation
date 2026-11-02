@@ -309,12 +309,33 @@
   "published_at": "2026-11-02T14:59:19",
   "sha256": "8afdc7f4e618a6caa93fc5d864ac0fb9d3af76282f531b250ae722bf70678355"
  },
+ "Daily Formulation Report/FRM Formulation Report 2026-10-15.xlsx": {
+  "bytes": 50954,
+  "content": "9b63d0e57692f6bcadd6103806f05a9d97a9c3172fd755e37bc676bd69e20e22",
+  "from": "FRM Formulation Report 2026-10-15.xlsx",
+  "published_at": "2026-11-02T16:13:15",
+  "sha256": "7ec89f109a4bf2a0d75b883a2f34c928ad75f2dfe511e87f7cfd96738e927bdd"
+ },
+ "Daily Formulation Report/FRM Formulation Report 2026-10-16.xlsx": {
+  "bytes": 48927,
+  "content": "1b3b24f8517e209202cb4c6d1f4293ba3a3e7f16d325fa8fb6790080b3f17eb4",
+  "from": "FRM Formulation Report 2026-10-16.xlsx",
+  "published_at": "2026-11-02T16:13:15",
+  "sha256": "13ea6964b65a0d977182417ee7cc81bb9c9125c277bcbabb8f02e84e3f7e0a76"
+ },
+ "Daily Formulation Report/FRM Formulation Report 2026-10-20.xlsx": {
+  "bytes": 49248,
+  "content": "d40cba256479bbad277dec1f2e5899ce9167c0b5863c4775bfa5a76e0715959e",
+  "from": "FRM Formulation Report 2026-10-20.xlsx",
+  "published_at": "2026-11-02T16:13:15",
+  "sha256": "d894a154e9349bdf87f6fbe8cc6d9e53d46facd8e8cdf8621c134770f4e7ab52"
+ },
  "Daily Formulation Report/Formulation Report Record.xlsx": {
-  "bytes": 233334,
-  "content": "bb42103111c47c1a7f4bd9d1d128df7f802e616e9c7cbd74a22c2bb9ea9bd7e2",
+  "bytes": 367465,
+  "content": "72886b9348e144db9d219d562e60ba7bd8d25bf6aea99760ee4f86b91e08d537",
   "from": "Formulation Report Record.xlsx",
-  "published_at": "2026-11-02T14:59:20",
-  "sha256": "305b47a2231fd9957bad60964e059b45edd981f63e485562139ed6a1d6848a10"
+  "published_at": "2026-11-02T16:13:24",
+  "sha256": "df18def21795bd764adc189e923cb72d59890f44b2676a8d9fb31deb908b1e01"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-09-29.html": {
   "bytes": 350266,
@@ -568,6 +589,13 @@
   "published_at": "2026-10-13T14:15:21",
   "sha256": "5b17eede07d2766c6d89716d6a19bb8682fe199701e401f477298a3d17b6befa"
  },
+ "Extrusion Schedule/EXT Extrusion Schedule 2026-10-15.xlsx": {
+  "bytes": 39642,
+  "content": "ba2a26eb0ef89655134ffeba3833a592bd1b9cb976718074ffe5cbe5ce6c71c2",
+  "from": "EXT Extrusion Schedule 2026-10-15.xlsx",
+  "published_at": "2026-11-02T16:13:34",
+  "sha256": "d57aa39c79fc24afc669749de91dc0f11379eacd55b59244bbb293ef8364fba5"
+ },
  "Extrusion Schedule/EXT Extrusion Schedule 2026-10-16.xlsx": {
   "bytes": 40929,
   "content": "0a42d78832a217cfb5a3f9d0deb1ff02ecf0a07fee6e5a796d5b1f26c37b96e3",
@@ -653,11 +681,11 @@
   "sha256": "21a4ba761932a58d8cb6a44e8291a8929b82bedc071531ab2f4eb8f5e422df4b"
  },
  "Extrusion Schedule/Extrusion Production Record.xlsx": {
-  "bytes": 4268961,
-  "content": "445f68ea3a71dfb7bcf7fa88a71c88ff8fab8b05a0897eae630d24434d705e4b",
+  "bytes": 4274394,
+  "content": "70d967e1beab0b43949516c0e9824f218d16fa8b9b014e9598dbb43bfabec083",
   "from": "Extrusion Production Record.xlsx",
-  "published_at": "2026-11-02T14:26:04",
-  "sha256": "8e8c145f7ae873c0b3336b997c7ffbc8db8597098807c70dca9d36303390f411"
+  "published_at": "2026-11-02T16:13:15",
+  "sha256": "8c82c5cf5b1cd5e9ba61958f7cf1fcd2eb59215d3e70193fdf0ea69efb241784"
  },
  "Formulation Data Base/Formulation Calc Library.xlsx": {
   "bytes": 4054179,
@@ -667,11 +695,11 @@
   "sha256": "8ed5b36a90e5297f4b68f8fd932ac38822007a2fbeb274f6733903650f6b00e1"
  },
  "Formulation Data Base/Formulation Master.xlsx": {
-  "bytes": 77440,
-  "content": "8a60858584e78709cac58f88085da4aea18c146ffe61eb85789a04653ad3e44c",
+  "bytes": 90670,
+  "content": "ed7e52ae7a0de10314e74c156740a0b3e45541c5d9495254d3e90d4c97ca85ce",
   "from": "Formulation Master.xlsx",
-  "published_at": "2026-11-02T15:07:59",
-  "sha256": "debedec6da65ee27f15df8ed7aa3c838144e149e198674d9f550b86951d51dc3"
+  "published_at": "2026-11-02T16:14:42",
+  "sha256": "4191eb1d5683d1a1beb5d715a5ff3655bd53ab2b4fbe960b8f8205ca54be55f9"
  },
  "Product Master/Product Master.xlsx": {
   "bytes": 428631,
