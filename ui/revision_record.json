@@ -675,6 +675,24 @@
    "change": "James: \"see what else is missing code. must be an extraction issue\". Of 232 calc blocks with no code, 15 were a parser miss: calc/parse_fcal.py read Product / Formula Code / Prod. Period only from a row labelled \"Product Code\" in column A. Older sheets put them on the Order # row (SE25 \"6 mm EC-P\" FH0001EC8 x2, SE43 \"4 mm WB-LW\" FUA141WB4 x2) and SE31's CoEx sheets leave column A blank (FX020WB4 x11, as typed). Now read by their own labels wherever they are. Rebuilt Formulation Calc Library: only those 15 blocks changed; the 2 Nov FRM Draft is identical. The other 217 are blank in Tech's own workbooks (SE61 147: no code typed on any 10 mm KS-Diamond, 10 mm EB-Diamond or 5 mm KS-Diamond sheet)",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 76,
+   "date": "2026-11-02",
+   "type": "Logic",
+   "item": "Calc library: SE61 codes confirmed, FX020WB4 = FXA020WB4",
+   "change": "James: \"yes confirm those three, and FX020WB4 is FXA020WB4\". calc/parse_fcal.py: a blank Formula Code on SE61's \"10 mm KS-Diamond\" sheets is BF0000KSA (53 blocks), \"10 mm EB-Diamond\" BF0000EBA (37), \"5 mm KS-Diamond\" BF0000KS5 (32); SE31's FX020WB4 reads FXA020WB4 (48 blocks). Blocks with no code: 95 (SE61 25). Settings James confirmed on a line's page layout now outrank a calc-sheet recipe of the same code (assign.member_settings), so H6AA151-1 keeps BF0000KS5 as confirmed. FRM Drafts of 29 Oct, 30 Oct and 2 Nov unchanged",
+   "order": "",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 77,
+   "date": "2026-11-02",
+   "type": "Print",
+   "item": "PP Virgin printed without the silo number",
+   "change": "James: \"remove the Silo number from PP Virgin, operator can pick whatever PP virgin silo they want\" - \"just clean them up, including historic data\" - \"and artifact\". Tech's \"PP Virgin-silo 3 (6502A)\" / \"PP Virgin-silo 4 (F6502A)\" / \"(F-6502A)\" print as \"PP Virgin (F6502A)\"; \"PP Virgin-silo 3 (DOW-C104)\" as \"PP Virgin (DOW-C104)\" (render_frm.clean_virgin): the Word files, the page (all its data, the Look up record days too), the FRM Formulation Report workbooks and the Formulation Report Record from now on. Historic: 37 published files re-issued from their published copies with only those names changed (Word files 23-30 Oct, FRM Formulation Reports 23-30 Sep, Formulation Report Record, Interface Copies 29 Sep - 2 Nov; 17,433 names) and 22 Word files kept only in out/. Left as Tech issued them: the packets, FRM Drafts and the Formulation Master (a master changes only through its Change Log). No re-send (James: \"no need to resent email\"). Also: Auger rules and slopes moved to Info (James: \"other then gear box ratio, their diameter is also different. So you cannot use gear ratio as reference\")",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }

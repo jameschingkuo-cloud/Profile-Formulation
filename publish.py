@@ -16,6 +16,7 @@ edit first (handoff Change Log), rebuild, then publish again. There is no overri
 After copying, every file is re-read from PUBLISH_DIR and compared by content (cells for .xlsx, bytes otherwise), and
 data/published_manifest.json is updated. Commit that file with the build.
 """
+import re
 import datetime, json, os, shutil, sys
 from pathlib import Path
 import config
@@ -61,7 +62,9 @@ def main(argv):
         if not src.exists():
             refused.append((n, f'not in {config.OUTPUT_DIR}')); continue
         dst = destination(n)
-        if dst.exists() and n.startswith(DAILY_PREFIXES) and n.rsplit(' ', 1)[-1][:10] < today and not reissue:
+        # the file's day, also when a suffix follows it ("FRM Formulation 2026-11-02 (weight %).docx")
+        day = (re.search(r'\d{4}-\d\d-\d\d', n) or [''])[0]
+        if dst.exists() and n.startswith(DAILY_PREFIXES) and day < today and not reissue:
             refused.append((n, f'{rel(dst)} is an earlier day\'s record and stays as issued. Use --reissue only if James asks for it.'))
             continue
         if dst.exists():

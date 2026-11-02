@@ -608,7 +608,7 @@ function setRows(f, weight){
     const fixed = list.filter(x => String(x.set).toLowerCase() !== 'auto').reduce((a, x) => a + (num(x.set) || 0), 0);
     return (e ? `<tr><td colspan="3" class="caps" style="padding-top:8px">Extruder ${e}</td></tr>` : '') + list.map(x => {
       const r = REPL[x.mat], auto = String(x.set).toLowerCase() === 'auto';
-      const mat = r ? `${esc(r.now.replace(/ \(.*\)$/, ''))}<small>Page prints ${esc(x.mat)}: load ${esc(r.now.replace(/ \(.*\)$/, ''))}</small>` : esc(x.mat || '—');
+      const mat = r ? `${esc(r.now.replace(/ \(.*\)$/, ''))}<small>Page prints ${esc(x.mat)}: load ${esc(r.now.replace(/ \(.*\)$/, ''))}</small>` : esc(printName(x.mat) || '—');
       const val = auto ? `${Math.round((100 - fixed) * 10) / 10}<small>% auto</small>` : `${esc(x.set)}<small>${weight ? '%' : ''}</small>`;
       return `<tr><td class="p">${esc(x.col.replace('Extruder ', '').replace(/^[A-D] /, ''))}</td><td class="m">${mat}</td><td class="v">${val}</td></tr>`;
     }).join('');
@@ -1303,6 +1303,8 @@ const PRINT_AS = {'FOAM – Bergen XO-256': 'FOAM – Bergen X0-256', 'PP Virgin
   'KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F': 'KS NPC PE-B9000F',
   'KS-MDI PE-500 (or Spartech B60009 or NPC PE90000F)': 'KS NPC PE-B9000F',
   'KS-MDI PE-500 (or Spartech B60009)': 'KS NPC PE-B9000F'};
+// no silo number on PP Virgin (James Kuo, 2 Nov 2026: "operator can pick whatever PP virgin silo they want"; render_frm.print_name)
+const printName = m => (PRINT_AS[m] || m || '').replace(/PP Virgin\s*-?\s*silo\s*\d+\s*\(([^)<"]*)\)/gi, (_, r) => `PP Virgin (${/^F?-?6502A$/i.test(r.trim()) ? 'F6502A' : r.trim()})`);
 let docxLib = null;
 const loadDocx = () => docxLib || (docxLib = loadScript('https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js').then(() => window.docx).catch(e => { docxLib = null; throw e; }));
 const colKey = c => { const m = /^(?:Extruder )?([A-D]) (.+)$/.exec(String(c).trim()); return m ? m[1] + '|' + m[2] : '|' + String(c).trim(); };
@@ -1406,7 +1408,7 @@ async function buildDocx(plan){
         cols.forEach(k => {
           const x = by[k];
           if (!x) { cells.push(C([], {w: IN(wFeed)})); return; }
-          const rp = REPL[x.mat], shown = rp ? rp.now.replace(/ \(.*\)$/, '') : (PRINT_AS[x.mat] || x.mat || '');
+          const rp = REPL[x.mat], shown = rp ? rp.now.replace(/ \(.*\)$/, '') : printName(x.mat);
           let sv = String(x.set ?? '');
           if (ln.weight && sv.toLowerCase() === 'auto') {
             const e = k.split('|')[0];

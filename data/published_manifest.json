@@ -191,288 +191,284 @@
   "sha256": "2d7b53214a2645f40ed3743b8c9affca52a8e0d20002756cd49f0391ce8f8ef6"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-23.docx": {
-  "bytes": 50562,
-  "content": "489287baf297f963653aa9b22b1c2726e61d8ad5ddd9ec7f2998f8c422f87796",
-  "content_rule": "docx text (body, headers, footers), 29 Oct 2026",
+  "bytes": 58800,
+  "content": "905d2d4fc43ea244d600a58320a26ef23bb6fbe3d50a877b3d7ae6c1f4f08aa9",
   "from": "FRM Formulation 2026-10-23.docx",
-  "published_at": "2026-10-27T08:15:42",
-  "sha256": "538a0b6b43c94d76761da3aa8eceab7b85b38bb5670df485b8f2bc7b0212de64"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "2a338a7342718cd0207f5737e00ad5b6e0b825ced4537f8fdd503eb576dd9947"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-26.docx": {
-  "bytes": 48089,
-  "content": "ba90062d116636645c8c00fc6609ae9ddf4a660c4803b380eaf813b6c0421cd1",
+  "bytes": 56318,
+  "content": "c46c1b255e1a664cb2fb39156db5bf7abb2e2fe8fd706b7c987fb29f38c5c6f8",
   "from": "FRM Formulation 2026-10-26.docx",
-  "published_at": "2026-10-29T16:03:08",
-  "sha256": "a8daa59eace118bd470d531e53ab7dd49530c7a7be452d49b184bc036a36978c"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "57195c01e4767537faa825ce79466c79ae30e4da7485e3148930e7190b634a01"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-27.docx": {
-  "bytes": 48786,
-  "content": "af101d6b001b80430c9005b9bb3acb010b994295a548d50a0d2dfdf7dd31d8c2",
+  "bytes": 57022,
+  "content": "484723c119ff1b1363d09ac26588f836a43fa94786e5100b307bbd035b5fa69d",
   "from": "FRM Formulation 2026-10-27.docx",
-  "published_at": "2026-10-29T16:03:08",
-  "sha256": "ca7ace2d47ad5237ba0f4a81c851f2ebd5d5d4f75318541b18f019774f003ac7"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "713b4c4e2d881eac12b7e24da401281bd47174ec1187333e45a17bd288c261d4"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-28.docx": {
-  "bytes": 49080,
-  "content": "f5a174045f753dd245857047c607c35533f1bb5d9c0a1f4d6e6e8df6451506f7",
-  "content_rule": "docx text (body, headers, footers), 29 Oct 2026",
+  "bytes": 57310,
+  "content": "c4e1757fca1885845fdd191443c9fc97f3c40e408a6c5479ae3baaab1ba652dd",
   "from": "FRM Formulation 2026-10-28.docx",
-  "published_at": "2026-10-29T15:58:23",
-  "sha256": "436fb14e056e685e1e2d9e506e01c33633f5ea352b915682bed3e097248a0069"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "9ef0e8a4126a26add9f009e98cdcc3bddc168e5406cccb57810145990f357682"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-29 (weight %).docx": {
-  "bytes": 49274,
-  "content": "83a03ad8de8422a9c8edeca50760798dd6325ad3b576553e0b164d9b567f8401",
+  "bytes": 57517,
+  "content": "bf705c409b5a36a3ce30f5b4280f492a6dfc2143afe6fcdb2e9b879978dc60de",
   "from": "FRM Formulation 2026-10-29 (weight %).docx",
-  "published_at": "2026-10-30T12:25:28",
-  "sha256": "dc6f98439c357d9bf738801db77453a5c5e274ce2183809bffafce17eb8ed5d0"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "ab0fc7c94817ec0b44923cdb48e1ef70868e9a059386c09ca1c81acd486d8b40"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-29.docx": {
-  "bytes": 48978,
-  "content": "d3e2a70f9cc85b4ccf0cbc5330e661c76d38de0dbcda88788a1a2b443bc9090b",
+  "bytes": 57213,
+  "content": "e17f8bbe855d6e6f1e69bdd0ef92467f54db7c626c32a470a34e245db074d6ad",
   "from": "FRM Formulation 2026-10-29.docx",
-  "published_at": "2026-10-30T12:25:28",
-  "sha256": "853577631d42bda0a1bea7f76228d7427d6c6f75db4ced9bfe96ad3e9e6fc218"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "d7d0055c1b42e992fc68505fdcc31051e8bfc6c452421daf28a5040a1ebe5562"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-30 (weight %).docx": {
-  "bytes": 49015,
-  "content": "9042451d620e9ba4f53d9f7788bfd9563997e9edd8163fa8c2c64188a6c94598",
+  "bytes": 57258,
+  "content": "73a16e1673db32ea11704a15cb0a97bd6014c7bf5e636f3496090aa2de787da9",
   "from": "FRM Formulation 2026-10-30 (weight %).docx",
-  "published_at": "2026-10-30T13:29:40",
-  "sha256": "778de96ffa2fd48c5a55afed1a159797b477ea38909dc45022710bb926a12ce4"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "0e2526ac157d33adae3988a9fda3eaa30c9a451f59fc4adae5bf58d5e09a9cd8"
  },
  "Daily Formulation Report/FRM Formulation 2026-10-30.docx": {
-  "bytes": 48674,
-  "content": "7e8914a07a101a8c364aee8b0838dbe484e5d68823538669685057b06e8f9b6b",
+  "bytes": 56903,
+  "content": "178c06a49dfda5335596411de9eb4d31ae67d118049ff319e6d6ff56068b7a32",
   "from": "FRM Formulation 2026-10-30.docx",
-  "published_at": "2026-10-30T13:29:40",
-  "sha256": "a89c3c8b3133e1e2375557a97632944202e72f45421d9a006b8bdc55e87d80a9"
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "ea2dd654c4d4309972b18d27766b6206c68c673289c78453820321610f1ad0d6"
  },
  "Daily Formulation Report/FRM Formulation 2026-11-02 (new orders).docx": {
-  "bytes": 40406,
-  "content": "ccaf4a3f6f98f2bc74f6db9f3e5b5c5774b08cc022fad87015bc689604400061",
+  "bytes": 40402,
+  "content": "f85400c60fcc757c1cc12665da52d73853327835c35c43ac6947755bf4d5209c",
   "from": "FRM Formulation 2026-11-02 (new orders).docx",
-  "published_at": "2026-11-02T14:38:16",
-  "sha256": "49d3b323091fd12044d42784d3fca20b42223695faabb20eb97d9155ff39da61"
+  "published_at": "2026-11-02T14:54:24",
+  "sha256": "9ad36a0bc6a1a1d11bdbd6019b75d8f2955aea5aeb4343b438dae1212db132b9"
  },
  "Daily Formulation Report/FRM Formulation 2026-11-02 (weight %).docx": {
-  "bytes": 48314,
-  "content": "918d02e6072e80e0fe14ea346e0695b824babe2cdf7a9d42e50273710d054ec9",
+  "bytes": 48291,
+  "content": "ed8a3f294a5d1fe6afe5631cb84f5cc80ab6bc54e6e7871d35b0bf9d6bfaa1b2",
   "from": "FRM Formulation 2026-11-02 (weight %).docx",
-  "published_at": "2026-11-02T14:38:16",
-  "sha256": "6794c93cfdf2260d677dcada40ea1c2cfa87acf7191302c0fc2eb0aecca88303"
+  "published_at": "2026-11-02T14:54:24",
+  "sha256": "553b23a9b16489d979f40177e8d56f96d12ea5af5a74edb1cb91a82f1e0429df"
  },
  "Daily Formulation Report/FRM Formulation 2026-11-02.docx": {
-  "bytes": 48009,
-  "content": "0cb806f01549e861dcf35a6c7d736f5084382db596b42be0fb8f873ed48a5f12",
+  "bytes": 47994,
+  "content": "87eea24cc68ac9356445751fd6fa14657a08c1b62aaaec3dba32d514651b8d05",
   "from": "FRM Formulation 2026-11-02.docx",
-  "published_at": "2026-11-02T14:38:16",
-  "sha256": "1b0b43aa4ce6ab674091ab1b098b7f94c785a638b518c50671a49c00f8527879"
+  "published_at": "2026-11-02T14:54:24",
+  "sha256": "cd10beacfa5d5ddcd10dd7ea09ae33eb0851c141242c374af0b2c5d6406fedcb"
  },
  "Daily Formulation Report/FRM Formulation Report 2026-09-23.xlsx": {
-  "bytes": 57524,
-  "content": "05f6f7e41a1413720aeee65a614efa471b74179ff55bb19c2d66e0f200a21416",
-  "from": "Cowork session",
-  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
-  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
-  "sha256": "1c9378a17d8b1e45be189c95231eb5a9c700c34f602cc06d0fe0fc3823ac76ec"
+  "bytes": 55614,
+  "content": "6dfee4a062a9fdc058c0a5a7fc8728473e54b5fdfa626a0873cd61af3ae58e0b",
+  "from": "FRM Formulation Report 2026-09-23.xlsx",
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "4cc1345f39a99f8f1e4aa0641abc28d84ea3a421e55876c9fda8764afa80b103"
  },
  "Daily Formulation Report/FRM Formulation Report 2026-09-24.xlsx": {
-  "bytes": 56072,
-  "content": "312ec9162999c34c6907bbe56b842dd208e90b50d46c8efe8145bf6d5844528d",
-  "from": "Cowork session",
-  "moved": "2026-09-28 copied by SharePoint (server-side) from the workspace folder; same bytes",
-  "published_at": "2026-09-25/26 (Cowork, device_commit_files)",
-  "sha256": "0491a2256a5c31036fb4a6c91aea78f9df56ec2d688cb1de1b60e5bbbc804f8b"
+  "bytes": 54160,
+  "content": "94917d0de4917ef1733f700b82dcde1c5d0dd9a5f819f8a15e5877873e2b948b",
+  "from": "FRM Formulation Report 2026-09-24.xlsx",
+  "published_at": "2026-11-02T14:59:18",
+  "sha256": "f33628c516b15f7a7ba9764d66489ddecfea3fc1cdb2b1fd5936202f0ee614b0"
  },
  "Daily Formulation Report/FRM Formulation Report 2026-09-25.xlsx": {
-  "bytes": 45642,
-  "content": "7e0ed8f0f7fdbb391685ce9d05c34f5beea3cea905b117e723b9a26a0403a106",
+  "bytes": 52423,
+  "content": "7c7292ab35a9a202dbb6f7938381dcab001fa14fe5ce8defb930bea44864e519",
   "from": "FRM Formulation Report 2026-09-25.xlsx",
-  "published_at": "2026-09-28T16:19:32",
-  "sha256": "d24bd9ba19b47c3fa96863e2f4334faf2926b231f5a233216adf8353b4441f5e"
+  "published_at": "2026-11-02T14:59:19",
+  "sha256": "1dc26535113192a772406f651b917ecae5040599b9860781c1f4d9fbd9831f4f"
  },
  "Daily Formulation Report/FRM Formulation Report 2026-09-28.xlsx": {
-  "bytes": 47828,
-  "content": "5e10b38ea19a1a2f7d75b7f376a39257cce76b595387bf6bcd9e3076b30dd5b5",
+  "bytes": 54594,
+  "content": "8a6ab7b94bab7bb712dd0e9378e77462c1097678e6c7f3157c5f786ed70b9de3",
   "from": "FRM Formulation Report 2026-09-28.xlsx",
-  "published_at": "2026-09-28T16:19:48",
-  "sha256": "23d87a1ba57ee8b3ff097c9443580dee25a11267a0314d6b83a0c0bbf6c1646a"
+  "published_at": "2026-11-02T14:59:19",
+  "sha256": "0dd09e3c5f66b2e9d3d108cc2248aba5662d7a486a004afbb92ddf1c79e15e93"
  },
  "Daily Formulation Report/FRM Formulation Report 2026-09-29.xlsx": {
-  "bytes": 49832,
-  "content": "60c3422ec1eb212a8027c2106c2bcc7b7af4a40bc539dc0024c119820266216f",
+  "bytes": 56587,
+  "content": "ca3992e0bbefefcdfb9aacd64c081ffc3611c1dc09e2981c217217d5aabc834c",
   "from": "FRM Formulation Report 2026-09-29.xlsx",
-  "published_at": "2026-09-29T16:15:56",
-  "sha256": "42f21a2c3274e1116d17cf42204f1f9ed19ec26cff7c761513772c4af33955fe"
+  "published_at": "2026-11-02T14:59:19",
+  "sha256": "cee3867680afd8338a50725e852d2b2e65642a40677450bd5c9a33e3749ac888"
  },
  "Daily Formulation Report/FRM Formulation Report 2026-09-30.xlsx": {
-  "bytes": 52750,
-  "content": "cb9005a40a33a1f1582020ef4b3b64f4f3d66d213d8f0251b8f4541578a4dc40",
+  "bytes": 59506,
+  "content": "84b2ada95176fd771819d057039d54aa37577e2f55e96a6fd99ef44eee2e7da5",
   "from": "FRM Formulation Report 2026-09-30.xlsx",
-  "published_at": "2026-09-30T15:39:44",
-  "sha256": "5ee103d2d686b353eaf6cdc290b17756ffa8b12bbf274316244ac5b16df99118"
+  "published_at": "2026-11-02T14:59:19",
+  "sha256": "8afdc7f4e618a6caa93fc5d864ac0fb9d3af76282f531b250ae722bf70678355"
  },
  "Daily Formulation Report/Formulation Report Record.xlsx": {
-  "bytes": 227016,
-  "content": "7fce53aa702db49931ce08d35e2725cddb28a74ac34b532bbcc39e3931d013ff",
+  "bytes": 233334,
+  "content": "bb42103111c47c1a7f4bd9d1d128df7f802e616e9c7cbd74a22c2bb9ea9bd7e2",
   "from": "Formulation Report Record.xlsx",
-  "published_at": "2026-11-02T14:25:54",
-  "sha256": "cd723f6970865492d47e248bb0e52213ffb42a924b4ba5a7651705da3ce623cd"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "305b47a2231fd9957bad60964e059b45edd981f63e485562139ed6a1d6848a10"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-09-29.html": {
-  "bytes": 352058,
-  "content": "88f799513e83d079d6f0137010b7226ccac3101042c625f60688f535b5dde0ef",
+  "bytes": 350266,
+  "content": "4a40703a082428a659ee2fddf23b0aacc25045aeeb787ddfd1694ba97638dc48",
   "from": "Profile Formulation 2026-09-29.html",
-  "published_at": "2026-09-29T18:06:34",
-  "sha256": "88f799513e83d079d6f0137010b7226ccac3101042c625f60688f535b5dde0ef"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "4a40703a082428a659ee2fddf23b0aacc25045aeeb787ddfd1694ba97638dc48"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-09-30.html": {
-  "bytes": 518814,
-  "content": "649684b825748d7ccbea2cc382302ecce6cf0db0527a359d4643bc41e0681877",
+  "bytes": 516664,
+  "content": "f36c930b195f1d04d85724f7b7ab2722e556881c0478ec0cadc10466153c8737",
   "from": "Profile Formulation 2026-09-30.html",
-  "published_at": "2026-09-30T15:41:29",
-  "sha256": "649684b825748d7ccbea2cc382302ecce6cf0db0527a359d4643bc41e0681877"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "f36c930b195f1d04d85724f7b7ab2722e556881c0478ec0cadc10466153c8737"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-02.html": {
-  "bytes": 517809,
-  "content": "a203c7d75eb62d60bdd66ed9ff1c269da50f45ef23cf2c104a4300c9afe5dd61",
+  "bytes": 515729,
+  "content": "e1d11eb48ee122fc5fe4a926a482918f7a68cfae59eeabe2987d9fdc6bc00152",
   "from": "Profile Formulation 2026-10-02.html",
-  "published_at": "2026-10-05T14:33:56",
-  "sha256": "a203c7d75eb62d60bdd66ed9ff1c269da50f45ef23cf2c104a4300c9afe5dd61"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "e1d11eb48ee122fc5fe4a926a482918f7a68cfae59eeabe2987d9fdc6bc00152"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-05.html": {
-  "bytes": 518259,
-  "content": "1b99146d10f8ab8da6dc92d500a2933fa7daece6cbdb87d6b7f173a00a7b6727",
+  "bytes": 516220,
+  "content": "a57c17cf1ba42889a2324d38aa5c963daec587495fc7331f7f6b423a676f6d3c",
   "from": "Profile Formulation 2026-10-05.html",
-  "published_at": "2026-10-05T16:02:33",
-  "sha256": "1b99146d10f8ab8da6dc92d500a2933fa7daece6cbdb87d6b7f173a00a7b6727"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "a57c17cf1ba42889a2324d38aa5c963daec587495fc7331f7f6b423a676f6d3c"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-06.html": {
-  "bytes": 519135,
-  "content": "8d46b5be2c96b6443b20d316e4ce5e8eb3c1ec7cf9b3b3b351d05ebdcc30eb12",
+  "bytes": 517114,
+  "content": "32b762e6f4ef91c921e73ebb76acd2104a7ed9d954340b76058e1d0621666ae5",
   "from": "Profile Formulation 2026-10-06.html",
-  "published_at": "2026-10-06T14:00:26",
-  "sha256": "8d46b5be2c96b6443b20d316e4ce5e8eb3c1ec7cf9b3b3b351d05ebdcc30eb12"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "32b762e6f4ef91c921e73ebb76acd2104a7ed9d954340b76058e1d0621666ae5"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-07.html": {
-  "bytes": 522520,
-  "content": "4aa59fbc2bc16805f57012810a5fef6a1e5364115612ddbb59c52608319b591c",
+  "bytes": 520506,
+  "content": "34b44212d491fbec2609315802d31730ed00ea7e4455ab2b1d3ffcce4edfd4a7",
   "from": "Profile Formulation 2026-10-07.html",
-  "published_at": "2026-10-07T15:55:34",
-  "sha256": "4aa59fbc2bc16805f57012810a5fef6a1e5364115612ddbb59c52608319b591c"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "34b44212d491fbec2609315802d31730ed00ea7e4455ab2b1d3ffcce4edfd4a7"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-08.html": {
-  "bytes": 526883,
-  "content": "3b2ae52c60234c4a19b1e67984a4503671dd3d3a792b2868002670a78f6ec586",
+  "bytes": 524869,
+  "content": "7387efde722b53a2f54413973cfe4884eb97ae10da2efcc66bf681543d881ee5",
   "from": "Profile Formulation 2026-10-08.html",
-  "published_at": "2026-10-08T13:17:35",
-  "sha256": "3b2ae52c60234c4a19b1e67984a4503671dd3d3a792b2868002670a78f6ec586"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "7387efde722b53a2f54413973cfe4884eb97ae10da2efcc66bf681543d881ee5"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-09.html": {
-  "bytes": 530478,
-  "content": "ea1ed24ed7569fd41134fbbaec27b841aafbeb6eda2b95da91d10bdce34b545e",
+  "bytes": 528464,
+  "content": "479243903e404ec614a80a75e86f38e88bd48013b16c94a579cea4b0eba81146",
   "from": "Profile Formulation 2026-10-09.html",
-  "published_at": "2026-10-09T14:46:24",
-  "sha256": "ea1ed24ed7569fd41134fbbaec27b841aafbeb6eda2b95da91d10bdce34b545e"
+  "published_at": "2026-11-02T14:59:20",
+  "sha256": "479243903e404ec614a80a75e86f38e88bd48013b16c94a579cea4b0eba81146"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-12.html": {
-  "bytes": 584522,
-  "content": "1d1e2840314588439c378a6457464727dd0aa11561d57a44a9df74a6bb3a7c17",
+  "bytes": 582017,
+  "content": "874f795e3ec69c8d9c2a782a4b17d75a39f98603550deee9a4467b4560512334",
   "from": "Profile Formulation 2026-10-12.html",
-  "published_at": "2026-10-12T13:16:05",
-  "sha256": "1d1e2840314588439c378a6457464727dd0aa11561d57a44a9df74a6bb3a7c17"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "874f795e3ec69c8d9c2a782a4b17d75a39f98603550deee9a4467b4560512334"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-13.html": {
-  "bytes": 586650,
-  "content": "cb227a822cec1c33f74c515b5bc5b500bfdedb963b1517c1be759f87b8f117fc",
+  "bytes": 584164,
+  "content": "3dd42d27b967a92ea9b894cc2896e7747a2788aa964da14f91ed13135f066700",
   "from": "Profile Formulation 2026-10-13.html",
-  "published_at": "2026-10-13T14:16:10",
-  "sha256": "cb227a822cec1c33f74c515b5bc5b500bfdedb963b1517c1be759f87b8f117fc"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "3dd42d27b967a92ea9b894cc2896e7747a2788aa964da14f91ed13135f066700"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-16.html": {
-  "bytes": 590937,
-  "content": "8931a40a8c24a333d1cf5a5bcdc68e8b1262d71e02c5047e4a0940005b903cbf",
+  "bytes": 588451,
+  "content": "5603fb099eed0f61fc35c7efbf86284e7ab7f2e4da45209f6fb040044089457f",
   "from": "Profile Formulation 2026-10-16.html",
-  "published_at": "2026-10-16T11:47:34",
-  "sha256": "8931a40a8c24a333d1cf5a5bcdc68e8b1262d71e02c5047e4a0940005b903cbf"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "5603fb099eed0f61fc35c7efbf86284e7ab7f2e4da45209f6fb040044089457f"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-19.html": {
-  "bytes": 593771,
-  "content": "3b94198b53d50f7fbb8ad89c81c6bd300babad38cf92681f8e77a987be632aae",
+  "bytes": 591285,
+  "content": "3c687e27b85896e7792e7439c1d4d7851bae52f184901546256d76abbd11aa96",
   "from": "Profile Formulation 2026-10-19.html",
-  "published_at": "2026-10-19T13:48:02",
-  "sha256": "3b94198b53d50f7fbb8ad89c81c6bd300babad38cf92681f8e77a987be632aae"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "3c687e27b85896e7792e7439c1d4d7851bae52f184901546256d76abbd11aa96"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-20.html": {
-  "bytes": 596444,
-  "content": "e8096f11daad5f0580d8497aeb568a846da65ab59067d263b220b5167a1da663",
+  "bytes": 593958,
+  "content": "6c96cdcb56e0b3f427be5d4e79e84aaea6d3e58d00f15f79801bc816476e2aae",
   "from": "Profile Formulation 2026-10-20.html",
-  "published_at": "2026-10-20T15:47:11",
-  "sha256": "e8096f11daad5f0580d8497aeb568a846da65ab59067d263b220b5167a1da663"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "6c96cdcb56e0b3f427be5d4e79e84aaea6d3e58d00f15f79801bc816476e2aae"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-21.html": {
-  "bytes": 597780,
-  "content": "828c2048eb8e4be5ece09d8a6f550c2ada48c4aeb6fca23909d0d4a7e888baf1",
+  "bytes": 595293,
+  "content": "d42c4ac020fe6f40a77321c184fc957e7906476021d6ba31f20cbab66adcc8c1",
   "from": "Profile Formulation 2026-10-21.html",
-  "published_at": "2026-10-21T13:19:19",
-  "sha256": "828c2048eb8e4be5ece09d8a6f550c2ada48c4aeb6fca23909d0d4a7e888baf1"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "d42c4ac020fe6f40a77321c184fc957e7906476021d6ba31f20cbab66adcc8c1"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-22.html": {
-  "bytes": 601527,
-  "content": "0a0f97d7fdb8c52cab1e6c1919acf85d17875d0a37ed33aed88e932528dec22e",
+  "bytes": 599040,
+  "content": "9bd16c9786215f4cae94147cbbac3ea04322630c47aa4d29997bfe6486ffcbc0",
   "from": "Profile Formulation 2026-10-22.html",
-  "published_at": "2026-10-22T13:47:19",
-  "sha256": "0a0f97d7fdb8c52cab1e6c1919acf85d17875d0a37ed33aed88e932528dec22e"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "9bd16c9786215f4cae94147cbbac3ea04322630c47aa4d29997bfe6486ffcbc0"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-23.html": {
-  "bytes": 606905,
-  "content": "65e3bd8905ed45b1744b3af1eaa7ea97345dd003f22ee8189e7a6d7c6893d35a",
+  "bytes": 604430,
+  "content": "3a314b74a144827213b61f2525034320a5d782e2740497d657a476b49af345bd",
   "from": "Profile Formulation 2026-10-23.html",
-  "published_at": "2026-10-23T13:16:10",
-  "sha256": "65e3bd8905ed45b1744b3af1eaa7ea97345dd003f22ee8189e7a6d7c6893d35a"
+  "published_at": "2026-11-02T14:59:21",
+  "sha256": "3a314b74a144827213b61f2525034320a5d782e2740497d657a476b49af345bd"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-26.html": {
-  "bytes": 862520,
-  "content": "e15bef3f615b6448d64e848a20a048616ed8246851fa6e26e14fb3d95dee7b5e",
+  "bytes": 857549,
+  "content": "7a5b626fbd8b3dc0abbd964d1476ffd98ece0935c290062db28f320f6c254098",
   "from": "Profile Formulation 2026-10-26.html",
-  "published_at": "2026-10-26T13:47:05",
-  "sha256": "e15bef3f615b6448d64e848a20a048616ed8246851fa6e26e14fb3d95dee7b5e"
+  "published_at": "2026-11-02T14:59:22",
+  "sha256": "7a5b626fbd8b3dc0abbd964d1476ffd98ece0935c290062db28f320f6c254098"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-27.html": {
-  "bytes": 1426968,
-  "content": "0d4201ee59fcbcf45e36bfde11d32f0809692f15ada06b5c7170c0fe9466f576",
+  "bytes": 1416025,
+  "content": "e7848feb0a0b3f92a17673400c92c88b862d05395fd31e838e3918151742bb26",
   "from": "Profile Formulation 2026-10-27.html",
-  "published_at": "2026-10-27T13:16:56",
-  "sha256": "0d4201ee59fcbcf45e36bfde11d32f0809692f15ada06b5c7170c0fe9466f576"
+  "published_at": "2026-11-02T14:59:22",
+  "sha256": "e7848feb0a0b3f92a17673400c92c88b862d05395fd31e838e3918151742bb26"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-28.html": {
-  "bytes": 1442640,
-  "content": "f23ad2930445433caed6f7ea04b453ba40921d585848258169bdd1a7d9fe9696",
+  "bytes": 1431613,
+  "content": "05dfa4bac09b257da06cea31003bbb809e117e06c385b4de4c508e5ebfc98b7a",
   "from": "Profile Formulation 2026-10-28.html",
-  "published_at": "2026-10-28T13:17:10",
-  "sha256": "f23ad2930445433caed6f7ea04b453ba40921d585848258169bdd1a7d9fe9696"
+  "published_at": "2026-11-02T14:59:22",
+  "sha256": "05dfa4bac09b257da06cea31003bbb809e117e06c385b4de4c508e5ebfc98b7a"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-29.html": {
-  "bytes": 1932239,
-  "content": "8e5dfe4a04fa0e95cacb2c31190ef537c27d66f70a2f9a9f8157c41c1a4bb47e",
+  "bytes": 1919520,
+  "content": "973ae4af517081958a250a8b5cf755683cd7489fccbc1c54ae176d38a62956e8",
   "from": "Profile Formulation 2026-10-29.html",
-  "published_at": "2026-10-30T12:28:01",
-  "sha256": "8e5dfe4a04fa0e95cacb2c31190ef537c27d66f70a2f9a9f8157c41c1a4bb47e"
+  "published_at": "2026-11-02T14:59:22",
+  "sha256": "973ae4af517081958a250a8b5cf755683cd7489fccbc1c54ae176d38a62956e8"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-10-30.html": {
-  "bytes": 1936086,
-  "content": "fdf68de58a0fd83c894434600f3906456381e008dc48cc0ca3e39a5b29ab92b5",
+  "bytes": 1923360,
+  "content": "4891556bcaff995d3662b7ceeffdbcca6f8f1347903b94dac79a22dc7c9c2bc9",
   "from": "Profile Formulation 2026-10-30.html",
-  "published_at": "2026-10-30T13:30:10",
-  "sha256": "fdf68de58a0fd83c894434600f3906456381e008dc48cc0ca3e39a5b29ab92b5"
+  "published_at": "2026-11-02T14:59:23",
+  "sha256": "4891556bcaff995d3662b7ceeffdbcca6f8f1347903b94dac79a22dc7c9c2bc9"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-11-02.html": {
-  "bytes": 2820117,
-  "content": "7e3cd284f8fd964acf7ae8c02a7c379e5d34990ac3a22d43366b3ce70887fe06",
+  "bytes": 2806578,
+  "content": "9f2c2162d3cb88cffd77f56a92965142dc7f84bfebe915d0446507897f09cd3b",
   "from": "Profile Formulation 2026-11-02.html",
-  "published_at": "2026-11-02T14:38:05",
-  "sha256": "7e3cd284f8fd964acf7ae8c02a7c379e5d34990ac3a22d43366b3ce70887fe06"
+  "published_at": "2026-11-02T15:02:01",
+  "sha256": "9f2c2162d3cb88cffd77f56a92965142dc7f84bfebe915d0446507897f09cd3b"
  },
  "Extrusion Schedule/EXT Extrusion Schedule 2026-09-23.xlsx": {
   "bytes": 45623,
@@ -664,11 +660,11 @@
   "sha256": "8e8c145f7ae873c0b3336b997c7ffbc8db8597098807c70dca9d36303390f411"
  },
  "Formulation Data Base/Formulation Calc Library.xlsx": {
-  "bytes": 4058542,
-  "content": "a87d12f687eaf330dd1da0016f7b754ae43e0ec8eff64e6925dd951bc9b10fce",
+  "bytes": 4054179,
+  "content": "954b45d2933b19580cc0efcc8b46cb2ad2c38a0c5a5a0b716b15565ccff67feb",
   "from": "Formulation Calc Library.xlsx",
-  "published_at": "2026-11-02T14:47:03",
-  "sha256": "6b1b4b7688e7aec29051d5c28e18d701bad3e1256213bc9c7480edb2c9fb49d0"
+  "published_at": "2026-11-02T14:54:35",
+  "sha256": "8ed5b36a90e5297f4b68f8fd932ac38822007a2fbeb274f6733903650f6b00e1"
  },
  "Formulation Data Base/Formulation Master.xlsx": {
   "bytes": 77173,

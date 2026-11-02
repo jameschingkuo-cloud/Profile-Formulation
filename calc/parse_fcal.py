@@ -8,6 +8,11 @@ GROUP_LABELS = {'hopper': None, 'extruder (a)': 'A', 'extruder a': 'A', 'extrude
 ROWKEYS = {'material': 'material', 'calibration slope': 'slope', 'formula setting': 'setting', 'amount (g/min.)': 'amount',
            'formulation (%)': 'pct', 'lb./hr.': 'lbhr'}
 MON = '123456789ABC'
+# Codes Tech never typed (or mistyped), as James confirmed them (2 Nov 2026: "yes confirm those three, and FX020WB4 is
+# FXA020WB4"): a blank Formula Code on these SE61 sheet families takes the code the line's issued pages use for it
+CONFIRMED_BLANK = {('SE61', '10 mm KS-Diamond'): 'BF0000KSA', ('SE61', '10 mm EB-Diamond'): 'BF0000EBA',
+                   ('SE61', '5 mm KS-Diamond'): 'BF0000KS5'}
+CONFIRMED_TYPO = {'FX020WB4': 'FXA020WB4'}       # SE31 CoEx sheets
 def order_date(o):
     """Estimated production month from the order number (inferred pattern, not confirmed):
     RP<YY><M><DD>  e.g. RP26811 = 2026-08-11 ; H<digit year 202x><M>A..  e.g. H69A = 2026-09 ;
@@ -68,7 +73,7 @@ def parse(path, line_hint=None):
             # Product / Formula Code / Prod. Period by their own labels, wherever the sheet puts them (James Kuo, 2 Nov 2026:
             # "see what else is missing code. must be an extraction issue"): older sheets have them on the Order # row
             # (SE25 "6 mm EC-P" FH0001EC8, SE43 "4 mm WB-LW" FUA141WB4); SE31's CoEx sheets leave column A of that row blank.
-            # The code as typed, never corrected (SE31 prints FX020WB4)
+            # The code as typed; corrected only as James confirmed it (CONFIRMED_TYPO)
             for rr in range(r, r2):
                 row = s.row_values(rr)
                 labs = {str(v).strip().lower(): j for j, v in enumerate(row) if isinstance(v, str)}
@@ -119,6 +124,9 @@ def parse(path, line_hint=None):
                     cur['share'] = row[0]
                 elif lab and ll not in ('prod. period',):
                     blk['extra'].append(lab)
+            fc = (blk.get('formula_code') or '').strip()
+            fam = re.sub(r'\s*\(\d+\)\s*$', '', re.sub(r'\s+', ' ', s.name)).strip()
+            blk['formula_code'] = CONFIRMED_TYPO.get(fc, fc) or CONFIRMED_BLANK.get((blk['line'], fam), '')
             blk['groups'] = groups
             ps, pe = period_dates(blk.get('_period_cell', ''), wb)
             blk.pop('_period_cell', None)

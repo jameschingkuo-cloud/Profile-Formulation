@@ -72,6 +72,24 @@ PRINT_AS.update({
 })
 
 
+# No silo number on PP Virgin: the operator takes it from whichever virgin silo (James Kuo, 2 Nov 2026: "remove the Silo
+# number from PP Virgin, operator can pick whatever PP virgin silo they want" - "just clean them up, including historic
+# data"). Tech's "PP Virgin-silo 3 (6502A)" / "PP Virgin-silo 4 (F-6502A)" print as "PP Virgin (F6502A)"; another resin
+# keeps its name ("PP Virgin-silo 3 (DOW-C104)" -> "PP Virgin (DOW-C104)")
+VIRGIN_SILO = re.compile(r'PP Virgin\s*-?\s*silo\s*\d+\s*\(([^)<"]*)\)', re.I)
+
+
+def clean_virgin(text):
+    """Every "PP Virgin-silo N (resin)" in a text without the silo number."""
+    return VIRGIN_SILO.sub(lambda m: 'PP Virgin (%s)' % ('F6502A' if re.fullmatch(r'F?-?6502A', m.group(1).strip(), re.I)
+                                                          else m.group(1).strip()), text or '')
+
+
+def print_name(mat):
+    """A material as the Word file prints it."""
+    return clean_virgin(PRINT_AS.get(mat, mat)) if mat else mat
+
+
 def replaced():
     tree = ast.parse((ROOT / 'daily' / 'checks.py').read_text(encoding='utf-8'))
     for node in ast.walk(tree):
@@ -126,7 +144,7 @@ def build_lines(today, draft, exc, page):
         # an obsolete number Tech's page still prints (F1102K, Q1203K) prints as what is loaded now, with no note: James,
         # 26 Oct 2026: "No need to talk about replacing F1102K that number is obsolete, engineer just never had the
         # chance to clean it up"
-        shown = repl.get(mat) or PRINT_AS.get(mat, mat)
+        shown = repl.get(mat) or print_name(mat)
         if r['Feeder'] is None:          # a Primary / Secondary with no settings on the line: printed "ENGINEER TO SET"
             continue
         f['feeders'][(r['Extruder'] or '', r['Feeder'])] = (shown, r['Set'], None)

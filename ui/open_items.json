@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-27",
+  "updated": "2026-11-02",
   "groups": [
     {
       "owner": "James",
@@ -205,9 +205,9 @@
           "source": "Handoff Q14"
         },
         {
-          "sev": "Medium",
+          "sev": "Info",
           "title": "Auger rules and slopes",
-          "detail": "Is the draft hopper-role table right (Q13)? Which slope is current where two are in use (Q12)? SE22/SE21 H4 gearbox 1:100 or 1:70 (Q18, a one-minute catch test)? SE32's slopes 11-13% off the others (Q19)?",
+          "detail": "James, 2 Nov 2026: \"yes to this one. other then gear box ratio, their diameter is also different. So you cannot use gear ratio as reference\" - \"move it to info\". Each hopper's slope is its own: hoppers differ in gearbox ratio and in screw diameter, so a slope is never compared with or carried over from another hopper by gear ratio (Q18 SE22/SE21 H4 1:100 vs 1:70, Q19 SE32 11-13% off). The pipeline takes slopes per line and hopper (Auger Calibration). Was: is the draft hopper-role table right (Q13)? Which slope is current where two are in use (Q12)?",
           "where": "Auger lines",
           "source": "Handoff Q12, Q13, Q18, Q19"
         },

@@ -195,6 +195,7 @@ wb.save(config.OUTPUT_DIR / f'CNV Converting Schedule {PKT}.xlsx')
 if not FRM:   # a packet without Tech's FRM pages (28 Sep 2026): no FRM Formulation Report; daily/resolve.py drafts one
     print(f'No FRM pages in the {PKT} packet: FRM Formulation Report not built (run daily/resolve.py for the FRM Draft)')
     raise SystemExit(0)
+from render_frm import clean_virgin   # PP Virgin without its silo number (James Kuo, 2 Nov 2026)
 wb = Workbook()
 long = []
 for f in frm_rows:
@@ -204,7 +205,7 @@ for f in frm_rows:
         s = v['set']; sv = num(s)
         long.append([int(f['line_no']), f['line'], f['scan_page'], f['group'], ', '.join(f['orders']), f['formula_code'],
                      'Primary' if f['row_in_group'] == 1 else f"Alternate {f['row_in_group']-1}", k,
-                     (k.split()[0] if f['line'] in ('SE24', 'SE31', 'SE32', 'SE61') else ''), v['material'], s, sv, f['note']])
+                     (k.split()[0] if f['line'] in ('SE24', 'SE31', 'SE32', 'SE61') else ''), clean_virgin(v['material']), s, sv, f['note']])
 ws = sheet(wb, 'Formulations', ['Line No', 'Line', 'Scan Page', 'Group', 'Orders', 'Formula Code', 'Row', 'Feeder', 'Extruder', 'Material', 'Set (printed)', 'Set', 'Note'],
            long, {'Orders': 40, 'Material': 44, 'Note': 50, 'Formula Code': 14}, first=True)
 # order -> formula

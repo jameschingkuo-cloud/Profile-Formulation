@@ -1137,8 +1137,8 @@ def member_settings(line, m, want, issued, own=None):
             rows = pick(g[2])
             if rows:
                 return rows, ('line', g[0], g[1])
-        if own_recipe:
-            continue
+        if own_recipe or (line, m['code']) in CONFIRMED_SETTINGS:
+            continue                     # settings James confirmed on the line's page layout outrank the calc sheet
         for printed in sorted(names, key=lambda c: c != m['code']):
             rec = calc_recipes().get((line, printed))
             if rec:

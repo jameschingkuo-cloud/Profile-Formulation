@@ -84,6 +84,7 @@ def frm_rows(pk):
             if o in early:
                 prod[o] = early[o][0]
                 prod[o + '#from'] = early[o][1]
+    from render_frm import clean_virgin
     out = []
     for pg in pk['frm']:
         line = pg['line_code']
@@ -98,7 +99,7 @@ def frm_rows(pk):
                         out.append({'Issue Date': day, 'Line Code': line, 'Order': o, 'Product Code': prod.get(o),
                                     'Formula Code': f['formula_code'], 'Variant': var, 'Extruder': ext or None,
                                     'Feeder': feeder, 'Formula Row': i + 1, 'Material ID': None,
-                                    'Material (as printed)': v.get('material') or None, 'Set': v.get('set') or None,
+                                    'Material (as printed)': clean_virgin(v.get('material')) or None,   # no silo number on PP Virgin (James, 2 Nov 2026) 'Set': v.get('set') or None,
                                     'Weight %': pct.get(c), 'Note': f.get('note') or None, 'Source': 'Tech FRM',
                                     'Source Scan': scan_ref(pk, 'frm', pg['scan_page']) + (
                                         f"; not on this day's EXT, product code from EXT {prod[o + '#from']}"
