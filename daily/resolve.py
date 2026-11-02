@@ -123,6 +123,61 @@ def load_packets():
     return out
 
 
+PRODUCT_ISSUE = {}      # (line, product) -> Tech's last issue for it (issued_history), set in main
+# (line, the rules' Main) -> the code Tech runs for that job on the line, where the Main has no settings there and the
+# product was never issued on the line (2 Nov 2026, from Tech's Word running records: SE43 has no reclaim feeder)
+LINE_STANDIN = {('SE43', 'FU0031WB4'): 'FU0151WB4', ('SE43', 'FU0032WB3'): 'FU0151WB3', ('SE43', 'FUA152WB4'): 'FUA151WB4'}
+
+
+def issue_day(date):
+    """An issue date; a Word-record month (YYYY-MM-00) as its first day."""
+    return datetime.date.fromisoformat(str(date)[:8] + '01' if str(date).endswith('-00') else str(date))
+
+
+def frm_src(date, page):
+    """Where an issued formulation comes from: a day's FRM page, or a month of Tech's Word running record (date YYYY-MM-00)."""
+    if str(date).endswith('-00'):
+        return f"Tech's Word record {date[:7]}" + (f" (L{int(page):02d})" if isinstance(page, (int, str)) and str(page).isdigit() else '')
+    return f"FRM {date} scan p{page}"
+
+
+def history_packets(before=None):
+    """Tech's issues kept outside the daily packets (data/frm_history: the Word running records of every line, 2009 on,
+    one entry per issue month, and older days' FRM pages read from scans), in the packet layout, keyed by date. James
+    Kuo, 2 Nov 2026: "update what you can, if anything missing, you can assign formulation"."""
+    out = {}
+    if os.environ.get('FRM_HISTORY') == '0':          # tests pinned to the packets alone
+        return out
+    for p in sorted((config.ROOT / 'data' / 'frm_history').glob('*.json')):
+        config.record_read(p, "Tech's issued formulations kept outside the daily packets")
+        for pk in json.loads(p.read_text(encoding='utf-8')):
+            # a month of the Word records holds that whole month's issues: a backtest ("as that morning") takes only
+            # months before its own
+            if before is None or pk['packet_date'] < str(before)[:8] + '00':
+                out.setdefault(pk['packet_date'], pk)
+    return out
+
+
+_ORDER_PRODUCT = {}
+
+
+def order_products():
+    """order -> product from the Extrusion Production Record (every schedule since 2020): the product of an order in
+    Tech's Word running records, which print none."""
+    if not _ORDER_PRODUCT:
+        from openpyxl import load_workbook
+        p = config.published_path('Extrusion Production Record.xlsx')
+        if p and p.exists():
+            config.record_read(p, 'Extrusion Production Record (order -> product)')
+            ws = load_workbook(p, read_only=True)['Orders by Day']
+            it = ws.iter_rows(values_only=True); h = {k: i for i, k in enumerate(next(it))}
+            for r in it:
+                if r[h['Order']] and r[h['Product Code']]:
+                    _ORDER_PRODUCT[r[h['Order']]] = r[h['Product Code']]
+        _ORDER_PRODUCT.setdefault('', '')
+    return _ORDER_PRODUCT
+
+
 def issued_history(packets, before=None):
     """(line, order) -> (issue date, scan page, [formula dicts]); product -> same, keyed (line, product).
     Every issued FRM on file, whatever the schedule's date (James Kuo, 30 Sep 2026: "Always provide up to date
@@ -130,7 +185,7 @@ def issued_history(packets, before=None):
     by_order, by_product = {}, {}
     for date in sorted(d for d in packets if before is None or d < before):
         pk = packets[date]
-        prod_of = {r["order"]: r["prod_code"] for pg in pk["ext"] for r in pg["rows"]}
+        prod_of = {r["order"]: r["prod_code"] for pg in pk["ext"] for r in pg["rows"]} or order_products()
         for pg in pk["frm"]:
             for g in pg["groups"]:
                 for o in g["orders"]:
@@ -167,14 +222,14 @@ def draft_rows(line, order, product, rec, names=None):
         var = variant(f.get("note", ""), i == 0)
         printed = f["formula_code"]
         shown = (names or {}).get(printed) or (assign.current_name(printed) if RULES else printed)
-        src = (f"Tech's calc sheet, last run {date}" if page == 'calc' else f"FRM {date} scan p{page}") + (f" (printed as {printed})" if shown != printed else "")
+        src = (f"Tech's calc sheet, last run {date}" if page == 'calc' else frm_src(date, page)) + (f" (printed as {printed})" if shown != printed else "")
         for col, v in f["feeders"].items():
             if not (v.get("material") or v.get("set")):
                 continue
             ext, feeder = split_feeder(col)
             rows.append([line, order, product, shown, var, ext, feeder, None, v.get("material", ""),
                          v.get("set", ""), None, "Last issued (same order, same line)",
-                         datetime.date.fromisoformat(date), src, i + 1, f.get("note", "")])
+                         issue_day(date), src, i + 1, f.get("note", "")])
     return rows
 
 
@@ -237,11 +292,13 @@ def main():
     today = packets[PKT]
     # HISTORY_BEFORE is for backtests only ("as that morning, before Tech issued"); normal runs use every issue on file
     cut = os.environ.get("HISTORY_BEFORE") or None
-    by_order, by_product = issued_history(packets, cut)                  # latest issue on file, any date
+    hist = history_packets(cut)                                          # Tech's Word records and older scanned days
+    by_order, by_product = issued_history({**hist, **packets}, cut)      # latest issue on file, any date
+    PRODUCT_ISSUE.clear(); PRODUCT_ISSUE.update(by_product)
     history_dates = sorted(d for d in packets if packets[d]["frm"] and (cut is None or d < cut))
     approved, _ = approved_master()
     seen_pk = {d: p for d, p in packets.items() if cut is None or d < cut}     # backtests: only what was issued by then
-    issued = assign.issued_on_line(seen_pk) if RULES else {}
+    issued = assign.issued_on_line({**hist, **seen_pk}) if RULES else {}
     if RULES:
         assign.set_pages(seen_pk)            # the lines' feeder columns and wording, for settings taken from the calc sheets
 
@@ -286,6 +343,21 @@ def main():
                     to_set.append([line, order, product, x['code'], x['role'], fm['how'], w,
                                    f"{', '.join(f['formula_code'] for f in rec[2])} on {rec[0]}" if rec else ""])
                 continue
+            src_rec = (rec[:3] + (order,)) if rec else by_product.get((line, product))
+            if RULES and src_rec:
+                # the rules cannot decide (no Main for the key, several Mains, a spec with no rule): the formulation Tech
+                # last issued for this order, else for this product, on this line (James Kuo, 2 Nov 2026: "update what you
+                # can, if anything missing, you can assign formulation")
+                rr = draft_rows(line, order, product, src_rec[:3])
+                for x in rr:
+                    x[11] = (f"Assigned: rules cannot decide ({why}); as Tech last issued for "
+                             + ("this order" if rec else f"{product} on {line} (order {src_rec[3]})") + " (James Kuo, 2 Nov 2026)")
+                    x[15] = ((x[15] + ' · ') if x[15] else '') + ("as Tech last issued for this order" if rec else
+                                                                  f"as Tech last issued for this product on {line}")
+                draft += rr
+                by_rule.append([line, order, product, ' + '.join(dict.fromkeys(f['formula_code'] for f in src_rec[2])),
+                                f"assigned from Tech's last issue ({why})", issue_day(src_rec[0])])
+                continue
             hint = why if why else ""
             if rec:
                 hint = f"Rules cannot decide ({why}); last issued for this order as {', '.join(f['formula_code'] for f in rec[2])} on {rec[0]} - ask engineering"
@@ -324,10 +396,31 @@ def rule_rows(line, order, product, fm):
     member's formula rows in run order (reclaim first, a run-out note last: James Kuo, 30 Sep 2026), under James's name
     with its role and where its settings came from; a member without settings on the line gets one row "ENGINEER TO SET"
     in its place. -> (rows, settings date of the rows proposed from the line or None, members without settings)."""
-    entries, missing = [], []
+    entries, missing, took = [], [], None
+    rec = PRODUCT_ISSUE.get((line, product))
     for x in fm['members']:
         if x['rows']:
             entries += run_order([dict(f, _x=x) for f in x['rows']])
+        elif rec and took is None and x['role'] == 'Primary':
+            # the rules' Main has no settings on this line: the formulation Tech last issued for this product on this
+            # line, under its current name (James Kuo, 2 Nov 2026: "if anything missing, you can assign formulation") -
+            # e.g. SE43 makes packaging white 4 mm as FU0151WB4 (no reclaim feeder), not the reclaim Main FU0031WB4
+            took = dict(x, src=('product', rec[0], rec[1]), member=None, shown=None, rules_code=x['code'], from_order=rec[3])
+            entries += run_order([dict(f, _x=took) for f in rec[2]])
+        elif took is not None:
+            continue                          # Tech's issue carries its own run-out row
+        elif x['role'] == 'Primary' and (line, x['code']) in LINE_STANDIN and took is None:
+            # never issued for this product on this line: the code Tech runs for that job on the line, its newest group
+            # (with the order's qualifier note first) - SE43 cannot feed reclaim, so its packaging white is FU0151WB4
+            code = LINE_STANDIN[(line, x['code'])]
+            gs = sorted(assign._ISSUED_GROUPS.get((line, code), []), key=lambda g: (any(q in (fm.get('want') or ()) for f in g[2]
+                        for q in assign.quals(f.get('note', ''))), g[0]), reverse=True)
+            if gs:
+                took = dict(x, src=('standin', gs[0][0], gs[0][1]), member=None, shown=None, rules_code=x['code'], from_order=code)
+                entries += run_order([dict(f, _x=took) for f in gs[0][2] if f['formula_code'] == code] or [dict(gs[0][2][0], _x=took)])
+            else:
+                missing.append(x)
+                entries.append(dict(formula_code=x['code'], feeders={}, note='', _x=x))
         else:
             missing.append(x)
             entries.append(dict(formula_code=x['code'], feeders={}, note='', _x=x))
@@ -343,7 +436,7 @@ def rule_rows(line, order, product, fm):
                          f"no settings for {shown} on {line} (no FRM page on file, no calc sheet)", i + 1,
                          f"ENGINEER TO SET: settings for {shown} on {line} · {x['role']}"])
             continue
-        src = (f"Tech's {line} calc sheet, last run {date}" if kind == 'calc' else f"FRM {date} scan p{page}") + \
+        src = (f"Tech's {line} calc sheet, last run {date}" if kind == 'calc' else frm_src(date, page)) + \
               (f" (printed as {printed})" if shown != printed else "")
         if kind == 'calcd':                  # worked out from the line's augers (assign.r4_black_settings), never issued
             d = page
@@ -375,6 +468,18 @@ def rule_rows(line, order, product, fm):
         elif kind == 'own':
             how = f"By rule ({fm['how']}); settings as last issued for this order"
             note = x['role']
+        elif kind == 'standin':
+            src = f"{frm_src(date, page)}: Tech's {x['from_order']} on {line}" + (f" (printed as {printed})" if shown != printed else "")
+            how = (f"Assigned: {x['rules_code']} (the rules' Main, {fm['how']}) has no settings on {line} and {product} has no "
+                   f"issue there; the formulation Tech runs for it on {line}, {x['from_order']} (James Kuo, 2 Nov 2026)")
+            note = ('Primary' if i == 0 else 'Secondary') + f" · as Tech runs it on {line}"
+            marked = marked or date
+        elif kind == 'product':
+            src = f"as Tech last issued for {product} on {line}: {frm_src(date, page)}, order {x['from_order']}" +                   (f" (printed as {printed})" if shown != printed else "")
+            how = (f"Assigned: {x['rules_code']} (the rules' Main, {fm['how']}) has no settings on {line}; the formulation Tech "
+                   f"last issued for {product} on {line} (James Kuo, 2 Nov 2026)")
+            note = ('Primary' if i == 0 else 'Secondary') + f" · as Tech last issued for this product on {line}"
+            marked = marked or date
         else:
             how = f"Proposed by rule ({fm['how']}); " + (f"settings from Tech's {line} calc sheet" if kind == 'calc' else f"settings as issued on {line} {date}")
             # no "PROPOSED BY RULE" on the row: every formulation is by rule (James, 26 Oct 2026: "no need to say that.
@@ -404,7 +509,7 @@ def rule_rows(line, order, product, fm):
             if not (v.get("material") or v.get("set")):
                 continue
             ext, feeder = split_feeder(col)
-            last = datetime.date.fromisoformat(date) if kind != 'calc' and date else None
+            last = issue_day(date) if kind != 'calc' and date else None
             rows.append([line, order, product, shown, x['role'], ext, feeder, None, v.get("material", ""), v.get("set", ""),
                          None, how, last, src, i + 1, note])
     return rows, marked, missing

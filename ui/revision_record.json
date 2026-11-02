@@ -720,6 +720,33 @@
    "change": "James: \"check premix history and add them in\" - \"i mean update them\". render_frm.premix_ratio now reads Tech's history too: a premix named by its two parts (\"W26038A/G26177A\") with the ratio in the block's note (\"W26038A/G26177A: 9/1\"), the colour from IWPFT062's CR4xx code in the master (G26177A -> GH, D26002M -> EA, B26002M -> BA); the ratio written for the order wins (FR WB/IS 85/15 blocks, DPP40WB1536 5:2); \"6502A/PC716\" is two virgins, no premix. The Look up shows each premix feeder with its ratio (\"(premix 9:1 WB:GH (W26038A + G26177A))\"); the Premix Review sheet updated. Not on file: WB/BG (DPP30WB1044), IS-GA (2014-15), W26038A/B40001A (DPP40WB1722 SE21)",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 81,
+   "date": "2026-11-02",
+   "type": "Data",
+   "item": "Tech's FRM pages for 1, 15, 16, 20 Oct (copier scan)",
+   "change": "James: \"here are some historical data. go through them and update the old order\". doc05456020261102154157.pdf, 52 pages read by eye (4 days x 13 lines): 15 / 16 / 20 Oct into their packets (FRM Formulation Reports published, Formulation Report Record +1,556 rows, master Draft rows logged, Changes 268-412), 1 Oct (no schedule on file) as an FRM history day (record +501 rows, Changes 413-416). Every order matched its schedule except SE25 H69A283-3 printed for H69A284-3 (15 Oct, kept as printed). build_xlsx skips the converting workbook when a packet has none (15 Oct)",
+   "order": "",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 82,
+   "date": "2026-11-02",
+   "type": "Logic",
+   "item": "Tech's Word running records as issued settings",
+   "change": "James: \"here are the fomulation left by YC before he went on vacation\"; \"update what you can, if anything missing, you can assign formulation\". history/tech_word_frm.py reads Tech's Word files (Technical Internal\\Daily FormulationB32026; converted from a copy): each line's running record, 14,259 issued groups 2009 - Oct 2026, into data/frm_history/tech_word_history.json (one issue month per entry, dated YYYY-MM-00), checked against the 23 Oct scan transcription (99 of 99 orders identical). daily/resolve.py takes them as Tech's issued settings and last issues (newer packets win; James's confirmed settings outrank an older record; backtests take only earlier months). Assigned where the rules leave a gap: the rules' Main with no settings on the line -> Tech's last issue for that product on that line; rules cannot decide -> the same; never issued on the line -> the code Tech runs for that job there (LINE_STANDIN, SE43). Last 12 months: settings gaps 153 products / 352 orders -> 1 / 1, no-Main gaps 31 / 72 -> 5 / 5. 2 Nov formulation unchanged",
+   "order": "",
+   "editor": "James Kuo"
+  },
+  {
+   "rev": 83,
+   "date": "2026-11-02",
+   "type": "Page design",
+   "item": "Look up: the formulation Tech issued for the order",
+   "change": "Runs before the daily packets show the order's own formulation from Tech's Word running records before the calc workbook's block: 3,237 of 3,263 runs before 23 Sep 2026 with a formulation. Open items: Settings coverage, Products with no Main and Tech's calc workbooks moved to Info (James: \"move this to info\", \"same with this one\", \"once done, you can put this in info\"); DOW-C104 and SE21 calculated settings updated from Tech's records; Q6 answered (lines 11/14/15 = SE41/SE44/SE51)",
+   "order": "",
+   "editor": "James Kuo"
   }
  ]
 }

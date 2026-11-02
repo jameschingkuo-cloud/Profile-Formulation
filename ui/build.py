@@ -437,8 +437,21 @@ def calc_history(pk, day, days=LOOK_DAYS):
         got = [r for r in csv.DictReader(open(p, encoding='utf-8')) if start <= r['date'] < first]
         rows += [r for r in got if r['date'] not in pdf_days]
         pdf_days |= {r['date'] for r in got}
+    # what Tech issued for the order itself, from his Word running records (James Kuo, 2 Nov 2026: "here are the fomulation
+    # left by YC"; history/tech_word_frm.py), comes before the calc workbook's block
+    from resolve import history_packets, issued_history
+    word, _ = issued_history(history_packets())
     res = []
     for r in rows:
+        w = word.get((r['line'], r['order']))
+        if w:
+            forms = {}
+            for f in w[2]:
+                fs = [feeder_txt(*(c.split(' ', 1) if re.match(r'^[A-D] ', c) else ('', c)), current(v['material']), v['set'], f.get('note'))
+                      for c, v in f['feeders'].items() if v['material'] or v['set']]
+                forms[(f['formula_code'], ' | '.join(fs))] = [f['formula_code'], ' | '.join(fs)]
+            res.append((r['date'], r['line'], r['order'], r['prod_code'], list(forms.values()), sched_fields(r, hist=True)))
+            continue
         base = (r['order_base'] or r['order'].split('-')[0]).upper()
         bl = by_order.get((r['line'], base), [])
         if not bl:

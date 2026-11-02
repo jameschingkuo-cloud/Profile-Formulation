@@ -231,12 +231,16 @@ def test_rules_first_25_sep(tmp_path):
     for x in rows[1:]:
         d = dict(zip(h, x))
         hows.setdefault(d['Order'], set()).add(str(d['How Resolved']).split(' (')[0])
-    assert all(v <= {'By rule', 'Proposed by rule', 'Product to Formula'} for v in hows.values()), hows
+    # 'Assigned: ...' = the rules' Main has no settings on the line, Tech's last issue for the product (2 Nov 2026)
+    assert all({h for h in v if not h.startswith('Assigned:')} <= {'By rule', 'Proposed by rule', 'Product to Formula'}
+               for v in hows.values()), hows
     by_rule = {row[1] for row in wb['By Rule'].iter_rows(min_row=2, values_only=True)}
     assert 'H67A120-1' in by_rule
-    # FXA020WB4 had never run on SE31 before 25 Sep: the rule names it and prints it, its settings go to the engineer
+    # FXA020WB4 for H68A153-1: no issue among the packets before 25 Sep; Tech's Word running records (2 Nov 2026) show it
+    # on SE31 before, so the order takes that issue (Assigned) instead of going to the engineer
     to_set = {(s[1], s[3], s[4]) for s in wb['Settings To Set'].iter_rows(min_row=2, values_only=True)}
-    assert ('H68A153-1', 'FXA020WB4', 'Primary') in to_set
+    with_settings = {(d[1], d[3]) for d in rows[1:] if d[h.index('Set')] not in (None, '')}
+    assert ('H68A153-1', 'FXA020WB4', 'Primary') in to_set or ('H68A153-1', 'FXA020WB4') in with_settings
     for e in wb['Exceptions'].iter_rows(min_row=2, values_only=True):
         assert str(e[8]).startswith('Rules cannot decide: '), e
 
@@ -487,7 +491,8 @@ def test_ks_3mm_packaging_is_fu0051ks3():
     r = row('RPP30KS948', 'PPP P R1R1R1', '')
     fm, why = assign.formulation('SE11', r, datetime.date(2026, 10, 26), issued)
     (x,) = fm['members']
-    assert x['code'] == 'FU0051KS3' and x['src'][:2] == ('line', '2026-10-13'), why     # Tech ran it on SE11, 12-13 Oct
+    # Tech ran it on SE11 on 12-13 Oct (and on 16 Oct, pages added 2 Nov 2026): the newest issue on the line
+    assert x['code'] == 'FU0051KS3' and x['src'][0] == 'line' and x['src'][1] >= '2026-10-13', why
     fm, why = assign.formulation('SE43', r, datetime.date(2026, 10, 26), issued)
     assert [m['code'] for m in fm['members']] == ['FU0151KS3'], why
 

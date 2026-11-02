@@ -11,7 +11,7 @@ import config
 
 
 def run(script, env_extra, tmp_path):
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(tmp_path / 'out'), **env_extra)
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(tmp_path / 'out'), **env_extra)
     r = subprocess.run([sys.executable, str(ROOT / script)], env=env, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stderr[-3000:]
     return r
@@ -96,7 +96,7 @@ def test_records_append_only(tmp_path):
     import shutil
     from openpyxl import load_workbook
     pub, out = tmp_path / 'pub', tmp_path / 'out'
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub))
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub))
     rec = lambda *d: subprocess.run([sys.executable, str(ROOT / 'daily' / 'record.py'), *d], env=env,
                                     capture_output=True, text=True, cwd=ROOT)
     out.mkdir()
@@ -125,7 +125,7 @@ def test_master_change_control(tmp_path):
     from openpyxl import load_workbook
     pub, out = tmp_path / 'pub', tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
                SNAP_DIR=str(tmp_path / 'snap'))
     py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
     r = py(str(ROOT / 'db' / 'seed_master.py'))
@@ -168,7 +168,7 @@ def test_draft_keeps_every_formulation(tmp_path):
     from openpyxl import load_workbook
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
                ASSIGN_RULES='0')          # codes as Tech printed them; James's names (23 Oct 2026) are tested in test_assign.py
     r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
@@ -208,7 +208,7 @@ def test_print_formulation_docx(tmp_path):
     from docx import Document
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
                ASSIGN_RULES='0')          # the history-only draft; the rules' Word marks are tested in test_assign.py
     for script in ('resolve.py', 'render_frm.py'):
         r = subprocess.run([sys.executable, str(ROOT / 'daily' / script)], env=env, capture_output=True, text=True, cwd=ROOT)
@@ -238,7 +238,7 @@ def test_engineer_decision_fills_the_rerun(tmp_path):
     from openpyxl import load_workbook
     pub, out = tmp_path / 'pub', tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
                SNAP_DIR=str(tmp_path / 'snap'), PKT_DATE='2026-09-28', HISTORY_BEFORE='2026-09-28',
                ASSIGN_RULES='0')          # this tests the approved-master path, which runs before the rules
     py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
@@ -291,7 +291,7 @@ def test_import_frm_adds_only_what_is_missing(tmp_path):
     import shutil
     pub, out = tmp_path / 'pub', tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PUBLISH_DIR=str(pub),
                SNAP_DIR=str(tmp_path / 'snap'))
     py = lambda *a: subprocess.run([sys.executable, *a], env=env, capture_output=True, text=True, cwd=ROOT)
     name = 'Formulation Master.xlsx'
@@ -315,7 +315,7 @@ def test_past_schedule_gets_the_latest_formulation(tmp_path):
     from openpyxl import load_workbook
     out = tmp_path / 'out'
     out.mkdir()
-    env = dict(os.environ, PYTHONUTF8='1', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-29',
+    env = dict(os.environ, PYTHONUTF8='1', FRM_HISTORY='0', WORK_DIR=str(tmp_path / 'work'), OUTPUT_DIR=str(out), PKT_DATE='2026-09-29',
                ASSIGN_RULES='0')          # codes as Tech printed them; James's names (23 Oct 2026) are tested in test_assign.py
     env.pop('HISTORY_BEFORE', None)
     r = subprocess.run([sys.executable, str(ROOT / 'daily' / 'resolve.py')], env=env, capture_output=True, text=True, cwd=ROOT)

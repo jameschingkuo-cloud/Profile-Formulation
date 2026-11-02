@@ -1133,6 +1133,9 @@ def member_settings(line, m, want, issued, own=None):
             # corn box stands apart: only rows Tech issued for corn box - noted so, or issued for a corn box order (James,
             # 27 Oct 2026: "keep it clean and separated")
             ordered = [g for g in ordered if 'corn' in notes_q(g[2]) or id(g[2]) in _CORN_GROUPS]
+        if (line, m['code']) in CONFIRMED_SETTINGS:
+            # settings James confirmed outrank an older issue from Tech's Word running records (dated YYYY-MM-00)
+            ordered = [g for g in ordered if not str(g[0]).endswith('-00')]
         for g in ordered:
             rows = pick(g[2])
             if rows:
@@ -1178,6 +1181,13 @@ def formulation(line, row, day, issued, own=None):
             rows, src = r4_black_settings(line, m)          # James's R4 black hoppers and 98/2, before Tech's rows
         if rows is None:
             rows, src = member_settings(line, m, want, issued, own)
+        if rows is None and (line, m['code']) in CONFIRMED_SETTINGS:
+            # what James confirmed comes before any fallback that could reach an older issue in Tech's Word running
+            # records (a run-out row, an equivalent): a newer issue on the line still wins (member_settings)
+            c = CONFIRMED_SETTINGS[(line, m['code'])]
+            rows = [{'formula_code': m['code'], 'note': c.get('note', ''),
+                     'feeders': {k: {'material': mt, 'set': st} for k, (mt, st) in c['feeders'].items()}}]
+            src = ('confirmed', None, c['by'])
         if rows is None and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
             rows, src = r4_black_settings(line, m)          # James, 24 Oct 2026: R4 black, 98% reclaim + 2% colour
         if rows is None:

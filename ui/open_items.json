@@ -42,7 +42,7 @@
         {
           "sev": "Medium",
           "title": "Calculated settings to confirm (SE21)",
-          "detail": "James, 27 Oct: \"yes use them, mark as calculated. Once its good. note it down so its no longer calculated\". Printed CALCULATED SETTINGS, check before running: SE21 RP26A15-1 FUA032KS4 39 / 11 / 53 / 29 (throughput of FU0041KS4 on SE21); SE21 RP26512-1 corn box FU0023WB4 69 / 15 / 92 / 34 (throughput of FU0031WB4 issued for RP26512-1). When the floor says they run right, tell me \"good\" and they go into assign.CONFIRMED_SETTINGS and print as plain settings.",
+          "detail": "2 Nov 2026: Tech issued RP26A15-1 on 22 and 23 Oct as FUA152KS4 alone (53 / 6 / 13 / 24 / 24, his virgin graphic recipe) - FUA032KS4's calculated settings never ran. Was: James, 27 Oct: \"yes use them, mark as calculated. Once its good. note it down so its no longer calculated\". Printed CALCULATED SETTINGS, check before running: SE21 RP26A15-1 FUA032KS4 39 / 11 / 53 / 29 (throughput of FU0041KS4 on SE21); SE21 RP26512-1 corn box FU0023WB4 69 / 15 / 92 / 34 (throughput of FU0031WB4 issued for RP26512-1). When the floor says they run right, tell me \"good\" and they go into assign.CONFIRMED_SETTINGS and print as plain settings.",
           "where": "SE21",
           "source": "27 Oct"
         },
@@ -61,9 +61,9 @@
           "source": "simulation 24 Oct"
         },
         {
-          "sev": "High",
+          "sev": "Info",
           "title": "Products with no Main in the W% Master (last 12 months)",
-          "detail": "Applying the logic to every product scheduled since Oct 2025 (616 products, 1,687 orders): 31 products / 72 orders have no Main - R4 black 8 mm on SE11 (RPP80KS239, 20 orders), bubble KS 5 mm on SE61 (11), JG 4 mm graphic on SE13 (8), WB 10 mm VOIDFORM without reclaim on SE22 (7: the only WB 10 mm Main has reclaim), anti-static pink 2 mm on SE11 (6), opaque WB 3 mm sign blank on SE31 (5), FW 4 mm FR on SE21 (4), UV black 4 mm on SE12 (2), and 9 single orders. Spec R9RDRD (bubble) has no prefix rule.",
+          "detail": "James, 2 Nov 2026: \"same with this one\" (move to info). Now: 7 products / 50 orders the rules cannot decide take the formulation Tech last issued for that product on that line (DPP40WB1722 / 1743 WB BT WB on SE25: Tech's FU001TLW4 premix, 45 orders; FU0041KS6 or FU0062KS6 on SE21; RPPJ0KS2, RPP60WB387, RPP46KF3). Bubble KS 5 mm on SE61 has BF0000KS5 (2 Nov); R4 black 8 mm on SE11 and the others are covered. Left for the engineer, each never issued on its line: SPA60WM1 (SE31), RPP25WB20 roll 2 mm (SE25), RBPP0EB2 (SE61), SPA30WB50 sign 3 mm (SE43, FUA151WB3 or FUA152WB3), RBPA0EB35 (spec R9RDRD). Was 31 products / 72 orders.",
           "where": "W% Master",
           "source": "work/gap_scan.py"
         },
@@ -75,9 +75,9 @@
           "source": "work/gap_scan.py"
         },
         {
-          "sev": "High",
+          "sev": "Info",
           "title": "Settings coverage by line (last 12 months)",
-          "detail": "153 products / 352 orders get a Main with no settings on their line, mostly because Tech's formulation sheets before 23 Sep 2026 are not on file: SE13 FU0031WB4 + FU0014WB4 (51 orders), SE43 FU0031WB4 + FU0014WB4 (39), SE21 FUA032KS4 (37), SE43 FU0032WB3 (33), SE21 FUA032KS6 (16), SE24 RU0022WB4 (12), SE43 FUA152WB4 sign (12), SE23 FU0031WB4 (12), SE21 FUA011EA5 (12), SE31 FU0031WB4 + FU0014WB4 (11). The auger calculation, or Tech's older pages, would fill them.",
+          "detail": "James, 2 Nov 2026: \"update what you can, if anything missing, you can assign formulation. once done. move this to info\". Tech's Word running records of every line (Technical Internal\\Daily FormulationB32026, 14,259 issued groups, 2009 - Oct 2026; history/tech_word_frm.py) and his 1, 15, 16, 20 Oct pages (copier scan) are now Tech's issued settings for the rules. Last 12 months, 626 products / 1,705 orders: 584 covered by the rules; 26 products / 95 orders where the rules' Main has no settings on the line take Tech's last issue for that product on that line (e.g. SE43 packaging white 4 mm runs FU0151WB4: SE43 has no reclaim feeder); 3 products / 4 orders never issued on SE43 take the code Tech runs there (FU0031WB4 -> FU0151WB4, FUA152WB4 -> FUA151WB4). Left for the engineer: SE13 SPA40YF119 FUA102YF4 (YF never run on SE13). Was 153 products / 352 orders.",
           "where": "all lines",
           "source": "work/gap_scan.py"
         },
@@ -125,7 +125,7 @@
         {
           "sev": "Medium",
           "title": "DOW-C104 on a new formula",
-          "detail": "H69A203-1 FU0012BL5 (SE21, 29 Sep) Hopper 1 prints \"PP Virgin-silo 3 (DOW-C104)\" 63. DOW-C104 is not on IWPFT062 (nearest: PC104 = TI4015F, Braskem); silo 3 normally holds F6502A. That one setting is not in the master until you say which resin it is.",
+          "detail": "2 Nov 2026: Tech's own Word running record for H69A203-1 (FU0012BL5, SE21) types Hopper 1 as \"PP Virgin-silo 3 (F6502A)\" 63; only the printed pages of 29 Sep - 1 Oct show DOW-C104. Was: H69A203-1 FU0012BL5 (SE21, 29 Sep) Hopper 1 prints \"PP Virgin-silo 3 (DOW-C104)\" 63. DOW-C104 is not on IWPFT062 (nearest: PC104 = TI4015F, Braskem); silo 3 normally holds F6502A. That one setting is not in the master until you say which resin it is.",
           "where": "FRM SE21",
           "source": "FRM 29 Sep p4"
         },
@@ -198,9 +198,9 @@
           "source": "James, 29 Sep 2026"
         },
         {
-          "sev": "High",
+          "sev": "Info",
           "title": "Tech's calc workbooks into inputs\\calc",
-          "detail": "Blocks the auger-line recipes (weight %), the Auger Calibration master and one test. Also answers where they live (Q14), so the pipeline can read them where Tech saves them.",
+          "detail": "James, 2 Nov 2026: \"The auger cal is here\" (Technical Internal\\Process tech) - \"once done, you can put this in info\". Done: the 12 calc workbooks are in inputs\\calc (CALC_DIR) and the Calc Library rebuilt from them (codes on 15 more blocks; SE61 and SE31 codes as James confirmed). The auger calibration lives in Technical Internal\\Process tech\\calibration (line 1.xls, 8 Sep 2026; Line03.xls) and Process tech\\CALIB (CALDATA, CALIBTAB); Tech's daily pages and running records in Technical Internal\\Daily Formulation\\<MMDDYYYY> (Q14). The Auger Calibration in the Calc Library still comes from the calc workbooks' slopes.",
           "where": "Formulation Master",
           "source": "Handoff Q14"
         },
@@ -221,7 +221,7 @@
         {
           "sev": "Low",
           "title": "Background questions",
-          "detail": "Still open from handoff §10: Q2 codes, Q4 who makes the FRM and when, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
+          "detail": "2 Nov 2026: Q6 answered by the Word files' own titles: line 11 = SE41, line 14 = SE44, line 15 = SE51. Still open from handoff §10: Q2 codes, Q4 who makes the FRM and when, Q6 lines 11/14/15, Q7 CNV owner, Q10 formula item #, Q16 slope units, Q17 lb/hr basis, Q20 continuous or on-demand, Q21 weight blender model.",
           "where": "",
           "source": "Handoff §10"
         }
