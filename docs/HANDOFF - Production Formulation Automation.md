@@ -2501,6 +2501,7 @@ Scheduled run, one window (SCHEDULE 10/30 e-mailed 13:22, DIE CUT SCHEDULE 13:24
 
 | Rev | Date | Editor | What changed and why |
 |---|---|---|---|
+| 1.75 | 2026-11-03 | Claude Code (scheduled run) | **3 Nov daily run**: schedule emails 13:23 (EXT) / 13:33 (CNV); formulation emailed to James, Kevin Sung, YC Chang (77 orders, 0 for the engineer; 3 new, 5 gone); 77 EXT + 55 CNV rows built, published with Product Master and the three records; 3 High, all already on 2 Nov (0 new); interface copy and artifact v128 published; no help requests; tests 114 passed. |
 | 1.74 | 2026-10-30 | Claude Code (scheduled run) | **30 Oct daily run (§7.77)**: schedule emails 13:22/13:24; formulation emailed (59 as issued, 32 by rule, 0 for the engineer); 91 EXT / 66 CNV; 0 new High; published; artifact v110. |
 | 1.73 | 2026-10-28 | Claude Code (local, with James Kuo) | **28 Oct daily run (§7.76)**: schedule emails 13:08/13:09; formulation emailed (86 as issued or by rule, 5 for the engineer); 91 EXT + 63 CNV rows built, published and recorded; artifact v93; 0 new High. |
 | 1.72 | 2026-10-27 | Claude Code (local, with James Kuo) | **27 Oct daily run (§7.75)**: schedule email 12:47; formulation emailed (81 as issued or by rule, 1 for the engineer); 82 EXT + 61 CNV rows built, published and recorded; artifact v80; 0 new High. |

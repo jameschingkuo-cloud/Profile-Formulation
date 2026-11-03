@@ -1,0 +1,12 @@
+# Issues for the 3 Nov 2026 packet, from the system's own PDFs: BPN9PFR$_Z88WM7bY.PDF (SCHEDULE 11/03, e-mailed 13:23, run 11/03/26 13:48:43)
+# and Die Cutting Schedule 11-03.pdf (e-mailed 13:33). No scan, no Tech FRM pages today. Compared with 2 Nov, the last day published.
+MANUAL = [
+ # (Severity, Document, Line, Order, Check, Detail, Source)
+ ('Info','EXT','SE23','H69A304-1, H69A305-1','Two-colour cabbage box: GE premix formula (decided by James)','DPP40WB1756 prints WB GE WB. As on 29 Oct to 2 Nov (James Kuo, 29 Oct 2026: two-colour orders on lines 1-14 run a white : green premix, 9 : 1): FU0021GE4, FU0021GT4\'s SE23 settings with the premix W26038A + G26232M on Hopper 4, same weight ratio','James'),
+ ('Info','FRM','SE22, SE32','H6AA171-1, H6AA195-1, H6AA196-1','VOIDFORM: no reclaim','H6AA171-1 (RPPA0WB241) keeps FU0001WBA, the virgin Secondary, as its only formula (James Kuo, 29 Oct 2026). SE32 H6AA195-1 (RPPD0WB176) and H6AA196-1 (RPPD0WB41): formulation by James\'s rules (no reclaim, R10), as on 2 Nov','James'),
+ ('Info','FRM','(all)','','No Tech FRM pages today','"FRM Formulation 2026-11-03.docx" gives all 77 orders a formulation by James\'s rules, none left for the engineer (3 new since 2 Nov in the new-orders copy). Emailed to James, Kevin Sung and YC Chang','rules'),
+ ('Info','EXT','(SE25)','H68A091-1, H68A090-1, H64A244-1','VOIDFORM GSM vs control range','Printed GSM is the billing weight; the control range in the instructions is 5-8% under it (793 -> 729-751; 1,052 -> 970-1000). As expected, none outside. SE22 H6AA171-1 (2,006) and SE32 H6AA195-1 / H6AA196-1 (2,691) print no range','PDF'),
+ ('Info','EXT','(several)','H69A116-1, RP26B03-2, RP26B03-1','New since 2 Nov','New on the extrusion schedule (3): SE23 H69A116-1 (DPP40EA12), RP26B03-2 (RPP40WB1625); SE24 RP26B03-1 (SPA40WB756). None moved line','PDF'),
+ ('Info','EXT','(several)','H6AA237-1, H6AA199-1, H69A303-1, RP26803-2, H69A342-1','Gone since 2 Nov','Gone from the extrusion schedule (5): SE11 H6AA237-1; SE13 H6AA199-1; SE23 H69A303-1; SE24 RP26803-2; SE32 H69A342-1','PDF'),
+ ('Info','CNV','(several)','RP26B03-1, H68A244-1, H69A116-3, H6AA037-1','New / gone on the converting schedule since 2 Nov','New (1): RP26B03-1. Gone (3): H68A244-1, H69A116-3, H6AA037-1. 55 rows on 8 pages','PDF'),
+]
