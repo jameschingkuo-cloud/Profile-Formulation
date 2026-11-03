@@ -274,6 +274,27 @@
   "published_at": "2026-11-02T15:43:09",
   "sha256": "850eb990054b6b8ee1c8e66384bd1c9fb960bc1c985ebcf5a22a026a29b0a047"
  },
+ "Daily Formulation Report/FRM Formulation 2026-11-03 (new orders).docx": {
+  "bytes": 40569,
+  "content": "90d48a318f2be284af11aac53b25e679d9acb22d1ba1c938617328711d0d5ae3",
+  "from": "FRM Formulation 2026-11-03 (new orders).docx",
+  "published_at": "2026-11-03T14:34:12",
+  "sha256": "dea2da8213fe641615f43cd704e2f9badf0cfa15beb6095e990b0119b999e890"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-03 (weight %).docx": {
+  "bytes": 47824,
+  "content": "ceffb81b21955cd5fe6a806fd22fd6f8ace1631c4b902b81a222f35786e8feda",
+  "from": "FRM Formulation 2026-11-03 (weight %).docx",
+  "published_at": "2026-11-03T14:34:12",
+  "sha256": "dbe7842fd3595dca014fe8c321d4c591ec02d18063de3f9530d8983babbcea1b"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-03.docx": {
+  "bytes": 47508,
+  "content": "ab46a3dd3951028e4d3c201766ccfbed4c9446045a7f48b3685f28e615e9e3ef",
+  "from": "FRM Formulation 2026-11-03.docx",
+  "published_at": "2026-11-03T14:34:12",
+  "sha256": "a6727e006bd1afef074c64d7e1ac585f1db7ab3ede53cf6040503ff0aaa58633"
+ },
  "Daily Formulation Report/FRM Formulation Report 2026-09-23.xlsx": {
   "bytes": 55614,
   "content": "6dfee4a062a9fdc058c0a5a7fc8728473e54b5fdfa626a0873cd61af3ae58e0b",
@@ -499,11 +520,11 @@
   "sha256": "e6fdb5ddfd7039ea47b8e878de6758c5d1e173cc69380f73da157246b9120691"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-11-03.html": {
-  "bytes": 2944786,
-  "content": "3640fd161a574c7f5df28a36561d8b1093cb45021fd2c6b62f5e2878e1ead78d",
+  "bytes": 2945281,
+  "content": "7e74ec4652be3212711683e21ee47b4e94ad176f7b8df34ab1e4dce311fa8463",
   "from": "Profile Formulation 2026-11-03.html",
-  "published_at": "2026-11-03T13:49:18",
-  "sha256": "3640fd161a574c7f5df28a36561d8b1093cb45021fd2c6b62f5e2878e1ead78d"
+  "published_at": "2026-11-03T14:35:22",
+  "sha256": "7e74ec4652be3212711683e21ee47b4e94ad176f7b8df34ab1e4dce311fa8463"
  },
  "Extrusion Schedule/EXT Extrusion Schedule 2026-09-23.xlsx": {
   "bytes": 45623,
@@ -695,18 +716,18 @@
   "sha256": "21a4ba761932a58d8cb6a44e8291a8929b82bedc071531ab2f4eb8f5e422df4b"
  },
  "Extrusion Schedule/EXT Extrusion Schedule 2026-11-03.xlsx": {
-  "bytes": 38769,
-  "content": "2dce097025c82e321e388d0da1428da08f95181ecfbfabe2cd360078fb2fd967",
+  "bytes": 39361,
+  "content": "284432d8e48d5887144a35f38977fdce78a5dd26019bca792548d4db99e5b317",
   "from": "EXT Extrusion Schedule 2026-11-03.xlsx",
-  "published_at": "2026-11-03T13:46:35",
-  "sha256": "d198600136fdb654a96953c09bad3eb06003ea84c3c8741a22a696f143b1e455"
+  "published_at": "2026-11-03T14:34:01",
+  "sha256": "e6cf17f816f5a0cb542fb51d697a3157f945818221682410cdca46518b06c203"
  },
  "Extrusion Schedule/Extrusion Production Record.xlsx": {
-  "bytes": 4288120,
-  "content": "09d3703a31370659328e2980d2b07cf56b7ffa9219ecf3f23902d57fcfecaafb",
+  "bytes": 4279625,
+  "content": "73385c5cd60b73aa925d8729ff0ac8f58ffcb0ce943c2da2e0806de5ff51be74",
   "from": "Extrusion Production Record.xlsx",
-  "published_at": "2026-11-03T13:47:32",
-  "sha256": "a1ddddc3c69fc319afc03d033c619e237d8fa02db21e6001109218ef3294af68"
+  "published_at": "2026-11-03T14:34:12",
+  "sha256": "ba28950cc9885179aa4138637ddd32f207f7e41928e1430e3e1d5503a81f83d9"
  },
  "Formulation Data Base/Formulation Calc Library.xlsx": {
   "bytes": 4054179,
@@ -723,11 +744,11 @@
   "sha256": "4191eb1d5683d1a1beb5d715a5ff3655bd53ab2b4fbe960b8f8205ca54be55f9"
  },
  "Product Master/Product Master.xlsx": {
-  "bytes": 428604,
-  "content": "24d27bcae351ee41129038594a91f8a307c4b4f1224663aa85e01b56be5ab6ac",
+  "bytes": 428603,
+  "content": "03c627385f17cdb040b6acd4266bb2389f2804d2fa79463a82c0252061bad2ae",
   "from": "Product Master.xlsx",
-  "published_at": "2026-11-03T13:46:35",
-  "sha256": "f316ca2538370f65021d459594cc7c4c827bec31d1c6056c7898f02d007d5cf7"
+  "published_at": "2026-11-03T14:34:03",
+  "sha256": "8c06f522ac47da4dafd68312488dd18bd75d6e6053fcc4619799ae5cfca3cd1b"
  },
  "workspace/W% Master Formulation (draft v2).xlsx": {
   "bytes": 60820,

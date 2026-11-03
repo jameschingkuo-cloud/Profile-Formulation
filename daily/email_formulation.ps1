@@ -8,7 +8,7 @@
 # you sent me. also sent to the other two engineer KevinSung@wpjk.inteplast.com and YChang@wpjk.inteplast.com"). Sent once per version of the file: work/emailed_<date>.txt
 # keeps the hash of what was sent; the same file again is not re-sent, a rebuilt one is (say -Replaces so the subject
 # says it replaces the earlier copy).
-param([Parameter(Mandatory = $true)][string]$Date, [string]$Body = '', [switch]$Replaces, [string]$Dir = '')
+param([Parameter(Mandatory = $true)][string]$Date, [string]$Body = '', [switch]$Replaces, [string]$Dir = '', [string]$Tag = '')
 
 $To = 'JKUO@wpjk.inteplast.com; KevinSung@wpjk.inteplast.com; YChang@wpjk.inteplast.com'
 $root = Split-Path -Parent $PSScriptRoot
@@ -23,6 +23,8 @@ if ((Test-Path -LiteralPath $mark) -and ((Get-Content -LiteralPath $mark -TotalC
 
 $day = [datetime]::ParseExact($Date, 'yyyy-MM-dd', $null)
 $subject = 'FRM Formulation {0} ({1})' -f $Date, $day.ToString('ddd d MMM')
+# -Tag: what changed, in the title (James Kuo, 3 Nov 2026: "send another email to us 3 with revision in the email title")
+if ($Tag) { $subject += " - $Tag" }
 if ($Replaces) { $subject += ' - REPLACES the earlier copy' }
 if (-not $Body) { $Body = "The Word formulation for $Date, built from the day's schedule email, is attached." }
 $Body += "`r`n`r`nSent by the scheduled schedule run (Claude Code on James's PC). Rows marked ENGINEER TO COMPLETE need an engineer's formula before the copy is issued."

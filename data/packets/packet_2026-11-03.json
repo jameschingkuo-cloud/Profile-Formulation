@@ -2672,6 +2672,35 @@
     },
     {
      "T": "Y",
+     "order": "H6AA078-1",
+     "prod_code": "RBP50EB16",
+     "die": "BB510",
+     "order_width": "84",
+     "order_length": "96",
+     "mat_spec": "BBB P RDRDRD",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,003",
+     "cut_rows": [
+      {
+       "width": "84 1/8",
+       "length": "96 1/4",
+       "total_sheets": "1,600"
+      }
+     ],
+     "pack_code": "84X96",
+     "num_plt": "8",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "18,368",
+     "instr_date": "20-Nov",
+     "web_width": "84 1/8",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
      "order": "H6AA151-1",
      "prod_code": "RBP50KS78",
      "die": "BB510",
@@ -2734,10 +2763,12 @@
      "unclear": ""
     }
    ],
-   "line_total_pcs": "5,040",
-   "line_total_lbs": "42,885",
+   "line_total_pcs": "6,640",
+   "line_total_lbs": "61,253",
    "final_total": "5,818,502 PCs / 20,824,119 LBs",
-   "page_notes": "From the system PDF BPN9PFR$_Z88WM7bY.PDF (text, no OCR)."
+   "page_notes": "From the system PDF BPN9PFR$_Z88WM7bY.PDF (text, no OCR).",
+   "run_time_revised": "15:03:21",
+   "revision": "SE61 revised: the system's SE61 page re-run 11/03/26 15:03:21 (copier scan doc05461120261103142800.pdf, 'REVISED' in green pen, sent by James Kuo 3 Nov 2026): H6AA078-1 RBP50EB16 added; line total 6,640 PCs / 61,253 LBs (was 5,040 / 42,885 at 13:48:43); the other four orders as printed before"
   }
  ],
  "cnv": [

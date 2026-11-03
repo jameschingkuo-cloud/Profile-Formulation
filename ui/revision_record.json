@@ -747,6 +747,15 @@
    "change": "Runs before the daily packets show the order's own formulation from Tech's Word running records before the calc workbook's block: 3,237 of 3,263 runs before 23 Sep 2026 with a formulation. Open items: Settings coverage, Products with no Main and Tech's calc workbooks moved to Info (James: \"move this to info\", \"same with this one\", \"once done, you can put this in info\"); DOW-C104 and SE21 calculated settings updated from Tech's records; Q6 answered (lines 11/14/15 = SE41/SE44/SE51)",
    "order": "",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 84,
+   "date": "2026-11-03",
+   "type": "Print",
+   "item": "Revision email names the revision in its title",
+   "change": "James: \"revision on line SE61. send another email to us 3 with revision in the email title\". daily/email_formulation.ps1 -Tag \"<what changed>\" adds it to the subject (\"FRM Formulation 2026-11-03 (Tue 3 Nov) - REVISION SE61 - REPLACES the earlier copy\"). 3 Nov: SE61 re-run 15:03:21, H6AA078-1 RBP50EB16 added (BF0000EB5); formulation, EXT workbook, Extrusion Production Record (reissued for the day), Product Master and page re-published",
+   "order": "SE61 H6AA078-1 RBP50EB16",
+   "editor": "James Kuo"
   }
  ]
 }
