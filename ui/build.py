@@ -572,10 +572,9 @@ def main():
                        'accepted': accepted.group(1)[:16].replace('T', ' ') if accepted else '', 'changes': 0},
             'records': record_rows(), 'built': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
             'open': json.loads((ROOT / 'ui' / 'open_items.json').read_text(encoding='utf-8')),
-            'cust': json.loads((ROOT / 'ui' / 'customer_formulas.json').read_text(encoding='utf-8')),
-            # James Kuo, 28 Oct 2026: "another tab for revision record" - "formulation change (logic or W%) and artifact
-            # design change"; a row is added with each change
-            'revs': json.loads((ROOT / 'ui' / 'revision_record.json').read_text(encoding='utf-8'))['rows'],
+            # Customer formulas and the revision record are kept off the page (James Kuo, 4 Nov 2026: "operator dont need
+            # to see revision record or Customer formulas to name take them out"); they stay in ui/customer_formulas.json
+            # and ui/revision_record.json
             'replaced': replaced(),
             # for "generate from a scan" on the Daily run tab (James Kuo, 29 Sep 2026: "let me put the same production
             # file in the artifact. see if it generate the right formulation"): every issued FRM by date, the

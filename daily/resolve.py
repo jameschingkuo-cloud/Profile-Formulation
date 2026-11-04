@@ -130,10 +130,10 @@ def _rp26b03_2(line, order, product):
     why = ("James Kuo, 4 Nov 2026: reclaim running low, today only - W% PP 53 / talc 7 / WB reclaim 32 / WB 3 / CaCO3 5, "
            "settings from SE23's calibration (highest 90)")
     src = "James Kuo, 4 Nov 2026 (W% given in chat; SE23 calibration slopes)"
-    note = "For 11/4 only (reclaim running low) · W% PP 53 / talc 7 / WB reclaim 32 / WB 3 / CaCO3 5"
+    note = "For 11/4 only (reclaim running low), in place of RU0000WB4 · W% PP 53 / talc 7 / WB reclaim 32 / WB 3 / CaCO3 5"
     feed = [('Hopper 1', 'PP Virgin-silo 4 (6502A)', '59'), ('Hopper 2', 'HiTalc ZS (or N40109A)', '12'),
             ('Hopper 3', 'PP WB Reclaim', '90'), ('Hopper 4', 'WB-W26038A', '42'), ('Hopper 5', 'CaCO3 -Heritage HM-10MAX', '40')]
-    return [[line, order, product, 'SPECIAL', 'Alternative', '', f, None, m, st, None, why, None, src, 1, note] for f, m, st in feed]
+    return [[line, order, product, 'SPECIAL', 'Main', '', f, None, m, st, None, why, None, src, 1, note] for f, m, st in feed]
 
 
 # formulations James sets for one day only: (packet date, line, order) -> rows
@@ -532,20 +532,17 @@ def rule_rows(line, order, product, fm):
 
 
 def add_day_only(draft):
-    """James's formulation for one day, added under the order's own formulation (James Kuo, 4 Nov 2026: "add it instead
-    of removing old. put note, for 11/4 only"): its rows take the next Formula Row."""
+    """James's formulation for one day replaces the order's own formulation for that day (James Kuo, 4 Nov 2026: "When
+    special formation are requested, it temprary replace whatever we have. So no need to do the run first etc."); the
+    order goes back to its own formulation the next day."""
     for (day, line, order), fn in DAY_ONLY.items():
         if day != PKT:
             continue
-        own = [r for r in draft if r[0] == line and r[1] == order]
+        own = [i for i, r in enumerate(draft) if r[0] == line and r[1] == order]
         if not own:
             continue
-        nxt = max(r[14] or 0 for r in own) + 1
-        rows = fn(line, order, own[0][2])
-        for r in rows:
-            r[14] = nxt
-        at = max(i for i, r in enumerate(draft) if r[0] == line and r[1] == order) + 1
-        draft[at:at] = rows
+        rows = fn(line, order, draft[own[0]][2])
+        draft[own[0]:own[-1] + 1] = rows
     return draft
 
 
