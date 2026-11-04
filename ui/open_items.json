@@ -56,7 +56,7 @@
         {
           "sev": "Info",
           "title": "Winter starts Sunday 1 Nov: no winter settings on file",
-          "detail": "James, 4 Nov 2026: \"yes apply the winter settings but reissue tomorrow. today is already done\". From the 5 Nov schedule FUA152WB4 (winter) takes Tech's own winter issue on each line (his records halve the homopolymer Nov - Mar): SE12 7, SE13 13, SE21 13, SE23 27, SE24 9, SE31 13, SE43 8. 2 - 4 Nov were issued with the summer settings and stay so. Check: SE32 takes 12 (Mar 2025) - its record mixes 12, 16 and 24 with no clear season.",
+          "detail": "James, 4 Nov 2026: \"yes apply the winter settings but reissue tomorrow. today is already done\". From the 5 Nov schedule FUA152WB4 (winter) takes Tech's own winter issue on each line (his records halve the homopolymer Nov - Mar): SE12 7, SE13 13, SE21 13, SE23 27, SE24 9, SE31 13, SE43 8. 2 - 4 Nov were issued with the summer settings and stay so. SE32 takes 12 (Mar 2025; its record mixes 12, 16 and 24) - James, 4 Nov 2026: \"keep SE32 at 12 for now\".",
           "where": "graphic WB 4 mm, all lines",
           "source": "simulation 24 Oct"
         },
