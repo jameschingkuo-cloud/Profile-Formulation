@@ -229,7 +229,6 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
       <div class="sub" id="sub"></div>
     </div>
     <div class="topright">
-      <div class="proto" id="proto"></div>
       <!-- James Kuo, 4 Nov 2026: "give it a bright dark bottom" -->
       <div class="themebtn" role="group" aria-label="Page colours">
         <button type="button" data-theme-set="light" aria-pressed="false">Bright</button>
@@ -394,9 +393,7 @@ const high = D.issues.filter(i => i.sev === 'High').length;
 const DRAFT = D.stats.source === 'draft';      // no Tech FRM pages for the day yet: the FRM Draft (2 Oct 2026)
 // by rule since 23 Oct 2026 (James Kuo: "we use logic base formulation process. Remove old logic and apply new")
 const RULES = DRAFT && !!D.stats.rules;
-$('#sub').innerHTML = `Packet ${fmtDate(D.day)} 2026 · <span class="mono">${esc(D.scans.packet)}</span>` + (DRAFT
-  ? (RULES ? ' · formulation by rule from James’s W% Master (draft for an engineer to check)' : ' · no Tech FRM pages yet: formulation as last issued on each line (draft)')
-  : ` + FRM <span class="mono">${esc(D.scans.frm)}</span>`);
+$('#sub').textContent = `Last refresh ${D.built}`;   // James Kuo, 4 Nov 2026: just the last refresh time
 $('#strip').innerHTML = [
   ['acc', D.stats.orders, `orders on ${D.stats.lines || D.lines.length} lines`, DRAFT ? (RULES
     ? `${D.stats.exceptions} for an engineer${D.stats.to_set ? ` · ${D.stats.to_set} formulation${D.stats.to_set === 1 ? '' : 's'} with settings to set` : ''}`
@@ -520,7 +517,6 @@ $('#mkv').innerHTML = [['Formulas', D.master.formulas], ['Line settings', D.mast
   .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
 
 // ---- daily run
-$('#proto').textContent = `Copy of the published files after the ${fmtDate(D.day)} run (built ${D.built}); refreshed after each daily run, not live.`;
 $('#flow').innerHTML = [
   ['done', 'Scan', `Schedule ${D.scans.packet}; ${DRAFT ? 'no Tech FRM pages yet' : 'FRM ' + D.scans.frm}`],
   ['done', 'Transcribe + check', `${D.stats.orders} orders; glyph reader cross-check; line totals tie`],
@@ -642,8 +638,8 @@ function renderOp(){
       const app = g ? [...new Set(g.formulas.map(f => (APPS.find(([rx]) => rx.test(f.note)) || [])[1]).filter(Boolean))] : [];
       return `<article class="opcard"><div class="top"><span class="seq">${n + 1}</span><span class="ord">${esc(o.order)} ${app.map(a => `<span class="chip warn" style="font-size:12px;vertical-align:middle">${esc(a)}</span>`).join(' ')}</span>
         <div class="facts"><span>Product <b class="mono">${esc(o.prod)}</b></span><span>Colour <b>${esc(o.colors || '')}</b></span><span><b>${esc(o.thk || '')}</b> mm</span>
-          <span>Size <b>${esc(o.size)}</b></span><span>GSM <b>${esc(o.gsm || '')}</b></span><span>Pallets <b>${o.plt_real ? o.plt_real.toLocaleString() : esc(o.plt || '')}</b>${o.plt_real ? ' <span class="muted">(AS400 prints 999)</span>' : ''}</span><span>Die <b class="mono">${esc(o.die || '')}</b></span>
-          ${o.cut ? `<span>Cut <b>${esc(o.cut)}</b></span>` : ''}${o.pack ? `<span>Pack code <b class="mono">${esc(o.pack)}</b></span>` : ''}${o.pcplt ? `<span>PC/Pallet <b>${esc(o.pcplt)}</b></span>` : ''}</div></div>
+          <span>Size <b>${esc(o.size)}</b></span>${o.cut ? `<span>Cut Size <b>${esc(o.cut)}</b></span>` : ''}<span>GSM <b>${esc(o.gsm || '')}</b></span><span>Pallets <b>${o.plt_real ? o.plt_real.toLocaleString() : esc(o.plt || '')}</b>${o.plt_real ? ' <span class="muted">(AS400 prints 999)</span>' : ''}</span><span>Die <b class="mono">${esc(o.die || '')}</b></span>
+          ${o.pack ? `<span>Pack code <b class="mono">${esc(o.pack)}</b></span>` : ''}${o.pcplt ? `<span>PC/Pallet <b>${esc(o.pcplt)}</b></span>` : ''}</div></div>
         ${o.si ? `<div class="si ${watch.test(o.si) ? 'watch' : ''}">${esc(o.si)}</div>` : ''}
         ${g ? `<div class="forms">${g.formulas.map((f, i, all) => `<div class="form ${i === 0 ? 'first' : ''}"><div class="fhead"><span class="when">${whenLabel(f, i, all)}</span><span class="code">${esc(f.code)}</span></div>
             ${f.note ? `<div class="muted" style="font-size:13px">${esc(f.note)}</div>` : ''}${weight ? weightPct(f) : augerBar(f)}<table class="sets">${setRows(f, weight)}</table></div>`).join('')}</div>`

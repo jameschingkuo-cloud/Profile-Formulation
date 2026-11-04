@@ -810,6 +810,15 @@
       "change": "James: \"dont need Note: CaCO3 means calcium carbonate. or Auger feeders: every setting is motor speed, 0 to 100 ... switch to it when reclaim runs out. in operator screen\". The Operator tab no longer shows the paragraph under the line heading (setting meaning, run order, Secondary) or the CaCO3 note at the bottom; the line's other notes stay. Line board and the Word file unchanged.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 91,
+      "date": "2026-11-04",
+      "type": "Page design",
+      "item": "Header shows only the last refresh; Cut Size beside Size",
+      "change": "James: \"replace this Packet Nov 4 2026 · BPN9PFR$_Z898pQQX.PDF · formulation by rule ... and Copy of the published files after the Nov 4 run ... with just the last refresh time\" - the line under the title now reads \"Last refresh <date time>\" and the copy note box is gone. \"move cut to the right of size\" / \"change it to Cut Size\" - the operator card shows Size, then Cut Size, then GSM, Pallets, Die, Pack code, PC/Pallet.",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }
