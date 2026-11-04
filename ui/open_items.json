@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-02",
+  "updated": "2026-11-04",
   "groups": [
     {
       "owner": "James",
@@ -54,9 +54,9 @@
           "source": "Settings To Set sheet"
         },
         {
-          "sev": "High",
+          "sev": "Info",
           "title": "Winter starts Sunday 1 Nov: no winter settings on file",
-          "detail": "From 1 Nov the rules print your winter Main FUA152WB4 (W%: 8% homopolymer) for graphic WB 4 mm - about 20 orders on Friday's schedule. Every FUA152WB4 / FUA151WB4 recipe on file (Tech's pages and calc sheets, SE13/21/22/24/31/32/43) is the 15% homopolymer one, so the winter name would print with the summer settings. Before Mon 2 Nov: keep Tech's 15% recipe, or set winter settings (8%) per line?",
+          "detail": "James, 4 Nov 2026: \"yes apply the winter settings but reissue tomorrow. today is already done\". From the 5 Nov schedule FUA152WB4 (winter) takes Tech's own winter issue on each line (his records halve the homopolymer Nov - Mar): SE12 7, SE13 13, SE21 13, SE23 27, SE24 9, SE31 13, SE43 8. 2 - 4 Nov were issued with the summer settings and stay so. Check: SE32 takes 12 (Mar 2025) - its record mixes 12, 16 and 24 with no clear season.",
           "where": "graphic WB 4 mm, all lines",
           "source": "simulation 24 Oct"
         },

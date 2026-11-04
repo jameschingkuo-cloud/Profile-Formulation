@@ -1086,7 +1086,50 @@ def secondary_for(main, want, seas, line):
     return fit[0] if len({m['code'] for m in fit}) == 1 else None
 
 
-def member_settings(line, m, want, issued, own=None):
+# R5 settings by season (James Kuo, 4 Nov 2026: "yes apply the winter settings but reissue tomorrow. today is already
+# done"): a seasonal Main takes Tech's newest issue on the line from its own season. Tech halves the homopolymer from Nov to
+# Mar under the same code (SE21 25 -> 13, SE13 25 -> 13, SE24 15 -> 8 ...; Word running records 2022-26), and the newest
+# issue on the line is otherwise his summer one. From the 5 Nov schedule on (2 - 4 Nov stay as issued).
+SEASON_SETTINGS_FROM = datetime.date(2026, 11, 5)
+
+
+def issue_season(date):
+    """The season of an issue date ('YYYY-MM-DD', or a Word-record month 'YYYY-MM-00')."""
+    try:
+        return season(datetime.date(int(str(date)[:4]), int(str(date)[5:7]), 1))
+    except ValueError:
+        return None
+
+
+def homo_share(line, f):
+    """The homopolymer (F1203K / F1102K) share of a formula's weight: weight-blender lines from the set % of the extruder
+    that feeds it, auger lines from setting x the hopper's own calibration slope. None when a slope is missing."""
+    groups = defaultdict(lambda: defaultdict(float))
+    for col, v in f['feeders'].items():
+        try:
+            st = float(str(v.get('set') or '').replace(',', ''))
+        except ValueError:
+            continue
+        mat = (v.get('material') or '').upper()
+        if not mat:
+            continue
+        cls = ('1203K' if re.search(r'1203K|1102K', mat) else 'TALC' if 'TALC' in mat else 'CACO3' if 'CACO3' in mat
+               else 'RECLAIM' if 'RECLAIM' in mat else 'VIRGIN PP' if re.search(r'VIRGIN|6502', mat) else 'COLOR')
+        if line in WEIGHT_LINES:
+            groups[col.rsplit(' ', 1)[0] if ' ' in col else ''][cls] += st
+        else:
+            d = re.search(r'(\d)\s*$', col)
+            k = class_slope(line, 'H' + d.group(1), cls)[0] if d else None
+            if not k:
+                return None
+            groups[''][cls] += st * k
+    for g in groups.values():
+        if g.get('1203K') and sum(g.values()):
+            return g['1203K'] * 100 / sum(g.values())
+    return 0.0 if groups else None
+
+
+def member_settings(line, m, want, issued, own=None, day=None):
     """The rows of one member (Primary or Secondary) on the line: from the order's own last issue, else the line's issued
     groups (the one Tech noted for the order's qualifier first), else Tech's calc sheet. A row belongs to the member when
     its code is one of the member's printed names and it feeds reclaim exactly when the member's W% has reclaim (so the
@@ -1133,6 +1176,22 @@ def member_settings(line, m, want, issued, own=None):
             # corn box stands apart: only rows Tech issued for corn box - noted so, or issued for a corn box order (James,
             # 27 Oct 2026: "keep it clean and separated")
             ordered = [g for g in ordered if 'corn' in notes_q(g[2]) or id(g[2]) in _CORN_GROUPS]
+        seas_q = set(m['quals']) & {'summer', 'winter'}
+        if seas_q and day and day >= SEASON_SETTINGS_FROM:
+            same = [g for g in ordered if issue_season(g[0]) in seas_q]
+            target = (m.get('w') or {}).get('Homo PP (F1203K) %')
+            if same and target is not None:
+                # the season's issues whose homopolymer share is nearest the Main's W% (March often runs summer again)
+                def gap(g):
+                    xs = [homo_share(line, f) for f in pick(g[2])]
+                    xs = [x for x in xs if x is not None]
+                    return min(abs(x - target) for x in xs) if xs else None
+                gaps = {id(g): gap(g) for g in same}
+                known = [v for v in gaps.values() if v is not None]
+                if known:
+                    best = min(known)
+                    same = [g for g in same if gaps[id(g)] is not None and gaps[id(g)] <= best + 1.0]
+            ordered = same or ordered            # none from that season on the line: the newest issue, as before
         if (line, m['code']) in CONFIRMED_SETTINGS:
             # settings James confirmed outrank an older issue from Tech's Word running records (dated YYYY-MM-00)
             ordered = [g for g in ordered if not str(g[0]).endswith('-00')]
@@ -1180,7 +1239,7 @@ def formulation(line, row, day, issued, own=None):
         if line in R4_BLACK_HOPPERS and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
             rows, src = r4_black_settings(line, m)          # James's R4 black hoppers and 98/2, before Tech's rows
         if rows is None:
-            rows, src = member_settings(line, m, want, issued, own)
+            rows, src = member_settings(line, m, want, issued, own, day)
         if rows is None and (line, m['code']) in CONFIRMED_SETTINGS:
             # what James confirmed comes before any fallback that could reach an older issue in Tech's Word running
             # records (a run-out row, an equivalent): a newer issue on the line still wins (member_settings)

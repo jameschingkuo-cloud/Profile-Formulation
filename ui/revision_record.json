@@ -756,6 +756,15 @@
    "change": "James: \"revision on line SE61. send another email to us 3 with revision in the email title\". daily/email_formulation.ps1 -Tag \"<what changed>\" adds it to the subject (\"FRM Formulation 2026-11-03 (Tue 3 Nov) - REVISION SE61 - REPLACES the earlier copy\"). 3 Nov: SE61 re-run 15:03:21, H6AA078-1 RBP50EB16 added (BF0000EB5); formulation, EXT workbook, Extrusion Production Record (reissued for the day), Product Master and page re-published",
    "order": "SE61 H6AA078-1 RBP50EB16",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 85,
+   "date": "2026-11-04",
+   "type": "Logic",
+   "item": "Winter settings: Tech's own winter issue on each line",
+   "change": "James: \"yes apply the winter settings but reissue tomorrow. today is already done\". A seasonal Main (FUA151WB4 summer / FUA152WB4 winter) takes, from the 5 Nov schedule on, Tech's newest issue on the line from its own season whose homopolymer share is nearest the Main's W% (assign.member_settings, homo_share: weight lines by set %, auger lines by setting x the hopper's calibration slope). Tech halves the homopolymer from Nov to Mar under the same code (Word running records). Graphic WB 4 mm from 5 Nov: SE12 F1203K 7 (Feb 2026), SE13 13 (Mar 2026), SE21 13 (Mar 2026), SE23 27 (Nov 2024), SE24 9 (Jan 2026), SE31 13 (Mar 2026), SE43 8 (Feb 2026); SE32 12 (Mar 2025; its record is mixed, flagged for James). 2 - 4 Nov stay as issued (summer settings).",
+   "order": "graphic WB 4 mm, all lines",
+   "editor": "James Kuo"
   }
  ]
 }
