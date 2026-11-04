@@ -57,6 +57,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .chip.auger{background:var(--info-soft);color:var(--info)} .chip.weight{background:var(--accent-soft);color:var(--accent)}
 .chip.crit{background:var(--crit-soft);color:var(--crit)} .chip.warn{background:var(--warn-soft);color:var(--warn)} .chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.var{background:var(--panel-2);color:var(--muted);border:1px solid var(--line)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--crit);display:inline-block}
+/* a hidden view stays hidden even where .panel / .board set display (4 Nov 2026: Engineering views showed under Operator) */
+[hidden]{display:none!important}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:14px;min-width:0}
 .linehead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-end;justify-content:space-between}
 .linehead h2{font-size:30px;line-height:1}
