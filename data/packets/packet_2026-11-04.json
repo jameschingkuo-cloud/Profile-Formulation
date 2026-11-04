@@ -1,0 +1,2959 @@
+{
+ "packet_date": "2026-11-04",
+ "source_scan": "BPN9PFR$_Z898pQQX.PDF",
+ "ext": [
+  {
+   "scan_page": 1,
+   "report_page": "1",
+   "line": "SE12",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26821-1",
+     "prod_code": "RPA40WB3142",
+     "die": "PA3B5",
+     "order_width": "60",
+     "order_length": "120",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "60",
+       "length": "120 3/4",
+       "total_sheets": "274,725"
+      }
+     ],
+     "pack_code": "60X120",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,826,921",
+     "instr_date": "Stock",
+     "web_width": "60",
+     "special_instructions": "102 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26728-4",
+     "prod_code": "SPA40WB761",
+     "die": "PA3B5",
+     "order_width": "49",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "55,400"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "200",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "1",
+     "weight_lbs": "92,795",
+     "instr_date": "Stock",
+     "web_width": "49",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.        RUN WITH NEXT / 174 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26511-1",
+     "prod_code": "SPA40WB772",
+     "die": "PA3B5",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      },
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "400",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "2",
+     "weight_lbs": "189,246",
+     "instr_date": "Stock",
+     "web_width": "50",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.         410 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "551,725",
+   "line_total_lbs": "2,108,962",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 2,
+   "report_page": "2",
+   "line": "SE13",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6BA003-9",
+     "prod_code": "DPA40WB134",
+     "die": "PA406",
+     "order_width": "25",
+     "order_length": "37 1/2",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "38 1/8",
+       "total_sheets": "680"
+      },
+      {
+       "width": "25",
+       "length": "38 1/8",
+       "total_sheets": "680"
+      },
+      {
+       "width": "25",
+       "length": "38 1/8",
+       "total_sheets": "680"
+      }
+     ],
+     "pack_code": "30X42",
+     "num_plt": "8",
+     "pcs_per_stack": "255",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,765",
+     "instr_date": "24-Nov",
+     "web_width": "75",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26A15-2",
+     "prod_code": "RPA40WB3170",
+     "die": "PA406",
+     "order_width": "36",
+     "order_length": "72",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "36",
+       "length": "72 3/4",
+       "total_sheets": "3,850"
+      },
+      {
+       "width": "36",
+       "length": "72 3/4",
+       "total_sheets": "3,850"
+      }
+     ],
+     "pack_code": "37X76",
+     "num_plt": "28",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "18,403",
+     "instr_date": "Stock",
+     "web_width": "72",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP24C18-4",
+     "prod_code": "RPA40WB3142",
+     "die": "PA406",
+     "order_width": "60",
+     "order_length": "120",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "60",
+       "length": "120 3/4",
+       "total_sheets": "274,725"
+      }
+     ],
+     "pack_code": "60X120",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,826,921",
+     "instr_date": "Stock",
+     "web_width": "60",
+     "special_instructions": "378 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26618-2",
+     "prod_code": "SPA40WB937",
+     "die": "PA406",
+     "order_width": "49",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "100,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "400",
+     "pcs_per_stack": "252",
+     "stk_per_plt": "1",
+     "weight_lbs": "168,840",
+     "instr_date": "Stock",
+     "web_width": "49",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.         RUN WITH NEXT / 409 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26618-3",
+     "prod_code": "SPA40WB772",
+     "die": "PA406",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "100,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "200",
+     "pcs_per_stack": "252",
+     "stk_per_plt": "2",
+     "weight_lbs": "86,083",
+     "instr_date": "Stock",
+     "web_width": "25",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.           RUN WITH ABOVE / 305 PLTS DONE                  KEEP RUNNING",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26506-5",
+     "prod_code": "SPA40WB934",
+     "die": "PA406",
+     "order_width": "49",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "400",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "1",
+     "weight_lbs": "185,590",
+     "instr_date": "Stock",
+     "web_width": "49",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.      RUN WITH NEXT / 457 PLTS DONE               KEEP RUNNING",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP25522-4",
+     "prod_code": "SPA40WB772",
+     "die": "PA406",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "110,800"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "200",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "2",
+     "weight_lbs": "94,623",
+     "instr_date": "Stock",
+     "web_width": "25",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.         RUN WITH ABOVE / 242 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 3,
+   "report_page": "3",
+   "line": "SE13",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26717-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PA406",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "274,725"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,581",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "RUN WITH NEXT                           102 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26327-1",
+     "prod_code": "SPA40WB772",
+     "die": "PA406",
+     "order_width": "25",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "25",
+       "length": "37 5/8",
+       "total_sheets": "55,400"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "100",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "2",
+     "weight_lbs": "47,312",
+     "instr_date": "Stock",
+     "web_width": "25",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.        RUN WITH ABOVE / 449 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "1,037,790",
+   "line_total_lbs": "3,597,118",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 4,
+   "report_page": "4",
+   "line": "SE21",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6AA229-1",
+     "prod_code": "DPP40GF2",
+     "die": "PB405",
+     "order_width": "65",
+     "order_length": "58 1/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "GF GF GF",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "65",
+       "length": "58 7/8",
+       "total_sheets": "2,600"
+      }
+     ],
+     "pack_code": "60X72",
+     "num_plt": "10",
+     "pcs_per_stack": "260",
+     "stk_per_plt": "1",
+     "weight_lbs": "10,504",
+     "instr_date": "27-Dec",
+     "web_width": "65",
+     "special_instructions": "Send to printing. Mark lead edge & make sure of pc count.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26527-1",
+     "prod_code": "RPA40WB3143",
+     "die": "PB405",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      },
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "150",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "190,575",
+     "instr_date": "Stock",
+     "web_width": "100",
+     "special_instructions": "111 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA227-1",
+     "prod_code": "RPA50WB289",
+     "die": "PB405",
+     "order_width": "96",
+     "order_length": "48",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "5.0",
+     "gsm": "1,003",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "48 9/16",
+       "total_sheets": "460"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "2",
+     "pcs_per_stack": "230",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,018",
+     "instr_date": "16-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA227-2",
+     "prod_code": "RPA50WB289",
+     "die": "PB405",
+     "order_width": "96",
+     "order_length": "48",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "5.0",
+     "gsm": "1,003",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "48 9/16",
+       "total_sheets": "460"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "2",
+     "pcs_per_stack": "230",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,018",
+     "instr_date": "16-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26A14-1",
+     "prod_code": "RPA60WB240",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "6.0",
+     "gsm": "1,204",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "4,500"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "4,500"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "60",
+     "pcs_per_stack": "150",
+     "stk_per_plt": "1",
+     "weight_lbs": "70,830",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA221-2",
+     "prod_code": "RPP63RF1",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "RF RF RF",
+     "thk": "6.3",
+     "gsm": "1,404",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "175"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "175"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "2",
+     "pcs_per_stack": "175",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,213",
+     "instr_date": "12-Nov",
+     "web_width": "96",
+     "special_instructions": "Tulsa Plastics, hold thickness between 6.2 & 6.5mm.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA222-2",
+     "prod_code": "RPP63RF1",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "RF RF RF",
+     "thk": "6.3",
+     "gsm": "1,404",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "175"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "175"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "2",
+     "pcs_per_stack": "175",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,213",
+     "instr_date": "03-Dec",
+     "web_width": "96",
+     "special_instructions": "Tulsa Plastics, hold thickness between 6.2 & 6.5mm.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA223-2",
+     "prod_code": "RPP63RF1",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "RF RF RF",
+     "thk": "6.3",
+     "gsm": "1,404",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "175"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "175"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "2",
+     "pcs_per_stack": "175",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,213",
+     "instr_date": "17-Dec",
+     "web_width": "96",
+     "special_instructions": "Tulsa Plastics, hold thickness between 6.2 & 6.5mm.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA221-1",
+     "prod_code": "RPP63KS1",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "6.3",
+     "gsm": "1,404",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "2,002"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "2,002"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "22",
+     "pcs_per_stack": "182",
+     "stk_per_plt": "1",
+     "weight_lbs": "36,757",
+     "instr_date": "12-Nov",
+     "web_width": "96",
+     "special_instructions": "Tulsa Plastics, hold thickness between 6.2 & 6.5mm.",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 5,
+   "report_page": "5",
+   "line": "SE21",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6AA222-1",
+     "prod_code": "RPP63KS1",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "6.3",
+     "gsm": "1,404",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "2,002"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "2,002"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "22",
+     "pcs_per_stack": "182",
+     "stk_per_plt": "1",
+     "weight_lbs": "36,757",
+     "instr_date": "03-Dec",
+     "web_width": "96",
+     "special_instructions": "Tulsa Plastics, hold thickness between 6.2 & 6.5mm.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA223-1",
+     "prod_code": "RPP63KS1",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "6.3",
+     "gsm": "1,404",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "2,002"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "2,002"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "22",
+     "pcs_per_stack": "182",
+     "stk_per_plt": "1",
+     "weight_lbs": "36,757",
+     "instr_date": "17-Dec",
+     "web_width": "96",
+     "special_instructions": "Tulsa Plastics, hold thickness between 6.2 & 6.5mm.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA240-1",
+     "prod_code": "RPA60KS103",
+     "die": "PB405",
+     "order_width": "72",
+     "order_length": "108",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "6.0",
+     "gsm": "1,204",
+     "cut_rows": [
+      {
+       "width": "72",
+       "length": "108 3/4",
+       "total_sheets": "300"
+      }
+     ],
+     "pack_code": "72X108",
+     "num_plt": "2",
+     "pcs_per_stack": "150",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,984",
+     "instr_date": "25-Nov",
+     "web_width": "72",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6BA015-2",
+     "prod_code": "RPA40KS812",
+     "die": "PB405",
+     "order_width": "40",
+     "order_length": "60",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "40",
+       "length": "60 3/4",
+       "total_sheets": "550"
+      },
+      {
+       "width": "40",
+       "length": "60 3/4",
+       "total_sheets": "550"
+      }
+     ],
+     "pack_code": "42X62",
+     "num_plt": "4",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "2,431",
+     "instr_date": "25-Nov",
+     "web_width": "80",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA268-2",
+     "prod_code": "RPA40KS810",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "57",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "57 3/4",
+       "total_sheets": "1,305"
+      },
+      {
+       "width": "48",
+       "length": "57 3/4",
+       "total_sheets": "1,305"
+      }
+     ],
+     "pack_code": "48X62",
+     "num_plt": "9",
+     "pcs_per_stack": "290",
+     "stk_per_plt": "1",
+     "weight_lbs": "6,577",
+     "instr_date": "20-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26A15-1",
+     "prod_code": "RPA40KS744",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "6,875"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "6,875"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "50",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "58,438",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "4 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26916-1",
+     "prod_code": "RPA40BL733",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "BL BL BL",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "1,925"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "1,925"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "14",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "16,363",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP25818-2",
+     "prod_code": "RPA40WB3051",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "553 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26512-1",
+     "prod_code": "DPP40WB1235",
+     "die": "PB405",
+     "order_width": "47 1/4",
+     "order_length": "45 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      },
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "999",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "672,387",
+     "instr_date": "Stock",
+     "web_width": "94 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / 525 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "654,876",
+   "line_total_lbs": "2,325,621",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 7,
+   "report_page": "7",
+   "line": "SE22",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6AA080-2",
+     "prod_code": "DPPA0WB278",
+     "die": "PB130",
+     "order_width": "48 1/2",
+     "order_length": "19 3/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "10.0",
+     "gsm": "2,006",
+     "cut_rows": [
+      {
+       "width": "48 1/2",
+       "length": "19 3/4",
+       "total_sheets": "285"
+      },
+      {
+       "width": "48 1/2",
+       "length": "19 3/4",
+       "total_sheets": "285"
+      }
+     ],
+     "pack_code": "30X48",
+     "num_plt": "6",
+     "pcs_per_stack": "95",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,525",
+     "instr_date": "18-Nov",
+     "web_width": "97",
+     "special_instructions": "Send to flatbed. Mark lead edge & make sure of pc count.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA163-1",
+     "prod_code": "SPAA0OF5",
+     "die": "PB130",
+     "order_width": "49",
+     "order_length": "49",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "OF OF OF",
+     "thk": "10.0",
+     "gsm": "2,006",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "49 3/4",
+       "total_sheets": "575"
+      },
+      {
+       "width": "49",
+       "length": "49 3/4",
+       "total_sheets": "575"
+      }
+     ],
+     "pack_code": "48X48",
+     "num_plt": "10",
+     "pcs_per_stack": "115",
+     "stk_per_plt": "1",
+     "weight_lbs": "7,861",
+     "instr_date": "29-Nov",
+     "web_width": "98",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA163-2",
+     "prod_code": "SPAA0OF3",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "62",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "OF OF OF",
+     "thk": "10.0",
+     "gsm": "2,006",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "62 3/4",
+       "total_sheets": "230"
+      },
+      {
+       "width": "48",
+       "length": "62 3/4",
+       "total_sheets": "230"
+      }
+     ],
+     "pack_code": "48X62",
+     "num_plt": "4",
+     "pcs_per_stack": "115",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,898",
+     "instr_date": "29-Nov",
+     "web_width": "96",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA231-1",
+     "prod_code": "RPPA0KS311",
+     "die": "PB130",
+     "order_width": "24",
+     "order_length": "91",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "1,805",
+     "cut_rows": [
+      {
+       "width": "24",
+       "length": "91 3/4",
+       "total_sheets": "128"
+      },
+      {
+       "width": "24",
+       "length": "91 3/4",
+       "total_sheets": "128"
+      },
+      {
+       "width": "24",
+       "length": "91 3/4",
+       "total_sheets": "128"
+      },
+      {
+       "width": "24",
+       "length": "91 3/4",
+       "total_sheets": "128"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "3",
+     "pcs_per_stack": "85",
+     "stk_per_plt": "2",
+     "weight_lbs": "2,862",
+     "instr_date": "17-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA231-2",
+     "prod_code": "RPPA0KS312",
+     "die": "PB130",
+     "order_width": "36",
+     "order_length": "72",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "1,805",
+     "cut_rows": [
+      {
+       "width": "36",
+       "length": "72 3/4",
+       "total_sheets": "250"
+      },
+      {
+       "width": "36",
+       "length": "72 3/4",
+       "total_sheets": "250"
+      }
+     ],
+     "pack_code": "37X76",
+     "num_plt": "5",
+     "pcs_per_stack": "100",
+     "stk_per_plt": "1",
+     "weight_lbs": "3,320",
+     "instr_date": "17-Nov",
+     "web_width": "72",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA231-3",
+     "prod_code": "RPPA0KS313",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "60",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "1,805",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "60 3/4",
+       "total_sheets": "500"
+      },
+      {
+       "width": "48",
+       "length": "60 3/4",
+       "total_sheets": "500"
+      }
+     ],
+     "pack_code": "48X62",
+     "num_plt": "10",
+     "pcs_per_stack": "100",
+     "stk_per_plt": "1",
+     "weight_lbs": "7,380",
+     "instr_date": "17-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA231-4",
+     "prod_code": "RPPA0KS314",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "90",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "1,805",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "90 3/4",
+       "total_sheets": "250"
+      },
+      {
+       "width": "48",
+       "length": "90 3/4",
+       "total_sheets": "250"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "5",
+     "pcs_per_stack": "100",
+     "stk_per_plt": "1",
+     "weight_lbs": "5,535",
+     "instr_date": "17-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA231-5",
+     "prod_code": "RPPA0KS315",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "1,805",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "500"
+      },
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "500"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "10",
+     "pcs_per_stack": "100",
+     "stk_per_plt": "1",
+     "weight_lbs": "12,050",
+     "instr_date": "17-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26707-2",
+     "prod_code": "RPAA0KS73",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "1,704",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "660"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "660"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "12",
+     "pcs_per_stack": "110",
+     "stk_per_plt": "1",
+     "weight_lbs": "14,705",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 8,
+   "report_page": "8",
+   "line": "SE22",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6AA148-1",
+     "prod_code": "RPPA0WB228",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "192",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "10.0",
+     "gsm": "2,006",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "194",
+       "total_sheets": "600"
+      },
+      {
+       "width": "48",
+       "length": "194",
+       "total_sheets": "600"
+      }
+     ],
+     "pack_code": "48X192",
+     "num_plt": "12",
+     "pcs_per_stack": "100",
+     "stk_per_plt": "1",
+     "weight_lbs": "31,488",
+     "instr_date": "13-Nov",
+     "web_width": "96",
+     "special_instructions": "NO BANANA SHAPE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA171-1",
+     "prod_code": "RPPA0WB241",
+     "die": "PB130",
+     "order_width": "96",
+     "order_length": "48",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "10.0",
+     "gsm": "2,006",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "48 1/2",
+       "total_sheets": "4,025"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "35",
+     "pcs_per_stack": "115",
+     "stk_per_plt": "1",
+     "weight_lbs": "52,808",
+     "instr_date": "16-Nov",
+     "web_width": "96",
+     "special_instructions": "VOIDFORM, PLEASE WATCH WEIGHT",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26928-1",
+     "prod_code": "RPAA0WB318",
+     "die": "PB130",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "10.0",
+     "gsm": "1,704",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "54,945"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "54,945"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "110",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,224,175",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "76 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "122,127",
+   "line_total_lbs": "1,367,607",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 9,
+   "report_page": "9",
+   "line": "SE23",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A305-1",
+     "prod_code": "DPP40WB1756",
+     "die": "PB456",
+     "order_width": "53 1/2",
+     "order_length": "49 3/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB GE WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "53 1/2",
+       "length": "50 1/8",
+       "total_sheets": "6,424"
+      },
+      {
+       "width": "53 1/2",
+       "length": "50 1/8",
+       "total_sheets": "6,424"
+      }
+     ],
+     "pack_code": "48X54",
+     "num_plt": "44",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "36,296",
+     "instr_date": "09-Dec",
+     "web_width": "107",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / 35 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A116-1",
+     "prod_code": "DPP40EA12",
+     "die": "PB456",
+     "order_width": "91 1/2",
+     "order_length": "30",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "EA EA EA",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "91 1/2",
+       "length": "30 5/8",
+       "total_sheets": "260"
+      }
+     ],
+     "pack_code": "36X96",
+     "num_plt": "1",
+     "pcs_per_stack": "260",
+     "stk_per_plt": "1",
+     "weight_lbs": "763",
+     "instr_date": "11-Nov",
+     "web_width": "91 1/2",
+     "special_instructions": "Send to printing. Mark lead edge & make sure of pc count. / MUST PRINT TICKET ON LINE 4",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26B03-2",
+     "prod_code": "RPP40WB1625",
+     "die": "PB456",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "9,625"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "9,625"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "70",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "75,653",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26902-1",
+     "prod_code": "DPP40WB1235",
+     "die": "PB456",
+     "order_width": "47 1/4",
+     "order_length": "45 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      },
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "999",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "672,387",
+     "instr_date": "Stock",
+     "web_width": "94 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / CORN BOX                                   717 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26821-2",
+     "prod_code": "RPA40WB3051",
+     "die": "PB456",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "99 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26202-1",
+     "prod_code": "RPA40WB3143",
+     "die": "PB456",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "27,500"
+      },
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "27,500"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "200",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "254,100",
+     "instr_date": "Stock",
+     "web_width": "100",
+     "special_instructions": "91 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "653,792",
+   "line_total_lbs": "2,206,785",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 10,
+   "report_page": "10",
+   "line": "SE24",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26901-1",
+     "prod_code": "RPA40WB3630",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "9,600"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "48",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "40,800",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "RUN WITH RPA40WB3051                          53 PLTS DONE / MUST BE BOX AT 10 PCS PER BOX  PUT BETWEEN LINE 7 AND 8 / 9 COMPELTELY DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26A28-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "24 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26604-1",
+     "prod_code": "SPA40WB755",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "27,800"
+      },
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "27,800"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "200",
+     "pcs_per_stack": "278",
+     "stk_per_plt": "1",
+     "weight_lbs": "241,693",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16. / RUN WITH RPA40WB3051                    150 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA039-6",
+     "prod_code": "SPA40WB756",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "255"
+      },
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "255"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "2",
+     "pcs_per_stack": "255",
+     "stk_per_plt": "1",
+     "weight_lbs": "2,217",
+     "instr_date": "15-Nov",
+     "web_width": "96",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16. / NEED TO BE BOX AT 25 PCS PER BOX",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA055-1",
+     "prod_code": "SPA40WB756",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "255"
+      },
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "255"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "2",
+     "pcs_per_stack": "255",
+     "stk_per_plt": "1",
+     "weight_lbs": "2,217",
+     "instr_date": "14-Nov",
+     "web_width": "96",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16. / NEED TO BE BOX 25 PCS PER BOX",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26B03-1",
+     "prod_code": "SPA40WB756",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "1,020"
+      },
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "1,020"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "8",
+     "pcs_per_stack": "255",
+     "stk_per_plt": "1",
+     "weight_lbs": "8,868",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 11,
+   "report_page": "11",
+   "line": "SE24",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26514-1",
+     "prod_code": "RPA40WB1795",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A S1S1S1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "5,500"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "5,500"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "40",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "54,120",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "ULTRA SMOOTH",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP25710-1",
+     "prod_code": "RPP40WB1625",
+     "die": "PC607",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,500"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "500",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "540,375",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "DO NOT RUN",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "491,486",
+   "line_total_lbs": "2,057,876",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 12,
+   "report_page": "12",
+   "line": "SE25",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H68A091-1",
+     "prod_code": "DPP40WB1669",
+     "die": "PB406",
+     "order_width": "31 1/8",
+     "order_length": "50 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "793",
+     "cut_rows": [
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "184,867"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "184,867"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "184,867"
+      }
+     ],
+     "pack_code": "30X54",
+     "num_plt": "999",
+     "pcs_per_stack": "295",
+     "stk_per_plt": "1",
+     "weight_lbs": "980,535",
+     "instr_date": "04-Nov",
+     "web_width": "93 3/8",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, WATCH WEIGHT (RANGE IS 729 - 751 GSM) / 826 PLTS DONE            PRINT TICKET ON LINE 6",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26717-2",
+     "prod_code": "RPP40WB1625",
+     "die": "PB406",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP P R4R4R4",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "6,600"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "6,600"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "48",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "51,876",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "KEEP RUNNING            41 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H68A090-1",
+     "prod_code": "DPP50WB308",
+     "die": "PB406",
+     "order_width": "31 1/8",
+     "order_length": "50 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "5.0",
+     "gsm": "1,052",
+     "cut_rows": [
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "29,594"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "29,594"
+      },
+      {
+       "width": "31 1/8",
+       "length": "51 1/4",
+       "total_sheets": "29,594"
+      }
+     ],
+     "pack_code": "30X54",
+     "num_plt": "386",
+     "pcs_per_stack": "230",
+     "stk_per_plt": "1",
+     "weight_lbs": "208,283",
+     "instr_date": "01-Dec",
+     "web_width": "93 3/8",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT ( RANGE IS 970-1000) / 255 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H64A244-1",
+     "prod_code": "DPP50WB305",
+     "die": "PB406",
+     "order_width": "31 5/8",
+     "order_length": "38 1/2",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "5.0",
+     "gsm": "1,052",
+     "cut_rows": [
+      {
+       "width": "31 5/8",
+       "length": "39 1/16",
+       "total_sheets": "80,040"
+      },
+      {
+       "width": "31 5/8",
+       "length": "39 1/16",
+       "total_sheets": "80,040"
+      },
+      {
+       "width": "31 5/8",
+       "length": "39 1/16",
+       "total_sheets": "80,040"
+      }
+     ],
+     "pack_code": "30X42",
+     "num_plt": "999",
+     "pcs_per_stack": "230",
+     "stk_per_plt": "1",
+     "weight_lbs": "436,298",
+     "instr_date": "25-Nov",
+     "web_width": "94 7/8",
+     "special_instructions": "SEND TO BAYSEK. MARK LEAD EDGE & MAKE SURE OF PC COUNT. / VOIDFORM, PLEASE WATCH WEIGHT             976 PLTS DONE / (RANGE WEIGHT 970-1000 GSM)",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "896,703",
+   "line_total_lbs": "1,676,992",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 13,
+   "report_page": "13",
+   "line": "SE31",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H69A061-1",
+     "prod_code": "SPA40WB953",
+     "die": "PC405",
+     "order_width": "48 1/4",
+     "order_length": "92 1/2",
+     "mat_spec": "PPP A OPOPOP",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "48 1/4",
+       "length": "93 1/4",
+       "total_sheets": "3,360"
+      },
+      {
+       "width": "48 1/4",
+       "length": "93 1/4",
+       "total_sheets": "3,360"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "24",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "32,075",
+     "instr_date": "23-Nov",
+     "web_width": "96 1/2",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.               5 PLTS DONE / WHITE OPAQUE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A060-1",
+     "prod_code": "SPA40WB951",
+     "die": "PC405",
+     "order_width": "48 1/4",
+     "order_length": "98 1/2",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "48 1/4",
+       "length": "99 1/4",
+       "total_sheets": "3,336"
+      },
+      {
+       "width": "48 1/4",
+       "length": "99 1/4",
+       "total_sheets": "3,336"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "24",
+     "pcs_per_stack": "278",
+     "stk_per_plt": "1",
+     "weight_lbs": "33,907",
+     "instr_date": "21-Nov",
+     "web_width": "96 1/2",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16. / Signs 365, sheets must be clean, flat and smooth.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA010-1",
+     "prod_code": "SPA40WB951",
+     "die": "PC405",
+     "order_width": "48 1/4",
+     "order_length": "98 1/2",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "48 1/4",
+       "length": "99 1/4",
+       "total_sheets": "3,336"
+      },
+      {
+       "width": "48 1/4",
+       "length": "99 1/4",
+       "total_sheets": "3,336"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "24",
+     "pcs_per_stack": "278",
+     "stk_per_plt": "1",
+     "weight_lbs": "33,907",
+     "instr_date": "05-Dec",
+     "web_width": "96 1/2",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16. / Signs 365, sheets must be clean, flat and smooth.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6BA007-3",
+     "prod_code": "SPA40WB931",
+     "die": "PC405",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "140"
+      },
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "140"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "1",
+     "pcs_per_stack": "280",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,293",
+     "instr_date": "24-Nov",
+     "web_width": "100",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA234-1",
+     "prod_code": "RPA40WB3164",
+     "die": "PC405",
+     "order_width": "48",
+     "order_length": "72",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "72 3/4",
+       "total_sheets": "1,650"
+      },
+      {
+       "width": "48",
+       "length": "72 3/4",
+       "total_sheets": "1,650"
+      }
+     ],
+     "pack_code": "48X74",
+     "num_plt": "12",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "10,527",
+     "instr_date": "17-Nov",
+     "web_width": "96",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26A08-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PC405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "96 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26413-1",
+     "prod_code": "SPA40WB765",
+     "die": "PC405",
+     "order_width": "49",
+     "order_length": "37",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "20,775"
+      },
+      {
+       "width": "49",
+       "length": "37 5/8",
+       "total_sheets": "20,775"
+      }
+     ],
+     "pack_code": "36X48",
+     "num_plt": "150",
+     "pcs_per_stack": "277",
+     "stk_per_plt": "1",
+     "weight_lbs": "69,596",
+     "instr_date": "Stock",
+     "web_width": "98",
+     "special_instructions": "Send to Guillotine. Mark lead edge & make sure of pc count. / Sheets must be flat. No curl or leaning pallets. Use PVC / slip sheets on top of each pallet.          7 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "",
+   "line_total_lbs": "",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 14,
+   "report_page": "14",
+   "line": "SE31",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26925-3",
+     "prod_code": "RPA40WB3126",
+     "die": "PC405",
+     "order_width": "48",
+     "order_length": "120",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "120 3/4",
+       "total_sheets": "9,350"
+      }
+     ],
+     "pack_code": "48X120",
+     "num_plt": "34",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "49,742",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "RUN WITH RPA40WB3051                       14 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "349,270",
+   "line_total_lbs": "1,398,633",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 15,
+   "report_page": "15",
+   "line": "SE32",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6AA195-1",
+     "prod_code": "RPPD0WB176",
+     "die": "PB130",
+     "order_width": "96",
+     "order_length": "24",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "13.0",
+     "gsm": "2,691",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "24 3/8",
+       "total_sheets": "10,200"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "60",
+     "pcs_per_stack": "85",
+     "stk_per_plt": "2",
+     "weight_lbs": "89,760",
+     "instr_date": "12-Nov",
+     "web_width": "96",
+     "special_instructions": "VOIDFORM, PLEASE WATCH WEIGHT               24 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA196-1",
+     "prod_code": "RPPD0WB41",
+     "die": "PB130",
+     "order_width": "96",
+     "order_length": "48",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "13.0",
+     "gsm": "2,691",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "48 1/2",
+       "total_sheets": "1,785"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "21",
+     "pcs_per_stack": "85",
+     "stk_per_plt": "1",
+     "weight_lbs": "31,416",
+     "instr_date": "20-Nov",
+     "web_width": "96",
+     "special_instructions": "VOIDFORM, PLEASE WATCH WEIGHT",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26A13-1",
+     "prod_code": "RPA40WB3143",
+     "die": "PC406",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "55,000"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "200",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "254,100",
+     "instr_date": "Stock",
+     "web_width": "50",
+     "special_instructions": "RUN WITH NEXT                               68 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26731-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PC406",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "607 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26525-3",
+     "prod_code": "SPA40WB755",
+     "die": "PC406",
+     "order_width": "48",
+     "order_length": "98",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "98 3/4",
+       "total_sheets": "69,500"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "250",
+     "pcs_per_stack": "278",
+     "stk_per_plt": "1",
+     "weight_lbs": "302,117",
+     "instr_date": "Stock",
+     "web_width": "48",
+     "special_instructions": "Send to Slitter. Mark edge & make sure of pc count. Take to / converting. Do not double stack so QC can check. / Extrusion to hold width -0.+1/16.          97 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "411,211",
+   "line_total_lbs": "1,844,979",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 16,
+   "report_page": "16",
+   "line": "SE42",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26410-1",
+     "prod_code": "DPP40WB1235",
+     "die": "PC405",
+     "order_width": "47 1/4",
+     "order_length": "45 5/8",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "753",
+     "cut_rows": [
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      },
+      {
+       "width": "47 1/4",
+       "length": "46 1/4",
+       "total_sheets": "145,854"
+      }
+     ],
+     "pack_code": "44X44",
+     "num_plt": "999",
+     "pcs_per_stack": "292",
+     "stk_per_plt": "1",
+     "weight_lbs": "672,387",
+     "instr_date": "Stock",
+     "web_width": "94 1/2",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count. / CORN BOX                                   262 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "291,708",
+   "line_total_lbs": "672,387",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 17,
+   "report_page": "17",
+   "line": "SE43",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "RP26915-1",
+     "prod_code": "RPA40WB3143",
+     "die": "PB405",
+     "order_width": "50",
+     "order_length": "100",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      },
+      {
+       "width": "50",
+       "length": "100 3/4",
+       "total_sheets": "20,625"
+      }
+     ],
+     "pack_code": "51X100",
+     "num_plt": "150",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "190,575",
+     "instr_date": "Stock",
+     "web_width": "100",
+     "special_instructions": "136 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26415-1",
+     "prod_code": "RPA40WB3073",
+     "die": "PB405",
+     "order_width": "96",
+     "order_length": "48",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "96",
+       "length": "48 5/8",
+       "total_sheets": "41,250"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "150",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "175,313",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "21 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26218-1",
+     "prod_code": "RPA40WB3051",
+     "die": "PB405",
+     "order_width": "48",
+     "order_length": "96",
+     "mat_spec": "PPP A R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "4.0",
+     "gsm": "651",
+     "cut_rows": [
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      },
+      {
+       "width": "48",
+       "length": "96 3/4",
+       "total_sheets": "137,363"
+      }
+     ],
+     "pack_code": "48X96",
+     "num_plt": "999",
+     "pcs_per_stack": "275",
+     "stk_per_plt": "1",
+     "weight_lbs": "1,167,586",
+     "instr_date": "Stock",
+     "web_width": "96",
+     "special_instructions": "934 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "357,226",
+   "line_total_lbs": "1,533,474",
+   "final_total": "",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  },
+  {
+   "scan_page": 18,
+   "report_page": "18",
+   "line": "SE61",
+   "run_date": "11/04/26",
+   "run_time": "13:04:04",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6AA078-1",
+     "prod_code": "RBP50EB16",
+     "die": "BB510",
+     "order_width": "84",
+     "order_length": "96",
+     "mat_spec": "BBB P RDRDRD",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,003",
+     "cut_rows": [
+      {
+       "width": "84 1/8",
+       "length": "96 1/4",
+       "total_sheets": "1,600"
+      }
+     ],
+     "pack_code": "84X96",
+     "num_plt": "8",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "18,368",
+     "instr_date": "20-Nov",
+     "web_width": "84 1/8",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H69A201-1",
+     "prod_code": "RBP50EB80",
+     "die": "BB510",
+     "order_width": "84",
+     "order_length": "96",
+     "mat_spec": "BBB P RDRDRD",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,003",
+     "cut_rows": [
+      {
+       "width": "84 1/8",
+       "length": "96 1/4",
+       "total_sheets": "450"
+      }
+     ],
+     "pack_code": "84X96",
+     "num_plt": "2",
+     "pcs_per_stack": "225",
+     "stk_per_plt": "1",
+     "weight_lbs": "5,166",
+     "instr_date": "30-Oct",
+     "web_width": "84 1/8",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA279-1",
+     "prod_code": "RBP50EB70",
+     "die": "BB510",
+     "order_width": "71",
+     "order_length": "58",
+     "mat_spec": "BBB P RDRDRD",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,502",
+     "cut_rows": [
+      {
+       "width": "71 1/8",
+       "length": "58 1/4",
+       "total_sheets": "1,520"
+      }
+     ],
+     "pack_code": "60X72",
+     "num_plt": "8",
+     "pcs_per_stack": "190",
+     "stk_per_plt": "1",
+     "weight_lbs": "13,330",
+     "instr_date": "11-Dec",
+     "web_width": "71 1/8",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6AA151-1",
+     "prod_code": "RBP50KS78",
+     "die": "BB510",
+     "order_width": "31",
+     "order_length": "48",
+     "mat_spec": "BBB P RDRDRD",
+     "colors": "KS KS KS",
+     "thk": "5.0",
+     "gsm": "1,502",
+     "cut_rows": [
+      {
+       "width": "31 1/8",
+       "length": "48 1/4",
+       "total_sheets": "1,020"
+      },
+      {
+       "width": "31 1/8",
+       "length": "48 1/4",
+       "total_sheets": "1,020"
+      }
+     ],
+     "pack_code": "30X48",
+     "num_plt": "12",
+     "pcs_per_stack": "170",
+     "stk_per_plt": "1",
+     "weight_lbs": "6,467",
+     "instr_date": "20-Nov",
+     "web_width": "62 1/4",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "RP26A29-1",
+     "prod_code": "RBP50EB10",
+     "die": "BB510",
+     "order_width": "84",
+     "order_length": "48",
+     "mat_spec": "BBB P RDRDRD",
+     "colors": "EB KS EB",
+     "thk": "5.0",
+     "gsm": "1,503",
+     "cut_rows": [
+      {
+       "width": "84 1/8",
+       "length": "48 1/4",
+       "total_sheets": "12,000"
+      }
+     ],
+     "pack_code": "48X84",
+     "num_plt": "60",
+     "pcs_per_stack": "200",
+     "stk_per_plt": "1",
+     "weight_lbs": "103,200",
+     "instr_date": "Stock",
+     "web_width": "84 1/8",
+     "special_instructions": "",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H68A020-1",
+     "prod_code": "RBPA0KS70",
+     "die": "BB510",
+     "order_width": "63",
+     "order_length": "54",
+     "mat_spec": "PPP P RDRDRD",
+     "colors": "KS KS KS",
+     "thk": "10.0",
+     "gsm": "2,006",
+     "cut_rows": [
+      {
+       "width": "63",
+       "length": "54 3/4",
+       "total_sheets": "2,000"
+      }
+     ],
+     "pack_code": "54X63",
+     "num_plt": "40",
+     "pcs_per_stack": "50",
+     "stk_per_plt": "1",
+     "weight_lbs": "19,360",
+     "instr_date": "15-Nov",
+     "web_width": "63",
+     "special_instructions": "GENESIS, TARGET THICKNESS 10 (RANGE IS 9.50-10.50) / 38 PLTS DONE",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "19,610",
+   "line_total_lbs": "165,891",
+   "final_total": "5,837,524 PCs / 20,956,325 LBs",
+   "page_notes": "From the system PDF BPN9PFR$_Z898pQQX.PDF (text, no OCR)."
+  }
+ ],
+ "cnv": [],
+ "frm": [],
+ "frm_source_scan": ""
+}
