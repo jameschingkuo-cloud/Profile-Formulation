@@ -1,0 +1,10 @@
+# Issues for the 4 Nov 2026 packet, from the system's own PDFs: BPN9PFR$_Z898pQQX.PDF (SCHEDULE 11/04, run 11/04/26 13:04:04 on SE12; SE23 revised, see the Word file's revision 2) and Die Cutting Schedule 11-04.pdf (e-mailed 13:29). No scan, no Tech FRM pages today. Compared with 3 Nov, the last day published.
+MANUAL = [
+ # (Severity, Document, Line, Order, Check, Detail, Source)
+ ('Info','FRM','SE22, SE32','H6AA171-1, H6AA195-1, H6AA196-1','VOIDFORM: no reclaim','H6AA171-1 (RPPA0WB241) keeps FU0001WBA, the virgin Secondary, as its only formula (James Kuo, 29 Oct 2026). SE32 H6AA195-1 (RPPD0WB176) and H6AA196-1 (RPPD0WB41): formulation by James\'s rules (no reclaim, R10), as on 2 Nov','James'),
+ ('Info','FRM','(all)','','No Tech FRM pages today','"FRM Formulation 2026-11-04.docx" built from the system PDF by James\'s rules; see its ENGINEER TO COMPLETE rows. Emailed to James, Kevin Sung and YC Chang (revision 2: SE23 RP26B03-2)','rules'),
+ ('Info','EXT','(SE25)','H68A091-1, H68A090-1, H64A244-1','VOIDFORM GSM vs control range','Printed GSM is the billing weight; the control range in the instructions is 5-8% under it (793 -> 729-751; 1,052 -> 970-1000). As expected, none outside','PDF'),
+ ('Info','EXT','(several)','H6BA003-9, RP26A15-2, H6BA015-2, H6AA268-2, RP26916-1, H6BA007-3, H69A201-1, H6AA279-1, RP26A29-1','New since 3 Nov','New on the extrusion schedule (9): SE13 H6BA003-9 (DPA40WB134), RP26A15-2 (RPA40WB3170); SE21 H6BA015-2 (RPA40KS812), H6AA268-2 (RPA40KS810), RP26916-1 (RPA40BL733); SE31 H6BA007-3 (SPA40WB931); SE61 H69A201-1 (RBP50EB80), H6AA279-1 (RBP50EB70), RP26A29-1 (RBP50EB10). None moved line','PDF'),
+ ('Info','EXT','(several)','H69A304-1, H69A059-1, H69A350-5, H69A350-6','Gone since 3 Nov','Gone from the extrusion schedule (4): SE23 H69A304-1 (DPP40WB1756); SE31 H69A059-1 (SPA40WB953); SE61 H69A350-5 (RBP50EB19), H69A350-6 (RBP50EB75). 83 orders (78 on 3 Nov)','PDF'),
+ ('Info','CNV','(several)','H6BA003-9, H6BA007-3, H69A301-3, H69A302-1','New / gone on the converting schedule since 3 Nov','New (2): H6BA003-9, H6BA007-3. Gone (2): H69A301-3, H69A302-1. 55 rows on 9 pages','PDF'),
+]
