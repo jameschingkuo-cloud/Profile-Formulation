@@ -792,6 +792,24 @@
       "change": "James: \"Add Cut Dimension Pack code PC/Pallet for operator tap\". Each order card on the Operator tab keeps Size (the order size) and adds Cut (the schedule's cut rows, width × length, a repeat shown once), Pack code and PC/Pallet (pcs per stack × stacks per pallet; the split shown when a pallet holds more than one stack, e.g. 554 (277 × 2)). ui/build.py cut_pack, ui/page.template.html. James: \"so make sure you have both size and cut size on it\". Label kept as \"Cut\" (\"no cut is ok\").",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 89,
+      "date": "2026-11-04",
+      "type": "Page design",
+      "item": "Bright / Dark button",
+      "change": "James: \"give it a bright dark bottom\". A Bright / Dark switch at the top right of the page sets the page colours; each viewer's choice is remembered in their own browser, and the first visit follows the device setting. ui/page.template.html.",
+      "order": "",
+      "editor": "James Kuo"
+    },
+    {
+      "rev": 90,
+      "date": "2026-11-04",
+      "type": "Page design",
+      "item": "Operator screen: two explanations taken out",
+      "change": "James: \"dont need Note: CaCO3 means calcium carbonate. or Auger feeders: every setting is motor speed, 0 to 100 ... switch to it when reclaim runs out. in operator screen\". The Operator tab no longer shows the paragraph under the line heading (setting meaning, run order, Secondary) or the CaCO3 note at the bottom; the line's other notes stay. Line board and the Word file unchanged.",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }

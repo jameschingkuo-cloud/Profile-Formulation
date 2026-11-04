@@ -35,6 +35,10 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;letter-spacing:.01em;margi
 header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
 header.top h1{font-size:34px;line-height:1}
 header.top .sub{color:var(--muted);font-size:13.5px;margin-top:4px}
+.themebtn{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--panel)}
+.themebtn button{border:0;background:none;color:var(--muted);font:600 13px/1 var(--f-body);padding:8px 14px;cursor:pointer;min-height:36px}
+.themebtn button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.topright{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;justify-content:flex-end}
 .proto{font-size:12.5px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r);padding:6px 10px;background:var(--panel-2);max-width:46ch}
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .strip>div{background:var(--panel);padding:12px 14px;display:grid;gap:2px;min-width:0}
@@ -224,7 +228,14 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
       <h1>Profile Formulation</h1>
       <div class="sub" id="sub"></div>
     </div>
-    <div class="proto" id="proto"></div>
+    <div class="topright">
+      <div class="proto" id="proto"></div>
+      <!-- James Kuo, 4 Nov 2026: "give it a bright dark bottom" -->
+      <div class="themebtn" role="group" aria-label="Page colours">
+        <button type="button" data-theme-set="light" aria-pressed="false">Bright</button>
+        <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
   </header>
 
   <section class="strip" id="strip" aria-label="Today at a glance"></section>
@@ -624,9 +635,7 @@ function renderOp(){
   const weight = l.dosing === 'WEIGHT';
   const watch = /watch|weight|range|void\s*form|corn\s*box|roll|check/i;
   $('#opline').innerHTML = `<div class="ophead"><div><div class="caps">Line ${l.no} · ${fmtDate(D.day)}</div><h2>${l.code} · ${l.sched.length} order${l.sched.length === 1 ? '' : 's'}</h2>
-      <p>${weight ? 'Weight blender: every setting is <b>weight %</b>. Each extruder adds up to 100; Auto takes the rest.' : 'Auger feeders: every setting is <b>motor speed, 0 to 100</b>. It is not a percentage.'}
-      Where an order has more than one formulation, they are shown in run order: reclaim first (use up the scrap before virgin PP), then down the list.${RULES
-        ? ' A Secondary is the virgin formulation for the same order: switch to it when reclaim runs out.' : ''}</p></div>
+      <!-- James Kuo, 4 Nov 2026: the operator screen does not need the setting / run-order explanation --></div>
       <span class="chip ${weight ? 'weight' : 'auger'}" style="font-size:13px">${weight ? 'Weight blender' : 'Auger dosing'}</span></div>
     <div class="opcards">${l.sched.map((o, n) => {
       const g = o.g == null ? null : l.groups[o.g];
@@ -641,7 +650,8 @@ function renderOp(){
           : `<div class="noform">${DRAFT ? (o.exc ? `An engineer completes it: ${esc(o.exc)}. Ask before starting.`
             : 'New on this line: no formulation issued for it yet. An engineer completes it; ask before starting.') : 'No formulation on the FRM for this order. Ask Tech before starting.'}</div>`}
       </article>`; }).join('')}</div>
-    ${l.notes.length ? `<div class="foot" style="margin-top:12px">${l.notes.map(esc).join('<br>')}</div>` : ''}`;
+    ${(() => { const ns = l.notes.filter(n => !/calcium carbonate/i.test(n));   // James Kuo, 4 Nov 2026: no CaCO3 note for operators
+      return ns.length ? `<div class="foot" style="margin-top:12px">${ns.map(esc).join('<br>')}</div>` : ''; })()}`;
 }
 $('#oppick').addEventListener('click', e => { const b = e.target.closest('button[data-l]'); if (!b) return; opLine = b.dataset.l; localSet('opline', opLine); renderOp(); });
 
@@ -1480,4 +1490,17 @@ renderOp();
 const VIEWS = ['op', 'mgr', 'board', 'find', 'master', 'run', 'cust', 'rev'];
 const hv = (location.hash || '').slice(1); const hv2 = hv === 'open' ? 'master' : hv, lv = localGet('view') === 'open' ? 'master' : localGet('view');
 show(VIEWS.includes(hv2) ? hv2 : (VIEWS.includes(lv) ? lv : 'op'));
+
+// ---- Bright / Dark button (James Kuo, 4 Nov 2026: "give it a bright dark bottom"); the choice is kept per viewer
+(function(){
+  const get = () => { try { return localStorage.getItem('pf-theme'); } catch { return null; } };
+  const set = v => { try { localStorage.setItem('pf-theme', v); } catch {} };
+  const sys = () => matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  function apply(t){
+    document.documentElement.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === t));
+  }
+  apply(get() || sys());
+  document.querySelectorAll('[data-theme-set]').forEach(b => b.addEventListener('click', () => { set(b.dataset.themeSet); apply(b.dataset.themeSet); }));
+})();
 </script>
