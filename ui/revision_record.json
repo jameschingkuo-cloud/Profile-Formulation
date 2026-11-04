@@ -783,6 +783,15 @@
       "change": "James: \"operator dont need to see revision record or Customer formulas to name take them out\", then \"no. it needs to be there. under engineering. but not under operator\". Cause: .panel and .board set display:grid, which overrode the hidden attribute, so Line board, Look up, Customer formulas and Revision record showed below every view, Operator included. Fix: [hidden]{display:none!important} (ui/page.template.html). The two tabs stay in the Engineering group; each view now shows only its own panel.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 88,
+      "date": "2026-11-04",
+      "type": "Page design",
+      "item": "Operator card: Size and Cut, Pack code, PC/Pallet",
+      "change": "James: \"Add Cut Dimension Pack code PC/Pallet for operator tap\". Each order card on the Operator tab keeps Size (the order size) and adds Cut (the schedule's cut rows, width × length, a repeat shown once), Pack code and PC/Pallet (pcs per stack × stacks per pallet; the split shown when a pallet holds more than one stack, e.g. 554 (277 × 2)). ui/build.py cut_pack, ui/page.template.html. James: \"so make sure you have both size and cut size on it\". Label kept as \"Cut\" (\"no cut is ok\").",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }

@@ -43,6 +43,25 @@ def real_pallets(r):
     return None
 
 
+def cut_pack(r):
+    """Cut dimension, pack code and pieces per pallet for the operator card (James Kuo, 4 Nov 2026: "Add Cut Dimension
+    Pack code PC/Pallet for operator tap"). Cut = the schedule's cut rows (width x length, repeats shown once); PC/Pallet =
+    pcs per stack x stacks per pallet, with the split shown when a pallet holds more than one stack."""
+    cuts = []
+    for c in r.get('cut_rows') or []:
+        t = f"{c.get('width', '')} × {c.get('length', '')}".strip(' ×')
+        if t and t not in cuts:
+            cuts.append(t)
+    def n(x):
+        try:
+            return int(str(x).replace(',', ''))
+        except (TypeError, ValueError):
+            return None
+    pcs, stk = n(r.get('pcs_per_stack')), n(r.get('stk_per_plt'))
+    pcplt = '' if pcs is None else (f'{pcs * stk:,}' + (f' ({pcs:,} × {stk})' if stk > 1 else '')) if stk else f'{pcs:,}'
+    return {'cut': ' / '.join(cuts), 'pack': r.get('pack_code') or '', 'pcplt': pcplt}
+
+
 def replaced():
     """checks.REPLACED (printed text -> what to load, and why), read from the source without running the checks."""
     import ast
@@ -145,7 +164,7 @@ def draft_lines(day, P, meta, src=None):
                   'size': f"{r.get('order_width', '')} × {r.get('order_length', '')}", 'die': r.get('die'),
                   'plt': r.get('num_plt'), 'lbs': r.get('weight_lbs'), 'si': r.get('special_instructions') or '',
                   'hw': r.get('handwritten') or '', 'g': grp_of.get(r['order']), 'plt_real': real_pallets(r),
-                  'exc': exc.get((lc, r['order']))} for r in rows_l]
+                  'exc': exc.get((lc, r['order'])), **cut_pack(r)} for r in rows_l]
         lines.append({'code': lc, 'no': LN.get(lc), 'dosing': DOS.get(lc, 'AUGER'), 'cols': cols, 'ac': m.get('ac', ''),
                       'groups': groups, 'notes': m.get('notes', []), 'sched': sched})
     return lines
@@ -556,7 +575,7 @@ def main():
         sched = [{'order': r['order'], 'prod': r['prod_code'], 'colors': r.get('colors'), 'thk': r.get('thk'), 'gsm': r.get('gsm'),
                   'size': f"{r.get('order_width', '')} × {r.get('order_length', '')}", 'die': r.get('die'),
                   'plt': r.get('num_plt'), 'lbs': r.get('weight_lbs'), 'si': r.get('special_instructions') or '',
-                  'hw': r.get('handwritten') or '', 'g': grp_of.get(r['order']), 'plt_real': real_pallets(r)}
+                  'hw': r.get('handwritten') or '', 'g': grp_of.get(r['order']), 'plt_real': real_pallets(r), **cut_pack(r)}
                  for e in sorted(P['ext'], key=lambda e: e['scan_page']) if e['line'] == lc for r in e['rows']]
         lines.append({'code': lc, 'no': LN[lc], 'dosing': DOS.get(lc, 'AUGER'), 'cols': pg['feeder_columns'],
                       'ac': pg.get('header_note', ''), 'groups': groups, 'notes': pg.get('footnotes', []), 'sched': sched})
