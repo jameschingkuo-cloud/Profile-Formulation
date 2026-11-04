@@ -765,6 +765,15 @@
    "change": "James: \"yes apply the winter settings but reissue tomorrow. today is already done\". A seasonal Main (FUA151WB4 summer / FUA152WB4 winter) takes, from the 5 Nov schedule on, Tech's newest issue on the line from its own season whose homopolymer share is nearest the Main's W% (assign.member_settings, homo_share: weight lines by set %, auger lines by setting x the hopper's calibration slope). Tech halves the homopolymer from Nov to Mar under the same code (Word running records). Graphic WB 4 mm from 5 Nov: SE12 F1203K 7 (Feb 2026), SE13 13 (Mar 2026), SE21 13 (Mar 2026), SE23 27 (Nov 2024), SE24 9 (Jan 2026), SE31 13 (Mar 2026), SE43 8 (Feb 2026); SE32 12 (Mar 2025; its record is mixed, flagged for James). 2 - 4 Nov stay as issued (summer settings).",
    "order": "graphic WB 4 mm, all lines",
    "editor": "James Kuo"
+  },
+  {
+   "rev": 86,
+   "date": "2026-11-04",
+   "type": "Logic",
+   "item": "One-day formulation: SE23 RP26B03-2 (reclaim running low)",
+   "change": "James: \"put this formulation on today only. For SE23 RP26B03-2, put a PP, talc, wb reclaim, WB , caco3 as 53,7,32,3,5\" - \"we are running low on reclaim\" - \"add it instead of removing old. put note, for 11/4 only\". daily/resolve.py DAY_ONLY (packet date, line, order) -> rows added under the order's own formulation, that day only (add_day_only): RPP40WB1625 floor cover keeps RU0000WB4 (PP WB Reclaim 99, run first) and adds SPECIAL, note \"For 11/4 only (reclaim running low)\": H1 PP Virgin 59 / H2 talc 12 / H3 PP WB Reclaim 90 / H4 WB 42 / H5 CaCO3 40 (the W% on SE23 calibration, highest 90; weight % copy 52.7 / 7.3 / 32 / 3 / 5). 4 Nov re-issued twice (\"REVISION SE23 RP26B03-2\", then \"REVISION 2\" with both formulations)",
+   "order": "SE23 RP26B03-2 RPP40WB1625",
+   "editor": "James Kuo"
   }
  ]
 }

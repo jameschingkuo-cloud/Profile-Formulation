@@ -295,6 +295,27 @@
   "published_at": "2026-11-03T14:34:12",
   "sha256": "a6727e006bd1afef074c64d7e1ac585f1db7ab3ede53cf6040503ff0aaa58633"
  },
+ "Daily Formulation Report/FRM Formulation 2026-11-04 (new orders).docx": {
+  "bytes": 41204,
+  "content": "f36ef297b461b369fda01d67a2616a3e34c10480dadee6d90bdaa86790b9fd9b",
+  "from": "FRM Formulation 2026-11-04 (new orders).docx",
+  "published_at": "2026-11-04T13:40:19",
+  "sha256": "10caa94226d05740d2169f1ecee7119f6c7851ff1626bfb3659d3476283ef963"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-04 (weight %).docx": {
+  "bytes": 48587,
+  "content": "4e417a1455014230792238499bf151ac932b2dba9bd52adcc8199e7ef956b845",
+  "from": "FRM Formulation 2026-11-04 (weight %).docx",
+  "published_at": "2026-11-04T13:40:19",
+  "sha256": "644b5b1b27283043e7fbd075da6eb614b528642677d8e2f232096cbce94778dd"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-04.docx": {
+  "bytes": 48251,
+  "content": "160ee4e9689084e66f48389734f747b91ecd86d79592e045694eae03e8d1e30f",
+  "from": "FRM Formulation 2026-11-04.docx",
+  "published_at": "2026-11-04T13:40:19",
+  "sha256": "5c62a691e23dd0a4ab1c2aad6aff363f9c9fcf62ffd497864b324821f458f47e"
+ },
  "Daily Formulation Report/FRM Formulation Report 2026-09-23.xlsx": {
   "bytes": 55614,
   "content": "6dfee4a062a9fdc058c0a5a7fc8728473e54b5fdfa626a0873cd61af3ae58e0b",

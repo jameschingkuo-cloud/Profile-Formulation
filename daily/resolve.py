@@ -123,6 +123,22 @@ def load_packets():
     return out
 
 
+def _rp26b03_2(line, order, product):
+    """James Kuo, 4 Nov 2026, SE23 RP26B03-2 (RPP40WB1625 floor cover, normally RU0000WB4 100% reclaim): "put this
+    formulation on today only ... PP, talc, wb reclaim, WB, caco3 as 53,7,32,3,5" - "we are running low on reclaim". The
+    W% on SE23's hopper calibration (slopes 219.1 / 148.7 / 87.2 / 17.5 / 30.7 g/min per unit), the highest at 90."""
+    why = ("James Kuo, 4 Nov 2026: reclaim running low, today only - W% PP 53 / talc 7 / WB reclaim 32 / WB 3 / CaCO3 5, "
+           "settings from SE23's calibration (highest 90)")
+    src = "James Kuo, 4 Nov 2026 (W% given in chat; SE23 calibration slopes)"
+    note = "For 11/4 only (reclaim running low) · W% PP 53 / talc 7 / WB reclaim 32 / WB 3 / CaCO3 5"
+    feed = [('Hopper 1', 'PP Virgin-silo 4 (6502A)', '59'), ('Hopper 2', 'HiTalc ZS (or N40109A)', '12'),
+            ('Hopper 3', 'PP WB Reclaim', '90'), ('Hopper 4', 'WB-W26038A', '42'), ('Hopper 5', 'CaCO3 -Heritage HM-10MAX', '40')]
+    return [[line, order, product, 'SPECIAL', 'Alternative', '', f, None, m, st, None, why, None, src, 1, note] for f, m, st in feed]
+
+
+# formulations James sets for one day only: (packet date, line, order) -> rows
+DAY_ONLY = {('2026-11-04', 'SE23', 'RP26B03-2'): _rp26b03_2}
+
 PRODUCT_ISSUE = {}      # (line, product) -> Tech's last issue for it (issued_history), set in main
 # (line, the rules' Main) -> the code Tech runs for that job on the line, where the Main has no settings there and the
 # product was never issued on the line (2 Nov 2026, from Tech's Word running records: SE43 has no reclaim feeder)
@@ -515,7 +531,26 @@ def rule_rows(line, order, product, fm):
     return rows, marked, missing
 
 
+def add_day_only(draft):
+    """James's formulation for one day, added under the order's own formulation (James Kuo, 4 Nov 2026: "add it instead
+    of removing old. put note, for 11/4 only"): its rows take the next Formula Row."""
+    for (day, line, order), fn in DAY_ONLY.items():
+        if day != PKT:
+            continue
+        own = [r for r in draft if r[0] == line and r[1] == order]
+        if not own:
+            continue
+        nxt = max(r[14] or 0 for r in own) + 1
+        rows = fn(line, order, own[0][2])
+        for r in rows:
+            r[14] = nxt
+        at = max(i for i, r in enumerate(draft) if r[0] == line and r[1] == order) + 1
+        draft[at:at] = rows
+    return draft
+
+
 def write(today, draft, exceptions, dropped, last, history_dates, by_rule=(), to_set=()):
+    draft = add_day_only(draft)
     F = "Arial"
     hfont, hfill, body = Font(name=F, bold=True, color="FFFFFF", size=10), PatternFill("solid", fgColor="1F3864"), Font(name=F, size=10)
     wb = Workbook()
