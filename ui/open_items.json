@@ -193,8 +193,8 @@
         {
           "sev": "Medium",
           "title": "Name the 12 customer-specific formulas",
-          "detail": "VOIDFORM, sign blank, corn box and roll formulas still share codes with other formulas in the W% Master and on Tech's pages: FU0021WB4 is VOIDFORM, corn box and roll; FUA152WB4 is the winter Main and sign blank (SE12/13/31/32). They are told apart by the note (the Word file prints it). Each gets its own code; the list, with the sequence numbers already taken, is kept off the page (ui/customer_formulas.json, ask for it). Since: FU0022WB4 (corn box Secondary) and FU0002WBD (WB 13 mm Secondary) named 26 Oct. IWPFT057 rev 5.0 (26 Oct) now gives the nine-digit code.",
-          "where": "ui/customer_formulas.json",
+          "detail": "VOIDFORM, sign blank, corn box and roll formulas still share codes with other formulas in the W% Master and on Tech's pages: FU0021WB4 is VOIDFORM, corn box and roll; FUA152WB4 is the winter Main and sign blank (SE12/13/31/32). They are told apart by the note (the Word file prints it). Each gets its own code; the list, with the sequence numbers already taken, is on the Customer formulas tab. Since: FU0022WB4 (corn box Secondary) and FU0002WBD (WB 13 mm Secondary) named 26 Oct. IWPFT057 rev 5.0 (26 Oct) now gives the nine-digit code.",
+          "where": "Customer formulas tab",
           "source": "James, 29 Sep 2026"
         },
         {

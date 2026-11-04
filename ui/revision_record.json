@@ -779,8 +779,8 @@
       "rev": 87,
       "date": "2026-11-04",
       "type": "Page design",
-      "item": "Customer formulas and Revision record tabs taken off the page",
-      "change": "James: \"operator dont need to see revision record or Customer formulas to name take them out\". Both tabs, their panels and their data are gone from the page (ui/page.template.html, ui/build.py). The records stay in ui/revision_record.json and ui/customer_formulas.json; a row is still added here with every change.",
+      "item": "Customer formulas and Revision record tabs: stay under Engineering",
+      "change": "James: \"operator dont need to see revision record or Customer formulas to name take them out\", then \"no. it needs to be there. under engineering. but not under operator\". The two tabs were taken off and put back the same day; they sit in the Engineering group (after Daily run), never in the Operator or Production manager views. Page unchanged in the end.",
       "order": "",
       "editor": "James Kuo"
     }

@@ -235,6 +235,8 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
     <button role="tab" id="t-find" aria-selected="false" data-view="find">Look up</button>
     <button role="tab" id="t-master" aria-selected="false" data-view="master">Master health</button>
     <button role="tab" id="t-run" aria-selected="false" data-view="run">Daily run</button>
+    <button role="tab" id="t-cust" aria-selected="false" data-view="cust">Customer formulas</button>
+    <button role="tab" id="t-rev" aria-selected="false" data-view="rev">Revision record</button>
   </nav>
 
   <section id="v-op" hidden>
@@ -248,6 +250,20 @@ nav.tabs .tabsep::after{content:"";width:10px;height:1px;margin-left:8px;backgro
         <p>Every extrusion line on the schedule, with its orders, pallets, weight and the formulas it runs. Choose a line to open the operator view.</p></div></div>
       <div class="tscroll"><table id="mgrtable"></table></div>
     </div>
+  </section>
+
+  <section id="v-cust" class="panel" hidden>
+    <div class="linehead"><div><div class="caps">Parked for James · nothing renamed</div><h2>Customer formulas to name</h2>
+      <p id="custsub"></p></div><span class="chip warn" id="custcount"></span></div>
+    <div class="tscroll"><table id="custtable"></table></div>
+    <div class="foot" id="custfoot"></div>
+  </section>
+
+  <section id="v-rev" class="panel" hidden>
+    <div class="linehead"><div><div class="caps">Formulation logic, W% and page design</div><h2>Revision record</h2>
+      <p id="revsub"></p></div><span class="chip ok" id="revcount"></span></div>
+    <div class="legend" id="revfilter"></div>
+    <div class="tscroll"><table id="revtable"></table></div>
   </section>
 
   <section id="v-board" class="board">
@@ -537,6 +553,37 @@ function renderOpen(mode){
 }
 document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => renderOpen(b.dataset.mode)));
 renderOpen(localGet('openmode') === 'owner' ? 'owner' : 'sev');
+
+// ---- revision record (James Kuo, 28 Oct 2026: "formulation change (logic or W%) and artifact design change")
+const REVS = (D.revs || []).slice().reverse();
+const REV_TYPES = ['All', 'Logic', 'W%', 'Print', 'Page design'];
+let revType = 'All';
+function renderRevs(){
+  const list = REVS.filter(r => revType === 'All' || r.type === revType);
+  $('#revcount').textContent = `${REVS.length} revisions`;
+  $('#revsub').textContent = `Every change to how the formulation is decided (logic), to James's W% Master, to the printed Word file, and to this page, newest first. Editor: ${[...new Set(REVS.map(r => r.editor))].join(', ') || 'James Kuo'}.`;
+  $('#revfilter').innerHTML = REV_TYPES.map(t => `<button class="chip ${t === revType ? 'ok' : 'var'}" data-rt="${esc(t)}" aria-pressed="${t === revType}">${esc(t)}${t === 'All' ? '' : ' · ' + REVS.filter(r => r.type === t).length}</button>`).join(' ');
+  $('#revtable').innerHTML = `<thead><tr><th>Rev</th><th>Date</th><th>Type</th><th>Item</th><th>What changed</th><th>Order</th><th>Editor</th></tr></thead><tbody>${
+    list.map(r => `<tr><td>${r.rev}</td><td style="white-space:nowrap">${esc(fmtDate(r.date))}</td><td><span class="chip var">${esc(r.type)}</span></td><td><b>${esc(r.item)}</b></td><td>${esc(r.change)}</td><td style="white-space:nowrap">${esc(r.order || '')}</td><td style="white-space:nowrap">${esc(r.editor || '')}</td></tr>`).join('')}</tbody>`;
+  document.querySelectorAll('#revfilter button').forEach(b => b.addEventListener('click', () => { revType = b.dataset.rt; renderRevs(); }));
+}
+renderRevs();
+
+// ---- customer formulas (parked for naming)
+const CF = D.cust || {items: [], finding: {}};
+$('#custcount').textContent = `${CF.items.length} formulas`;
+$('#custsub').textContent = 'Formulas a past engineer marked for one customer or application only in the FRM note. Each will get its own code; '
+  + '“Same code used plainly” means the line also prints this code, with other settings, for ordinary orders.';
+$('#custtable').innerHTML = `<thead><tr><th>Application</th><th>Line</th><th>Current code</th><th>Note as printed</th><th>Products</th><th>Settings</th><th>Same code used plainly</th><th>Sequence numbers taken</th><th>New code</th></tr></thead><tbody>${
+  CF.items.map(i => `<tr><td><b>${esc(i.app)}</b></td><td class="mono">${esc(i.line)}</td><td class="mono">${esc(i.code)}</td>
+    <td>${esc(i.note)}</td><td class="mono" style="font-size:12px">${i.products.map(esc).join('<br>')}</td>
+    <td style="font-size:12px">${i.settings.map(esc).join('<br>')}</td><td>${i.also_plain ? '<span class="chip warn">Yes</span>' : 'No'}</td>
+    <td class="mono" style="font-size:12px">${i.family ? esc(i.family) + '<br>' + i.taken.map(esc).join(' ') : '—'}</td>
+    <td class="muted">to be named</td></tr>`).join('')}</tbody>`;
+const fd = CF.finding;
+$('#custfoot').innerHTML = fd.codes_known ? `Codes in use: ${fd.fit_9} of ${fd.codes_known} follow ${esc(fd.pattern)} (e.g. FUA152WB4 = F · U · A · 152 · WB · 4 mm). `
+  + `IWPFT057 Rev 4.0 describes a 7-digit monoextrusion code instead, so the new codes need IWPFT057 revised to the 9-character form. `
+  + `Codes that fit neither: ${fd.not_fitting.map(esc).join(', ')}.` : '';
 
 // ---- operator view: one line, today's orders in schedule order, every formulation with what to set
 const REPL = D.replaced || {};
@@ -1417,7 +1464,7 @@ async function downloadDocx(plan){
 function show(v){
   if (v === 'open') v = 'master';                 // Open items now sit on Master health
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
-  ['op', 'mgr', 'board', 'find', 'master', 'run'].forEach(x => { $('#v-' + x).hidden = x !== v; });
+  ['op', 'mgr', 'board', 'find', 'master', 'run', 'cust', 'rev'].forEach(x => { $('#v-' + x).hidden = x !== v; });
   localSet('view', v);
 }
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
@@ -1427,7 +1474,7 @@ if (!D.lines.some(l => l.code === current)) current = D.lines[0]?.code;
 renderRail(); renderLine();
 if (!D.lines.some(l => l.code === opLine)) opLine = D.lines[0]?.code;
 renderOp();
-const VIEWS = ['op', 'mgr', 'board', 'find', 'master', 'run'];
+const VIEWS = ['op', 'mgr', 'board', 'find', 'master', 'run', 'cust', 'rev'];
 const hv = (location.hash || '').slice(1); const hv2 = hv === 'open' ? 'master' : hv, lv = localGet('view') === 'open' ? 'master' : localGet('view');
 show(VIEWS.includes(hv2) ? hv2 : (VIEWS.includes(lv) ? lv : 'op'));
 </script>
