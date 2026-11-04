@@ -819,6 +819,15 @@
       "change": "James: \"replace this Packet Nov 4 2026 · BPN9PFR$_Z898pQQX.PDF · formulation by rule ... and Copy of the published files after the Nov 4 run ... with just the last refresh time\" - the line under the title now reads \"Last refresh <date time>\" and the copy note box is gone. \"move cut to the right of size\" / \"change it to Cut Size\" - the operator card shows Size, then Cut Size, then GSM, Pallets, Die, Pack code, PC/Pallet.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 92,
+      "date": "2026-11-04",
+      "type": "Page design",
+      "item": "Operator card: GSM after Color; US spelling",
+      "change": "James: \"Move the GSM right after Color and change it to Color (we use US english)\". The operator card reads Product, Color, GSM, thickness, Size, Cut Size, Pallets, Die, Pack code, PC/Pallet. \"Colour\" is now \"Color\" on the page (operator card, Look up \"Colors\" column, the color material chip).",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }
