@@ -5,6 +5,79 @@
   {
    "scan_page": 1,
    "report_page": "1",
+   "line": "SE11",
+   "run_date": "11/05/26",
+   "run_time": "16:02:22",
+   "carryover_top": "",
+   "rows": [
+    {
+     "T": "Y",
+     "order": "H6BA045-1",
+     "prod_code": "DPP30WB1077",
+     "die": "PA205",
+     "order_width": "49 3/4",
+     "order_length": "44 3/4",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "3.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "49 3/4",
+       "length": "45 3/8",
+       "total_sheets": "19,916"
+      }
+     ],
+     "pack_code": "48X48",
+     "num_plt": "52",
+     "pcs_per_stack": "383",
+     "stk_per_plt": "1",
+     "weight_lbs": "37,860",
+     "instr_date": "25-Nov",
+     "web_width": "49 3/4",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count.",
+     "handwritten": "",
+     "unclear": ""
+    },
+    {
+     "T": "Y",
+     "order": "H6BA046-1",
+     "prod_code": "DPP30WB1077",
+     "die": "PA205",
+     "order_width": "49 3/4",
+     "order_length": "44 3/4",
+     "mat_spec": "PPP P R1R1R1",
+     "colors": "WB WB WB",
+     "thk": "3.0",
+     "gsm": "602",
+     "cut_rows": [
+      {
+       "width": "49 3/4",
+       "length": "45 3/8",
+       "total_sheets": "19,916"
+      }
+     ],
+     "pack_code": "48X48",
+     "num_plt": "52",
+     "pcs_per_stack": "383",
+     "stk_per_plt": "1",
+     "weight_lbs": "37,860",
+     "instr_date": "25-Nov",
+     "web_width": "49 3/4",
+     "special_instructions": "Send to Bobst. Mark lead edge & make sure of pc count.",
+     "handwritten": "",
+     "unclear": ""
+    }
+   ],
+   "line_total_pcs": "39,832",
+   "line_total_lbs": "75,720",
+   "final_total": "39,832 PCs / 75,720 LBs",
+   "page_notes": "From the copier scan doc05477220261105150425.pdf (system SE11 report, read at 400 dpi; a signature by the Company field).",
+   "revision": "SE11 added: the system's SE11 report run 11/05/26 16:02:22 (copier scan doc05477220261105150425.pdf, sent by James Kuo 5 Nov 2026, \"revision for today\"): H6BA045-1 and H6BA046-1 DPP30WB1077; SE11 was not in the 13:36:51 report; the other lines as printed before"
+  },
+  {
+   "scan_page": 1,
+   "report_page": "1",
    "line": "SE12",
    "run_date": "11/05/26",
    "run_time": "13:36:51",

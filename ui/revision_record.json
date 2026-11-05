@@ -846,6 +846,15 @@
       "change": "The first 11/05 draft gave repeat orders their own last (summer) issue, so they kept the summer homopolymer (e.g. SE13 50) while new orders took the winter issue (SE13 23). From SEASON_SETTINGS_FROM an order's own issue is used only when it is from the same season; otherwise the line's same-season issue applies (James, 4 Nov 2026: \"yes apply the winter settings\"). 14 orders changed before the Word file was sent. Sign blank orders (their Main is not seasonal in the W% Master) keep their issued settings.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 95,
+      "date": "2026-11-05",
+      "type": "Print",
+      "item": "11/05 revision: SE11 added",
+      "change": "James: \"revision for today. send another copy of formulation and update artifact\" (copier scan doc05477220261105150425.pdf, the system SE11 report run 16:02:22; SE11 was not in the 13:36:51 report). H6BA045-1 and H6BA046-1 DPP30WB1077 (PA205, 3.0 mm, 602 GSM, 19,916 sheets each) take FU0032WB3 + Secondary FU0151WB3 as issued on SE11 22 Oct. Formulation re-issued (13 lines, 80 orders) and emailed to James, Kevin Sung and YC Chang (\"REVISION SE11\"); page re-published.",
+      "order": "SE11 H6BA045-1, H6BA046-1 DPP30WB1077",
+      "editor": "James Kuo"
     }
   ]
 }
