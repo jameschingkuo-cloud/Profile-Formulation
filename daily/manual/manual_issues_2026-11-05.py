@@ -1,0 +1,10 @@
+# Issues for the 5 Nov 2026 packet, from the system's own PDFs: BPN9PFR$_Z80k2oXy.PDF (SCHEDULE 11/05, run 11/05/26 13:36:51) and Die Cutting Schedule 11-05.pdf (e-mailed 13:26). No scan, no Tech FRM pages today. Compared with 4 Nov, the last day published.
+MANUAL = [
+ # (Severity, Document, Line, Order, Check, Detail, Source)
+ ('Info','FRM','SE22, SE32','H6AA171-1, H6AA195-1, H6AA196-1','VOIDFORM: no reclaim','H6AA171-1 (RPPA0WB241) keeps FU0001WBA, the virgin Secondary, as its only formula (James Kuo, 29 Oct 2026). SE32 H6AA195-1 (RPPD0WB176) and H6AA196-1 (RPPD0WB41): formulation by James\'s rules (no reclaim, R10), as on 4 Nov','James'),
+ ('Info','FRM','(all)','','No Tech FRM pages today','"FRM Formulation 2026-11-05.docx" built from the system PDF by James\'s rules; see its ENGINEER TO COMPLETE rows. Emailed to James, Kevin Sung and YC Chang','rules'),
+ ('Info','EXT','(SE25)','H68A091-1, H68A090-1, H64A244-1','VOIDFORM GSM vs control range','Printed GSM is the billing weight; the control range in the instructions is 5-8% under it (793 -> 729-751; 1,052 -> 970-1000). As expected, none outside','PDF'),
+ ('Info','EXT','(several)','H69A343-1, H6BA004-1, H6BA013-1, H6BA023-1, RP26B04-1','New since 4 Nov','New on the extrusion schedule (5): SE12 H69A343-1 (DPP40WB1240); SE21 H6BA004-1 (RPP40BD95); SE31 H6BA013-1 (RPA40WB3827); SE43 H6BA023-1 (RPA40WB3830), RP26B04-1 (RPA40WB3051)','PDF'),
+ ('Info','EXT','(several)','H69A116-1, H69A305-1, H6AA039-6, H6AA055-1, H6AA078-1, H6AA221-2, H6AA222-2, H6AA227-1, H6AA227-2, RP26B03-1','Gone since 4 Nov','Gone from the extrusion schedule (10): SE23 H69A116-1 (DPP40EA12), H69A305-1 (DPP40WB1756); SE24 H6AA039-6, H6AA055-1, RP26B03-1 (SPA40WB756); SE61 H6AA078-1 (RBP50EB16); SE21 H6AA221-2, H6AA222-2 (RPP63RF1), H6AA227-1, H6AA227-2 (RPA50WB289). 78 orders (83 on 4 Nov)','PDF'),
+ ('Info','CNV','(several)','H69A181-1, H69A303-1','Gone on the converting schedule since 4 Nov','Gone (2): H69A181-1, H69A303-1. None new. 53 rows on 10 pages','PDF'),
+]
