@@ -828,6 +828,15 @@
       "change": "James: \"Move the GSM right after Color and change it to Color (we use US english)\". The operator card reads Product, Color, GSM, thickness, Size, Cut Size, Pallets, Die, Pack code, PC/Pallet. \"Colour\" is now \"Color\" on the page (operator card, Look up \"Colors\" column, the color material chip).",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 93,
+      "date": "2026-11-05",
+      "type": "Page design",
+      "item": "Operator card: Die taken out",
+      "change": "James: \"take out Die\" (from the artifact). The operator card reads Product, Color, GSM, thickness, Size, Cut Size, Pallets, Pack code, PC/Pallet. The Die stays in the engineering views.",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }

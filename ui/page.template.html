@@ -638,7 +638,7 @@ function renderOp(){
       const app = g ? [...new Set(g.formulas.map(f => (APPS.find(([rx]) => rx.test(f.note)) || [])[1]).filter(Boolean))] : [];
       return `<article class="opcard"><div class="top"><span class="seq">${n + 1}</span><span class="ord">${esc(o.order)} ${app.map(a => `<span class="chip warn" style="font-size:12px;vertical-align:middle">${esc(a)}</span>`).join(' ')}</span>
         <div class="facts"><span>Product <b class="mono">${esc(o.prod)}</b></span><span>Color <b>${esc(o.colors || '')}</b></span><span>GSM <b>${esc(o.gsm || '')}</b></span><span><b>${esc(o.thk || '')}</b> mm</span>
-          <span>Size <b>${esc(o.size)}</b></span>${o.cut ? `<span>Cut Size <b>${esc(o.cut)}</b></span>` : ''}<span>Pallets <b>${o.plt_real ? o.plt_real.toLocaleString() : esc(o.plt || '')}</b>${o.plt_real ? ' <span class="muted">(AS400 prints 999)</span>' : ''}</span><span>Die <b class="mono">${esc(o.die || '')}</b></span>
+          <span>Size <b>${esc(o.size)}</b></span>${o.cut ? `<span>Cut Size <b>${esc(o.cut)}</b></span>` : ''}<span>Pallets <b>${o.plt_real ? o.plt_real.toLocaleString() : esc(o.plt || '')}</b>${o.plt_real ? ' <span class="muted">(AS400 prints 999)</span>' : ''}</span>
           ${o.pack ? `<span>Pack code <b class="mono">${esc(o.pack)}</b></span>` : ''}${o.pcplt ? `<span>PC/Pallet <b>${esc(o.pcplt)}</b></span>` : ''}</div></div>
         ${o.si ? `<div class="si ${watch.test(o.si) ? 'watch' : ''}">${esc(o.si)}</div>` : ''}
         ${g ? `<div class="forms">${g.formulas.map((f, i, all) => `<div class="form ${i === 0 ? 'first' : ''}"><div class="fhead"><span class="when">${whenLabel(f, i, all)}</span><span class="code">${esc(f.code)}</span></div>
