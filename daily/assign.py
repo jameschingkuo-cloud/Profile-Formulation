@@ -1159,7 +1159,11 @@ def member_settings(line, m, want, issued, own=None, day=None):
         # the order's own last issue only when its notes ask for no qualifier the order lacks (James, 26 Oct 2026, on
         # RP26717-1: "order RP26717-1 is just standard graphic 40. why is it using sign blank formula?" - Tech had
         # grouped it with the sign blanks on 23 Oct; a plain order takes a plain group's settings)
-        if own and notes_q(own[2]) <= marked:
+        # a seasonal Main from SEASON_SETTINGS_FROM on: the order's own issue only when it is from that season (a repeat
+        # order last issued in summer took its summer homopolymer on 5 Nov 2026 while new orders took the winter issue)
+        seas_q = set(m['quals']) & {'summer', 'winter'}
+        own_ok = not (seas_q and day and day >= SEASON_SETTINGS_FROM and own and issue_season(own[0]) not in seas_q)
+        if own and own_ok and notes_q(own[2]) <= marked:
             rows = pick(own[2])
             if rows:
                 return rows, ('own', own[0], own[1])
@@ -1176,7 +1180,6 @@ def member_settings(line, m, want, issued, own=None, day=None):
             # corn box stands apart: only rows Tech issued for corn box - noted so, or issued for a corn box order (James,
             # 27 Oct 2026: "keep it clean and separated")
             ordered = [g for g in ordered if 'corn' in notes_q(g[2]) or id(g[2]) in _CORN_GROUPS]
-        seas_q = set(m['quals']) & {'summer', 'winter'}
         if seas_q and day and day >= SEASON_SETTINGS_FROM:
             same = [g for g in ordered if issue_season(g[0]) in seas_q]
             target = (m.get('w') or {}).get('Homo PP (F1203K) %')

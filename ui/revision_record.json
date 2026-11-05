@@ -837,6 +837,15 @@
       "change": "James: \"take out Die\" (from the artifact). The operator card reads Product, Color, GSM, thickness, Size, Cut Size, Pallets, Pack code, PC/Pallet. The Die stays in the engineering views.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 94,
+      "date": "2026-11-05",
+      "type": "Logic",
+      "item": "Winter settings for repeat orders on FUA152WB4",
+      "change": "The first 11/05 draft gave repeat orders their own last (summer) issue, so they kept the summer homopolymer (e.g. SE13 50) while new orders took the winter issue (SE13 23). From SEASON_SETTINGS_FROM an order's own issue is used only when it is from the same season; otherwise the line's same-season issue applies (James, 4 Nov 2026: \"yes apply the winter settings\"). 14 orders changed before the Word file was sent. Sign blank orders (their Main is not seasonal in the W% Master) keep their issued settings.",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }
