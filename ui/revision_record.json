@@ -855,6 +855,24 @@
       "change": "James: \"revision for today. send another copy of formulation and update artifact\" (copier scan doc05477220261105150425.pdf, the system SE11 report run 16:02:22; SE11 was not in the 13:36:51 report). H6BA045-1 and H6BA046-1 DPP30WB1077 (PA205, 3.0 mm, 602 GSM, 19,916 sheets each) take FU0032WB3 + Secondary FU0151WB3 as issued on SE11 22 Oct. Formulation re-issued (13 lines, 80 orders) and emailed to James, Kevin Sung and YC Chang (\"REVISION SE11\"); page re-published.",
       "order": "SE11 H6BA045-1, H6BA046-1 DPP30WB1077",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 96,
+      "date": "2026-11-06",
+      "type": "Logic",
+      "item": "SE21 R4 black RU0000KS4 settings confirmed",
+      "change": "James, on H6AA291-2 / H6AA291-1 (RPP40KS2012 / RPP40KS2362) printed CALCULATED: \"no issue for this one\". assign.CONFIRMED_SETTINGS[('SE21','RU0000KS4')] = Hopper 1 PP Mix Reclaim 90, Hopper 4 KS-MDI PE-500 26 (R4 black 98/2); it now prints as plain settings, no \"CALCULATED, check before running\".",
+      "order": "SE21 H6AA291-2, H6AA291-1",
+      "editor": "James Kuo"
+    },
+    {
+      "rev": 97,
+      "date": "2026-11-06",
+      "type": "Logic",
+      "item": "Winter settings never take a shortage recipe",
+      "change": "James: \"what made you decide shortage of talc. I dont recall approving shortage of talc\". The winter rule (5 Nov) took, for SE24 FUA152WB4, Tech's Jan 2026 issue because its homopolymer was nearest the W%; Tech had noted it \"Shortage of Talc\" (talc 6, virgin 82.3, F1203K 9). Issues noted as a shortage are now left out; SE24 takes Tech's Nov 2025 winter issue: talc 9, virgin 80.3, F1203K 8 (H6AA206-1, RP26901-1, RP26A28-1 on 6 Nov; RP26A28-1 also printed it on 5 Nov).",
+      "order": "SE24 H6AA206-1, RP26901-1, RP26A28-1",
+      "editor": "James Kuo"
     }
   ]
 }

@@ -655,6 +655,13 @@ CONFIRMED_SETTINGS = {
                                         'D 1': ('PP Yungsox 5050S', '100')},
                             'note': 'Extruder share A 40%, B 5%, C 45%, D 10%',
                             'by': "James Kuo, 2 Nov 2026 (Tech's SE61 5 mm KS-Diamond calc, May 2026)"},
+    # the R4 black 98/2 settings calculated on SE21 (r4_black_settings, from Tech's RU0000KS4 of 23 Oct 2026); James Kuo,
+    # 6 Nov 2026, on H6AA291-2 / H6AA291-1 (RPP40KS2012 / RPP40KS2362): "no issue for this one"
+    # stored before the speed raise (resolve prints them 90 / 26, highest at 90, weight ratio kept)
+    ('SE21', 'RU0000KS4'): {'feeders': {'Hopper 1': ('PP Mix Reclaim', '65'),
+                                        'Hopper 4': ('KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F', '19')},
+                            'note': 'R4 black 98% reclaim / 2% colour',
+                            'by': "James Kuo, 6 Nov 2026 (the R4 black 98/2 settings calculated from Tech's SE21 RU0000KS4 of 23 Oct 2026)"},
 }
 # The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
 # Tech's FU0031WB4 issued for RP26512-1 (80/10/60/32/36), not the lower FU0041WB4 row
@@ -1091,6 +1098,7 @@ def secondary_for(main, want, seas, line):
 # Mar under the same code (SE21 25 -> 13, SE13 25 -> 13, SE24 15 -> 8 ...; Word running records 2022-26), and the newest
 # issue on the line is otherwise his summer one. From the 5 Nov schedule on (2 - 4 Nov stay as issued).
 SEASON_SETTINGS_FROM = datetime.date(2026, 11, 5)
+SHORTAGE = re.compile(r'shortage|short of|out of stock', re.I)   # Tech's note on a stop-gap recipe for a missing material
 
 
 def issue_season(date):
@@ -1181,7 +1189,11 @@ def member_settings(line, m, want, issued, own=None, day=None):
             # 27 Oct 2026: "keep it clean and separated")
             ordered = [g for g in ordered if 'corn' in notes_q(g[2]) or id(g[2]) in _CORN_GROUPS]
         if seas_q and day and day >= SEASON_SETTINGS_FROM:
-            same = [g for g in ordered if issue_season(g[0]) in seas_q]
+            # never a recipe Tech issued for a material shortage: SE24's Jan 2026 FUA152WB4 "Shortage of Talc" (talc 6
+            # for 9) was the season's homopolymer match and printed on 5 and 6 Nov 2026 (James Kuo, 6 Nov 2026: "what
+            # made you decide shortage of talc. I dont recall approving shortage of talc")
+            same = [g for g in ordered if issue_season(g[0]) in seas_q
+                    and not any(SHORTAGE.search(f.get('note') or '') for f in pick(g[2]))]
             target = (m.get('w') or {}).get('Homo PP (F1203K) %')
             if same and target is not None:
                 # the season's issues whose homopolymer share is nearest the Main's W% (March often runs summer again)
@@ -1240,7 +1252,13 @@ def formulation(line, row, day, issued, own=None):
     for role_, m in pair:
         rows = None
         if line in R4_BLACK_HOPPERS and m['key'][0] == 'RU' and m['key'][2] == 'KS' and w_reclaim(m):
-            rows, src = r4_black_settings(line, m)          # James's R4 black hoppers and 98/2, before Tech's rows
+            if (line, m['code']) in CONFIRMED_SETTINGS:      # the 98/2 calculation James has confirmed
+                c = CONFIRMED_SETTINGS[(line, m['code'])]
+                rows = [{'formula_code': m['code'], 'note': c.get('note', ''),
+                         'feeders': {k: {'material': mt, 'set': st} for k, (mt, st) in c['feeders'].items()}}]
+                src = ('confirmed', None, c['by'])
+            else:
+                rows, src = r4_black_settings(line, m)      # James's R4 black hoppers and 98/2, before Tech's rows
         if rows is None:
             rows, src = member_settings(line, m, want, issued, own, day)
         if rows is None and (line, m['code']) in CONFIRMED_SETTINGS:
