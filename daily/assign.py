@@ -1103,7 +1103,7 @@ def secondary_for(main, want, seas, line):
 # took his Jan 2026 "Shortage of Talc" recipe on SE24 - James: "I dont recall approving shortage of talc".)
 SEASON_SETTINGS_FROM = datetime.date(2026, 11, 5)
 # only these products (James Kuo, 6 Nov 2026: "i think we only do it on RPA40WB"); sign blanks (SPA40WB...) and the others keep
-# the settings as issued
+# the settings as issued all year (James Kuo, 6 Nov 2026: "sign blanks stay as is")
 SEASON_PRODUCTS = ('RPA40WB',)
 _HOMO = re.compile(r'1203K|1102K', re.I)
 _VIRGIN = re.compile(r'VIRGIN|6502', re.I)
