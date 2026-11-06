@@ -477,6 +477,7 @@ WEIGHT_LINES = ('SE24', 'SE42', 'SE43', 'SE61')
 # feeder's weight is its setting x its hopper's slope, so one factor on every setting keeps the weight ratio; only the
 # rounding to whole numbers moves it. One factor for the whole formulation, so co-ex layers keep their ratio too.
 AUGER_TOP = 90
+AUGER_MAX = 100                        # an auger setting is motor speed, 0 to 100
 
 
 def raise_to_top(line, feeders):
@@ -1093,12 +1094,19 @@ def secondary_for(main, want, seas, line):
     return fit[0] if len({m['code'] for m in fit}) == 1 else None
 
 
-# R5 settings by season (James Kuo, 4 Nov 2026: "yes apply the winter settings but reissue tomorrow. today is already
-# done"): a seasonal Main takes Tech's newest issue on the line from its own season. Tech halves the homopolymer from Nov to
-# Mar under the same code (SE21 25 -> 13, SE13 25 -> 13, SE24 15 -> 8 ...; Word running records 2022-26), and the newest
-# issue on the line is otherwise his summer one. From the 5 Nov schedule on (2 - 4 Nov stay as issued).
+# R5 settings by season. James Kuo, 6 Nov 2026: "it should just be the F1203K move. During winter, we reduce the 1203 by
+# half and increase 6502 to fill the blank. If anything else move, its probably very minor and might be due to the
+# calculation with auger". A seasonal Main keeps the settings it would take anyway (the order's own last issue, else the
+# line's newest); when that issue is from the other season, F1203K goes to half (winter) or double (summer) by weight and
+# PP Virgin F6502A takes up the difference; every other feeder stays as issued. From the 5 Nov 2026 schedule on (2 - 4 Nov
+# stay as issued). (4 - 6 Nov the rule took Tech's old same-season issue instead, which moved talc and colour too and once
+# took his Jan 2026 "Shortage of Talc" recipe on SE24 - James: "I dont recall approving shortage of talc".)
 SEASON_SETTINGS_FROM = datetime.date(2026, 11, 5)
-SHORTAGE = re.compile(r'shortage|short of|out of stock', re.I)   # Tech's note on a stop-gap recipe for a missing material
+# only these products (James Kuo, 6 Nov 2026: "i think we only do it on RPA40WB"); sign blanks (SPA40WB...) and the others keep
+# the settings as issued
+SEASON_PRODUCTS = ('RPA40WB',)
+_HOMO = re.compile(r'1203K|1102K', re.I)
+_VIRGIN = re.compile(r'VIRGIN|6502', re.I)
 
 
 def issue_season(date):
@@ -1109,35 +1117,7 @@ def issue_season(date):
         return None
 
 
-def homo_share(line, f):
-    """The homopolymer (F1203K / F1102K) share of a formula's weight: weight-blender lines from the set % of the extruder
-    that feeds it, auger lines from setting x the hopper's own calibration slope. None when a slope is missing."""
-    groups = defaultdict(lambda: defaultdict(float))
-    for col, v in f['feeders'].items():
-        try:
-            st = float(str(v.get('set') or '').replace(',', ''))
-        except ValueError:
-            continue
-        mat = (v.get('material') or '').upper()
-        if not mat:
-            continue
-        cls = ('1203K' if re.search(r'1203K|1102K', mat) else 'TALC' if 'TALC' in mat else 'CACO3' if 'CACO3' in mat
-               else 'RECLAIM' if 'RECLAIM' in mat else 'VIRGIN PP' if re.search(r'VIRGIN|6502', mat) else 'COLOR')
-        if line in WEIGHT_LINES:
-            groups[col.rsplit(' ', 1)[0] if ' ' in col else ''][cls] += st
-        else:
-            d = re.search(r'(\d)\s*$', col)
-            k = class_slope(line, 'H' + d.group(1), cls)[0] if d else None
-            if not k:
-                return None
-            groups[''][cls] += st * k
-    for g in groups.values():
-        if g.get('1203K') and sum(g.values()):
-            return g['1203K'] * 100 / sum(g.values())
-    return 0.0 if groups else None
-
-
-def member_settings(line, m, want, issued, own=None, day=None):
+def _member_settings(line, m, want, issued, own=None, day=None):
     """The rows of one member (Primary or Secondary) on the line: from the order's own last issue, else the line's issued
     groups (the one Tech noted for the order's qualifier first), else Tech's calc sheet. A row belongs to the member when
     its code is one of the member's printed names and it feeds reclaim exactly when the member's W% has reclaim (so the
@@ -1167,11 +1147,7 @@ def member_settings(line, m, want, issued, own=None, day=None):
         # the order's own last issue only when its notes ask for no qualifier the order lacks (James, 26 Oct 2026, on
         # RP26717-1: "order RP26717-1 is just standard graphic 40. why is it using sign blank formula?" - Tech had
         # grouped it with the sign blanks on 23 Oct; a plain order takes a plain group's settings)
-        # a seasonal Main from SEASON_SETTINGS_FROM on: the order's own issue only when it is from that season (a repeat
-        # order last issued in summer took its summer homopolymer on 5 Nov 2026 while new orders took the winter issue)
-        seas_q = set(m['quals']) & {'summer', 'winter'}
-        own_ok = not (seas_q and day and day >= SEASON_SETTINGS_FROM and own and issue_season(own[0]) not in seas_q)
-        if own and own_ok and notes_q(own[2]) <= marked:
+        if own and notes_q(own[2]) <= marked:
             rows = pick(own[2])
             if rows:
                 return rows, ('own', own[0], own[1])
@@ -1188,25 +1164,6 @@ def member_settings(line, m, want, issued, own=None, day=None):
             # corn box stands apart: only rows Tech issued for corn box - noted so, or issued for a corn box order (James,
             # 27 Oct 2026: "keep it clean and separated")
             ordered = [g for g in ordered if 'corn' in notes_q(g[2]) or id(g[2]) in _CORN_GROUPS]
-        if seas_q and day and day >= SEASON_SETTINGS_FROM:
-            # never a recipe Tech issued for a material shortage: SE24's Jan 2026 FUA152WB4 "Shortage of Talc" (talc 6
-            # for 9) was the season's homopolymer match and printed on 5 and 6 Nov 2026 (James Kuo, 6 Nov 2026: "what
-            # made you decide shortage of talc. I dont recall approving shortage of talc")
-            same = [g for g in ordered if issue_season(g[0]) in seas_q
-                    and not any(SHORTAGE.search(f.get('note') or '') for f in pick(g[2]))]
-            target = (m.get('w') or {}).get('Homo PP (F1203K) %')
-            if same and target is not None:
-                # the season's issues whose homopolymer share is nearest the Main's W% (March often runs summer again)
-                def gap(g):
-                    xs = [homo_share(line, f) for f in pick(g[2])]
-                    xs = [x for x in xs if x is not None]
-                    return min(abs(x - target) for x in xs) if xs else None
-                gaps = {id(g): gap(g) for g in same}
-                known = [v for v in gaps.values() if v is not None]
-                if known:
-                    best = min(known)
-                    same = [g for g in same if gaps[id(g)] is not None and gaps[id(g)] <= best + 1.0]
-            ordered = same or ordered            # none from that season on the line: the newest issue, as before
         if (line, m['code']) in CONFIRMED_SETTINGS:
             # settings James confirmed outrank an older issue from Tech's Word running records (dated YYYY-MM-00)
             ordered = [g for g in ordered if not str(g[0]).endswith('-00')]
@@ -1223,6 +1180,90 @@ def member_settings(line, m, want, issued, own=None, day=None):
                 if rows:
                     return rows, ('calc', rec[0], 'calc')
     return None, None
+
+
+def _num(x):
+    try:
+        return float(str(x).replace(',', '').strip())
+    except (TypeError, ValueError):
+        return None
+
+
+def _fmt(x, like):
+    """x written with as many decimals as the setting it replaces ('73.3' -> one, '15' -> none)."""
+    d = len(str(like).split('.')[1]) if '.' in str(like) else 0
+    return f'{x:.{d}f}' if d else str(int(x + 0.5))
+
+
+def season_settings(line, f, factor):
+    """One formula's feeders with F1203K x factor (0.5 for winter, 2 for summer) by weight and PP Virgin F6502A taking up
+    the difference; the other feeders as issued (James Kuo, 6 Nov 2026). Weight-blender lines: the set is the weight %, within
+    the extruder that feeds F1203K. Auger lines: weight = set x the hopper's calibration slope. -> (formula, detail) or
+    (formula, None) when there is no F1203K, no virgin feeder beside it, a virgin set on Auto with no number, or a slope missing."""
+    fd = f['feeders']
+    homo = [c for c, v in fd.items() if _HOMO.search(v.get('material') or '') and _num(v.get('set'))]
+    if len(homo) != 1:
+        return f, None
+    hc = homo[0]
+    ext = hc.rsplit(' ', 1)[0] if line in WEIGHT_LINES and ' ' in hc else None
+    virg = [c for c, v in fd.items() if _VIRGIN.search(v.get('material') or '') and not re.search('RECLAIM', v.get('material') or '', re.I)
+            and _num(v.get('set')) is not None and (ext is None or c.rsplit(' ', 1)[0] == ext)]
+    if not virg:
+        return f, None
+    vc = max(virg, key=lambda c: _num(fd[c]['set']))
+    out = dict(f)
+    out['feeders'] = {c: dict(x) for c, x in fd.items()}
+    if line in WEIGHT_LINES:
+        h, v = _num(fd[hc]['set']), _num(fd[vc]['set'])
+        new_h = int(h * factor + 0.5)
+        out['feeders'][hc]['set'] = _fmt(new_h, fd[hc]['set'])
+        out['feeders'][vc]['set'] = _fmt(v + (h - new_h), fd[vc]['set'])
+        return out, (f"{'winter' if factor < 1 else 'summer'}: F1203K {fd[hc]['set']} -> {out['feeders'][hc]['set']}, "
+                     f"PP Virgin {fd[vc]['set']} -> {out['feeders'][vc]['set']}, the rest as issued (James Kuo, 6 Nov 2026: "
+                     f"\"During winter, we reduce the 1203 by half and increase 6502 to fill the blank\")")
+    dh, dv = re.search(r'(\d)\s*$', hc), re.search(r'(\d)\s*$', vc)
+    kh = (class_slope(line, 'H' + dh.group(1), '1203K')[0] or class_slope(line, 'H' + dh.group(1), '1102K')[0]) if dh else None
+    kv = class_slope(line, 'H' + dv.group(1), 'VIRGIN PP')[0] if dv else None
+    if not kh or not kv:
+        return f, None
+    # auger line: the speeds as they print (raised so the highest is AUGER_TOP), then F1203K x factor and the virgin auger
+    # fills its weight, so every other feeder prints exactly as before; never above AUGER_MAX (then all down by one factor)
+    old = {c: _num(x.get('set')) for c, x in fd.items() if x.get('material') and _num(x.get('set')) is not None}
+    top = max(old.values())
+    up = AUGER_TOP / top if 0 < top < AUGER_TOP else 1.0
+    new = {c: x * up for c, x in old.items()}
+    printed = {c: int(x + 0.5) for c, x in new.items()}
+    h = new[hc]
+    new[hc] = h * factor
+    new[vc] += (h - new[hc]) * kh / kv
+    hi = max(new.values())
+    down = AUGER_MAX / hi if hi > AUGER_MAX else 1.0
+    for c, x in new.items():
+        out['feeders'][c]['set'] = str(int(x * down + 0.5))
+    capped = f"; all speeds x {down:.2f} so none is above {AUGER_MAX}" if down < 1 else ''
+    return out, (f"{'winter' if factor < 1 else 'summer'}: F1203K {printed[hc]} -> {out['feeders'][hc]['set']}, "
+                 f"PP Virgin {printed[vc]} -> {out['feeders'][vc]['set']} by weight (slopes {kh:g} / {kv:g}), the rest as "
+                 f"printed{capped}" + (f" (speeds as issued raised so the highest is {AUGER_TOP}, was {top:g})" if up > 1 else '') +
+                 f" (James Kuo, 6 Nov 2026: \"During winter, we reduce the 1203 by half and increase 6502 to fill the blank\")")
+
+
+def member_settings(line, m, want, issued, own=None, day=None, product=''):
+    """_member_settings, then R5 by season: a seasonal Main whose settings come from an issue of the other season gets its
+    F1203K halved (winter) or doubled (summer), PP Virgin filling the difference (season_settings)."""
+    rows, src = _member_settings(line, m, want, issued, own, day)
+    if (not rows or not day or day < SEASON_SETTINGS_FROM or not set(m['quals']) & {'summer', 'winter'}
+            or not product.startswith(SEASON_PRODUCTS)):
+        return rows, src
+    now, was = season(day), issue_season(src[1]) if src and src[1] else None
+    if was is None or was == now:
+        return rows, src
+    out = []
+    for f in rows:
+        g, detail = season_settings(line, f, 0.5 if now == 'winter' else 2.0)
+        if detail:
+            g = dict(g, season=detail)
+        out.append(g)
+    return out, src
 
 
 def formulation(line, row, day, issued, own=None):
@@ -1260,7 +1301,7 @@ def formulation(line, row, day, issued, own=None):
             else:
                 rows, src = r4_black_settings(line, m)      # James's R4 black hoppers and 98/2, before Tech's rows
         if rows is None:
-            rows, src = member_settings(line, m, want, issued, own, day)
+            rows, src = member_settings(line, m, want, issued, own, day, row.get('prod_code') or '')
         if rows is None and (line, m['code']) in CONFIRMED_SETTINGS:
             # what James confirmed comes before any fallback that could reach an older issue in Tech's Word running
             # records (a run-out row, an equivalent): a newer issue on the line still wins (member_settings)

@@ -778,3 +778,16 @@ def test_flame_retardant_white_by_standard():
         want, seas = assign.wanted('SE21', row, day)
         assert assign.choose(assign.derive('SE21', row)[0], want, seas, 'SE21')[0]['code'] == code
     assert assign.QUAL_NOTE['ul94'] == 'UL94-V2 standard' and assign.QUAL_NOTE['nfpa701'] == 'NFPA701 standard'
+
+
+def test_season_settings_weight_line():
+    # James Kuo, 6 Nov 2026: "During winter, we reduce the 1203 by half and increase 6502 to fill the blank" - SE24 FUA152WB4
+    f = {'formula_code': 'FUA152WB4', 'note': '', 'feeders': {
+        'Extruder A V1': {'material': 'WB-W26038A', 'set': '2.7'}, 'Extruder A V3': {'material': 'HiTalc ZS (or N40109A)', 'set': '9'},
+        'Extruder A V4': {'material': 'PP Virgin-silo 4 (6502A)', 'set': '73.3'}, 'Extruder A V5': {'material': 'F1203K', 'set': '15'}}}
+    g, detail = assign.season_settings('SE24', f, 0.5)
+    sets = {c: v['set'] for c, v in g['feeders'].items()}
+    assert sets == {'Extruder A V1': '2.7', 'Extruder A V3': '9', 'Extruder A V4': '80.3', 'Extruder A V5': '8'}, sets
+    assert detail and 'F1203K 15 -> 8' in detail
+    assert f['feeders']['Extruder A V5']['set'] == '15'          # the issued formula itself is not changed
+    assert assign.SEASON_PRODUCTS == ('RPA40WB',)                # James: "i think we only do it on RPA40WB"
