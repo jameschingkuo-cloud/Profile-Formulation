@@ -1,0 +1,9 @@
+# Issues for the 6 Nov 2026 packet, from the system's own PDFs: BPN9PFR$_Z8AM2joN.PDF (SCHEDULE 11/06, run 11/06/26 13:40:21) and Die Cutting Schedule 11-06.pdf (e-mailed 13:01). No scan, no Tech FRM pages today. Compared with 5 Nov, the last day published.
+MANUAL = [
+ # (Severity, Document, Line, Order, Check, Detail, Source)
+ ('Info','FRM','(all)','','No Tech FRM pages today','"FRM Formulation 2026-11-06.docx" built from the system PDF by James\'s rules; 92 orders, 0 ENGINEER TO COMPLETE. Emailed to James, Kevin Sung and YC Chang','rules'),
+ ('Info','EXT','(SE25)','H68A091-1, H64A244-1','VOIDFORM GSM vs control range','Printed GSM is the billing weight; the control range in the instructions is 5-8% under it (793 -> 729-751; 1,052 -> 970-1000). As expected, none outside','PDF'),
+ ('Info','EXT','(several)','H6AA075-1, H6AA075-2, H6AA199-2, H6AA152-1..5, H6AA291-1, H6AA291-2, H6AA275-2, H69A303-1, H6AA206-1, H69A349-1, H6AA239-1','New since 5 Nov','New on the extrusion schedule (15): SE11 H6AA075-1 (DPP20PK1), H6AA075-2 (DPP20PK2); SE13 H6AA199-2 (SPA40WB958), H6AA152-1 to -5 (RPP40WB1794, 1658, 1661, 1866, 1867); SE21 H6AA291-2 (RPP40KS2012), H6AA291-1 (RPP40KS2362); SE22 H6AA275-2 (RPPA0WB383); SE23 H69A303-1 (DPP40WB1756); SE24 H6AA206-1 (RPA40WB3171); SE25 H69A349-1 (RPP40EA35); SE61 H6AA239-1 (RBP50KS59)','PDF'),
+ ('Info','EXT','(several)','H6BA003-9, H6AA223-2, H69A201-1','Gone since 5 Nov','Gone from the extrusion schedule (3): SE13 H6BA003-9, SE21 H6AA223-2, SE61 H69A201-1. 92 orders (80 in the 5 Nov packet)','PDF'),
+ ('Info','CNV','(several)','H6BA045-1, H6BA046-1, H6AA199-2, H69A304-1, H69A116-1, H6AA199-1','Changes on the converting schedule since 5 Nov','New (3): H6BA045-1, H6BA046-1 (DPP30WB1077), H6AA199-2 (SPA40WB958). Gone (3): H69A304-1 (DPP40WB1756), H69A116-1 (DPP40EA12), H6AA199-1 (SPA40WB958). 53 rows on 9 pages','PDF'),
+]
