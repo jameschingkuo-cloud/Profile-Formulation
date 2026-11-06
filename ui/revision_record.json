@@ -882,6 +882,15 @@
       "change": "James: \"it should just be the F1203K move. During winter, we reduce the 1203 by half and increase 6502 to fill the blank. If anything else move, its probably very minor and might be due to the calculation with auger\"; \"i think we only do it on RPA40WB\". Replaces the 5 Nov rule that took Tech's old same-season issue (which moved talc and color too and took the SE24 \"Shortage of Talc\" recipe). Now: the order's settings as issued (own last issue, else the line's newest); when that issue is from summer, F1203K goes to half by weight and PP Virgin F6502A takes up the weight; every other feeder prints as before. Weight-blender lines (SE24, SE43): F1203K 15 -> 8, virgin +7. Auger lines: the speeds as printed (highest raised to 90), F1203K halved, the virgin auger adds the same weight on its own calibration slope (virgin goes to 96-99); never above 100 (SE23 virgin 99 would go to 109: every speed x 0.92). Only RPA40WB products; sign blanks (SPA40WB) and others as issued.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 99,
+      "date": "2026-11-06",
+      "type": "Print",
+      "item": "11/06 revision: winter settings; SE23 keeps the virgin speed",
+      "change": "James, SE23 (virgin already at 99, would need 109): \"reduce the rest instead of increase PP so it follow the W%\" - the virgin auger stays at its speed and the other feeders come down by one factor (talc 16, F1203K 24, WB 39). James: \"sent the new formulation over as revision\": 6 Nov re-issued with the winter rule (rev 98), SE24 off the Shortage of Talc recipe, SE21 R4 black confirmed. daily/email_formulation.ps1 now stops on an Outlook error (it had printed \"sent\" and marked the file sent when Outlook's COM server failed to start).",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }

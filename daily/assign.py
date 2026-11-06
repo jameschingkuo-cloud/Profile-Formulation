@@ -661,7 +661,7 @@ CONFIRMED_SETTINGS = {
     # stored before the speed raise (resolve prints them 90 / 26, highest at 90, weight ratio kept)
     ('SE21', 'RU0000KS4'): {'feeders': {'Hopper 1': ('PP Mix Reclaim', '65'),
                                         'Hopper 4': ('KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F', '19')},
-                            'note': 'R4 black 98% reclaim / 2% colour',
+                            'note': 'R4 black 98% reclaim / 2% color',
                             'by': "James Kuo, 6 Nov 2026 (the R4 black 98/2 settings calculated from Tech's SE21 RU0000KS4 of 23 Oct 2026)"},
 }
 # The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
@@ -1227,7 +1227,7 @@ def season_settings(line, f, factor):
     if not kh or not kv:
         return f, None
     # auger line: the speeds as they print (raised so the highest is AUGER_TOP), then F1203K x factor and the virgin auger
-    # fills its weight, so every other feeder prints exactly as before; never above AUGER_MAX (then all down by one factor)
+    # fills its weight, so every other feeder prints exactly as before
     old = {c: _num(x.get('set')) for c, x in fd.items() if x.get('material') and _num(x.get('set')) is not None}
     top = max(old.values())
     up = AUGER_TOP / top if 0 < top < AUGER_TOP else 1.0
@@ -1236,11 +1236,14 @@ def season_settings(line, f, factor):
     h = new[hc]
     new[hc] = h * factor
     new[vc] += (h - new[hc]) * kh / kv
-    hi = max(new.values())
-    down = AUGER_MAX / hi if hi > AUGER_MAX else 1.0
+    # the virgin auger cannot take the weight (above AUGER_MAX): it stays at its speed and the rest come down by one factor,
+    # so the weights keep the formulation's ratio (James Kuo, 6 Nov 2026, SE23 virgin at 99: "reduce the rest instead of
+    # increase PP so it follow the W%")
+    down = printed[vc] / new[vc] if max(new.values()) > AUGER_MAX else 1.0
     for c, x in new.items():
         out['feeders'][c]['set'] = str(int(x * down + 0.5))
-    capped = f"; all speeds x {down:.2f} so none is above {AUGER_MAX}" if down < 1 else ''
+    capped = (f"; the virgin auger stays at {printed[vc]} (above {AUGER_MAX} otherwise) and the rest x {down:.2f}, "
+              f"the weight ratio kept" if down < 1 else '')
     return out, (f"{'winter' if factor < 1 else 'summer'}: F1203K {printed[hc]} -> {out['feeders'][hc]['set']}, "
                  f"PP Virgin {printed[vc]} -> {out['feeders'][vc]['set']} by weight (slopes {kh:g} / {kv:g}), the rest as "
                  f"printed{capped}" + (f" (speeds as issued raised so the highest is {AUGER_TOP}, was {top:g})" if up > 1 else '') +

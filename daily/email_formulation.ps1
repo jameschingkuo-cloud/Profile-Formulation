@@ -29,7 +29,10 @@ if ($Replaces) { $subject += ' - REPLACES the earlier copy' }
 if (-not $Body) { $Body = "The Word formulation for $Date, built from the day's schedule email, is attached." }
 $Body += "`r`n`r`nSent by the scheduled schedule run (Claude Code on James's PC). Rows marked ENGINEER TO COMPLETE need an engineer's formula before the copy is issued."
 
-$ol = New-Object -ComObject Outlook.Application
+# stop on any Outlook error, so a mail that was not sent is never marked sent (6 Nov 2026: Outlook's COM server failed to
+# start, the script went on and printed "sent")
+$ErrorActionPreference = 'Stop'
+try { $ol = New-Object -ComObject Outlook.Application } catch { "not sent | Outlook did not start: $($_.Exception.Message)"; exit 1 }
 $m = $ol.CreateItem(0)
 $m.To = $To
 $m.Subject = $subject
@@ -41,7 +44,7 @@ if (Test-Path -LiteralPath $wdoc) { [void]$m.Attachments.Add($wdoc) }
 # the new orders only (James, 2 Nov 2026: "only want you to show the new order added to the schedule compared to the last one")
 $ndoc = Join-Path $src "FRM Formulation $Date (new orders).docx"
 if (Test-Path -LiteralPath $ndoc) { [void]$m.Attachments.Add($ndoc) }
-$m.Send()
+try { $m.Send() } catch { "not sent | $($_.Exception.Message)"; exit 1 }
 try { $ol.GetNamespace('MAPI').SendAndReceive($false) } catch {}
 Set-Content -LiteralPath $mark -Value @($hash, (Get-Date -Format 'yyyy-MM-dd HH:mm'), $subject) -Encoding utf8
 "sent | $subject | to $To | $doc"

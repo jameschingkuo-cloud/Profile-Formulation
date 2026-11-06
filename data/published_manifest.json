@@ -358,6 +358,27 @@
   "published_at": "2026-11-05T15:10:19",
   "sha256": "23a9658f07c32b2c1e3f024ed594bc77318f5717dee1f3e31fed807869588b04"
  },
+ "Daily Formulation Report/FRM Formulation 2026-11-06 (new orders).docx": {
+  "bytes": 42231,
+  "content": "5fbc8b79bd4eb0f095e934b7eef891653bcc1c6f3ffc12b178300b945d8314e1",
+  "from": "FRM Formulation 2026-11-06 (new orders).docx",
+  "published_at": "2026-11-06T14:18:53",
+  "sha256": "f6f39a46bce729debeb6ccc1338001ba9b41f65b6274534424f8e3213ada864f"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-06 (weight %).docx": {
+  "bytes": 49588,
+  "content": "2413d7a65a328e6653f0915ba62f27c0a794859c14fffef7868fbf9f473e069d",
+  "from": "FRM Formulation 2026-11-06 (weight %).docx",
+  "published_at": "2026-11-06T14:18:53",
+  "sha256": "b14b3aea28e73f8192465f47d6994961414c7fbf7e29665f8227e05ee535fb56"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-06.docx": {
+  "bytes": 49202,
+  "content": "531100ff839ca7fc39715e3bbc7d7b9113c3d2e110c9f5823ddf8372f060971f",
+  "from": "FRM Formulation 2026-11-06.docx",
+  "published_at": "2026-11-06T14:18:53",
+  "sha256": "714d70d58d34e176c5847086aa21e653ce521352ea29f0db4f416e696059f5ae"
+ },
  "Daily Formulation Report/FRM Formulation Report 2026-09-23.xlsx": {
   "bytes": 55614,
   "content": "6dfee4a062a9fdc058c0a5a7fc8728473e54b5fdfa626a0873cd61af3ae58e0b",
@@ -604,11 +625,11 @@
   "sha256": "66793a9abbc4f17b49788c169a0fefc17313331366a8af699468fc0805ffb614"
  },
  "Daily Formulation Report/Interface Copy/Profile Formulation 2026-11-06.html": {
-  "bytes": 3025480,
-  "content": "bf4e44491dc1191f77b900ef1565d565bef7069a5be6fdc9dd391ec16ae4d735",
+  "bytes": 3033345,
+  "content": "d2f26eb0b32b469e8e077ad73b6b85700dafbe1b9cab393cdaff93e8d72449bf",
   "from": "Profile Formulation 2026-11-06.html",
-  "published_at": "2026-11-06T13:17:52",
-  "sha256": "bf4e44491dc1191f77b900ef1565d565bef7069a5be6fdc9dd391ec16ae4d735"
+  "published_at": "2026-11-06T14:22:24",
+  "sha256": "d2f26eb0b32b469e8e077ad73b6b85700dafbe1b9cab393cdaff93e8d72449bf"
  },
  "Extrusion Schedule/EXT Extrusion Schedule 2026-09-23.xlsx": {
   "bytes": 45623,
