@@ -617,7 +617,10 @@ function setRows(f, weight){
     const fixed = list.filter(x => String(x.set).toLowerCase() !== 'auto').reduce((a, x) => a + (num(x.set) || 0), 0);
     return (e ? `<tr><td colspan="3" class="caps" style="padding-top:8px">Extruder ${e}</td></tr>` : '') + list.map(x => {
       const r = REPL[x.mat], auto = String(x.set).toLowerCase() === 'auto';
-      const mat = r ? `${esc(r.now.replace(/ \(.*\)$/, ''))}<small>Page prints ${esc(x.mat)}: load ${esc(r.now.replace(/ \(.*\)$/, ''))}</small>` : esc(printName(x.mat) || '—');
+      // a premix shows its ratio in a bracket after the name (James Kuo, 9 Nov 2026: "display the premix ratio as well put a bracket after with the ratio")
+      const pr = x.pm ? (/^(\d+):(\d+)/.exec(x.pm) || null) : null;
+      const pmTxt = x.pm ? ` (${pr ? pr[1] + ' : ' + pr[2] : 'ratio not on file'})` : '';
+      const mat = r ? `${esc(r.now.replace(/ \(.*\)$/, ''))}<small>Page prints ${esc(x.mat)}: load ${esc(r.now.replace(/ \(.*\)$/, ''))}</small>` : esc((printName(x.mat) || '—') + pmTxt);
       const val = auto ? `${Math.round((100 - fixed) * 10) / 10}<small>% auto</small>` : `${esc(x.set)}<small>${weight ? '%' : ''}</small>`;
       return `<tr><td class="p">${esc(x.col.replace('Extruder ', '').replace(/^[A-D] /, ''))}</td><td class="m">${mat}</td><td class="v">${val}</td></tr>`;
     }).join('');

@@ -891,6 +891,15 @@
       "change": "James, SE23 (virgin already at 99, would need 109): \"reduce the rest instead of increase PP so it follow the W%\" - the virgin auger stays at its speed and the other feeders come down by one factor (talc 16, F1203K 24, WB 39). James: \"sent the new formulation over as revision\": 6 Nov re-issued with the winter rule (rev 98), SE24 off the Shortage of Talc recipe, SE21 R4 black confirmed. daily/email_formulation.ps1 now stops on an Outlook error (it had printed \"sent\" and marked the file sent when Outlook's COM server failed to start).",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 100,
+      "date": "2026-11-09",
+      "type": "Page design",
+      "item": "Premix ratio in a bracket after the hopper name",
+      "change": "James: \"can you display the premix ration as well put a bracket after with the ration\" (ratio). The Operator card's hopper rows now print a premix with its ratio after the name, e.g. \"PK Pre-mixed (6 : 1)\" (FAA001PK2, PP Virgin : pink), \"(9 : 1)\" for WB:GE / WB:GT. The ratio comes from render_frm.premix_ratio (material, formula note, Tech's usual one); when none is on file it prints \"(ratio not on file)\". The Word files already print \"Premix 6:1 ...\" under the name.",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }
