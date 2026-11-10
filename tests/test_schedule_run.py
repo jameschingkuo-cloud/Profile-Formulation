@@ -38,7 +38,6 @@ def test_gate_window(tmp_path, monkeypatch):
         return [row] if since <= datetime.datetime(2026, 10, 6, 13, 24, 10) < until else []
     monkeypatch.setattr(g, 'fetch', fetch)
     at = lambda h, m: datetime.datetime(2026, 10, 6, h, m)  # noqa: E731
-    assert g.check(now=at(16, 43)) == 'gate: skip (after 16:20)'
     assert g.check(now=at(13, 13)).startswith('gate: skip (No new email in system')    # 12:43-13:13: none
     assert asked[-1] == (at(12, 43), at(13, 13)) and g.LAST.read_text() == '2026-10-06 13:13:00'
     assert g.check(now=at(13, 43)) == 'gate: run'                                      # 13:13-13:43 has it

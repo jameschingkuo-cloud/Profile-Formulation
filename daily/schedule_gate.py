@@ -10,7 +10,9 @@ automatically ended with" "No new email in system").
                                              a check as if made then (no 16:20 cut-off, nothing recorded, no lock)
 
 Check, in this order, and stop at the first that says skip:
-  - after 16:20 local: skip (the 16:30 tick of the */30 11-16 schedule);
+  - (until 9 Nov 2026 also: after 16:20 local, skip. Since 10 Nov the routine is gone and Code-Outlook Monitor messages
+    this session when a schedule email comes in; the gate then runs at any time, James Kuo, 10 Nov 2026: "Outlook
+    monitor will check outlook for you in the future. I am deleteting your schedule task");
   - work/schedule_run.lock less than 90 minutes old: skip (a run is working);
   - Johanna Vallejo's emails received since the previous check (work/schedule_last_check.txt; 30 minutes back when there
     is none), through daily/fetch_schedule_mail.ps1 -Since/-Until, which saves only those emails' PDFs to Downloads.
@@ -36,7 +38,6 @@ import config  # noqa: E402
 LOCK = config.WORK_DIR / 'schedule_run.lock'
 LEDGER = config.WORK_DIR / 'schedule_mail_handled.json'
 LAST = config.WORK_DIR / 'schedule_last_check.txt'
-LATE = datetime.time(16, 20)
 LOCK_MINUTES = 90
 WINDOW = datetime.timedelta(minutes=30)
 FMT = '%Y-%m-%d %H:%M:%S'
@@ -87,8 +88,8 @@ def last_check(now):
 
 def check(now=None, since=None, test=False):
     now = now or datetime.datetime.now().replace(microsecond=0)
-    if not test and now.time() > LATE:
-        return 'gate: skip (after 16:20)'
+    # no 16:20 cut-off since 10 Nov 2026: the */30 routine is gone and the gate runs when Code-Outlook Monitor says a
+    # schedule came, whatever the time (James Kuo: "Outlook monitor will check outlook for you in the future")
     if not test and LOCK.exists() and (now.timestamp() - LOCK.stat().st_mtime) < LOCK_MINUTES * 60:
         return f'gate: skip (a run is working since {json.loads(LOCK.read_text(encoding="utf-8"))["started"]})'
     since = since or last_check(now)

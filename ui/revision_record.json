@@ -900,6 +900,15 @@
       "change": "James: \"can you display the premix ration as well put a bracket after with the ration\" (ratio). The Operator card's hopper rows now print a premix with its ratio after the name, e.g. \"PK Pre-mixed (6 : 1)\" (FAA001PK2, PP Virgin : pink), \"(9 : 1)\" for WB:GE / WB:GT. The ratio comes from render_frm.premix_ratio (material, formula note, Tech's usual one); when none is on file it prints \"(ratio not on file)\". The Word files already print \"Premix 6:1 ...\" under the name.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 101,
+      "date": "2026-11-10",
+      "type": "Logic",
+      "item": "Schedule run started by Code-Outlook Monitor; no 16:20 cut-off",
+      "change": "James: \"Outlook monitor will check outlook for you in the future. I am deleteting your schedule task\". The */30 routine daily-schedule-run is closed; Code-Outlook Monitor messages the formulation session when a SCHEDULE or DIE CUT SCHEDULE email comes in, and the session runs the gate, step 1 or 2, and --done. daily/schedule_gate.py no longer skips after 16:20 (that was the routine's last tick); the since-last-check window, the lock and the handled-email ledger are unchanged.",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }

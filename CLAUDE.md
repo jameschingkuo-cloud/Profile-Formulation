@@ -322,7 +322,14 @@ The interface page's drop box takes the same three. The system PDF is read from 
 under a second); the converting PDF gets "not used for the formulation"; a scan gets the in-page text reader as before.
 Tested 5 Oct: report 81/81 (68 + 13 for the engineer, the same as the pipeline); 30 Sep scan 87/87 in 69 s.
 
-## The scheduled email run (6 Oct 2026)
+## The scheduled email run (6 Oct 2026; since 10 Nov 2026 started by Code-Outlook Monitor)
+
+**Since 10 Nov 2026 there is no scheduled task.** James Kuo: *"Outlook monitor will check outlook for you in the future.
+I am deleteting your schedule task"*. Code-Outlook Monitor watches Outlook and sends this session a direct message (with a
+Teams copy) for each new "SCHEDULE MM/DD" or "DIE CUT SCHEDULE" email. That message starts the run here: the gate below
+(no 16:20 cut-off any more), step 1 or step 2 as `schedule_status` says, then `--done`. When a step is finished, DM
+Code-Outlook Monitor "DONE <date> step 1|2". Its done-sign for step 1 is the FRM Formulation email; for step 2 it is that
+DM. What follows is the run as the routine did it; the steps are unchanged.
 
 James Kuo, 6 Oct 2026: *"check my email everyday for schedule from JVallejo@wpjk.inteplast.com. usually there are two,
 one for extrusion and one for converting"*; files to Downloads; "Full run, stop on new High"; every 30 min, 11:00-16:00
