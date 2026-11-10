@@ -407,6 +407,27 @@
   "published_at": "2026-11-09T13:17:17",
   "sha256": "5bbd795736c693bc334bc332fb9580f5638f488ef39366c6853d0537f8efe9e7"
  },
+ "Daily Formulation Report/FRM Formulation 2026-11-10 (new orders).docx": {
+  "bytes": 40839,
+  "content": "78e8432a910c3b68a42464a50119fc462c0895a8a0ac48ea5687d46c49f29546",
+  "from": "FRM Formulation 2026-11-10 (new orders).docx",
+  "published_at": "2026-11-10T13:54:01",
+  "sha256": "0878e3f1613ad8a54ef31e02b5510c89a67728020c22d0724365dc6ac9245e37"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-10 (weight %).docx": {
+  "bytes": 49048,
+  "content": "43c2eb34e6eba574c7786b1f50d7f876a6413f0c6d711e456d5e2b35fcc0be8c",
+  "from": "FRM Formulation 2026-11-10 (weight %).docx",
+  "published_at": "2026-11-10T13:54:01",
+  "sha256": "4f2f98056e83f79474d663952eed61b26c8d0258d8225921223ec648d5915728"
+ },
+ "Daily Formulation Report/FRM Formulation 2026-11-10.docx": {
+  "bytes": 48663,
+  "content": "e5ab9bae3cbd352f8b0c7fa11146153ccb19927618f2b89e3728d0fffc98465f",
+  "from": "FRM Formulation 2026-11-10.docx",
+  "published_at": "2026-11-10T13:54:01",
+  "sha256": "105ea0df6b109892d93bc1f0c9c7bd11c32585bcd64e0b6bca6709b2f6ef7556"
+ },
  "Daily Formulation Report/FRM Formulation Report 2026-09-23.xlsx": {
   "bytes": 55614,
   "content": "6dfee4a062a9fdc058c0a5a7fc8728473e54b5fdfa626a0873cd61af3ae58e0b",
@@ -665,6 +686,13 @@
   "from": "Profile Formulation 2026-11-09.html",
   "published_at": "2026-11-10T09:07:24",
   "sha256": "cb879d8c024d0ab74ce2ae528dad8b35bd83bc38b26df44ff66fb7713dc5f9ce"
+ },
+ "Daily Formulation Report/Interface Copy/Profile Formulation 2026-11-10.html": {
+  "bytes": 3030867,
+  "content": "4e971e809728dace5273439ba1148f510f858555b7a041dd4d51116cb8ff2c5f",
+  "from": "Profile Formulation 2026-11-10.html",
+  "published_at": "2026-11-10T14:00:15",
+  "sha256": "4e971e809728dace5273439ba1148f510f858555b7a041dd4d51116cb8ff2c5f"
  },
  "Extrusion Schedule/EXT Extrusion Schedule 2026-09-23.xlsx": {
   "bytes": 45623,
