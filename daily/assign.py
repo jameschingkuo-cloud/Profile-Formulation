@@ -663,6 +663,13 @@ CONFIRMED_SETTINGS = {
                                         'Hopper 4': ('KS-MDI PE-500 (or PolyOne LD-250 or NPC PE90000F', '19')},
                             'note': 'R4 black 98% reclaim / 2% color',
                             'by': "James Kuo, 6 Nov 2026 (the R4 black 98/2 settings calculated from Tech's SE21 RU0000KS4 of 23 Oct 2026)"},
+    # the SE21 FUA032KS4 calculation (W% x FU0041KS4's 15,434 g/min, 27 Oct 2026) printed 66 / 19 / 90 / 49 on the 10 Nov
+    # FRM for H6BA015-2, H6AA268-2, RP26A15-1; James Kuo, 10 Nov 2026: "no issue. take out the calculated next time".
+    # stored before the speed raise, as calculated (resolve prints them 66 / 19 / 90 / 49, highest at 90, weight ratio kept)
+    ('SE21', 'FUA032KS4'): {'feeders': {'Hopper 1': ('PP Virgin-silo 3 (F6502A)', '39'), 'Hopper 2': ('HiTalc ZS (or N40109A)', '11'),
+                                        'Hopper 3': ('PP Mix Reclaim', '53'),
+                                        'Hopper 4': ('KS- NPC PE90000F (or Spartech B60009 or MDI PE-500)', '29')},
+                            'by': "James Kuo, 10 Nov 2026 (the SE21 FUA032KS4 calculation on FU0041KS4's throughput, 27 Oct 2026)"},
 }
 # The row whose throughput a calculation takes, where James chose it (27 Oct 2026, "yes use them"): SE21 corn box on
 # Tech's FU0031WB4 issued for RP26512-1 (80/10/60/32/36), not the lower FU0041WB4 row

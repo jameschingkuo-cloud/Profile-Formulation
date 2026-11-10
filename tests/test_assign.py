@@ -695,14 +695,18 @@ def test_confirmed_settings_are_not_calculated():
     assign.set_pages(pk)
     r = {'order': 'NEW-1', 'prod_code': 'RPA40KS744', 'mat_spec': 'PPP A R1R1R1', 'special_instructions': '',
          'thk': '4.0', 'colors': 'KS KS KS'}
+    # confirmed by James Kuo on 10 Nov 2026 ("no issue. take out the calculated next time"): plain settings
     fm, _ = assign.formulation('SE21', r, datetime.date(2026, 11, 2), issued)
-    assert fm['members'][0]['code'] == 'FUA032KS4' and fm['members'][0]['src'][0] == 'calcw'
-    assign.CONFIRMED_SETTINGS[('SE21', 'FUA032KS4')] = {'feeders': {'Hopper 1': ('PP Virgin', '39')}, 'by': 'test'}
+    assert fm['members'][0]['code'] == 'FUA032KS4' and fm['members'][0]['src'][0] == 'confirmed'
+    assert {k: v['set'] for k, v in fm['members'][0]['rows'][0]['feeders'].items()} == \
+        {'Hopper 1': '39', 'Hopper 2': '11', 'Hopper 3': '53', 'Hopper 4': '29'}
+    # without the entry the same formula is CALCULATED from the W%
+    kept = assign.CONFIRMED_SETTINGS.pop(('SE21', 'FUA032KS4'))
     try:
         fm, _ = assign.formulation('SE21', r, datetime.date(2026, 11, 2), issued)
-        assert fm['members'][0]['src'] == ('confirmed', None, 'test')
+        assert fm['members'][0]['src'][0] == 'calcw'
     finally:
-        del assign.CONFIRMED_SETTINGS[('SE21', 'FUA032KS4')]
+        assign.CONFIRMED_SETTINGS[('SE21', 'FUA032KS4')] = kept
 
 
 def test_black_10mm_packaging_fu0041ksa():

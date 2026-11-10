@@ -918,6 +918,15 @@
       "change": "James (screenshot of the Look up results): \"Organize the formulation better. Alight them to the left. 1 item per line\". Under each formula code the settings now print one feeder per line in three left-aligned columns: feeder (H1, V5, A V1 ...), material, setting; a premix shows its ratio in a bracket (e.g. WB EA Premix (9 : 1)), as on the Operator card (rev 100).",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 103,
+      "date": "2026-11-10",
+      "type": "W%",
+      "item": "SE21 FUA032KS4 confirmed: no longer CALCULATED",
+      "change": "James (10 Nov FRM, SE21 FUA032KS4 rows): \"no issue. take out the calculated next time\". The calculated settings (39 / 11 / 53 / 29 on Hoppers 1-4, printed 66 / 19 / 90 / 49 with the top speed at 90) go into CONFIRMED_SETTINGS and print as plain settings from the next run. The settings stay the same; only the note \"CALCULATED SETTINGS, check before running\" is gone. Corn box FU0023WB4 on SE21 stays CALCULATED until James confirms it.",
+      "order": "H6BA015-2, H6AA268-2, RP26A15-1",
+      "editor": "James Kuo"
     }
   ]
 }
