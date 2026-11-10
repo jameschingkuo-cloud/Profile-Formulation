@@ -331,6 +331,12 @@ Teams copy) for each new "SCHEDULE MM/DD" or "DIE CUT SCHEDULE" email. That mess
 Code-Outlook Monitor "DONE <date> step 1|2". Its done-sign for step 1 is the FRM Formulation email; for step 2 it is that
 DM. What follows is the run as the routine did it; the steps are unchanged.
 
+**A wrong Monitor message goes back.** James Kuo, 10 Nov 2026: *"if outlook monitor send you something wrong, remember to
+return it and let monitor know. so 1, monitor can learn, and 2 send the file to the right place"*. Before running the
+gate, check the DM against what it claims: sender, subject, attachment kind and date. If it is not a schedule for this
+pipeline (wrong email or file, another pipeline's item, an unflagged duplicate), don't run anything. DM Code-Outlook Monitor
+"RETURNED <message id> <subject>: <what is wrong>; belongs to <where, if known>". If it touches the run, also post [to:james].
+
 James Kuo, 6 Oct 2026: *"check my email everyday for schedule from JVallejo@wpjk.inteplast.com. usually there are two,
 one for extrusion and one for converting"*; files to Downloads; "Full run, stop on new High"; every 30 min, 11:00-16:00
 on weekdays. The scheduled task `daily-schedule-run` (Claude app, runs only while the app is open) does:
