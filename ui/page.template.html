@@ -136,6 +136,10 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-v
 .gentable td{vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
 .gentable th{text-align:left;font:600 12px var(--f-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:6px;border-bottom:1px solid var(--line)}
 .gentable .fl{display:grid;gap:4px}
+.rcp{border-collapse:collapse;margin:2px 0 6px;font-size:12px}
+.rcp td{text-align:left;padding:1px 10px 1px 0;border:0;vertical-align:top}
+.rcp td.p{color:var(--muted);white-space:nowrap}
+.rcp td.s{font-weight:600;white-space:nowrap}
 .gentable details summary{cursor:pointer;font:600 14px var(--f-mono)}
 .gentable details table{margin:6px 0 4px}
 .genalt{display:grid;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
@@ -496,13 +500,28 @@ const YEAR_FROM = new Date(new Date(D.day + 'T12:00:00').getTime() - D.look.days
 const fmtY = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric'});
 const rangeTxt = (a, b, n) => a === b ? fmtY(a) : `${a.slice(0, 4) === b.slice(0, 4) ? fmtDate(a) : fmtY(a)} – ${fmtY(b)} (${n} days)`;
 $('#rhspan').textContent = `${fmtY(YEAR_FROM)} to ${fmtY(D.day)}`;
+// a stored recipe ('V1 HiTalc ZS (or N40109A) 9 | V5 PP Virgin (F6502A) 73.5 | ...') as one feeder a line, left-aligned:
+// feeder, material, setting (James Kuo, 10 Nov 2026: "Organize the formulation better. Alight them to the left. 1 item per line")
+function recipeRows(txt){
+  return `<table class="rcp">${String(txt).split(' | ').map(it => {
+    let m = /^((?:Extruder\s+)?(?:[A-D]\s+)?[HVABCD]\d+|Total\s+#\d+)\s+(.*)$/.exec(it), pos = '', rest = it;
+    if (m) { pos = m[1].replace(/^Extruder\s+/, ''); rest = m[2]; }
+    let pm = '';
+    const p = /\s*\(premix (\d+):(\d+)[^]*\)$/.exec(rest);
+    if (p) { pm = ` (${p[1]} : ${p[2]})`; rest = rest.slice(0, p.index); }
+    const s = /\s+([\d.]+%?|Auto)$/i.exec(rest);
+    const set = s ? s[1] : '';
+    if (s) rest = rest.slice(0, s.index);
+    return `<tr><td class="p">${esc(pos)}</td><td>${esc(rest + pm)}</td><td class="s">${esc(set)}</td></tr>`;
+  }).join('')}</table>`;
+}
 function find(q){
   q = q.trim().toUpperCase(); if (!q) { $('#results').innerHTML = ''; return; }
   const rows = RUNS.filter(([order, line, prod, a, b, n, forms]) => order.includes(q) || prod.includes(q) || forms.some(f => String(f[0]).toUpperCase().includes(q)))
     .sort((x, y) => y[4].localeCompare(x[4]) || x[1].localeCompare(y[1]));
   const nw = 'style="white-space:nowrap"';
   $('#results').innerHTML = rows.length ? `<div class="tscroll"><table style="font-size:13px"><thead><tr><th>Ran</th><th>Line</th><th>Order</th><th>Product</th><th>Formulation, primary first</th><th>Spec</th><th>Colors</th><th>Thk</th><th>GSM</th><th>Size (in)</th><th>Die</th><th>Sheets</th><th>Plts</th><th>LBs</th><th>Due</th><th>Special instructions</th></tr></thead><tbody>${rows.slice(0, 300).map(([order, line, prod, a, b, n, forms, [spec, col, thk, gsm, size, die, sheets, plts, lbs, due, si]]) =>
-    `<tr><td ${nw}>${rangeTxt(a, b, n)}</td><td class="mono">${line}</td><td class="mono" ${nw}>${esc(order)}</td><td class="mono" ${nw}>${esc(prod)}</td><td class="mono" style="min-width:260px">${forms.length ? forms.map(([c, ri]) => `<div>${esc(c)}${RECIPES[ri] ? `<div class="muted" style="font-size:12px">${esc(RECIPES[ri])}</div>` : ''}</div>`).join('') : '<span class="muted">no formulation on file</span>'}</td><td class="mono" ${nw}>${esc(spec)}</td><td class="mono" ${nw}>${esc(col)}</td><td>${esc(thk)}</td><td>${esc(gsm)}</td><td ${nw}>${esc(size)}</td><td class="mono">${esc(die)}</td><td ${nw}>${esc(sheets)}</td><td>${esc(plts)}</td><td>${esc(lbs)}</td><td ${nw}>${esc(due)}</td><td style="min-width:240px">${esc(si)}</td></tr>`).join('')}</tbody></table></div>
+    `<tr><td ${nw}>${rangeTxt(a, b, n)}</td><td class="mono">${line}</td><td class="mono" ${nw}>${esc(order)}</td><td class="mono" ${nw}>${esc(prod)}</td><td class="mono" style="min-width:260px">${forms.length ? forms.map(([c, ri]) => `<div>${esc(c)}${RECIPES[ri] ? recipeRows(RECIPES[ri]) : ''}</div>`).join('') : '<span class="muted">no formulation on file</span>'}</td><td class="mono" ${nw}>${esc(spec)}</td><td class="mono" ${nw}>${esc(col)}</td><td>${esc(thk)}</td><td>${esc(gsm)}</td><td ${nw}>${esc(size)}</td><td class="mono">${esc(die)}</td><td ${nw}>${esc(sheets)}</td><td>${esc(plts)}</td><td>${esc(lbs)}</td><td ${nw}>${esc(due)}</td><td style="min-width:240px">${esc(si)}</td></tr>`).join('')}</tbody></table></div>
     <p class="muted" style="font-size:13px">${rows.length} run${rows.length > 1 ? 's' : ''} found${rows.length > 300 ? ' (newest 300 shown)' : ''}.</p>`
     : `<p class="muted">Nothing on record for “${esc(q)}”. Check the code, or it has not run since ${fmtY(YEAR_FROM)} (the first schedule on file in that span is ${fmtY(RH_FROM)}).</p>`;
 }

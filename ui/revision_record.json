@@ -909,6 +909,15 @@
       "change": "James: \"Outlook monitor will check outlook for you in the future. I am deleteting your schedule task\". The */30 routine daily-schedule-run is closed; Code-Outlook Monitor messages the formulation session when a SCHEDULE or DIE CUT SCHEDULE email comes in, and the session runs the gate, step 1 or 2, and --done. daily/schedule_gate.py no longer skips after 16:20 (that was the routine's last tick); the since-last-check window, the lock and the handled-email ledger are unchanged.",
       "order": "",
       "editor": "James Kuo"
+    },
+    {
+      "rev": 102,
+      "date": "2026-11-10",
+      "type": "Page design",
+      "item": "Look up: formulation one feeder a line, left-aligned",
+      "change": "James (screenshot of the Look up results): \"Organize the formulation better. Alight them to the left. 1 item per line\". Under each formula code the settings now print one feeder per line in three left-aligned columns: feeder (H1, V5, A V1 ...), material, setting; a premix shows its ratio in a bracket (e.g. WB EA Premix (9 : 1)), as on the Operator card (rev 100).",
+      "order": "",
+      "editor": "James Kuo"
     }
   ]
 }
